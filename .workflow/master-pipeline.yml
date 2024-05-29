@@ -17,10 +17,10 @@ stages:
         name: build_docker
         displayName: 镜像构建
         type: account
-        repository: https://gitee.com/gpg-dev/my-server.git
-        username: 2694484453@qq.com
+        repository: registry.cn-hangzhou.aliyuncs.com
+        username: 18439406854gpg
         password: 1999y4m30d
-        tag: ${GITEE_PIPELINE_BUILD_NUMBER}
+        tag: /gpg_dev/${GITEE_PIPELINE_BUILD_NUMBER}
         dockerfile: ./Dockerfile
         context: ''
         artifacts: []
