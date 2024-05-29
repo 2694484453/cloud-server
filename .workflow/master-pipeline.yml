@@ -20,7 +20,7 @@ stages:
         repository: registry.cn-hangzhou.aliyuncs.com
         username: 18439406854gpg
         password: 1999y4m30d
-        tag: /gpg_dev/${GITEE_PIPELINE_BUILD_NUMBER}
+        tag: registry.cn-hangzhou.aliyuncs.com/gpg_dev/my-server/${GITEE_PIPELINE_BUILD_NUMBER}
         dockerfile: ./Dockerfile
         context: ''
         artifacts: []
