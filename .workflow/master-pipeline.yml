@@ -52,7 +52,7 @@ stages:
         password: 1999y4m30d
         tag: gpg_dev/my-server:${GITEE_PIPELINE_BUILD_NUMBER}
         dockerfile: ./Dockerfile
-        context: ''
+        context: ./ruoyi-admin/target
         artifacts: []
         isCache: false
         parameter: {}
