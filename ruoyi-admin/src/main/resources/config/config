@@ -1,0 +1,29 @@
+#containerd+nerdctl主机配置
+[ssh]
+#主机地址
+host = tcs.gpg123.vip
+#端口
+port = 22
+#用户名
+user = root
+#密码
+passwd = 1999y4m30D%
+#编码
+coding = utf-8
+
+[registry]
+#用户名
+username=18439406854gpg
+#密码
+password=1999y4m30d
+
+#helm客户端主机配置
+[helm]
+#主机地址
+host = tcs.gpg123.vip
+#端口
+port = 22
+#用户名
+user = root
+#密码
+passwd = 1999y4m30D%

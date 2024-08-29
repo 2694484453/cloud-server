@@ -1,0 +1,12 @@
+[
+  {
+    "name":"node1",
+    "type":"node-exporter",
+    "targets":"server.gpg123.vip:9200",
+    "labels":
+    [
+      "主机监控",
+      "监控"
+    ]
+  }
+]

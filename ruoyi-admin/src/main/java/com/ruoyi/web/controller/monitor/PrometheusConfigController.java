@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.monitor;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
@@ -10,6 +11,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,9 +78,15 @@ public class PrometheusConfigController {
     @ApiOperation("监控分页查询")
     public AjaxResult page(@RequestParam(value = "type", required = false) String type,
                            @RequestParam(value = "name", required = false) String name) {
-        type = StrUtil.isBlank(type) ? springBoot : type;
-        File file = FileUtil.file(type);
+        type = StrUtil.isBlank(type) ? "spring-boot" : type;
+        File file = chooseTheFile(type);
         JSONArray jsonArray = JSONUtil.readJSONArray(file, StandardCharsets.UTF_8);
+        JSONArray res = JSONUtil.createArray();
+//        for (int i = 0; i < jsonArray.size() - 1; i++) {
+//            Map<String, Object> objectMap = (Map<String, Object>) jsonArray.get(i);
+//            objectMap.put("index", i);
+//            res.add(objectMap);
+//        }
         return AjaxResult.success(jsonArray);
     }
 
@@ -109,6 +117,33 @@ public class PrometheusConfigController {
             throw new RuntimeException();
         }
         return AjaxResult.success(true);
+    }
+
+    /**
+     * 删除
+     * @param index i
+     * @param type t
+     * @return r
+     */
+    @DeleteMapping("delete")
+    @ApiOperation("删除监控")
+    public AjaxResult delete(@RequestParam(value = "index") String index,
+                             @RequestParam(value = "type") String type) {
+        // 读取
+        File file = chooseTheFile(type);
+        JSONArray jsonArray = JSONUtil.readJSONArray(file, StandardCharsets.UTF_8);
+        jsonArray.remove(index);
+        // 格式化
+        String fmt = JSONUtil.formatJsonStr(JSONUtil.toJsonStr(jsonArray));
+        // 写入
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(fmt);
+            fileWriter.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return AjaxResult.success();
     }
 
     /**
