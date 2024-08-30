@@ -1,16 +1,20 @@
-package com.ruoyi.web.controller.monitor;
+package com.ruoyi.web.controller.repo;
 
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.PageUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.base.ExecResponse;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.NerdCtlUtil;
+import com.ruoyi.common.utils.PageUtils;
 import io.swagger.annotations.ApiOperation;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,14 +54,29 @@ public class ImageRepoController {
 
     /**
      * list
+     *
      * @param namespace
      * @return
      */
     @GetMapping("/list")
-    public AjaxResult list(@RequestParam(value = "namespace", required = false) String namespace) {
+    public AjaxResult list(@RequestParam(value = "namespace", required = false) String namespace,
+                           @RequestParam(value = "name", required = false) String name,
+                           @RequestParam(value = "type", required = false) String type) {
         String[] init = {};
-
-        ExecResponse execResponse = NerdCtlUtil.execFor("nerdctl", "images", "--format", "json");
+        init = ArrayUtil.append(init, "nerdctl", "images", "--format", "json");
+        // 名称检索
+        if (StrUtil.isNotBlank(name)) {
+            init = ArrayUtil.append(init, "--filter", "Repository" + name);
+        }
+        // 类型检索
+        if (StrUtil.isNotBlank(type)) {
+            init = ArrayUtil.append(init, "--filter", "Platform=" + type);
+        }
+        // ns检索
+        if (StrUtil.isNotBlank(namespace)) {
+            init = ArrayUtil.append(init, "--namespace", namespace);
+        }
+        ExecResponse execResponse = NerdCtlUtil.execFor(init);
         String data = execResponse.getSuccessMsg();
         Console.log("{}", data);
         JSONArray jsonArray = JSONUtil.createArray();
@@ -73,4 +92,22 @@ public class ImageRepoController {
         }
         return execResponse.getExistCode() == 0 ? AjaxResult.success(jsonArray) : AjaxResult.error();
     }
+
+    /**
+     * page查询
+     * @param namespace ns
+     * @param name n
+     * @param type t
+     * @return r
+     */
+    @GetMapping("/page")
+    @ApiOperation(value = "分页查询")
+    public TableDataInfo page(@RequestParam(value = "namespace", required = false) String namespace,
+                              @RequestParam(value = "name", required = false) String name,
+                              @RequestParam(value = "type", required = false) String type) {
+        AjaxResult ajaxResult = list(namespace, name, type);
+        JSONArray jsonArray = (JSONArray) ajaxResult.get("data");
+        return PageUtils.toPage(jsonArray);
+    }
+
 }
