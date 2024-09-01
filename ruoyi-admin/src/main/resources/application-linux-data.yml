@@ -9,3 +9,6 @@ traefik:
 helm:
   index: https://helm-repo.gpg123.vip/index.yaml
   repoName: gpg_dev
+build:
+  image: /home/build/image
+  helm: /home/build/helm

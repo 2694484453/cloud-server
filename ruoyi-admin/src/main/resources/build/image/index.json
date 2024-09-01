@@ -1,0 +1,15 @@
+[
+  {
+    "name": "demo-file",
+    "version": "",
+    "repo": "repo.gpg123.vip",
+    "tag": "0.0.1",
+    "status": "1",
+    "description": "xxxx is for the build",
+    "type": "linux/amd64",
+    "namespace": "demons",
+    "createTime": "2024-09-01 14:00:00",
+    "updateTime": "2024-09-01 15:00:00",
+    "createBy": "admin"
+  }
+]
