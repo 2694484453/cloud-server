@@ -6,3 +6,6 @@ prometheus:
   traefik: /home/prometheus/traefik.json
 traefik:
   path: /home/my-traefik/config
+helm:
+  index: https://helm-repo.gpg123.vip/index.yaml
+  repoName: gpg_dev

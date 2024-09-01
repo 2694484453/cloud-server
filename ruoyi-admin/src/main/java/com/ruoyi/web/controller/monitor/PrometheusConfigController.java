@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.monitor;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.map.MapUtil;
@@ -82,11 +83,11 @@ public class PrometheusConfigController {
         File file = chooseTheFile(type);
         JSONArray jsonArray = JSONUtil.readJSONArray(file, StandardCharsets.UTF_8);
         JSONArray res = JSONUtil.createArray();
-//        for (int i = 0; i < jsonArray.size() - 1; i++) {
-//            Map<String, Object> objectMap = (Map<String, Object>) jsonArray.get(i);
-//            objectMap.put("index", i);
-//            res.add(objectMap);
-//        }
+        for (int i = 0; i < jsonArray.size(); i++) {
+            Map<String, Object> objectMap = Convert.toMap(String.class, Object.class, jsonArray.get(i));
+            objectMap.put("id", i);
+            res.add(objectMap);
+        }
         return AjaxResult.success(jsonArray);
     }
 
@@ -121,8 +122,9 @@ public class PrometheusConfigController {
 
     /**
      * 删除
+     *
      * @param index i
-     * @param type t
+     * @param type  t
      * @return r
      */
     @DeleteMapping("delete")
@@ -145,6 +147,23 @@ public class PrometheusConfigController {
         }
         return AjaxResult.success();
     }
+
+    /**
+     * 查询详情
+     * @param id i
+     * @param type t
+     * @return r
+     */
+    @GetMapping("/detail")
+    @ApiOperation(value = "查询详情")
+    public AjaxResult detail(@RequestParam(value = "id") Integer id,
+                             @RequestParam(value = "type") String type) {
+        // 读取
+        File file = chooseTheFile(type);
+        JSONArray jsonArray = JSONUtil.readJSONArray(file, StandardCharsets.UTF_8);
+        return AjaxResult.success(jsonArray.get(id));
+    }
+
 
     /**
      * 选择文件
