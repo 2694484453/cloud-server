@@ -196,6 +196,17 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.22</version>
         </dependency>
+        <!--aliyun-sdk-->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>domain20180129</artifactId>
+            <version>3.15.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alidns20150109</artifactId>
+            <version>3.4.3</version>
+        </dependency>
     </dependencies>
     <modules>
         <module>ruoyi-admin</module>
@@ -204,7 +215,6 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
-        <module>ruoyi-domain</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -231,6 +241,18 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
+        </repository>
+        <!--aliyun-->
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Sonatype Nexus Staging</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

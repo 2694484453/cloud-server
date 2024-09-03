@@ -1,0 +1,7 @@
+#
+[account]
+ENDPOINT=alidns.cn-hangzhou.aliyuncs.com
+ALIBABA_CLOUD_ACCESS_KEY_ID=LTAI5tS38hmXCmpK4vQk2fM4
+ALIBABA_CLOUD_ACCESS_KEY_SECRET=wpyF1rxjJksa2r3GyK9IIWXteZyX1t
+[domain]
+DOMAIN=gpg123.cn,gpg123.vip

@@ -12,3 +12,5 @@ helm:
 build:
   image: D:\Project\my-server\ruoyi-admin\src\main\resources\build\image
   helm: D:\Project\my-server\ruoyi-admin\src\main\resources\build\helm
+aliyun:
+  account: D:\Project\my-server\ruoyi-admin\src\main\resources\config\aliyun-config

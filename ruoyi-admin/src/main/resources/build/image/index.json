@@ -1,15 +1,27 @@
 [
-  {
-    "name": "demo-file",
-    "version": "",
-    "repo": "repo.gpg123.vip",
-    "tag": "0.0.1",
-    "status": "1",
-    "description": "xxxx is for the build",
-    "type": "linux/amd64",
-    "namespace": "demons",
-    "createTime": "2024-09-01 14:00:00",
-    "updateTime": "2024-09-01 15:00:00",
-    "createBy": "admin"
-  }
+    {
+        "name": "demo-file",
+        "version": "0.0.1",
+        "repo": "repo.gpg123.vip",
+        "status": "1",
+        "remark": "xxxx is for the build",
+        "type": "linux/amd64",
+        "namespace": "demons",
+        "createTime": "2024-09-01 14:00:00",
+        "updateTime": "2024-09-01 15:00:00"
+    },
+    {
+        "name": "java-demo",
+        "type": "linux/amd64",
+        "namespace": "",
+        "version": "0.0.1",
+        "repo": "registry.cn-hangzhou.aliyuncs.com",
+        "timeOut": 180,
+        "remark": "",
+        "signDate": "gpg_dev",
+        "comment": "123",
+        "createTime": "2024-09-04 02:34:50",
+        "updateTime": "",
+        "status": "0"
+    }
 ]

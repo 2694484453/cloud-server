@@ -12,3 +12,5 @@ helm:
 build:
   image: /home/build/image
   helm: /home/build/helm
+aliyun:
+  account: /home/config/aliyun-config
