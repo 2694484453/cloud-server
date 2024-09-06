@@ -25,6 +25,9 @@ port = 22
 user = root
 #密码
 passwd = 1999y4m30D%
+#
+index = https://helm-repo.gpg123.vip/index.yaml
+repoName = gpg_dev
 [cluster]
 path = D:\Project\my-server\ruoyi-admin\src\main\resources\cluster\config.yaml
 [account]

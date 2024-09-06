@@ -26,9 +26,6 @@ import java.util.Map;
 @RequestMapping("/domain")
 public class DomainController {
 
-    @Value("${aliyun.account}")
-    private String account;
-
     /**
      * 查询域名列表
      *

@@ -9,6 +9,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.Setting;
 import cn.hutool.setting.yaml.YamlUtil;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -32,11 +33,9 @@ import java.util.Map;
 @RequestMapping("/helmRepo")
 public class HelmRepoController {
 
-    @Value("${helm.index}")
-    private String url;
+    private final static String url = getSetting().getStr("index", "helm", "https://helm-repo.gpg123.vip/index.yaml");
 
-    @Value("${helm.repoName}")
-    private String repoName;
+    private final static String repoName = getSetting().getStr("repoName", "helm", "gpg_dev");
 
     /**
      * 查询list
@@ -91,5 +90,9 @@ public class HelmRepoController {
         }
         String res = RuntimeUtil.execForStr(init);
         return null;
+    }
+
+    public static Setting getSetting() {
+        return new Setting("config/config");
     }
 }
