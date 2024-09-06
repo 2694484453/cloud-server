@@ -43,7 +43,7 @@ public class ImageRepoController {
      * @return r
      */
     @GetMapping("/typeList")
-    @ApiOperation("类型查询")
+    @ApiOperation(value = "类型查询")
     public AjaxResult typeList() {
         String[] types = {};
         types = ArrayUtil.append(types, "linux/amd64",
@@ -53,12 +53,38 @@ public class ImageRepoController {
     }
 
     /**
-     * list
+     * 命名空间
+     * @return r
+     */
+    @GetMapping("/namespaceList")
+    @ApiOperation(value = "命名空间列表")
+    public AjaxResult namespaceList(){
+        String[] init = {};
+        init = ArrayUtil.append(init,"nerdctl","namespace","list","--format","json");
+        ExecResponse execResponse = NerdCtlUtil.execFor(init);
+        String data = execResponse.getSuccessMsg();
+        Console.log("{}", data);
+        JSONArray jsonArray = JSONUtil.createArray();
+        try (BufferedReader br = new BufferedReader(new StringReader(data))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Map map = JSONUtil.toBean(line, Map.class);
+                jsonArray.add(map);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+        return execResponse.getExistCode() == 0 ? AjaxResult.success(jsonArray) : AjaxResult.error();
+    }
+
+    /**
+     * 镜像list
      *
-     * @param namespace
-     * @return
+     * @param namespace ns
+     * @return r
      */
     @GetMapping("/list")
+    @ApiOperation(value = "镜像列表")
     public AjaxResult list(@RequestParam(value = "namespace", required = false) String namespace,
                            @RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "type", required = false) String type) {

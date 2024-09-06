@@ -50,6 +50,10 @@ public class ImageController {
         return AjaxResult.success(types);
     }
 
+    /**
+     * 仓库地址
+     * @return r
+     */
     @GetMapping("/repoList")
     @ApiOperation(value = "仓库地址查询")
     public AjaxResult repoList() {
@@ -57,6 +61,7 @@ public class ImageController {
         types = ArrayUtil.append(types,
                 "registry.cn-hangzhou.aliyuncs.com",
                 "repo.gpg123.vip");
+
         return AjaxResult.success(types);
     }
 

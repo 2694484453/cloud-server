@@ -9,7 +9,6 @@ import com.aliyun.tea.TeaException;
 import com.aliyun.tea.TeaModel;
 import com.aliyun.teaopenapi.models.Config;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.page.TableDataInfo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,15 +49,17 @@ public class DomainController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "查询域名解析记录")
-    public AjaxResult DescribeDomainRecords(@RequestParam(value = "domainName", required = false, defaultValue = "gpg123.cn") String domainName) {
+    public AjaxResult DescribeDomainRecords(@RequestParam(value = "domainName", required = false, defaultValue = "gpg123.cn") String domainName,
+                                            @RequestParam(value = "keyWord", required = false) String keyWord) {
         DescribeDomainRecordsRequest req = new DescribeDomainRecordsRequest();
         req.domainName = domainName;
+        req.setKeyWord(keyWord);
         Console.log("查询域名(" + domainName + ")的解析记录(json)↓");
         try {
             DescribeDomainRecordsResponse resp = createClient().describeDomainRecords(req);
             Console.log(com.aliyun.teautil.Common.toJSONString(TeaModel.buildMap(resp)));
-            Map<String,Object> resultMap = TeaModel.buildMap(resp);
-            Map<String,Object> bodyMap = (Map<String, Object>) resultMap.get("body");
+            Map<String, Object> resultMap = TeaModel.buildMap(resp);
+            Map<String, Object> bodyMap = (Map<String, Object>) resultMap.get("body");
             return AjaxResult.success(bodyMap);
         } catch (TeaException error) {
             Console.log(error.message);
@@ -95,8 +96,6 @@ public class DomainController {
     }
 
     private Setting getSetting() {
-        Setting setting = new Setting(account);
-        setting.autoLoad(true);
-        return setting;
+        return new Setting("config/config");
     }
 }

@@ -10,13 +10,11 @@ user = root
 passwd = 1999y4m30D%
 #编码
 coding = utf-8
-
 [registry]
 #用户名
 username=18439406854gpg
 #密码
 password=1999y4m30d
-
 #helm客户端主机配置
 [helm]
 #主机地址
@@ -27,3 +25,11 @@ port = 22
 user = root
 #密码
 passwd = 1999y4m30D%
+[cluster]
+path = D:\Project\my-server\ruoyi-admin\src\main\resources\cluster\config.yaml
+[account]
+ENDPOINT=alidns.cn-hangzhou.aliyuncs.com
+ALIBABA_CLOUD_ACCESS_KEY_ID=LTAI5tS38hmXCmpK4vQk2fM4
+ALIBABA_CLOUD_ACCESS_KEY_SECRET=wpyF1rxjJksa2r3GyK9IIWXteZyX1t
+[domain]
+DOMAIN=gpg123.cn,gpg123.vip
