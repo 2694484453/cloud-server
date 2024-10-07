@@ -37,7 +37,7 @@ public class PageUtils extends PageHelper {
         //
         int size = 0;
         List<Object> list = new ArrayList<>();
-        if (object.getClass() == JSONArray.class) {
+        if (object instanceof JSONArray) {
             JSONArray jsonArray = (JSONArray) object;
             size = jsonArray.size();
             int totalSize = size;
@@ -48,6 +48,18 @@ public class PageUtils extends PageHelper {
             int startIndex = (pageNum - 1) * pageSize;
             int endIndex = Math.min(startIndex + pageSize, totalSize);
             list = jsonArray.subList(startIndex, endIndex);
+        }
+        if (object instanceof List) {
+            List<Object> objectList = (List<Object>) object;
+            size = objectList.size();
+            int totalSize = size;
+            int totalPages = (totalSize + size - 1) / size;
+            if (pageNum > totalPages) {
+                pageNum = totalPages;
+            }
+            int startIndex = (pageNum - 1) * pageSize;
+            int endIndex = Math.min(startIndex + pageSize, totalSize);
+            list = objectList.subList(startIndex, endIndex);
         }
         return new TableDataInfo(list, size);
     }
