@@ -4,3 +4,7 @@ prometheus:
   nginx-exporter: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\nginx-exporter.json
   caddy: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\nginx-exporter.json
   traefik: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\traefik
+
+etcd:
+  endpoints: http://server.gpg123.vip:12379
+
