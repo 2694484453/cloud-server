@@ -4,7 +4,11 @@ prometheus:
   nginx-exporter: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\nginx-exporter.json
   caddy: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\nginx-exporter.json
   traefik: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\traefik
-
+traefik:
+  path: /home/my-traefik/config
+build:
+  image: /home/build/image
+  helm: /home/build/helm
 etcd:
   endpoints: http://server.gpg123.vip:12379
 

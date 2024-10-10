@@ -11,12 +11,19 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.PageUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,5 +70,80 @@ public class TraefikController {
         AjaxResult ajaxResult = list();
         JSONArray jsonArray = (JSONArray) ajaxResult.get("data");
         return PageUtils.toPage(jsonArray);
+    }
+
+    /**
+     * 获取信息
+     *
+     * @param fileName 文件
+     * @return r
+     */
+    @GetMapping("/info")
+    @ApiOperation(value = "获取信息")
+    public AjaxResult info(@RequestParam("fileName") String fileName) {
+        String filePath = path + "/" + fileName;
+        List<String> lines = FileUtil.readLines(filePath, StandardCharsets.UTF_8);
+        return AjaxResult.success(lines);
+    }
+
+    /**
+     * 新增
+     *
+     * @param params 参数
+     * @return r
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "新增")
+    public AjaxResult add(@RequestBody Map<String, String> params) {
+        String filePath = path + "/" + params.get("fileName");
+        String content = params.get("content");
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(filePath);
+            fileWriter.write(content);
+            fileWriter.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return FileUtil.exist(filePath) ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
+    }
+
+    /**
+     * 新增
+     *
+     * @param params 参数
+     * @return r
+     */
+    @PostMapping("/edit")
+    @ApiOperation(value = "新增")
+    public AjaxResult edit(@RequestBody Map<String, String> params) {
+        String filePath = path + "/" + params.get("fileName");
+        String content = params.get("content");
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(filePath);
+            fileWriter.write(content);
+            fileWriter.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return FileUtil.exist(filePath) ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
+    }
+
+    /**
+     * 执行删除
+     * @param fileName 文件名
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "删除")
+    public AjaxResult delete(@RequestParam("fileName") String fileName) {
+        String filePath = path + "/" + fileName;
+        try {
+            FileUtil.del(filePath);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return FileUtil.exist(filePath) ? AjaxResult.error("删除失败") : AjaxResult.success("删除成功");
     }
 }
