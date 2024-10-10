@@ -54,6 +54,7 @@ public class TraefikController {
             map.put("path", file.getPath());
             map.put("size", DataSizeUtil.format(file.getTotalSpace()));
             map.put("lastModified", DateUtil.format(lastModified, "yyyy-MM-dd hh:mm:ss"));
+            map.put("length", DataSizeUtil.format(file.length()));
             jsonArray.add(map);
         }
         return AjaxResult.success(jsonArray);
@@ -132,6 +133,7 @@ public class TraefikController {
 
     /**
      * 执行删除
+     *
      * @param fileName 文件名
      * @return r
      */
