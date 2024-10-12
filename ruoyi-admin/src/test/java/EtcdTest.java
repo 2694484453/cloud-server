@@ -31,4 +31,33 @@ public class EtcdTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    public void t2() {
+        String key = "/skydns/arpa/in-addr/192/168/1/1";
+        String value = "'{\"host\":\"master.local\"}'";
+        ByteSequence keyByte = ByteSequence.from(key, StandardCharsets.UTF_8);
+        ByteSequence valueByte = ByteSequence.from(value, StandardCharsets.UTF_8);
+        client.getKVClient().put(keyByte, valueByte);
+
+        //
+        try {
+            Object res = client.getKVClient().get(keyByte).get();
+            System.out.println(res.toString());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void t3(){
+        String key = "/skydns/arpa/in-addr/192/168/1/1";
+        ByteSequence keyByte = ByteSequence.from(key, StandardCharsets.UTF_8);
+        try {
+            Object res = client.getKVClient().get(keyByte).get();
+            System.out.println(res.toString());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
