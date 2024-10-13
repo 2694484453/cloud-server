@@ -30,6 +30,7 @@
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
+        <k8s.version>6.5.1</k8s.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -211,7 +212,7 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
-            <version>6.13.4</version>
+            <version>${k8s.version}</version>
         </dependency>
     </dependencies>
     <modules>

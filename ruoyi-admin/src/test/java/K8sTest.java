@@ -1,6 +1,16 @@
 import com.ruoyi.common.K8sUtil;
-import io.fabric8.kubernetes.client.Client;
+import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.ListOptions;
+import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
+import io.fabric8.kubernetes.api.model.NamespaceList;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionList;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.openshift.client.OpenShiftClient;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * @author gaopuguang
@@ -10,8 +20,29 @@ public class K8sTest {
 
     @Test
     public void t1() {
-        Client client = K8sUtil.createClient();
+        KubernetesClient client = K8sUtil.createKClient();
+        ConfigMap configMap = client.configMaps().inNamespace("kube-system").withName("coredns-custom").get();
+        List<ConfigMap> list = client.configMaps().inNamespace("kube-system").list().getItems();
         System.out.println(client);
-
     }
+
+    @Test
+    public void t2() {
+        KubernetesClient client = K8sUtil.createKClient();
+        NamespaceList namespaceList = client.namespaces().list();
+        //System.out.println(namespaceList);
+        ListOptions listOptions = new ListOptionsBuilder()
+                .withKind("IngressRoute")
+                .withApiVersion("v1alpha1")
+                .build();
+        CustomResourceDefinitionList list = client.apiextensions().v1().customResourceDefinitions().list(listOptions);
+        list.getItems().forEach(System.out::println);
+    }
+
+    @Test
+    public void t3() {
+        OpenShiftClient openShiftClient = K8sUtil.createOClient();
+        //MixedOperation<>   = openShiftClient.cr();
+    }
+
 }

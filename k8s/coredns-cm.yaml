@@ -1,0 +1,19 @@
+# cat host.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  demo.server: |
+    test.kingsd.top {
+      hosts {
+        127.0.0.1 test.kingsd.top
+      }
+    }
+  test.gpg123.vip.server: |
+    test.gpg123.vip {
+      hosts {
+        127.0.0.1 test.kingsd.top
+      }
+    }
