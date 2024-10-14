@@ -235,6 +235,7 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2024/10/9 1:34
  **/
 @RestController
-@RequestMapping("/coredns")
+@RequestMapping("/corednsCloud")
 public class CoreDnsCloudController {
 
     @GetMapping("/list")

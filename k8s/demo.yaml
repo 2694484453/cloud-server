@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gpg123-ingress
+spec:
+  rules:
+    - host: demo.gpg123.vip
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: service
+                port:
+                  number: 80
+
