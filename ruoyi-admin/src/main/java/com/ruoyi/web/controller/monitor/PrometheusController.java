@@ -2,8 +2,6 @@ package com.ruoyi.web.controller.monitor;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
@@ -22,10 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +30,7 @@ import java.util.Map;
 @RequestMapping("/monitor")
 @RestController
 @Api(value = "监控中心")
-public class PrometheusConfigController {
+public class PrometheusController {
 
     @Value("${prometheus.spring-boot}")
     private String springBoot;
