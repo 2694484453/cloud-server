@@ -1,15 +1,19 @@
 import com.ruoyi.common.K8sUtil;
+import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.api.model.NamespaceList;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionList;
-import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.fabric8.openshift.client.OpenShiftClient;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +47,19 @@ public class K8sTest {
     public void t3() {
         OpenShiftClient openShiftClient = K8sUtil.createOClient();
         //MixedOperation<>   = openShiftClient.cr();
+    }
+
+    @Test
+    public void  t4(){
+        String path = "D:\\Project\\docker-compose\\k3s\\k3s.gpg123.vip";
+        try {
+            List<Config> clusters = new ArrayList<>();
+            Config config = KubeConfigUtils.parseConfig(new File(path));
+            clusters.add(config);
+            System.out.println(config);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

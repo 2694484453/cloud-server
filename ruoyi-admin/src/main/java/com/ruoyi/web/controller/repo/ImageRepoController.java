@@ -54,13 +54,14 @@ public class ImageRepoController {
 
     /**
      * 命名空间
+     *
      * @return r
      */
     @GetMapping("/namespaceList")
     @ApiOperation(value = "命名空间列表")
-    public AjaxResult namespaceList(){
+    public AjaxResult namespaceList() {
         String[] init = {};
-        init = ArrayUtil.append(init,"nerdctl","namespace","list","--format","json");
+        init = ArrayUtil.append(init, "nerdctl", "namespace", "list", "--format", "json");
         ExecResponse execResponse = NerdCtlUtil.execFor(init);
         String data = execResponse.getSuccessMsg();
         Console.log("{}", data);
@@ -121,9 +122,10 @@ public class ImageRepoController {
 
     /**
      * page查询
+     *
      * @param namespace ns
-     * @param name n
-     * @param type t
+     * @param name      n
+     * @param type      t
      * @return r
      */
     @GetMapping("/page")
