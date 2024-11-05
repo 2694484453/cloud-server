@@ -1,10 +1,13 @@
-package com.ruoyi.common;
+package com.ruoyi.common.utils;
 
+import cn.hutool.core.io.FileUtil;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.openshift.client.OpenShiftClient;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author gaopuguang
@@ -12,14 +15,12 @@ import io.fabric8.openshift.client.OpenShiftClient;
  **/
 public class K8sUtil {
 
-    private static final String master = "http://124.221.2.29:8002";
+    private static final String file = "/root/.kube/config";
 
     public static KubernetesClient createKClient() {
         try {
-            Config config = new ConfigBuilder()
-                    .withApiVersion("v1")
-                    .withMasterUrl(master)
-                    .build();
+            String content = FileUtil.readString(file, StandardCharsets.UTF_8);
+            Config config = Config.fromKubeconfig(content);
             return new KubernetesClientBuilder()
                     .withConfig(config)
                     .build();

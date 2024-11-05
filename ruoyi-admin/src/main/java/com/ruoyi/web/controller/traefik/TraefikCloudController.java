@@ -1,7 +1,7 @@
 package com.ruoyi.web.controller.traefik;
 
 import cn.hutool.core.convert.Convert;
-import com.ruoyi.common.K8sUtil;
+import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.common.core.domain.AjaxResult;
 
 import com.ruoyi.common.core.page.TableDataInfo;

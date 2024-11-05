@@ -1,4 +1,4 @@
-import com.ruoyi.common.K8sUtil;
+import com.ruoyi.common.utils.K8sUtil;
 import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ListOptions;
@@ -6,7 +6,6 @@ import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.api.model.NamespaceList;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionList;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.MixedOperation;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.fabric8.openshift.client.OpenShiftClient;
 import org.junit.Test;

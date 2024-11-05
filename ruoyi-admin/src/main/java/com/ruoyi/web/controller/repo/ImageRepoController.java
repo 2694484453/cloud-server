@@ -1,21 +1,16 @@
 package com.ruoyi.web.controller.repo;
 
 import cn.hutool.core.lang.Console;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.PageUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.base.ExecResponse;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.utils.NerdCtlUtil;
 import com.ruoyi.common.utils.PageUtils;
 import io.swagger.annotations.ApiOperation;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,20 +55,19 @@ public class ImageRepoController {
     public AjaxResult namespaceList() {
         String[] init = {};
         init = ArrayUtil.append(init, "nerdctl", "namespace", "list", "--format", "json");
-        ExecResponse execResponse = NerdCtlUtil.execFor(init);
-        String data = execResponse.getSuccessMsg();
-        Console.log("{}", data);
+        String response = RuntimeUtil.execForStr(init);
+        Console.log("{}", response);
         JSONArray jsonArray = JSONUtil.createArray();
-        try (BufferedReader br = new BufferedReader(new StringReader(data))) {
+        try (BufferedReader br = new BufferedReader(new StringReader(response))) {
             String line;
             while ((line = br.readLine()) != null) {
                 Map map = JSONUtil.toBean(line, Map.class);
                 jsonArray.add(map);
             }
         } catch (IOException e) {
-            throw new RuntimeException();
+            return AjaxResult.error(e.getMessage());
         }
-        return execResponse.getExistCode() == 0 ? AjaxResult.success(jsonArray) : AjaxResult.error();
+        return AjaxResult.success(jsonArray);
     }
 
     /**
@@ -103,11 +95,10 @@ public class ImageRepoController {
         if (StrUtil.isNotBlank(namespace)) {
             init = ArrayUtil.append(init, "--namespace", namespace);
         }
-        ExecResponse execResponse = NerdCtlUtil.execFor(init);
-        String data = execResponse.getSuccessMsg();
-        Console.log("{}", data);
+        String response = RuntimeUtil.execForStr(init);
+        Console.log("{}", response);
         JSONArray jsonArray = JSONUtil.createArray();
-        try (BufferedReader br = new BufferedReader(new StringReader(data))) {
+        try (BufferedReader br = new BufferedReader(new StringReader(response))) {
             String line;
             while ((line = br.readLine()) != null) {
                 //System.out.println(line);
@@ -115,9 +106,9 @@ public class ImageRepoController {
                 jsonArray.add(map);
             }
         } catch (IOException e) {
-            throw new RuntimeException();
+            return AjaxResult.error(e.getMessage());
         }
-        return execResponse.getExistCode() == 0 ? AjaxResult.success(jsonArray) : AjaxResult.error();
+        return AjaxResult.success(jsonArray);
     }
 
     /**
