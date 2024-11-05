@@ -2,11 +2,7 @@ version: '1.0'
 name: master-pipeline
 displayName: MasterPipeline
 triggers:
-  trigger: auto
-  push:
-    branches:
-      include:
-        - master
+  trigger: manual
 stages:
   - name: compile
     displayName: 编译
