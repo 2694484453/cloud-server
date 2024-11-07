@@ -53,8 +53,9 @@ stages:
         tag: gpg_dev/my-server:${GITEE_PIPELINE_BUILD_NUMBER}
         dockerfile: ./Dockerfile
         context: ''
-        artifacts: []
-        isCache: true
+        artifacts:
+          - ${BUILD_ARTIFACT}
+        isCache: false
         parameter: {}
         notify: []
         strategy:
