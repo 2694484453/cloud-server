@@ -54,7 +54,7 @@ stages:
         dockerfile: ./Dockerfile
         context: ./ruoyi-admin
         artifacts:
-          - ${BUILD_ARTIFACT}
+          - BUILD_ARTIFACT
         isCache: false
         parameter: {}
         notify: []
