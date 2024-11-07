@@ -3,6 +3,10 @@ name: master-pipeline
 displayName: MasterPipeline
 triggers:
   trigger: manual
+  push:
+    tags:
+      prefix:
+        - release
 stages:
   - name: compile
     displayName: 编译
@@ -48,13 +52,14 @@ stages:
         password: 1999y4m30d
         tag: gpg_dev/my-server:${GITEE_PIPELINE_BUILD_NUMBER}
         dockerfile: ./Dockerfile
-        context: .
+        context: ''
         artifacts: []
-        isCache: false
+        isCache: true
         parameter: {}
         notify: []
         strategy:
           retry: '0'
+          expression: []
         dependsOn: build_maven
       - step: publish@general_artifacts
         name: publish_general_artifacts
