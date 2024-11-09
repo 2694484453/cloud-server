@@ -81,7 +81,7 @@ public class ImageRepoController {
                            @RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "type", required = false) String type) {
         String[] init = {};
-        init = ArrayUtil.append(init, "nerdctl", "images", "--format", "json");
+        init = ArrayUtil.append(init, "docker", "images", "--format", "json");
         // 名称检索
         if (StrUtil.isNotBlank(name)) {
             init = ArrayUtil.append(init, "--filter", "Repository" + name);
