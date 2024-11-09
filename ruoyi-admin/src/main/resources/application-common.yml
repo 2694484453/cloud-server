@@ -13,3 +13,4 @@ etcd:
   endpoints: http://server.gpg123.vip:12379
 kube:
   path: /root/.kube/configs
+basePath: /home
