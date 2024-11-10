@@ -23,6 +23,8 @@ public class Git implements Serializable {
 
     private String language;
 
+    private String type;
+
     private String createTime;
 
     private String updateTime;

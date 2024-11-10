@@ -42,11 +42,14 @@ public class ImageController {
     @ApiOperation(value = "类型查询")
     public AjaxResult typeList() {
         String[] types = {};
-        types = ArrayUtil.append(types, "linux/amd64",
+        types = ArrayUtil.append(types, "gitee",
+                "github",
+                "gitlab");
+        /*types = ArrayUtil.append(types, "linux/amd64",
                 "linux/arm64",
                 "linux/arm/v7",
                 "windows/amd64",
-                "windows/arm/v6");
+                "windows/arm/v6");*/
         return AjaxResult.success(types);
     }
 

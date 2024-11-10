@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller;
+package com.ruoyi.web.controller.build;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
@@ -83,6 +83,7 @@ public class GitController {
             git.setSshUrl(e.getSsh_url());
             git.setGitId(e.getId());
             git.setLanguage(e.getLanguage());
+            git.setType("gitee");
             gitList.add(git);
         });
         return gitList;
