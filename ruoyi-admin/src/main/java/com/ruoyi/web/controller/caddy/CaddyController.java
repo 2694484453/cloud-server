@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.caddy;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -46,7 +47,7 @@ public class CaddyController {
             Map<String, Object> map = new HashMap<>();
             map.put("fileName", file.getName());
             map.put("size", DataSizeUtil.format(file.length()));
-            map.put("createTime", file.lastModified());
+            map.put("createTime", DateUtil.date(file.lastModified()));
             map.put("filePath", file.getPath());
             list.add(map);
         }
