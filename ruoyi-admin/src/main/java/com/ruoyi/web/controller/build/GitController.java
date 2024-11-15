@@ -79,8 +79,7 @@ public class GitController {
         String content = FileUtil.readString(filePath, StandardCharsets.UTF_8);
         List<GiteeRepo> list = JSONUtil.toList(content, GiteeRepo.class);
         List<Git> gitList = new ArrayList<>();
-        KubernetesClient client = K8sUtil.createKClient();
-        try {
+        try (KubernetesClient client = K8sUtil.createKClient()) {
             list.forEach(e -> {
                 // 填充
                 Git git = new Git();
@@ -94,7 +93,7 @@ public class GitController {
                 git.setHasJob(false);
                 git.setJobNumber(0);
                 // 是否含有job
-                List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app",e.getName()).list().getItems();
+                List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getName()).list().getItems();
                 if (ObjectUtil.isNotEmpty(jobs)) {
                     git.setHasJob(true);
                     git.setJobNumber(jobs.size());
@@ -105,8 +104,6 @@ public class GitController {
             });
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            client.close();
         }
         return gitList;
     }
