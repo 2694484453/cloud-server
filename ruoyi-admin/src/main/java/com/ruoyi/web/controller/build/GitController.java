@@ -63,6 +63,7 @@ public class GitController {
 
     /**
      * 分页查询
+     *
      * @param type 类型
      * @return r
      */
@@ -90,15 +91,11 @@ public class GitController {
                 git.setGitId(e.getId());
                 git.setLanguage(e.getLanguage());
                 git.setType("gitee");
-                git.setHasJob(false);
-                git.setJobNumber(0);
                 // 是否含有job
                 List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getName()).list().getItems();
-                if (ObjectUtil.isNotEmpty(jobs)) {
-                    git.setHasJob(true);
-                    git.setJobNumber(jobs.size());
-                    git.setType("");
-                }
+                git.setHasJob(ObjectUtil.isNotEmpty(jobs));
+                git.setJobNumber(jobs.size());
+                git.setType("");
                 // 添加
                 gitList.add(git);
             });

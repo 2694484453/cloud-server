@@ -5,6 +5,7 @@ import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.api.model.NamespaceList;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionList;
+import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -49,7 +50,7 @@ public class K8sTest {
     }
 
     @Test
-    public void  t4(){
+    public void t4() {
         String path = "D:\\Project\\docker-compose\\k3s\\k3s.gpg123.vip";
         try {
             List<Config> clusters = new ArrayList<>();
@@ -57,6 +58,17 @@ public class K8sTest {
             clusters.add(config);
             System.out.println(config);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void t5() {
+        KubernetesClient kubernetesClient = K8sUtil.createClientWindows();
+        try {
+            List<Job> jobs = kubernetesClient.batch().v1().jobs().inAnyNamespace().withLabel("app", "my-server2").list().getItems();
+            System.out.println(jobs);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
