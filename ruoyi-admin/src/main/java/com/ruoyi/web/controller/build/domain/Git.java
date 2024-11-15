@@ -30,4 +30,10 @@ public class Git implements Serializable {
     private String updateTime;
 
     private String pushedTime;
+
+    private Integer jobNumber;
+
+    private Boolean hasJob;
+
+    private String[] jobTypes;
 }

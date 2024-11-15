@@ -25,6 +25,11 @@ import java.util.List;
 @Api(tags = "任务管理")
 public class JobController {
 
+    /**
+     * 列表查询
+     *
+     * @return r
+     */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
@@ -32,6 +37,11 @@ public class JobController {
         return AjaxResult.success(jobs);
     }
 
+    /**
+     * 分页查询
+     *
+     * @return r
+     */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page() {
@@ -40,6 +50,12 @@ public class JobController {
         return PageUtils.toPage(list);
     }
 
+    /**
+     * 查询详情
+     *
+     * @param name 名称
+     * @return r
+     */
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam("name") String name) {
@@ -47,6 +63,18 @@ public class JobController {
         if (ObjectUtil.isNotEmpty(job)) {
             return AjaxResult.success(job);
         }
-        return AjaxResult.success("查询成功",null);
+        return AjaxResult.success("查询成功", null);
+    }
+
+    /**
+     * 创建一个job
+     * @return r
+     */
+    @GetMapping("/add")
+    @ApiOperation(value = "新增")
+    public AjaxResult add() {
+        // 执行创建
+        K8sUtil.createKClient().batch().v1().jobs().inNamespace("").withName("").create();
+        return null;
     }
 }

@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-server-docker
+  labels:
+    app: my-server
+    type: docker
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: jdk8-build
+          image: maven:3.8.4-openjdk-8
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/sh","-c","/usr/local/bin/entrypoint.sh" ]
+          #          command:
+          #            - "/bin/sh"
+          #            - "-c"
+          #            - "wget https://dev-1306623386.cos.ap-shanghai.myqcloud.com/ssh/entrypoint.sh /usr/local/bin;"
+          #            - "chmod +x /usr/local/bin/entrypoint.sh && /usr/local/bin/entrypoint.sh"
+          env:
+            - name: DOCKER_REGISTRY
+              value: registry.cn-hangzhou.aliyuncs.com
+            - name: IMAGE_NAME
+              value: registry.cn-hangzhou.aliyuncs.com/gpg_dev/my-server
+            - name: TAG
+              value: latest
+            - name: DOCKER_LOGIN_USERNAME
+              value: 18439406854gpg
+            - name: DOCKER_LOGIN_PASSWORD
+              value: 1999y4m30d
+            - name: GIT_URL
+              value: https://gitee.com/gpg-dev/my-server.git
+            - name: GIT_USERNAME
+              value: "18439406854"
+            - name: GIT_PASSWORD
+              value: 1999y4m30d
+          volumeMounts:
+            - mountPath: "/usr/bin/nerdctl"
+              name: nerdctl
+            - mountPath: "/etc/nerdctl"
+              name: nerdctl-toml
+            - mountPath: "/run/k3s/containerd/containerd.sock"
+              name: containerd
+            - mountPath: "/home"
+              name: home
+            - mountPath: "/usr/local/bin/entrypoint.sh"
+              name: shell
+      volumes:
+        - name: home
+          hostPath:
+            path: "/home"
+        - name: nerdctl
+          hostPath:
+            path: "/usr/bin/nerdctl"
+        - name: nerdctl-toml
+          hostPath:
+            path: "/etc/nerdctl"
+        - name: containerd
+          hostPath:
+            path: "/run/k3s/containerd/containerd.sock"
+        - name: shell
+          configMap:
+            name: "jdk8-maven-cm"
+
+

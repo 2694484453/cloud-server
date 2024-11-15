@@ -2,13 +2,17 @@ package com.ruoyi.web.controller.build;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.web.controller.build.domain.Git;
 import com.ruoyi.web.controller.build.domain.GiteeRepo;
+import io.fabric8.kubernetes.api.model.batch.v1.Job;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,17 +79,35 @@ public class GitController {
         String content = FileUtil.readString(filePath, StandardCharsets.UTF_8);
         List<GiteeRepo> list = JSONUtil.toList(content, GiteeRepo.class);
         List<Git> gitList = new ArrayList<>();
-        list.forEach(e -> {
-            Git git = new Git();
-            git.setGitName(e.getName());
-            git.setHome(e.getPath());
-            git.setHttpUrl(e.getHtml_url());
-            git.setSshUrl(e.getSsh_url());
-            git.setGitId(e.getId());
-            git.setLanguage(e.getLanguage());
-            git.setType("gitee");
-            gitList.add(git);
-        });
+        KubernetesClient client = K8sUtil.createKClient();
+        try {
+            list.forEach(e -> {
+                // 填充
+                Git git = new Git();
+                git.setGitName(e.getName());
+                git.setHome(e.getPath());
+                git.setHttpUrl(e.getHtml_url());
+                git.setSshUrl(e.getSsh_url());
+                git.setGitId(e.getId());
+                git.setLanguage(e.getLanguage());
+                git.setType("gitee");
+                git.setHasJob(false);
+                git.setJobNumber(0);
+                // 是否含有job
+                List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app",e.getName()).list().getItems();
+                if (ObjectUtil.isNotEmpty(jobs)) {
+                    git.setHasJob(true);
+                    git.setJobNumber(jobs.size());
+                    git.setType("");
+                }
+                // 添加
+                gitList.add(git);
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            client.close();
+        }
         return gitList;
     }
 }
