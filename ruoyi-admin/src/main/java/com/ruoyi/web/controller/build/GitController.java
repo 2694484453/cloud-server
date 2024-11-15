@@ -95,7 +95,7 @@ public class GitController {
                 git.setJobNumber(0);
                 // 是否含有job
                 if (!e.getPath().contains(".")) {
-                    List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getName()).list().getItems();
+                    List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getPath()).list().getItems();
                     git.setHasJob(ObjectUtil.isNotEmpty(jobs));
                     git.setJobNumber(jobs.size());
                 }
