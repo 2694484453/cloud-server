@@ -1,4 +1,7 @@
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.utils.K8sUtil;
+import com.ruoyi.web.controller.build.domain.GiteeRepo;
 import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ListOptions;
@@ -13,6 +16,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +70,15 @@ public class K8sTest {
     public void t5() {
         KubernetesClient kubernetesClient = K8sUtil.createClientWindows();
         try {
-            List<Job> jobs = kubernetesClient.batch().v1().jobs().inAnyNamespace().withLabel("app", "my-server2").list().getItems();
-            System.out.println(jobs);
+            String path = "D:\\project\\my-server\\.my-server\\admin\\gitee-repo.json";
+            String content = FileUtil.readString(path, StandardCharsets.UTF_8);
+            List<GiteeRepo> list = JSONUtil.toList(content, GiteeRepo.class);
+            list.forEach(e -> {
+                if (!e.getPath().contains(".")) {
+                    List<Job> jobs = kubernetesClient.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getPath()).list().getItems();
+                    System.out.println(jobs);
+                }
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

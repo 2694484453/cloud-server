@@ -3,7 +3,6 @@ import cn.hutool.json.JSONUtil;
 import com.ruoyi.web.controller.build.domain.GiteeRepo;
 import org.junit.Test;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 

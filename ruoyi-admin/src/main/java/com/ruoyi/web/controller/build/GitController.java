@@ -84,17 +84,21 @@ public class GitController {
             list.forEach(e -> {
                 // 填充
                 Git git = new Git();
-                git.setGitName(e.getName());
+                git.setGitName(e.getPath());
                 git.setHome(e.getPath());
                 git.setHttpUrl(e.getHtml_url());
                 git.setSshUrl(e.getSsh_url());
                 git.setGitId(e.getId());
                 git.setLanguage(e.getLanguage());
                 git.setType("gitee");
+                git.setHasJob(false);
+                git.setJobNumber(0);
                 // 是否含有job
-                List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getName()).list().getItems();
-                git.setHasJob(ObjectUtil.isNotEmpty(jobs));
-                git.setJobNumber(jobs.size());
+                if (!e.getPath().contains(".")) {
+                    List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getName()).list().getItems();
+                    git.setHasJob(ObjectUtil.isNotEmpty(jobs));
+                    git.setJobNumber(jobs.size());
+                }
                 git.setType("");
                 // 添加
                 gitList.add(git);
