@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.monitor;
+package com.ruoyi.web.controller.prometheus;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;

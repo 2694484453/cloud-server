@@ -11,6 +11,8 @@ import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
+import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRule;
+import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRuleList;
 import io.fabric8.openshift.client.OpenShiftClient;
 import org.junit.Test;
 
@@ -84,4 +86,16 @@ public class K8sTest {
         }
     }
 
+    @Test
+    public void t6(){
+        OpenShiftClient openShiftClient = K8sUtil.createOClient();
+        List<PrometheusRule> prometheusRules;
+        try {
+            PrometheusRuleList prometheusRuleList = openShiftClient.monitoring().prometheusRules().inAnyNamespace().list();
+            prometheusRules = prometheusRuleList.getItems();
+            System.out.println(prometheusRules);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
