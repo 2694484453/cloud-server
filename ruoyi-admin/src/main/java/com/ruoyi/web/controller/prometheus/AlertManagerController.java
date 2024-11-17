@@ -33,14 +33,14 @@ public class AlertManagerController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
         OpenShiftClient openShiftClient = K8sUtil.createOClient();
-        List<AlertmanagerConfig> alertmanagerConfigs;
+        List<AlertmanagerConfig> alertManagerConfigs;
         try {
             AlertmanagerConfigList alertmanagerConfigList = openShiftClient.monitoring().alertmanagerConfigs().inAnyNamespace().list();
-            alertmanagerConfigs = alertmanagerConfigList.getItems();
+            alertManagerConfigs = alertmanagerConfigList.getItems();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return AjaxResult.success(alertmanagerConfigs);
+        return AjaxResult.success(alertManagerConfigs);
     }
 
     /**
@@ -51,7 +51,7 @@ public class AlertManagerController {
     @ApiOperation(value = "分页查询")
     public TableDataInfo page() {
         AjaxResult ajaxResult = list();
-        List<?> alertmanagerConfigs = Convert.toList(ajaxResult.get("data"));
-        return PageUtils.toPage(alertmanagerConfigs);
+        List<?> alertManagerConfigs = Convert.toList(ajaxResult.get("data"));
+        return PageUtils.toPage(alertManagerConfigs);
     }
 }
