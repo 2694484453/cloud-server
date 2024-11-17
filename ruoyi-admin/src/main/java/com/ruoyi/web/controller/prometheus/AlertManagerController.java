@@ -5,8 +5,6 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.common.utils.PageUtils;
-import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRule;
-import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRuleList;
 import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfig;
 import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfigList;
 import io.fabric8.openshift.client.OpenShiftClient;
