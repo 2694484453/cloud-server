@@ -22,7 +22,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/devops")
-@Api(tags = "任务管理")
+@Api(tags = "DevOps流水线任务管理")
 public class JobController {
 
     /**
@@ -33,7 +33,7 @@ public class JobController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        List<Job> jobs = K8sUtil.createKClient().batch().v1().jobs().inAnyNamespace().list().getItems();
+        List<Job> jobs = K8sUtil.createKClient().batch().v1().jobs().inNamespace("default").list().getItems();
         return AjaxResult.success(jobs);
     }
 
@@ -61,20 +61,21 @@ public class JobController {
     public AjaxResult info(@RequestParam("name") String name) {
         Job job = K8sUtil.createKClient().batch().v1().jobs().withName(name).get();
         if (ObjectUtil.isNotEmpty(job)) {
-            return AjaxResult.success(job);
+            return AjaxResult.success("查询成功", job);
         }
         return AjaxResult.success("查询成功", null);
     }
 
     /**
      * 创建一个job
+     *
      * @return r
      */
     @GetMapping("/add")
     @ApiOperation(value = "新增")
-    public AjaxResult add() {
+    public AjaxResult add(@RequestParam("name") String name) {
         // 执行创建
-        K8sUtil.createKClient().batch().v1().jobs().inNamespace("").withName("").create();
-        return null;
+        Job job = K8sUtil.createKClient().batch().v1().jobs().inNamespace("default").withName(name).create();
+        return AjaxResult.success("操作成功", job);
     }
 }
