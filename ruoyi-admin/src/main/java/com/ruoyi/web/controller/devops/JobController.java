@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.build;
+package com.ruoyi.web.controller.devops;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2024/11/11 0:18
  **/
 @RestController
-@RequestMapping("/job")
+@RequestMapping("/devops")
 @Api(tags = "任务管理")
 public class JobController {
 
