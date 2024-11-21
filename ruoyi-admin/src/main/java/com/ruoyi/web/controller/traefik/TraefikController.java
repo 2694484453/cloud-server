@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.traefik;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -69,8 +70,8 @@ public class TraefikController {
     @ApiOperation(value = "分页查询")
     public TableDataInfo page() {
         AjaxResult ajaxResult = list();
-        JSONArray jsonArray = (JSONArray) ajaxResult.get("data");
-        return PageUtils.toPage(jsonArray);
+        List<?> list = Convert.toList(ajaxResult.get("data"));
+        return PageUtils.toPage(list);
     }
 
     /**
