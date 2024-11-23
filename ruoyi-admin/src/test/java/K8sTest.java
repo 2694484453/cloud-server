@@ -28,6 +28,8 @@ import java.util.List;
  **/
 public class K8sTest {
 
+    private static final String filePath = "D:\\Project\\docker-compose\\k3s\\k3s.gpg123.vip";
+
     @Test
     public void t1() {
         KubernetesClient client = K8sUtil.createKClient();
@@ -87,13 +89,24 @@ public class K8sTest {
     }
 
     @Test
-    public void t6(){
+    public void t6() {
         OpenShiftClient openShiftClient = K8sUtil.createOClient();
         List<PrometheusRule> prometheusRules;
         try {
             PrometheusRuleList prometheusRuleList = openShiftClient.monitoring().prometheusRules().inAnyNamespace().list();
             prometheusRules = prometheusRuleList.getItems();
             System.out.println(prometheusRules);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void t7() {
+        KubernetesClient client = K8sUtil.createKClient();
+        try {
+            List<Job> jobs = client.batch().jobs().inAnyNamespace().list().getItems();
+            System.out.println(jobs);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -33,7 +33,7 @@ public class JobController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        List<Job> jobs = K8sUtil.createKClient().batch().v1().jobs().inNamespace("default").list().getItems();
+        List<Job> jobs = K8sUtil.createKClient().batch().jobs().inNamespace("default").list().getItems();
         return AjaxResult.success(jobs);
     }
 
