@@ -105,7 +105,7 @@ public class K8sTest {
     public void t7() {
         KubernetesClient client = K8sUtil.createKClient();
         try {
-            List<Job> jobs = client.batch().jobs().inAnyNamespace().list().getItems();
+            List<Job> jobs = client.batch().v1().jobs().inNamespace("default").list().getItems();
             System.out.println(jobs);
         } catch (Exception e) {
             throw new RuntimeException(e);
