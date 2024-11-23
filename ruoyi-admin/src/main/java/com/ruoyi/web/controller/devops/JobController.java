@@ -36,7 +36,7 @@ public class JobController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
         KubernetesClient client = K8sUtil.createKClient();
-        List<Job> jobs = client.batch().jobs().inNamespace("default").list().getItems();
+        List<Job> jobs = client.batch().v1().jobs().inNamespace("default").list().getItems();
         return AjaxResult.success(jobs);
     }
 
