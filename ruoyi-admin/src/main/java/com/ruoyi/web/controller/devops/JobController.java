@@ -2,11 +2,13 @@ package com.ruoyi.web.controller.devops;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.common.utils.PageUtils;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +35,8 @@ public class JobController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        List<Job> jobs = K8sUtil.createKClient().batch().jobs().inNamespace("default").list().getItems();
+        KubernetesClient client = K8sUtil.createKClient();
+        List<Job> jobs = client.batch().jobs().inNamespace("default").list().getItems();
         return AjaxResult.success(jobs);
     }
 
