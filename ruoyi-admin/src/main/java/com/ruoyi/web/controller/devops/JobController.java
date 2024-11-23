@@ -91,6 +91,7 @@ public class JobController {
 
     /**
      * 执行
+     *
      * @param name 名称
      * @return r
      */
@@ -102,5 +103,17 @@ public class JobController {
         //
         client.batch().v1().jobs().inNamespace("default").withName(name).scale(1);
         return AjaxResult.success("操作成功", true);
+    }
+
+    /**
+     * 获取日志
+     * @param name 名称
+     * @return r
+     */
+    @GetMapping("/log")
+    @ApiOperation(value = "日志流")
+    public AjaxResult log(@RequestParam("name") String name) {
+        String logs = client.batch().v1().jobs().inNamespace("default").withName(name).getLog(true);
+        return AjaxResult.success(logs);
     }
 }
