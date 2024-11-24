@@ -46,7 +46,7 @@ public class TraefikCloudController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page() {
-        List<Ingress> ingressList = Convert.toList(Ingress.class, list().get("data"));
+        List<?> ingressList = Convert.toList(list().get("data"));
         return PageUtils.toPage(ingressList);
     }
 }

@@ -1,6 +1,7 @@
 package com.ruoyi.common.utils;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.PageUtil;
 import cn.hutool.core.util.TypeUtil;
 import cn.hutool.json.JSONArray;
 import com.github.pagehelper.PageHelper;
@@ -30,38 +31,20 @@ public class PageUtils extends PageHelper {
         PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
     }
 
-    public static TableDataInfo toPage(Object object) {
+    public static TableDataInfo toPage(List<?> list) {
         PageDomain pageDomain = TableSupport.buildPageRequest();
         Integer pageNum = pageDomain.getPageNum();
         Integer pageSize = pageDomain.getPageSize();
         //
-        int size = 0;
-        List<Object> list = new ArrayList<>();
-        if (object instanceof JSONArray) {
-            JSONArray jsonArray = (JSONArray) object;
-            size = jsonArray.size();
-            int totalSize = size;
-            int totalPages = (totalSize + size - 1) / size;
-            if (pageNum > totalPages) {
-                pageNum = totalPages;
-            }
-            int startIndex = (pageNum - 1) * pageSize;
-            int endIndex = Math.min(startIndex + pageSize, totalSize);
-            list = jsonArray.subList(startIndex, endIndex);
+        int total = list.size();
+        int totalPages = (total + pageSize - 1) / pageNum;
+        if (pageNum > totalPages) {
+            pageNum = totalPages;
         }
-        if (object instanceof List) {
-            List<Object> objectList = (List<Object>) object;
-            size = objectList.size();
-            int totalSize = size;
-            int totalPages = (totalSize + size - 1) / size;
-            if (pageNum > totalPages) {
-                pageNum = totalPages;
-            }
-            int startIndex = (pageNum - 1) * pageSize;
-            int endIndex = Math.min(startIndex + pageSize, totalSize);
-            list = objectList.subList(startIndex, endIndex);
-        }
-        return new TableDataInfo(list, size);
+        int startIndex = PageUtil.getStart(pageNum, pageSize);
+        int endIndex = PageUtil.getEnd(pageNum, pageSize);
+        int totalPage = PageUtil.totalPage(total, pageSize);
+        return new TableDataInfo(total, totalPage, list.subList(startIndex, endIndex));
     }
 
     /**

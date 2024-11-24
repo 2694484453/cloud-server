@@ -1,4 +1,5 @@
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.web.controller.build.domain.GiteeRepo;
@@ -10,6 +11,8 @@ import io.fabric8.kubernetes.api.model.NamespaceList;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionList;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.Watch;
+import io.fabric8.kubernetes.client.dsl.LogWatch;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRule;
 import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRuleList;
@@ -18,9 +21,12 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gaopuguang
@@ -106,9 +112,50 @@ public class K8sTest {
         KubernetesClient client = K8sUtil.createKClient();
         try {
             List<Job> jobs = client.batch().v1().jobs().inNamespace("default").list().getItems();
+
             System.out.println(jobs);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void t8() {
+        String file = "D:/log.txt";
+        OutputStream outputStream = FileUtil.getOutputStream(file);
+        InputStream inputStream = null;
+        KubernetesClient client = K8sUtil.createKClient();
+        String logs = client.batch().v1().jobs().inNamespace("default").withName("my-server").getLog(true);
+        LogWatch watch = client.batch().v1().jobs().inNamespace("default").withName("my-server").watchLog(outputStream);
+        try {
+            inputStream = watch.getOutput();
+            watch.wait();
+            IoUtil.copy(inputStream, outputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            IoUtil.close(outputStream);
+            IoUtil.close(inputStream);
+        }
+        System.out.println(logs);
+    }
+
+    @Test
+    public void t9() {
+        String file = "D:/log.txt";
+        OutputStream outputStream = FileUtil.getOutputStream(file);
+        InputStream inputStream = null;
+        KubernetesClient client = K8sUtil.createKClient();
+        try (LogWatch watch = client.pods().inNamespace("demo").withName("spring-boot-demo-56f6dfdffd-s2d6f").watchLog(outputStream)) {
+            inputStream = watch.getOutput();
+            //watch.wait();
+            TimeUnit.SECONDS.sleep(200L);
+            IoUtil.copy(inputStream, outputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            IoUtil.close(outputStream);
+            IoUtil.close(inputStream);
         }
     }
 }
