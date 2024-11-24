@@ -37,10 +37,6 @@ public class PageUtils extends PageHelper {
         Integer pageSize = pageDomain.getPageSize();
         //
         int total = list.size();
-        int totalPages = (total + pageSize - 1) / pageNum;
-        if (pageNum > totalPages) {
-            pageNum = totalPages;
-        }
         int startIndex = PageUtil.getStart(pageNum, pageSize);
         int endIndex = PageUtil.getEnd(pageNum, pageSize);
         int totalPage = PageUtil.totalPage(total, pageSize);
