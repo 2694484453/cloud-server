@@ -56,6 +56,7 @@ public class TraefikController {
             map.put("size", DataSizeUtil.format(file.getTotalSpace()));
             map.put("lastModified", DateUtil.format(lastModified, "yyyy-MM-dd hh:mm:ss"));
             map.put("length", DataSizeUtil.format(file.length()));
+            map.put("config", FileUtil.readString(file, StandardCharsets.UTF_8));
             jsonArray.add(map);
         }
         return AjaxResult.success(jsonArray);
