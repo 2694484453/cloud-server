@@ -77,24 +77,6 @@ public class K8sTest {
     }
 
     @Test
-    public void t5() {
-        KubernetesClient kubernetesClient = K8sUtil.createClientWindows();
-        try {
-            String path = "D:\\project\\my-server\\.my-server\\admin\\gitee-repo.json";
-            String content = FileUtil.readString(path, StandardCharsets.UTF_8);
-            List<GiteeRepo> list = JSONUtil.toList(content, GiteeRepo.class);
-            list.forEach(e -> {
-                if (!e.getPath().contains(".")) {
-                    List<Job> jobs = kubernetesClient.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getPath()).list().getItems();
-                    System.out.println(jobs);
-                }
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
     public void t6() {
         OpenShiftClient openShiftClient = K8sUtil.createOClient();
         List<PrometheusRule> prometheusRules;

@@ -23,4 +23,9 @@ public class KubernetesClientConfig {
     public OpenShiftClient openShiftClient() {
         return K8sUtil.createOClient();
     }
+
+    @Bean(name = "defaultConfigPath")
+    public String defaultConfigPath() {
+        return K8sUtil.defaultConfigFilePath();
+    }
 }

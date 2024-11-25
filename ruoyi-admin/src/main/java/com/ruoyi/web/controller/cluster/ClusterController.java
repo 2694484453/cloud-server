@@ -14,6 +14,9 @@ import io.fabric8.kubernetes.api.model.NamedContext;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.checkerframework.framework.qual.RequiresQualifier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +41,9 @@ import java.util.List;
 @Api(value = "集群管理")
 public class ClusterController {
 
-    private static final String configPath = "/root/.kube/config";
+    @Qualifier("defaultConfigPath")
+    @Autowired
+    private String configPath;
 
     /**
      * 集群列表
