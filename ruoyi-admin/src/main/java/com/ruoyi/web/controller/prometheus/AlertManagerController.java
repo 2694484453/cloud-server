@@ -9,6 +9,7 @@ import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfig;
 import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfigList;
 import io.fabric8.openshift.client.OpenShiftClient;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,9 @@ import java.util.List;
 @RequestMapping("/alert")
 public class AlertManagerController {
 
+    @Autowired
+    private OpenShiftClient openShiftClient;
+
     /**
      * 列表查询
      * @return r
@@ -30,7 +34,6 @@ public class AlertManagerController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        OpenShiftClient openShiftClient = K8sUtil.createOClient();
         List<AlertmanagerConfig> alertManagerConfigs;
         try {
             AlertmanagerConfigList alertmanagerConfigList = openShiftClient.monitoring().alertmanagerConfigs().inAnyNamespace().list();
