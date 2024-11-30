@@ -3,17 +3,21 @@ package com.ruoyi.git;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.build.domain.GiteeRepo;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.git.domain.Git;
 import com.ruoyi.git.domain.Gitee;
-import com.ruoyi.build.domain.Git;
+import com.ruoyi.git.service.GitService;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.swagger.annotations.Api;
@@ -41,6 +45,9 @@ public class GitController {
     @Autowired
     private Gitee gitee;
 
+    @Autowired
+    private GitService gitService;
+
     private static final String path = "/root/.my-server";
 
     /**
@@ -51,21 +58,12 @@ public class GitController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam("type") String type) {
-        List<Git> gitList = new ArrayList<>();
-        String dirPath = path + "/git/" + SecurityUtils.getUsername();
-        switch (type) {
-            case "gitee":
-                String filePath = dirPath + "/gitee-repo.json";
-                gitList = giteeRepoList(filePath);
-                break;
-            case "github":
-                break;
-            case "gitlab":
-                break;
-            default:
-                throw new RuntimeException("未知仓库");
-        }
+    public AjaxResult list(@RequestParam(value = "type",required = false) String type,
+                           @RequestParam(value = "name",required = false) String name) {
+        List<Git> gitList = gitService.list(new LambdaQueryWrapper<Git>()
+                .eq(StrUtil.isNotBlank(type),Git::getType,type)
+                .eq(StrUtil.isNotBlank(name),Git::getName,name)
+        );
         return AjaxResult.success(gitList);
     }
 
@@ -77,8 +75,9 @@ public class GitController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam("type") String type) {
-        AjaxResult ajaxResult = list(type);
+    public TableDataInfo page(@RequestParam(value = "type",required = false) String type,
+                              @RequestParam(value = "name",required = false) String name) {
+        AjaxResult ajaxResult = list(type,name);
         List<?> list = Convert.toList(ajaxResult.get("data"));
         return PageUtils.toPage(list);
     }
@@ -98,39 +97,5 @@ public class GitController {
                 .body(JSONUtil.toJsonStr(gitee.getClient_secret()))
                 .execute(false);
         return AjaxResult.success("请求成功", response.body());
-    }
-
-
-    private List<Git> giteeRepoList(String filePath) {
-        String content = FileUtil.readString(filePath, StandardCharsets.UTF_8);
-        List<GiteeRepo> list = JSONUtil.toList(content, GiteeRepo.class);
-        List<Git> gitList = new ArrayList<>();
-        try (KubernetesClient client = K8sUtil.createKClient()) {
-            list.forEach(e -> {
-                // 填充
-                Git git = new Git();
-                git.setGitName(e.getPath());
-                git.setHome(e.getPath());
-                git.setHttpUrl(e.getHtml_url());
-                git.setSshUrl(e.getSsh_url());
-                git.setGitId(e.getId());
-                git.setLanguage(e.getLanguage());
-                git.setType("gitee");
-                git.setHasJob(false);
-                git.setJobNumber(0);
-                // 是否含有job
-                if (!e.getPath().contains(".")) {
-                    List<Job> jobs = client.batch().v1().jobs().inAnyNamespace().withLabel("app", e.getPath()).list().getItems();
-                    git.setHasJob(ObjectUtil.isNotEmpty(jobs));
-                    git.setJobNumber(jobs.size());
-                }
-                git.setType("");
-                // 添加
-                gitList.add(git);
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return gitList;
     }
 }

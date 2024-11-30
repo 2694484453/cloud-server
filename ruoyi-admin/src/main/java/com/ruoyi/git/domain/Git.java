@@ -9,85 +9,86 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
+ *
  * @TableName git
  */
 @TableName(value ="git")
 @Data
 public class Git implements Serializable {
+
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 
+     *
      */
     private String name;
 
     /**
-     * 
+     *
      */
     private String code;
 
     /**
-     * 
+     *
      */
     private String type;
 
     /**
-     * 
+     *
      */
     private String home;
 
     /**
-     * 
+     *
      */
     private String httpUrl;
 
     /**
-     * 
+     *
      */
-    private String sslUrl;
+    private String sshUrl;
 
     /**
-     * 
+     *
      */
-    private Integer hasJob;
+    private Boolean hasJob;
 
     /**
-     * 
+     *
      */
     private String language;
 
     /**
-     * 
+     *
      */
     private Object jobTypes;
 
     /**
-     * 
+     *
      */
     private Integer jobCount;
 
     /**
-     * 
+     *
      */
     private String createBy;
 
     /**
-     * 
+     *
      */
     private Date createTime;
 
     /**
-     * 
+     *
      */
     private String updateBy;
 
     /**
-     * 
+     *
      */
     private Date updateTime;
 
