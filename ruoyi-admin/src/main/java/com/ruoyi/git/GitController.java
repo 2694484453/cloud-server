@@ -77,7 +77,7 @@ public class GitController {
      * @param code code
      * @return r
      */
-    @PostMapping("/token")
+    @PostMapping("/gitee/token")
     @ApiOperation(value = "获取token")
     public AjaxResult token(@RequestParam(value = "code") String code) {
         HttpResponse response = HttpUtil.createPost(gitee.getApi())
