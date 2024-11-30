@@ -1,9 +1,13 @@
+import cn.hutool.core.convert.Convert;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.git.domain.Gitee;
 import org.junit.Test;
+
+import java.util.Map;
 
 /**
  * @author gaopuguang
@@ -22,11 +26,9 @@ public class HttpTest {
         String code = "e265f65a97e7bffd29bd237ed9546e3da9cedb402defee3f1d872349015a1696";
         String url = gitee.getApi() + "?client_id=" + gitee.getClient_id() + "&grant_type=" + gitee.getGrant_type() + "&redirect_uri=" + gitee.getRedirect_uri() + "&code=" + code + "&client_secret=" + gitee.getClient_secret();
         System.out.println(url);
-        HttpResponse response = HttpUtil.createPost(url)
-                .body("{}")
-                .execute(false);
         String res = HttpUtil.post(url, "{}");
         System.out.println(res);
-        System.out.println(response.body());
+        JSONObject jsonObject = JSONUtil.parseObj(res);
+        System.out.println(jsonObject);
     }
 }

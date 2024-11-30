@@ -4,6 +4,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -84,7 +85,7 @@ public class GitController {
     public AjaxResult token(@RequestParam(value = "code") String code) {
         String url = gitee.getApi() + "?client_id=" + gitee.getClient_id() + "&grant_type=" + gitee.getGrant_type() + "&redirect_uri=" + gitee.getRedirect_uri() + "&code=" + code + "&client_secret=" + gitee.getClient_secret();
         String body = HttpUtil.post(url, "{}");
-        Map<String, Object> map = Convert.toMap(String.class, Object.class, body);
-        return AjaxResult.success("请求成功", map);
+        JSONObject jsonObject = JSONUtil.parseObj(body);
+        return AjaxResult.success("请求成功", jsonObject);
     }
 }
