@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author gaopuguang
@@ -48,11 +49,11 @@ public class GitController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam(value = "type",required = false) String type,
-                           @RequestParam(value = "name",required = false) String name) {
+    public AjaxResult list(@RequestParam(value = "type", required = false) String type,
+                           @RequestParam(value = "name", required = false) String name) {
         List<Git> gitList = gitService.list(new LambdaQueryWrapper<Git>()
-                .eq(StrUtil.isNotBlank(type),Git::getType,type)
-                .eq(StrUtil.isNotBlank(name),Git::getName,name)
+                .eq(StrUtil.isNotBlank(type), Git::getType, type)
+                .eq(StrUtil.isNotBlank(name), Git::getName, name)
         );
         return AjaxResult.success(gitList);
     }
@@ -65,28 +66,25 @@ public class GitController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "type",required = false) String type,
-                              @RequestParam(value = "name",required = false) String name) {
-        AjaxResult ajaxResult = list(type,name);
+    public TableDataInfo page(@RequestParam(value = "type", required = false) String type,
+                              @RequestParam(value = "name", required = false) String name) {
+        AjaxResult ajaxResult = list(type, name);
         List<?> list = Convert.toList(ajaxResult.get("data"));
         return PageUtils.toPage(list);
     }
 
     /**
      * 获取token
+     *
      * @param code code
      * @return r
      */
     @PostMapping("/gitee/token")
     @ApiOperation(value = "获取token")
     public AjaxResult token(@RequestParam(value = "code") String code) {
-        HttpResponse response = HttpUtil.createPost(gitee.getApi())
-                .form("client_id", gitee.getClient_id())
-                .form("grant_type", gitee.getGrant_type())
-                .form("redirect_uri", gitee.getRedirect_uri())
-                .form("code",code)
-                .body(JSONUtil.toJsonStr(gitee.getClient_secret()))
-                .execute(false);
-        return AjaxResult.success("请求成功", response.body());
+        String url = gitee.getApi() + "?client_id=" + gitee.getClient_id() + "&grant_type=" + gitee.getGrant_type() + "&redirect_uri=" + gitee.getRedirect_uri() + "&code=" + code + "&client_secret=" + gitee.getClient_secret();
+        String body = HttpUtil.post(url, "{}");
+        Map<String, Object> map = Convert.toMap(String.class, Object.class, body);
+        return AjaxResult.success("请求成功", map);
     }
 }
