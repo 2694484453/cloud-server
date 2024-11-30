@@ -84,6 +84,7 @@ public class GitController {
                 .form("client_id", gitee.getClient_id())
                 .form("grant_type", gitee.getGrant_type())
                 .form("redirect_uri", gitee.getRedirect_uri())
+                .form("code",code)
                 .body(JSONUtil.toJsonStr(gitee.getClient_secret()))
                 .execute(false);
         return AjaxResult.success("请求成功", response.body());
