@@ -1,24 +1,22 @@
 package com.ruoyi.framework.channel;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-
 import com.ruoyi.common.utils.K8sUtil;
-import jakarta.websocket.server.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.EndpointConfig;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnError;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.Session;
-import jakarta.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
+
+import javax.websocket.CloseReason;
+import javax.websocket.EndpointConfig;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Map;
 
 // 使用 @ServerEndpoint 注解表示此类是一个 WebSocket 端点
 // 通过 value 注解，指定 websocket 的路径
