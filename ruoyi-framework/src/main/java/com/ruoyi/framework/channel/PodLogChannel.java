@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,15 +78,17 @@ public class PodLogChannel {
         try {
             PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
             Pod pod = podResource.get();
+            LogWatch logWatch = podResource.watchLog();
             outputStream = this.session.getBasicRemote().getSendStream();
-            LogWatch logWatch = podResource.watchLog(outputStream);
-            ThreadUtil.sleep(60 * 1000);
+            String read = IoUtil.read(logWatch.getOutput(), StandardCharsets.UTF_8);
+            outputStream.flush();
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            IoUtil.close(outputStream);
+            //IoUtil.close(outputStream);
             //IoUtil.close(inputStream);
         }
+        ThreadUtil.sleep(60 * 1000);
     }
 
     // 连接关闭
