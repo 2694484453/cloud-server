@@ -16,6 +16,8 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 // 使用 @ServerEndpoint 注解表示此类是一个 WebSocket 端点
@@ -47,9 +49,10 @@ public class PodLogChannel {
         this.session = session;
         LOGGER.info("[websocket] 新的连接：id={}", this.session.getId());
         // 获取参数
-        Map<String, String> query = session.getPathParameters();
-        String podName = query.getOrDefault("podName", "");
-        String nameSpace = query.getOrDefault("nameSpace","");
+        //Map<String, String> query = session.getPathParameters();
+        Map<String, List<String>> query = session.getRequestParameterMap();
+        String podName = query.get("podName").get(0);
+        String nameSpace = query.get("nameSpace").get(0);
         K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName).watchLog(System.out);
 
     }
