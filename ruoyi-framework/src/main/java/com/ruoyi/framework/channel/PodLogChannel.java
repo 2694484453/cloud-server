@@ -79,13 +79,13 @@ public class PodLogChannel {
             Pod pod = podResource.get();
             outputStream = this.session.getBasicRemote().getSendStream();
             LogWatch logWatch = podResource.watchLog(outputStream);
+            ThreadUtil.sleep(60 * 1000);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             IoUtil.close(outputStream);
             //IoUtil.close(inputStream);
         }
-        ThreadUtil.sleep(60 * 1000);
     }
 
     // 连接关闭
