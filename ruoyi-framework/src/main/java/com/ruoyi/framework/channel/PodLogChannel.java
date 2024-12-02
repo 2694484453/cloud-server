@@ -18,10 +18,12 @@ import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+import org.springframework.stereotype.Component;
 
 // 使用 @ServerEndpoint 注解表示此类是一个 WebSocket 端点
 // 通过 value 注解，指定 websocket 的路径
 @ServerEndpoint(value = "/channel/podLogChannel/{id}")
+@Component
 public class PodLogChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PodLogChannel.class);
