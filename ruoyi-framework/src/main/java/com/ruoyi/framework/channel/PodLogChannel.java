@@ -1,9 +1,11 @@
 package com.ruoyi.framework.channel;
 
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.ruoyi.common.utils.K8sUtil;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
+import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,9 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +50,17 @@ public class PodLogChannel {
         this.session.getAsyncRemote().sendText("[" + Instant.now().toEpochMilli() + "] Hello " + message);
     }
 
+    @OnMessage
+    public void onBinaryMessage(ByteBuffer message, Session session) {
+        System.out.println("Received binary message");
+        // Echo the received binary message back to the client
+        try {
+            session.getBasicRemote().sendBinary(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 连接打开
     @OnOpen
     public void onOpen(Session session, @PathParam("id") Long id, EndpointConfig endpointConfig) {
@@ -56,12 +72,18 @@ public class PodLogChannel {
         Map<String, List<String>> query = session.getRequestParameterMap();
         String podName = query.get("podName").get(0);
         String nameSpace = query.get("nameSpace").get(0);
-        Pod pod = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName).get();
-        LogWatch logWatch = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName).watchLog(System.out);
+        OutputStream outputStream = null;
+//        InputStream inputStream = null;
         try {
-            this.session.getBasicRemote().sendText("发送的消息是：" + pod.getMetadata().getName(),true);
+            PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
+            Pod pod = podResource.get();
+            outputStream = this.session.getBasicRemote().getSendStream();
+            LogWatch logWatch = podResource.watchLog(outputStream);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            IoUtil.close(outputStream);
+            //IoUtil.close(inputStream);
         }
         ThreadUtil.sleep(60 * 1000);
     }
