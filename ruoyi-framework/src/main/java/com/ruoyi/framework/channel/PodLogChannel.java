@@ -1,6 +1,8 @@
 package com.ruoyi.framework.channel;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.ruoyi.common.utils.K8sUtil;
+import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +56,14 @@ public class PodLogChannel {
         Map<String, List<String>> query = session.getRequestParameterMap();
         String podName = query.get("podName").get(0);
         String nameSpace = query.get("nameSpace").get(0);
+        Pod pod = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName).get();
         LogWatch logWatch = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName).watchLog(System.out);
-        this.session.getAsyncRemote().sendText("发送的消息是："+logWatch.getOutput().toString());
+        try {
+            this.session.getBasicRemote().sendText("发送的消息是：" + pod.getMetadata().getName(),true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ThreadUtil.sleep(60 * 1000);
     }
 
     // 连接关闭
