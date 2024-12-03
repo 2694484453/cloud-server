@@ -1,9 +1,7 @@
 package com.ruoyi.devops;
 
-import cn.hutool.core.io.IoUtil;
 import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.framework.config.PodLogWebSocketServer;
-import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author gaopuguang
@@ -24,9 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/podLog")
 public class PodLogController {
-
-    @Autowired
-    private PodLogWebSocketServer webSocketServer;
 
     @PostMapping("/get")
     public String sendMessage(@RequestParam(value = "id") String id,
