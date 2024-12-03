@@ -1,5 +1,6 @@
 package com.ruoyi.framework.config;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.ruoyi.common.utils.K8sUtil;
@@ -18,6 +19,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -128,15 +130,19 @@ public class PodLogWebSocketServer {
     /**
      * 发送消息
      *
-     * @param id id
+     * @param id       id
      * @param filePath 消息
      */
     public static void sendMessageSteamToClient(String id, String filePath) {
         Session session = sessionMap.get(id);
         if (session != null && session.isOpen()) {
             try {
-                OutputStream os = session.getBasicRemote().getSendStream();
-                Files.copy(Paths.get(filePath), os);
+                OutputStream outputStream = session.getBasicRemote().getSendStream();
+                BufferedReader reader = FileUtil.getReader(filePath, StandardCharsets.UTF_8);
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    session.getBasicRemote().sendText(line);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
