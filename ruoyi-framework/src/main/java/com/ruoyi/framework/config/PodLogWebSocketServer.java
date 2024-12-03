@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -117,6 +119,24 @@ public class PodLogWebSocketServer {
             try {
                 OutputStream os = session.getBasicRemote().getSendStream();
                 IoUtil.copy(is, os);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param id id
+     * @param filePath 消息
+     */
+    public static void sendMessageSteamToClient(String id, String filePath) {
+        Session session = sessionMap.get(id);
+        if (session != null && session.isOpen()) {
+            try {
+                OutputStream os = session.getBasicRemote().getSendStream();
+                Files.copy(Paths.get(filePath), os);
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
