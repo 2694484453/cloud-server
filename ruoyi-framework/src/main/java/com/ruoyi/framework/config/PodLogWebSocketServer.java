@@ -1,4 +1,4 @@
-package com.ruoyi.framework.channel;
+package com.ruoyi.framework.config;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.thread.ThreadUtil;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.CloseReason;
-import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -20,12 +19,12 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +32,11 @@ import java.util.Map;
 // 通过 value 注解，指定 websocket 的路径
 @ServerEndpoint(value = "/channel/podLogChannel/{id}")
 @Component
-public class PodLogChannel {
+public class PodLogWebSocketServer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PodLogChannel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PodLogWebSocketServer.class);
+
+    private static final Map<String, Session> sessionMap = Collections.synchronizedMap(new HashMap<>());
 
     private Session session;
 
@@ -54,54 +55,52 @@ public class PodLogChannel {
     @OnMessage
     public void onBinaryMessage(ByteBuffer message, Session session) {
         System.out.println("Received binary message");
-        // Echo the received binary message back to the client
         try {
             session.getBasicRemote().sendBinary(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     // 连接打开
     @OnOpen
-    public void onOpen(Session session, @PathParam("id") Long id, EndpointConfig endpointConfig) {
+    public void onOpen(Session session, @PathParam("id") String id) {
         // 保存 session 到对象
         this.session = session;
-        LOGGER.info("[websocket] 新的连接：id={}", this.session.getId());
-        // 获取参数
-        //Map<String, String> query = session.getPathParameters();
-        Map<String, List<String>> query = session.getRequestParameterMap();
-        String podName = query.get("podName").get(0);
-        String nameSpace = query.get("nameSpace").get(0);
-        OutputStream outputStream = null;
-//        InputStream inputStream = null;
-        try {
-            PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
-            Pod pod = podResource.get();
-            LogWatch logWatch = podResource.watchLog();
-            outputStream = this.session.getBasicRemote().getSendStream();
-            String read = IoUtil.read(logWatch.getOutput(), StandardCharsets.UTF_8);
-            outputStream.flush();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            //IoUtil.close(outputStream);
-            //IoUtil.close(inputStream);
-        }
-        ThreadUtil.sleep(60 * 1000);
+        sessionMap.put(id, session);
+        LOGGER.info("[websocket] 新的连接：id={}", id);
+        System.out.println("[websocket] Session ID: " + session.getId());
     }
 
     // 连接关闭
     @OnClose
-    public void onClose(CloseReason closeReason) {
+    public void onClose(Session session, CloseReason closeReason, @PathParam("id") String id) {
+        sessionMap.remove(id);
         LOGGER.info("[websocket] 连接断开：id={}，reason={}", this.session.getId(), closeReason);
     }
 
     // 连接异常
     @OnError
-    public void onError(Throwable throwable) throws IOException {
-        LOGGER.info("[websocket] 连接异常：id={}，throwable={}", this.session.getId(), throwable.getMessage());
+    public void onError(Session session, @PathParam("id") String id, Throwable throwable) throws IOException {
+        LOGGER.info("[websocket] 连接异常：id={}，throwable={}", id, throwable.getMessage());
         // 关闭连接。状态码为 UNEXPECTED_CONDITION（意料之外的异常）
         this.session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, throwable.getMessage()));
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param id      id
+     * @param message 消息
+     */
+    public static void sendMessageToClient(String id, String message) {
+        Session session = sessionMap.get(id);
+        if (session != null && session.isOpen()) {
+            try {
+                session.getBasicRemote().sendText(message);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
     }
 }
