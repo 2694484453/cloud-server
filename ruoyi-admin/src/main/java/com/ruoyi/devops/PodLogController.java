@@ -30,7 +30,7 @@ public class PodLogController {
         try {
             PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
             LogWatch logWatch = podResource.watchLog();
-            PodLogWebSocketServer.sendMessageToClient(id, podResource.getLog());
+            PodLogWebSocketServer.sendMessageSteamToClient(id, podResource.getLogInputStream());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

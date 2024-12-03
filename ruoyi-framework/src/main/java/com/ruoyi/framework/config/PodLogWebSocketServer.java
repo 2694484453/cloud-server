@@ -19,6 +19,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -98,6 +99,24 @@ public class PodLogWebSocketServer {
         if (session != null && session.isOpen()) {
             try {
                 session.getBasicRemote().sendText(message);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param id id
+     * @param is 消息
+     */
+    public static void sendMessageSteamToClient(String id, InputStream is) {
+        Session session = sessionMap.get(id);
+        if (session != null && session.isOpen()) {
+            try {
+                OutputStream os = session.getBasicRemote().getSendStream();
+                IoUtil.copy(is, os);
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
