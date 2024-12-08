@@ -45,9 +45,9 @@ public class PodLogWebSocketServer {
         sessionMap.put("podLog", session);
         LOGGER.info("[websocket] 新的连接：id={}", "podLog");
         // 开始启动日志流
-        String nameSpace = session.getPathParameters().get("nameSpace");
-        String podName = session.getPathParameters().get("podName");
-
+        String nameSpace = session.getRequestParameterMap().get("nameSpace").get(0);
+        String podName = session.getRequestParameterMap().get("podName").get(0);
+        sendMessageSteamToClient(podName, nameSpace);
     }
 
     // 连接关闭

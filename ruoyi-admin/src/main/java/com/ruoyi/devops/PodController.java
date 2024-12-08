@@ -6,8 +6,6 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.common.utils.PageUtils;
 import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.dsl.LogWatch;
-import io.fabric8.kubernetes.client.dsl.PodResource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
