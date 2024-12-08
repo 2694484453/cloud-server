@@ -4,7 +4,6 @@ import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.framework.config.PodLogWebSocketServer;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
 import io.fabric8.kubernetes.client.dsl.PodResource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +30,7 @@ public class PodLogController {
             PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
             LogWatch logWatch = podResource.watchLog();
             //PodLogWebSocketServer.sendMessageSteamToClient(id, podResource.getLogInputStream());
-            PodLogWebSocketServer.sendMessageSteamToClient(id,"D:\\log.txt");
+            //PodLogWebSocketServer.sendMessageSteamToClient("D:\\log.txt");
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
