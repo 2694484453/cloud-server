@@ -7,3 +7,4 @@ cgroup_manager = "cgroupfs"
 hosts_dir      = ["/etc/rancher/k3s/agent/etc/containerd/certs.d", "/etc/docker/certs.d"]
 experimental   = true
 insecure_registry = true
+# nerdctl --address tcp://124.221.2.29:10010 ps
