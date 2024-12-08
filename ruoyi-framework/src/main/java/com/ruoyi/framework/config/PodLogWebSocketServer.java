@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@ServerEndpoint(value = "/channel/podLog")
+@ServerEndpoint(value = "/ws/podLog")
 @Component
 public class PodLogWebSocketServer {
 
