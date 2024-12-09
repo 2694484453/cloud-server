@@ -47,7 +47,7 @@ public class PodLogWebSocketServer {
         // 开始启动日志流
         String nameSpace = session.getRequestParameterMap().get("nameSpace").get(0);
         String podName = session.getRequestParameterMap().get("podName").get(0);
-        sendMessageSteamToClient(podName, nameSpace);
+        sendMessageToClient(podName, nameSpace);
     }
 
     // 连接关闭
@@ -84,17 +84,13 @@ public class PodLogWebSocketServer {
     /**
      * 发送消息
      */
-    public static void sendMessageSteamToClient(String podName, String nameSpace) {
+    public static void sendMessageToClient(String podName, String nameSpace) {
         Session session = sessionMap.get("podLog");
         if (session != null && session.isOpen()) {
             ThreadUtil.execute(() -> {
                 try {
                     PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(podResource.watchLog().getOutput()));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        session.getBasicRemote().sendText(line);
-                    }
+                    session.getBasicRemote().sendText(podResource.getLog());
                 } catch (IOException e) {
                     throw new RuntimeException(e.getMessage());
                 }

@@ -7,7 +7,7 @@
 curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -s - --docker --etcd-expose-metrics=true --write-kubeconfig ~/.kube/config --write-kubeconfig-mode 644
 
 #containerd
-curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -s - --etcd-expose-metrics=true --private-registry="/etc/rancher/k3s/registries.yaml" --write-kubeconfig ~/.kube/config --write-kubeconfig-mode 644 --service-node-port-range 80-65535 --node-ip 124.221.2.29 --node-external-ip 124.221.2.29 --node-name 124.221.2.29
+curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -s - --container-runtime-endpoint tcp://0.0.0.0:10010 --etcd-expose-metrics=true --private-registry="/etc/rancher/k3s/registries.yaml" --write-kubeconfig ~/.kube/config --write-kubeconfig-mode 644 --service-node-port-range 80-65535 --node-ip 124.221.2.29 --node-external-ip 124.221.2.29 --node-name 124.221.2.29
 
 #离线
 INSTALL_K3S_SKIP_DOWNLOAD=true ./install.sh --etcd-expose-metrics=true --private-registry="/etc/rancher/k3s/registries.yaml" --write-kubeconfig ~/.kube/config --write-kubeconfig-mode 644 --service-node-port-range 80-65535 --node-ip 124.221.2.29 --node-external-ip 124.221.2.29
