@@ -62,7 +62,7 @@ public class ClusterController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return AjaxResult.success(clusterList);
+        return AjaxResult.success("查询成功", clusterList);
     }
 
     /**
@@ -118,6 +118,7 @@ public class ClusterController {
 
     /**
      * 删除
+     *
      * @param name 名称
      * @return r
      */
@@ -132,8 +133,8 @@ public class ClusterController {
             List<NamedCluster> clusters = config.getClusters();
             List<NamedCluster> newClusters = new ArrayList<>();
             if (ObjectUtil.isNotEmpty(clusters)) {
-                clusters.forEach(e->{
-                    if (!name.equals(e.getName())){
+                clusters.forEach(e -> {
+                    if (!name.equals(e.getName())) {
                         newClusters.add(e);
                     }
                 });
@@ -142,7 +143,7 @@ public class ClusterController {
             List<NamedContext> contexts = config.getContexts();
             List<NamedContext> newContexts = new ArrayList<>();
             if (ObjectUtil.isNotEmpty(contexts)) {
-                contexts.forEach(e->{
+                contexts.forEach(e -> {
                     if (!name.equals(e.getName())) {
                         newContexts.add(e);
                     }
@@ -152,7 +153,7 @@ public class ClusterController {
             List<NamedAuthInfo> users = config.getUsers();
             List<NamedAuthInfo> newUsers = new ArrayList<>();
             if (ObjectUtil.isNotEmpty(users)) {
-                users.forEach(e->{
+                users.forEach(e -> {
                     if (!name.equals(e.getName())) {
                         newUsers.add(e);
                     }
@@ -161,7 +162,7 @@ public class ClusterController {
             config.setClusters(newClusters);
             config.setContexts(newContexts);
             config.setUsers(newUsers);
-            KubeConfigUtils.persistKubeConfigIntoFile(config,configPath);
+            KubeConfigUtils.persistKubeConfigIntoFile(config, configPath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

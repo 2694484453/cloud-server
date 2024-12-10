@@ -87,10 +87,15 @@ public class PodLogWebSocketServer {
     public static void sendMessageToClient(String podName, String nameSpace) {
         Session session = sessionMap.get("podLog");
         if (session != null && session.isOpen()) {
+            PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
             ThreadUtil.execute(() -> {
                 try {
-                    PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
                     session.getBasicRemote().sendText(podResource.getLog());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(podResource.watchLog().getOutput()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        session.getBasicRemote().sendText(line);
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e.getMessage());
                 }
