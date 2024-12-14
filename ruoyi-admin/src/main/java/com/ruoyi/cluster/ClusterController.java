@@ -4,8 +4,10 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.K8sUtil;
 import com.ruoyi.common.utils.PageUtils;
 import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.NamedAuthInfo;
@@ -17,6 +19,8 @@ import io.swagger.annotations.ApiOperation;
 import org.checkerframework.framework.qual.RequiresQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletResponse;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -114,6 +119,36 @@ public class ClusterController {
             throw new RuntimeException(e);
         }
         return AjaxResult.success("添加成功");
+    }
+
+    @GetMapping("/export")
+    @ApiOperation(value = "导出")
+    public AjaxResult export(ServletResponse response, @RequestParam(value = "name", required = false) String name) {
+        // 获取配置文件位置
+        File configFile = FileUtil.file(K8sUtil.defaultConfigFilePath());
+        try {
+            OutputStream outputStream = response.getOutputStream();
+            // 不指定名字默认为全部
+            if (StrUtil.isBlank(name)) {
+                InputStream inputStream = null;
+                inputStream = FileUtil.getInputStream(configFile);
+                IoUtil.copy(inputStream, outputStream);
+                IoUtil.close(inputStream);
+            } else {
+                // 否则获取部分
+                Config resultConfig = new Config();
+                Config config = KubeConfigUtils.parseConfig(configFile);
+                config.getClusters().forEach(e->{
+                    if (name.equals(e.getName())) {
+                        
+                    }
+                });
+            }
+            IoUtil.close(outputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     /**
