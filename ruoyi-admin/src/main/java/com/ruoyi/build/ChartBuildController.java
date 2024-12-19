@@ -75,6 +75,7 @@ public class ChartBuildController {
                     put("isFile",file.isFile());
                     put("size", DataSizeUtil.format(file.length()));
                     put("exists",file.exists());
+                    put("extName",FileUtil.extName(file.getName()));
                 }});
             }
         }
