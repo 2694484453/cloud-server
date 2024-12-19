@@ -33,7 +33,7 @@ import java.util.List;
  * @date 2024/12/20 0:03
  **/
 @RestController
-@RequestMapping("/")
+@RequestMapping("/build/chart")
 @Api(tags = "chart编排")
 @Slf4j
 public class ChartBuildController {
