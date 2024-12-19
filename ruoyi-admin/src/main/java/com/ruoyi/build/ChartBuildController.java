@@ -1,6 +1,8 @@
 package com.ruoyi.build;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.unit.DataSizeUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.PageUtils;
 import io.swagger.annotations.Api;
@@ -26,7 +28,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author gaopuguang
@@ -57,17 +61,25 @@ public class ChartBuildController {
      * @return r
      */
     @GetMapping("/list")
-    public ResponseEntity<List<File>> dirList(@RequestParam(value = "name", required = false) String name) {
-        List<File> fileList = new ArrayList<>();
+    public ResponseEntity<List<Map<String,Object>>> dirList(@RequestParam(value = "name", required = false) String name) {
+        List<Map<String,Object>> fileMapList = new ArrayList<>();
         // 获取目录下的文件夹，排除文件
         File[] files = FileUtil.ls(rootDir);
         for (File file : files) {
             if (file.isDirectory()) {
-                fileList.add(file);
+                fileMapList.add(new HashMap<String,Object>(){{
+                    put("name",file.getName());
+                    put("path",file.getPath());
+                    put("absolutePath",file.getAbsolutePath());
+                    put("lastModified", DateUtil.date(file.lastModified()));
+                    put("isFile",file.isFile());
+                    put("size", DataSizeUtil.format(file.length()));
+                    put("exists",file.exists());
+                }});
             }
         }
         // 返回
-        return ResponseEntity.ok(fileList);
+        return ResponseEntity.ok(fileMapList);
     }
 
     /**
@@ -82,8 +94,8 @@ public class ChartBuildController {
     public ResponseEntity<Object> dirPage(@RequestParam(value = "name", required = false) String name,
                                           @RequestParam(value = "pageNum", defaultValue = "1") String pageNumber,
                                           @RequestParam(value = "pageSize", defaultValue = "10") String pageSize) {
-        ResponseEntity<List<File>> responseEntity = dirList(name);
-        List<File> fileList = responseEntity.getBody();
+        ResponseEntity<List<Map<String,Object>>> responseEntity = dirList(name);
+        List<Map<String,Object>> fileList = responseEntity.getBody();
         TableDataInfo tableDataInfo = PageUtils.toPage(fileList);
         return ResponseEntity.ok(tableDataInfo);
     }
