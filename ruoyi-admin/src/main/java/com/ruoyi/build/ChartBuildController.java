@@ -213,6 +213,7 @@ public class ChartBuildController {
     private static JSONObject traverseFolder(File folder, JSONObject parentJson) {
         JSONObject currentJson = new JSONObject();
         currentJson.set("label", folder.getName());
+        currentJson.set("value", folder.getName());
         File[] files = folder.listFiles();
         if (files != null && files.length > 0) {
             JSONArray childrenArray = new JSONArray();
