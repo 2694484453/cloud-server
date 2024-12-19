@@ -1,0 +1,178 @@
+package com.ruoyi.build;
+
+import cn.hutool.core.io.FileUtil;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.PageUtils;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author gaopuguang
+ * @date 2024/12/20 0:03
+ **/
+@RestController
+@RequestMapping("/")
+@Api(tags = "chart编排")
+@Slf4j
+public class ChartBuildController {
+
+    @Value("${build.helm}")
+    private String rootDir;
+
+    private static final String UPLOAD_DIR = "uploads/";
+
+    // 初始化上传目录
+    {
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+    }
+
+    /**
+     * 获取文件夹列表
+     *
+     * @return r
+     */
+    @GetMapping("/list")
+    public ResponseEntity<List<File>> dirList(@RequestParam(value = "name", required = false) String name) {
+        List<File> fileList = new ArrayList<>();
+        // 获取目录下的文件夹，排除文件
+        File[] files = FileUtil.ls(rootDir);
+        for (File file : files) {
+            if (file.isDirectory()) {
+                fileList.add(file);
+            }
+        }
+        // 返回
+        return ResponseEntity.ok(fileList);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param name       名称
+     * @param pageNumber 当前页
+     * @param pageSize   分页大小
+     * @return r
+     */
+    @GetMapping("/page")
+    public ResponseEntity<Object> dirPage(@RequestParam(value = "name", required = false) String name,
+                                          @RequestParam(value = "pageNum", defaultValue = "1") String pageNumber,
+                                          @RequestParam(value = "pageSize", defaultValue = "10") String pageSize) {
+        ResponseEntity<List<File>> responseEntity = dirList(name);
+        List<File> fileList = responseEntity.getBody();
+        TableDataInfo tableDataInfo = PageUtils.toPage(fileList);
+        return ResponseEntity.ok(tableDataInfo);
+    }
+
+
+    // 文件上传接口
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Failed to upload. File is empty.");
+        }
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+            Files.write(path, bytes);
+            return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(500).body("Failed to upload " + file.getOriginalFilename() + ".");
+        }
+    }
+
+    // 文件下载接口
+    @GetMapping("/download/{fileName:.+}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+        Path path = Paths.get(UPLOAD_DIR + fileName);
+        Resource resource;
+        try {
+            resource = new UrlResource(path.toUri());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+        if (!resource.exists() || !resource.isReadable()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    // 新增文件夹接口
+    @PostMapping("/mkdir/{folderName}")
+    public ResponseEntity<String> createFolder(@PathVariable String folderName) {
+        File folder = new File(UPLOAD_DIR + folderName);
+        if (!folder.exists()) {
+            boolean created = folder.mkdirs();
+            return created ? ResponseEntity.ok("Folder created successfully.") : ResponseEntity.status(500).body("Failed to create folder.");
+        } else {
+            return ResponseEntity.ok("Folder already exists.");
+        }
+    }
+
+    // 新增文件接口（例如通过文本内容创建新文件）
+    @PostMapping("/createfile")
+    public ResponseEntity<String> createFile(@RequestParam String fileName, @RequestParam String content) {
+        Path path = Paths.get(UPLOAD_DIR + fileName);
+        try {
+            Files.write(path, content.getBytes());
+            return ResponseEntity.ok("File created successfully: " + fileName);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(500).body("Failed to create file " + fileName + ".");
+        }
+    }
+
+    // 文件读取接口
+    @GetMapping("/read/{fileName:.+}")
+    public ResponseEntity<String> readFile(@PathVariable String fileName) {
+        Path path = Paths.get(UPLOAD_DIR + fileName);
+        try {
+            String content = new String(Files.readAllBytes(path));
+            return ResponseEntity.ok(content);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(500).body("Failed to read file " + fileName + ".");
+        }
+    }
+
+    // 文件写入接口（追加内容到现有文件）
+    @PutMapping("/write/{fileName:.+}")
+    public ResponseEntity<String> writeFile(@PathVariable String fileName, @RequestParam String content) {
+        Path path = Paths.get(UPLOAD_DIR + fileName);
+        try {
+            Files.write(path, content.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            return ResponseEntity.ok("File written successfully: " + fileName);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(500).body("Failed to write file " + fileName + ".");
+        }
+    }
+}

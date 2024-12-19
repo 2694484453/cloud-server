@@ -8,7 +8,7 @@ traefik:
   path: /home/my-traefik/config
 build:
   image: /home/build/image
-  helm: /home/build/helm
+  helm: /home/helm-repo
 etcd:
   endpoints: http://server.gpg123.vip:12379
 basePath: /home
