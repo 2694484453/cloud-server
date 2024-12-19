@@ -3,6 +3,8 @@ package com.ruoyi.build;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.PageUtils;
 import io.swagger.annotations.Api;
@@ -61,21 +63,21 @@ public class ChartBuildController {
      * @return r
      */
     @GetMapping("/list")
-    public ResponseEntity<List<Map<String,Object>>> dirList(@RequestParam(value = "name", required = false) String name) {
-        List<Map<String,Object>> fileMapList = new ArrayList<>();
+    public ResponseEntity<List<Map<String, Object>>> dirList(@RequestParam(value = "name", required = false) String name) {
+        List<Map<String, Object>> fileMapList = new ArrayList<>();
         // 获取目录下的文件夹，排除文件
         File[] files = FileUtil.ls(rootDir);
         for (File file : files) {
             if (file.isDirectory()) {
-                fileMapList.add(new HashMap<String,Object>(){{
-                    put("name",file.getName());
-                    put("path",file.getPath());
-                    put("absolutePath",file.getAbsolutePath());
+                fileMapList.add(new HashMap<String, Object>() {{
+                    put("name", file.getName());
+                    put("path", file.getPath());
+                    put("absolutePath", file.getAbsolutePath());
                     put("lastModified", DateUtil.date(file.lastModified()));
-                    put("isFile",file.isFile());
+                    put("isFile", file.isFile());
                     put("size", DataSizeUtil.format(file.length()));
-                    put("exists",file.exists());
-                    put("extName",FileUtil.extName(file.getName()));
+                    put("exists", file.exists());
+                    put("extName", FileUtil.extName(file.getName()));
                 }});
             }
         }
@@ -95,10 +97,22 @@ public class ChartBuildController {
     public ResponseEntity<Object> dirPage(@RequestParam(value = "name", required = false) String name,
                                           @RequestParam(value = "pageNum", defaultValue = "1") String pageNumber,
                                           @RequestParam(value = "pageSize", defaultValue = "10") String pageSize) {
-        ResponseEntity<List<Map<String,Object>>> responseEntity = dirList(name);
-        List<Map<String,Object>> fileList = responseEntity.getBody();
+        ResponseEntity<List<Map<String, Object>>> responseEntity = dirList(name);
+        List<Map<String, Object>> fileList = responseEntity.getBody();
         TableDataInfo tableDataInfo = PageUtils.toPage(fileList);
         return ResponseEntity.ok(tableDataInfo);
+    }
+
+    @GetMapping("/tree")
+    public ResponseEntity<Object> tree(@RequestParam(value = "name", required = false) String name,
+                                       @RequestParam("path") String path) {
+        File folder = FileUtil.file(path);
+        if (!folder.exists() || !folder.isDirectory()) {
+            log.error("The specified path is not a valid directory.");
+            throw new RuntimeException("不是文件夹");
+        }
+        JSONObject rootJson = traverseFolder(folder, null);
+        return ResponseEntity.ok(rootJson);
     }
 
 
@@ -187,5 +201,20 @@ public class ChartBuildController {
             log.error(e.getMessage());
             return ResponseEntity.status(500).body("Failed to write file " + fileName + ".");
         }
+    }
+
+    private static JSONObject traverseFolder(File folder, JSONObject parentJson) {
+        JSONObject currentJson = new JSONObject();
+        currentJson.set("label", folder.getName());
+        File[] files = folder.listFiles();
+        if (files != null && files.length > 0) {
+            JSONArray childrenArray = new JSONArray();
+            for (File file : files) {
+                JSONObject childJson = traverseFolder(file, currentJson);
+                childrenArray.put(childJson);
+            }
+            currentJson.set("children", childrenArray);
+        }
+        return currentJson;
     }
 }
