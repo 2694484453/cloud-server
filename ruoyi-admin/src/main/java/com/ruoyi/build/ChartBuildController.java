@@ -103,6 +103,13 @@ public class ChartBuildController {
         return ResponseEntity.ok(tableDataInfo);
     }
 
+    /**
+     * 目录
+     *
+     * @param name 名称
+     * @param path 路径
+     * @return r
+     */
     @GetMapping("/tree")
     public ResponseEntity<Object> tree(@RequestParam(value = "name", required = false) String name,
                                        @RequestParam("path") String path) {
