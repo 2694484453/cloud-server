@@ -3,8 +3,10 @@ package com.ruoyi.build;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
+import cn.hutool.http.server.action.RootAction;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.PageUtils;
 import io.swagger.annotations.Api;
@@ -118,8 +120,10 @@ public class ChartBuildController {
             log.error("The specified path is not a valid directory.");
             throw new RuntimeException("不是文件夹");
         }
-        JSONObject rootJson = traverseFolder(folder, null);
-        return ResponseEntity.ok(rootJson);
+        JSONObject rootJson = traverseFolder(folder);
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(rootJson);
+        return ResponseEntity.ok(jsonArray);
     }
 
 
@@ -210,7 +214,7 @@ public class ChartBuildController {
         }
     }
 
-    private static JSONObject traverseFolder(File folder, JSONObject parentJson) {
+    private static JSONObject traverseFolder(File folder) {
         JSONObject currentJson = new JSONObject();
         currentJson.set("label", folder.getName());
         currentJson.set("value", folder.getName());
@@ -218,7 +222,7 @@ public class ChartBuildController {
         if (files != null && files.length > 0) {
             JSONArray childrenArray = new JSONArray();
             for (File file : files) {
-                JSONObject childJson = traverseFolder(file, currentJson);
+                JSONObject childJson = traverseFolder(file);
                 childrenArray.put(childJson);
             }
             currentJson.set("children", childrenArray);
