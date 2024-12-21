@@ -266,6 +266,9 @@ public class ChartBuildController {
         JSONObject currentJson = new JSONObject();
         currentJson.set("label", folder.getName());
         currentJson.set("value", folder.getName());
+        currentJson.set("path", folder.getPath());
+        currentJson.set("extName", FileUtil.extName(folder));
+        currentJson.set("size", DataSizeUtil.format(folder.length()));
         File[] files = folder.listFiles();
         if (files != null && files.length > 0) {
             JSONArray childrenArray = new JSONArray();
