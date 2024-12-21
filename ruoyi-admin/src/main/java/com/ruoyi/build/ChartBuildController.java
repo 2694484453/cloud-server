@@ -3,6 +3,7 @@ package com.ruoyi.build;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.server.action.RootAction;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -11,6 +12,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.PageUtils;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -20,13 +22,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -118,7 +123,7 @@ public class ChartBuildController {
         File folder = FileUtil.file(path);
         if (!folder.exists() || !folder.isDirectory()) {
             log.error("The specified path is not a valid directory.");
-            throw new RuntimeException("不是文件夹");
+            throw new RuntimeException("不是文件夹！");
         }
         JSONObject rootJson = traverseFolder(folder);
         JSONArray jsonArray = new JSONArray();
@@ -128,6 +133,70 @@ public class ChartBuildController {
         resultMap.put("msg", "success");
         resultMap.put("data", jsonArray);
         return ResponseEntity.ok(resultMap);
+    }
+
+    /**
+     * 读文件
+     *
+     * @param path 文件路径
+     * @return r
+     */
+    @GetMapping("/read")
+    public ResponseEntity<Object> read(@RequestParam("path") String path) {
+        File file = FileUtil.file(path);
+        try {
+            if (!FileUtil.exist(file)) {
+                throw new RuntimeException("文件不存在！");
+            }
+            if (!FileUtil.isFile(file)) {
+                throw new RuntimeException("不是文件！");
+            }
+            String type = new Tika().detect(file);
+            if (!type.startsWith("text")) {
+                throw new RuntimeException("不可读取！");
+            }
+            String res = FileUtil.readString(file, StandardCharsets.UTF_8);
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("code", 200);
+            resultMap.put("msg", "success");
+            resultMap.put("data", res);
+            return ResponseEntity.ok(resultMap);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 文件写入接口（追加内容到现有文件）
+     * paramsMap 参数map
+     *
+     * @return r
+     */
+    @PutMapping("/write")
+    public ResponseEntity<Object> writeFile(@RequestBody Map<String, String> paramsMap) {
+        if (!paramsMap.containsKey("path")) {
+            throw new RuntimeException("缺少path参数");
+        }
+        if (StrUtil.isBlank(paramsMap.get("path"))) {
+            throw new RuntimeException("path不能为空");
+        }
+        if (!paramsMap.containsKey("content")) {
+            throw new RuntimeException("缺少content参数");
+        }
+        try {
+            File file = new File(paramsMap.get("path"));
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(paramsMap.get("content"));
+            fileWriter.close();
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("code", 200);
+            resultMap.put("msg", "success");
+            resultMap.put("data", true);
+            return ResponseEntity.ok(resultMap);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(500).body("Failed to write file.");
+        }
     }
 
 
@@ -192,31 +261,6 @@ public class ChartBuildController {
         }
     }
 
-    // 文件读取接口
-    @GetMapping("/read/{fileName:.+}")
-    public ResponseEntity<String> readFile(@PathVariable String fileName) {
-        Path path = Paths.get(UPLOAD_DIR + fileName);
-        try {
-            String content = new String(Files.readAllBytes(path));
-            return ResponseEntity.ok(content);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.status(500).body("Failed to read file " + fileName + ".");
-        }
-    }
-
-    // 文件写入接口（追加内容到现有文件）
-    @PutMapping("/write/{fileName:.+}")
-    public ResponseEntity<String> writeFile(@PathVariable String fileName, @RequestParam String content) {
-        Path path = Paths.get(UPLOAD_DIR + fileName);
-        try {
-            Files.write(path, content.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            return ResponseEntity.ok("File written successfully: " + fileName);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.status(500).body("Failed to write file " + fileName + ".");
-        }
-    }
 
     private static JSONObject traverseFolder(File folder) {
         JSONObject currentJson = new JSONObject();
