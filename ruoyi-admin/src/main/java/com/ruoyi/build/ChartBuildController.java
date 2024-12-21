@@ -123,7 +123,11 @@ public class ChartBuildController {
         JSONObject rootJson = traverseFolder(folder);
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(rootJson);
-        return ResponseEntity.ok(jsonArray);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("code", 200);
+        resultMap.put("msg", "success");
+        resultMap.put("data", jsonArray);
+        return ResponseEntity.ok(resultMap);
     }
 
 

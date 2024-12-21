@@ -6,6 +6,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.git.domain.Gitee;
 import org.junit.Test;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
@@ -30,5 +31,11 @@ public class HttpTest {
         System.out.println(res);
         JSONObject jsonObject = JSONUtil.parseObj(res);
         System.out.println(jsonObject);
+    }
+
+    @Test
+    public void t2() {
+        ResponseEntity<String> response = ResponseEntity.ok("123");
+        System.out.println(response.toString());
     }
 }
