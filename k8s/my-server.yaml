@@ -21,9 +21,9 @@ spec:
           #            - "chmod +x /usr/local/bin/entrypoint.sh && /usr/local/bin/entrypoint.sh"
           env:
             - name: DOCKER_REGISTRY
-              value: registry.cn-hangzhou.aliyuncs.com
+              value: registry.cn-hangzhou.aliyuncs.vip
             - name: IMAGE_NAME
-              value: registry.cn-hangzhou.aliyuncs.com/gpg_dev/my-server
+              value: registry.cn-hangzhou.aliyuncs.vip/gpg_dev/my-server
             - name: TAG
               value: latest
             - name: DOCKER_LOGIN_USERNAME

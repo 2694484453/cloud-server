@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 查找 ruoyi-admin.jar 进程的 PID
-pid=$(ps -ef | grep 'ruoyi-admin.jar' | grep -v 'grep' | awk '{print $2}')
+# 查找 gpg123-admin.jar 进程的 PID
+pid=$(ps -ef | grep 'gpg123-admin.jar' | grep -v 'grep' | awk '{print $2}')
 
 # 检查是否找到 PID
 if [ -z "$pid" ]; then

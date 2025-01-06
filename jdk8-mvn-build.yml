@@ -8,7 +8,7 @@ services:
     #entrypoint: [ "/bin/sh","-c","wget https://dev-1306623386.cos.ap-shanghai.myqcloud.com/shell/mvn-entrypoint.sh -o /usr/local/bin/mvn-entrypoint.sh && chmod +x /usr/local/bin/mvn-entrypoint.sh && /usr/local/bin/mvn-entrypoint.sh" ]
     entrypoint: [ "/bin/sh","-c","chmod +x /usr/local/bin/mvn-entrypoint.sh && /usr/local/bin/mvn-entrypoint.sh" ]
     environment:
-      - GIT_URL=https://gitee.com/gpg-dev/my-server.git
+      - GIT_URL=https://gitee.vip/gpg-dev/my-server.git
       - GIT_USERNAME=18439406854
       - GIT_PASSWORD=1999y4m30d
     volumes:

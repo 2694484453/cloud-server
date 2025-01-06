@@ -410,7 +410,7 @@ alertmanager:
     ## Hosts must be provided if Ingress is enabled.
     ##
     hosts: []
-      # - alertmanager.domain.com
+      # - alertmanager.domain.vip
 
     ## Paths to use for ingress rules - one path should match the alertmanagerSpec.routePrefix
     ##
@@ -427,7 +427,7 @@ alertmanager:
     tls: []
     # - secretName: alertmanager-general-tls
     #   hosts:
-    #   - alertmanager.example.com
+    #   - alertmanager.example.vip
 
   # -- BETA: Configure the gateway routes for the chart here.
   # More routes can be added by adding a dictionary key like the 'main' route.
@@ -450,7 +450,7 @@ alertmanager:
       labels: {}
 
       hostnames: []
-      # - my-filter.example.com
+      # - my-filter.example.vip
       parentRefs: []
       # - name: acme-gw
 
@@ -1047,7 +1047,7 @@ grafana:
     ## Must be provided if Ingress is enable.
     ##
     # hosts:
-    #   - grafana.domain.com
+    #   - grafana.domain.vip
     hosts: []
 
     ## Path for grafana ingress
@@ -1059,7 +1059,7 @@ grafana:
     tls: []
     # - secretName: grafana-general-tls
     #   hosts:
-    #   - grafana.example.com
+    #   - grafana.example.vip
 
   # # To make Grafana persistent (Using Statefulset)
   # #
@@ -3308,7 +3308,7 @@ prometheus:
     ## Hosts must be provided if Ingress is enabled.
     ##
     hosts: []
-      # - thanos-gateway.domain.com
+      # - thanos-gateway.domain.vip
 
     ## Paths to use for ingress rules
     ##
@@ -3325,7 +3325,7 @@ prometheus:
     tls: []
     # - secretName: thanos-gateway-tls
     #   hosts:
-    #   - thanos-gateway.domain.com
+    #   - thanos-gateway.domain.vip
     #
 
   ## ExtraSecret can be used to store various data in an extra secret
@@ -3356,7 +3356,7 @@ prometheus:
     ## Must be provided if Ingress is enabled.
     ##
     # hosts:
-    #   - prometheus.domain.com
+    #   - prometheus.domain.vip
     hosts: []
 
     ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
@@ -3374,7 +3374,7 @@ prometheus:
     tls: []
       # - secretName: prometheus-general-tls
       #   hosts:
-      #     - prometheus.example.com
+      #     - prometheus.example.vip
 
   # -- BETA: Configure the gateway routes for the chart here.
   # More routes can be added by adding a dictionary key like the 'main' route.
@@ -3397,7 +3397,7 @@ prometheus:
       labels: {}
 
       hostnames: []
-      # - my-filter.example.com
+      # - my-filter.example.vip
       parentRefs: []
       # - name: acme-gw
 
@@ -4493,7 +4493,7 @@ thanosRuler:
     ## Hosts must be provided if Ingress is enabled.
     ##
     hosts: []
-      # - thanosruler.domain.com
+      # - thanosruler.domain.vip
 
     ## Paths to use for ingress rules - one path should match the thanosruler.routePrefix
     ##
@@ -4510,7 +4510,7 @@ thanosRuler:
     tls: []
     # - secretName: thanosruler-general-tls
     #   hosts:
-    #   - thanosruler.example.com
+    #   - thanosruler.example.vip
 
   # -- BETA: Configure the gateway routes for the chart here.
   # More routes can be added by adding a dictionary key like the 'main' route.
@@ -4533,7 +4533,7 @@ thanosRuler:
       labels: {}
 
       hostnames: []
-      # - my-filter.example.com
+      # - my-filter.example.vip
       parentRefs: []
       # - name: acme-gw
 
