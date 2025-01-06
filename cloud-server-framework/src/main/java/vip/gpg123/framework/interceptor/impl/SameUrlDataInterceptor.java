@@ -1,4 +1,4 @@
-package com.ruoyi.framework.interceptor.impl;
+package vip.gpg123.framework.interceptor.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
-import com.ruoyi.common.annotation.RepeatSubmit;
-import com.ruoyi.common.constant.CacheConstants;
-import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.filter.RepeatedlyRequestWrapper;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.http.HttpHelper;
-import com.ruoyi.framework.interceptor.RepeatSubmitInterceptor;
+import vip.gpg123.common.annotation.RepeatSubmit;
+import vip.gpg123.common.constant.CacheConstants;
+import vip.gpg123.common.core.redis.RedisCache;
+import vip.gpg123.common.filter.RepeatedlyRequestWrapper;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.http.HttpHelper;
+import vip.gpg123.framework.interceptor.RepeatSubmitInterceptor;
 
 /**
  * 判断请求url和数据是否和上一次相同，

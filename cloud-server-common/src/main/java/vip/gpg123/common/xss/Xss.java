@@ -1,4 +1,4 @@
-package com.ruoyi.common.xss;
+package vip.gpg123.common.xss;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

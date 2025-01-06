@@ -1,7 +1,7 @@
-package com.ruoyi.common.core.domain;
+package vip.gpg123.common.core.domain;
 
 import java.io.Serializable;
-import com.ruoyi.common.constant.HttpStatus;
+import vip.gpg123.common.constant.HttpStatus;
 
 /**
  * 响应信息主体

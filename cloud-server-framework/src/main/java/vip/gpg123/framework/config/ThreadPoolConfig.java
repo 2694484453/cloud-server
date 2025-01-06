@@ -1,6 +1,6 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
-import com.ruoyi.common.utils.Threads;
+import vip.gpg123.common.utils.Threads;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

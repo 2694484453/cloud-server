@@ -1,13 +1,13 @@
-package com.ruoyi.common.utils.ip;
+package vip.gpg123.common.utils.ip;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.http.HttpUtils;
+import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.http.HttpUtils;
 
 /**
  * 获取地址类

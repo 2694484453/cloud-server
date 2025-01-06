@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.file;
+package vip.gpg123.common.utils.file;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,14 +6,14 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
-import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
-import com.ruoyi.common.exception.file.FileSizeLimitExceededException;
-import com.ruoyi.common.exception.file.InvalidExtensionException;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.uuid.Seq;
+import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.exception.file.FileNameLengthLimitExceededException;
+import vip.gpg123.common.exception.file.FileSizeLimitExceededException;
+import vip.gpg123.common.exception.file.InvalidExtensionException;
+import vip.gpg123.common.utils.DateUtils;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.uuid.Seq;
 
 /**
  * 文件上传工具类

@@ -1,6 +1,6 @@
-package com.ruoyi.common.xss;
+package vip.gpg123.common.xss;
 
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.utils.StringUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Matcher;

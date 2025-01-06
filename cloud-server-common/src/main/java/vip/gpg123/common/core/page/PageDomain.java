@@ -1,6 +1,6 @@
-package com.ruoyi.common.core.page;
+package vip.gpg123.common.core.page;
 
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * 分页数据

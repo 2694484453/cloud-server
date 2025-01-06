@@ -1,8 +1,8 @@
-package com.ruoyi.common.core.text;
+package vip.gpg123.common.core.text;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * 字符集工具类

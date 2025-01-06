@@ -1,7 +1,7 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
 import cn.hutool.core.thread.ThreadUtil;
-import com.ruoyi.common.utils.K8sUtil;
+import vip.gpg123.common.utils.K8sUtil;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

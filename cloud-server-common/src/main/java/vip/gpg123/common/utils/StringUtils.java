@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils;
+package vip.gpg123.common.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.util.AntPathMatcher;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.text.StrFormatter;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.core.text.StrFormatter;
 
 /**
  * 字符串工具类

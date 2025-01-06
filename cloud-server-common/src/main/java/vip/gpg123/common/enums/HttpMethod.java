@@ -1,4 +1,4 @@
-package com.ruoyi.common.enums;
+package vip.gpg123.common.enums;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.ruoyi.common.annotation;
+package vip.gpg123.common.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

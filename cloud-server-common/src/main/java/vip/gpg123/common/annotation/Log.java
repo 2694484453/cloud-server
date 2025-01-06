@@ -1,4 +1,4 @@
-package com.ruoyi.common.annotation;
+package vip.gpg123.common.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.enums.OperatorType;
+import vip.gpg123.common.enums.BusinessType;
 
 /**
  * 自定义操作日志记录注解
@@ -27,7 +28,7 @@ public @interface Log
     /**
      * 功能
      */
-    public BusinessType businessType() default BusinessType.OTHER;
+    public BusinessType businessType() default;
 
     /**
      * 操作人类别

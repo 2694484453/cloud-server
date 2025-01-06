@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.file;
+package vip.gpg123.common.utils.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.uuid.IdUtils;
+import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.utils.DateUtils;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.uuid.IdUtils;
 import org.apache.commons.io.FilenameUtils;
 
 /**

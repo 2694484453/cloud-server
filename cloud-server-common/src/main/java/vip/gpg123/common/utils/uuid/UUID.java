@@ -1,11 +1,11 @@
-package com.ruoyi.common.utils.uuid;
+package vip.gpg123.common.utils.uuid;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import com.ruoyi.common.exception.UtilException;
+import vip.gpg123.common.exception.UtilException;
 
 /**
  * 提供通用唯一识别码（universally unique identifier）（UUID）实现

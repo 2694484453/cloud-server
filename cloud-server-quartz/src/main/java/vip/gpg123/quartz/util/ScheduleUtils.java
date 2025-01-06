@@ -1,4 +1,4 @@
-package com.ruoyi.quartz.util;
+package vip.gpg123.quartz.util;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -10,13 +10,13 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.constant.ScheduleConstants;
-import com.ruoyi.common.exception.job.TaskException;
-import com.ruoyi.common.exception.job.TaskException.Code;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.quartz.domain.SysJob;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.constant.ScheduleConstants;
+import vip.gpg123.common.exception.job.TaskException;
+import vip.gpg123.common.exception.job.TaskException.Code;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.spring.SpringUtils;
+import vip.gpg123.quartz.domain.SysJob;
 
 /**
  * 定时任务工具类

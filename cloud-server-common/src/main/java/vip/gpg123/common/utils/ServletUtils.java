@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils;
+package vip.gpg123.common.utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,8 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.text.Convert;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.core.text.Convert;
 
 /**
  * 客户端工具类

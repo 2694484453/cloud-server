@@ -1,4 +1,4 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,10 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
-import com.ruoyi.framework.config.properties.PermitAllUrlProperties;
-import com.ruoyi.framework.security.filter.JwtAuthenticationTokenFilter;
-import com.ruoyi.framework.security.handle.AuthenticationEntryPointImpl;
-import com.ruoyi.framework.security.handle.LogoutSuccessHandlerImpl;
+import vip.gpg123.framework.config.properties.PermitAllUrlProperties;
+import vip.gpg123.framework.security.filter.JwtAuthenticationTokenFilter;
+import vip.gpg123.framework.security.handle.AuthenticationEntryPointImpl;
+import vip.gpg123.framework.security.handle.LogoutSuccessHandlerImpl;
 
 /**
  * spring security配置

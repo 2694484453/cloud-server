@@ -1,4 +1,4 @@
-package com.ruoyi.framework.web.service;
+package vip.gpg123.framework.web.service;
 
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,27 +7,27 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.constant.CacheConstants;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.constant.UserConstants;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.exception.user.BlackListException;
-import com.ruoyi.common.exception.user.CaptchaException;
-import com.ruoyi.common.exception.user.CaptchaExpireException;
-import com.ruoyi.common.exception.user.UserNotExistsException;
-import com.ruoyi.common.exception.user.UserPasswordNotMatchException;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.ip.IpUtils;
-import com.ruoyi.framework.manager.AsyncManager;
-import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.framework.security.context.AuthenticationContextHolder;
-import com.ruoyi.system.service.ISysConfigService;
-import com.ruoyi.system.service.ISysUserService;
+import vip.gpg123.common.constant.CacheConstants;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.constant.UserConstants;
+import vip.gpg123.common.core.domain.entity.SysUser;
+import vip.gpg123.common.core.domain.model.LoginUser;
+import vip.gpg123.common.core.redis.RedisCache;
+import vip.gpg123.common.exception.ServiceException;
+import vip.gpg123.common.exception.user.BlackListException;
+import vip.gpg123.common.exception.user.CaptchaException;
+import vip.gpg123.common.exception.user.CaptchaExpireException;
+import vip.gpg123.common.exception.user.UserNotExistsException;
+import vip.gpg123.common.exception.user.UserPasswordNotMatchException;
+import vip.gpg123.common.utils.DateUtils;
+import vip.gpg123.common.utils.MessageUtils;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.ip.IpUtils;
+import vip.gpg123.framework.manager.AsyncManager;
+import vip.gpg123.framework.manager.factory.AsyncFactory;
+import vip.gpg123.framework.security.context.AuthenticationContextHolder;
+import vip.gpg123.system.service.ISysConfigService;
+import vip.gpg123.system.service.ISysUserService;
 
 /**
  * 登录校验方法

@@ -1,4 +1,4 @@
-package com.ruoyi.common.exception.job;
+package vip.gpg123.common.exception.job;
 
 /**
  * 计划策略异常

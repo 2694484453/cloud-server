@@ -1,6 +1,6 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
-import com.ruoyi.common.utils.K8sUtil;
+import vip.gpg123.common.utils.K8sUtil;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.client.OpenShiftClient;
 import org.springframework.context.annotation.Bean;

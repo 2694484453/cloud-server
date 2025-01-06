@@ -1,4 +1,4 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,9 +8,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.ruoyi.common.filter.RepeatableFilter;
-import com.ruoyi.common.filter.XssFilter;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.filter.RepeatableFilter;
+import vip.gpg123.common.filter.XssFilter;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * Filter配置

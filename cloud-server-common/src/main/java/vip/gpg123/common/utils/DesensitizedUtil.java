@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils;
+package vip.gpg123.common.utils;
 
 /**
  * 脱敏工具类

@@ -1,4 +1,4 @@
-package com.ruoyi.framework;
+package vip.gpg123.framework;
 
 import io.etcd.jetcd.Client;
 import org.springframework.beans.factory.annotation.Value;

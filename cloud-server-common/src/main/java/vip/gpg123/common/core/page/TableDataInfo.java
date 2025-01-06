@@ -1,4 +1,4 @@
-package com.ruoyi.common.core.page;
+package vip.gpg123.common.core.page;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.ruoyi.common.base;
+package vip.gpg123.common.base;
 
 /**
  * @author gaopuguang_zz

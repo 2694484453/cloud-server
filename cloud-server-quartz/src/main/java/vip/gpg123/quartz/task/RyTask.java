@@ -1,7 +1,7 @@
-package com.ruoyi.quartz.task;
+package vip.gpg123.quartz.task;
 
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * 定时任务调度测试

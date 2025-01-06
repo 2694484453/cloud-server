@@ -1,8 +1,8 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.utils.ServletUtils;
+import vip.gpg123.common.utils.ServletUtils;
 
 /**
  * 服务相关配置

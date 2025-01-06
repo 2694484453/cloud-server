@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.file;
+package vip.gpg123.common.utils.file;
 
 /**
  * 媒体类型工具类

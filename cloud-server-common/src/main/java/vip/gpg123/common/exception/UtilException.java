@@ -1,4 +1,4 @@
-package com.ruoyi.common.exception;
+package vip.gpg123.common.exception;
 
 /**
  * 工具类异常

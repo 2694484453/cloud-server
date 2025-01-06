@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.file;
+package vip.gpg123.common.utils.file;
 
 import java.io.File;
 import org.apache.commons.lang3.StringUtils;

@@ -1,4 +1,4 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
 import java.util.Properties;
 import org.springframework.context.annotation.Bean;

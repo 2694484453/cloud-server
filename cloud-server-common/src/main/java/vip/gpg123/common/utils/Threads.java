@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils;
+package vip.gpg123.common.utils;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;

@@ -1,7 +1,7 @@
-package com.ruoyi.common.core.page;
+package vip.gpg123.common.core.page;
 
-import com.ruoyi.common.core.text.Convert;
-import com.ruoyi.common.utils.ServletUtils;
+import vip.gpg123.common.core.text.Convert;
+import vip.gpg123.common.utils.ServletUtils;
 
 /**
  * 表格数据处理

@@ -1,4 +1,4 @@
-package com.ruoyi.framework.security.handle;
+package vip.gpg123.framework.security.handle;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -9,15 +9,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import com.alibaba.fastjson2.JSON;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.manager.AsyncManager;
-import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.framework.web.service.TokenService;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.domain.model.LoginUser;
+import vip.gpg123.common.utils.MessageUtils;
+import vip.gpg123.common.utils.ServletUtils;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.framework.manager.AsyncManager;
+import vip.gpg123.framework.manager.factory.AsyncFactory;
+import vip.gpg123.framework.web.service.TokenService;
 
 /**
  * 自定义退出处理类 返回成功

@@ -1,19 +1,19 @@
-package com.ruoyi.framework.manager.factory;
+package vip.gpg123.framework.manager.factory;
 
 import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.utils.LogUtils;
-import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.ip.AddressUtils;
-import com.ruoyi.common.utils.ip.IpUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.system.domain.SysLogininfor;
-import com.ruoyi.system.domain.SysOperLog;
-import com.ruoyi.system.service.ISysLogininforService;
-import com.ruoyi.system.service.ISysOperLogService;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.utils.LogUtils;
+import vip.gpg123.common.utils.ServletUtils;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.ip.AddressUtils;
+import vip.gpg123.common.utils.ip.IpUtils;
+import vip.gpg123.common.utils.spring.SpringUtils;
+import vip.gpg123.system.domain.SysLogininfor;
+import vip.gpg123.system.domain.SysOperLog;
+import vip.gpg123.system.service.ISysLogininforService;
+import vip.gpg123.system.service.ISysOperLogService;
 import eu.bitwalker.useragentutils.UserAgent;
 
 /**

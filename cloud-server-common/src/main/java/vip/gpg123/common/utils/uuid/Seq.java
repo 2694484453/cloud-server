@@ -1,8 +1,8 @@
-package com.ruoyi.common.utils.uuid;
+package vip.gpg123.common.utils.uuid;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.utils.DateUtils;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * @author gpg123 序列生成类

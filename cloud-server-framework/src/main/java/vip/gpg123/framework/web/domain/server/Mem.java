@@ -1,6 +1,6 @@
-package com.ruoyi.framework.web.domain.server;
+package vip.gpg123.framework.web.domain.server;
 
-import com.ruoyi.common.utils.Arith;
+import vip.gpg123.common.utils.Arith;
 
 /**
  * 內存相关信息

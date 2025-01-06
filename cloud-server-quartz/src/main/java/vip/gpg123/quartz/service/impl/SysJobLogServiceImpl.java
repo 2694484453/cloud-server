@@ -1,11 +1,11 @@
-package com.ruoyi.quartz.service.impl;
+package vip.gpg123.quartz.service.impl;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.quartz.domain.SysJobLog;
-import com.ruoyi.quartz.mapper.SysJobLogMapper;
-import com.ruoyi.quartz.service.ISysJobLogService;
+import vip.gpg123.quartz.domain.SysJobLog;
+import vip.gpg123.quartz.mapper.SysJobLogMapper;
+import vip.gpg123.quartz.service.ISysJobLogService;
 
 /**
  * 定时任务调度日志信息 服务层

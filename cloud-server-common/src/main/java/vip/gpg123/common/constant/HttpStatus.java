@@ -1,4 +1,4 @@
-package com.ruoyi.common.constant;
+package vip.gpg123.common.constant;
 
 /**
  * 返回状态码

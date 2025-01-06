@@ -1,4 +1,4 @@
-package com.ruoyi.quartz.domain;
+package vip.gpg123.quartz.domain;
 
 import java.util.Date;
 import javax.validation.constraints.NotBlank;
@@ -6,12 +6,12 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.annotation.Excel.ColumnType;
-import com.ruoyi.common.constant.ScheduleConstants;
-import com.ruoyi.common.core.domain.BaseEntity;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.quartz.util.CronUtils;
+import vip.gpg123.common.annotation.Excel;
+import vip.gpg123.common.annotation.Excel.ColumnType;
+import vip.gpg123.common.constant.ScheduleConstants;
+import vip.gpg123.common.core.domain.BaseEntity;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.quartz.util.CronUtils;
 
 /**
  * 定时任务调度表 sys_job

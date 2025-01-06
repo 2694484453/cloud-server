@@ -1,4 +1,4 @@
-package com.ruoyi.framework.aspectj;
+package vip.gpg123.framework.aspectj;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,15 +6,15 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.annotation.DataScope;
-import com.ruoyi.common.core.domain.BaseEntity;
-import com.ruoyi.common.core.domain.entity.SysRole;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.text.Convert;
-import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.security.context.PermissionContextHolder;
+import vip.gpg123.common.annotation.DataScope;
+import vip.gpg123.common.core.domain.BaseEntity;
+import vip.gpg123.common.core.domain.entity.SysRole;
+import vip.gpg123.common.core.domain.entity.SysUser;
+import vip.gpg123.common.core.domain.model.LoginUser;
+import vip.gpg123.common.core.text.Convert;
+import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.framework.security.context.PermissionContextHolder;
 
 /**
  * 数据过滤处理

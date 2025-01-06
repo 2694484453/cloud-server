@@ -1,4 +1,4 @@
-package com.ruoyi.common.exception;
+package vip.gpg123.common.exception;
 
 /**
  * 演示模式异常

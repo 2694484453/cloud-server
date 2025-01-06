@@ -1,4 +1,4 @@
-package com.ruoyi.framework.aspectj;
+package vip.gpg123.framework.aspectj;
 
 import java.util.Objects;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.annotation.DataSource;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.datasource.DynamicDataSourceContextHolder;
+import vip.gpg123.common.annotation.DataSource;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.framework.datasource.DynamicDataSourceContextHolder;
 
 /**
  * 多数据源处理

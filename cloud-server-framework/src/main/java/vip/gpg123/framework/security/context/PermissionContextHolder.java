@@ -1,8 +1,8 @@
-package com.ruoyi.framework.security.context;
+package vip.gpg123.framework.security.context;
 
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import com.ruoyi.common.core.text.Convert;
+import vip.gpg123.common.core.text.Convert;
 
 /**
  * 权限信息

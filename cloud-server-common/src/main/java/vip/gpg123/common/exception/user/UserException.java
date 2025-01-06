@@ -1,6 +1,6 @@
-package com.ruoyi.common.exception.user;
+package vip.gpg123.common.exception.user;
 
-import com.ruoyi.common.exception.base.BaseException;
+import vip.gpg123.common.exception.base.BaseException;
 
 /**
  * 用户信息异常类

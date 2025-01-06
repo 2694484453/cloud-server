@@ -1,16 +1,16 @@
-package com.ruoyi.common.core.domain.entity;
+package vip.gpg123.common.core.domain.entity;
 
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.annotation.Excel.ColumnType;
-import com.ruoyi.common.annotation.Excel.Type;
-import com.ruoyi.common.annotation.Excels;
-import com.ruoyi.common.core.domain.BaseEntity;
-import com.ruoyi.common.xss.Xss;
+import vip.gpg123.common.annotation.Excel;
+import vip.gpg123.common.annotation.Excel.ColumnType;
+import vip.gpg123.common.annotation.Excel.Type;
+import vip.gpg123.common.annotation.Excels;
+import vip.gpg123.common.core.domain.BaseEntity;
+import vip.gpg123.common.xss.Xss;
 
 /**
  * 用户对象 sys_user

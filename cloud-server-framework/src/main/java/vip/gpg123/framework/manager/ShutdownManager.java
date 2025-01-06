@@ -1,4 +1,4 @@
-package com.ruoyi.framework.manager;
+package vip.gpg123.framework.manager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.ruoyi.common.core.domain.model;
+package vip.gpg123.common.core.domain.model;
 
 /**
  * 用户登录对象

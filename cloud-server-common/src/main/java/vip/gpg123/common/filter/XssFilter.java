@@ -1,4 +1,4 @@
-package com.ruoyi.common.filter;
+package vip.gpg123.common.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.enums.HttpMethod;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.enums.HttpMethod;
 
 /**
  * 防止XSS攻击的过滤器

@@ -1,7 +1,7 @@
-package com.ruoyi.quartz.mapper;
+package vip.gpg123.quartz.mapper;
 
 import java.util.List;
-import com.ruoyi.quartz.domain.SysJob;
+import vip.gpg123.quartz.domain.SysJob;
 
 /**
  * 调度任务信息 数据层

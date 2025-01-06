@@ -1,8 +1,8 @@
-package com.ruoyi.quartz.util;
+package vip.gpg123.quartz.util;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
-import com.ruoyi.quartz.domain.SysJob;
+import vip.gpg123.quartz.domain.SysJob;
 
 /**
  * 定时任务处理（禁止并发执行）

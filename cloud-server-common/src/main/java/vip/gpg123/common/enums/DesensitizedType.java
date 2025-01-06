@@ -1,7 +1,7 @@
-package com.ruoyi.common.enums;
+package vip.gpg123.common.enums;
 
 import java.util.function.Function;
-import com.ruoyi.common.utils.DesensitizedUtil;
+import vip.gpg123.common.utils.DesensitizedUtil;
 
 /**
  * 脱敏类型

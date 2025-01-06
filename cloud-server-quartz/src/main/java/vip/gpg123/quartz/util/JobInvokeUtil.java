@@ -1,12 +1,12 @@
-package com.ruoyi.quartz.util;
+package vip.gpg123.quartz.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.quartz.domain.SysJob;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.spring.SpringUtils;
+import vip.gpg123.quartz.domain.SysJob;
 
 /**
  * 任务执行工具

@@ -1,4 +1,4 @@
-package com.ruoyi.framework.aspectj;
+package vip.gpg123.framework.aspectj;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.annotation.RateLimiter;
-import com.ruoyi.common.enums.LimitType;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.ip.IpUtils;
+import vip.gpg123.common.annotation.RateLimiter;
+import vip.gpg123.common.enums.LimitType;
+import vip.gpg123.common.exception.ServiceException;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.ip.IpUtils;
 
 /**
  * 限流处理

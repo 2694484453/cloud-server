@@ -1,10 +1,10 @@
-package com.ruoyi.common.utils.ip;
+package vip.gpg123.common.utils.ip;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.servlet.http.HttpServletRequest;
-import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.utils.ServletUtils;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * 获取IP方法

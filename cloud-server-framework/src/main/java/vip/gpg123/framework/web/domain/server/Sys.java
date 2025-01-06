@@ -1,4 +1,4 @@
-package com.ruoyi.framework.web.domain.server;
+package vip.gpg123.framework.web.domain.server;
 
 /**
  * 系统相关信息

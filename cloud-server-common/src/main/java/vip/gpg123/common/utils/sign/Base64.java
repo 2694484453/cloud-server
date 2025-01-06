@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.sign;
+package vip.gpg123.common.utils.sign;
 
 /**
  * Base64工具类

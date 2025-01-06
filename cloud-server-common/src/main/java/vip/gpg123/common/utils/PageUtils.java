@@ -1,14 +1,14 @@
-package com.ruoyi.common.utils;
+package vip.gpg123.common.utils;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PageUtil;
 import cn.hutool.core.util.TypeUtil;
 import cn.hutool.json.JSONArray;
 import com.github.pagehelper.PageHelper;
-import com.ruoyi.common.core.page.PageDomain;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.page.TableSupport;
-import com.ruoyi.common.utils.sql.SqlUtil;
+import vip.gpg123.common.core.page.PageDomain;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.sql.SqlUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.ruoyi.quartz.util;
+package vip.gpg123.quartz.util;
 
 import java.text.ParseException;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.http;
+package vip.gpg123.common.utils.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,8 +19,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * 通用http发送方法

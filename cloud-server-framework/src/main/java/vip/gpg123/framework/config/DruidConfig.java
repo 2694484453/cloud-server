@@ -1,4 +1,4 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,10 +19,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
 import com.alibaba.druid.util.Utils;
-import com.ruoyi.common.enums.DataSourceType;
-import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.framework.config.properties.DruidProperties;
-import com.ruoyi.framework.datasource.DynamicDataSource;
+import vip.gpg123.common.enums.DataSourceType;
+import vip.gpg123.common.utils.spring.SpringUtils;
+import vip.gpg123.framework.config.properties.DruidProperties;
+import vip.gpg123.framework.datasource.DynamicDataSource;
 
 /**
  * druid 配置多数据源

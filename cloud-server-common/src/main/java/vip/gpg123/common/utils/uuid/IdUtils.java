@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.uuid;
+package vip.gpg123.common.utils.uuid;
 
 /**
  * ID生成器工具类

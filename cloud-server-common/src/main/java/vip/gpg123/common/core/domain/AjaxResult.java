@@ -1,9 +1,9 @@
-package com.ruoyi.common.core.domain;
+package vip.gpg123.common.core.domain;
 
 import java.util.HashMap;
 import java.util.Objects;
-import com.ruoyi.common.constant.HttpStatus;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.constant.HttpStatus;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * 操作消息提醒

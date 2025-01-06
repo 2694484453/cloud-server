@@ -1,4 +1,4 @@
-package com.ruoyi.common.core.domain;
+package vip.gpg123.common.core.domain;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -1,7 +1,7 @@
-package com.ruoyi.common.utils.sql;
+package vip.gpg123.common.utils.sql;
 
-import com.ruoyi.common.exception.UtilException;
-import com.ruoyi.common.utils.StringUtils;
+import vip.gpg123.common.exception.UtilException;
+import vip.gpg123.common.utils.StringUtils;
 
 /**
  * sql操作工具类

@@ -1,4 +1,4 @@
-package com.ruoyi.framework.config;
+package vip.gpg123.framework.config;
 
 import java.util.TimeZone;
 import org.mybatis.spring.annotation.MapperScan;

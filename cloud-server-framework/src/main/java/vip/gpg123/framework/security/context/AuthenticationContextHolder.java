@@ -1,4 +1,4 @@
-package com.ruoyi.framework.security.context;
+package vip.gpg123.framework.security.context;
 
 import org.springframework.security.core.Authentication;
 

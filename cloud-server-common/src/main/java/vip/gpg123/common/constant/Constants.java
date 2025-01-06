@@ -1,4 +1,4 @@
-package com.ruoyi.common.constant;
+package vip.gpg123.common.constant;
 
 import java.util.Locale;
 import io.jsonwebtoken.Claims;

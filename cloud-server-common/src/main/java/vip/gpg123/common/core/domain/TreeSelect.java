@@ -1,11 +1,11 @@
-package com.ruoyi.common.core.domain;
+package vip.gpg123.common.core.domain;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ruoyi.common.core.domain.entity.SysDept;
-import com.ruoyi.common.core.domain.entity.SysMenu;
+import vip.gpg123.common.core.domain.entity.SysDept;
+import vip.gpg123.common.core.domain.entity.SysMenu;
 
 /**
  * Treeselect树结构实体类

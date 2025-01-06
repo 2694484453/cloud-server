@@ -1,4 +1,4 @@
-package com.ruoyi.common.exception.user;
+package vip.gpg123.common.exception.user;
 
 /**
  * 验证码错误异常类

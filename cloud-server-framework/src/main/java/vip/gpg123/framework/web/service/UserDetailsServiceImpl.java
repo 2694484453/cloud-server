@@ -1,4 +1,4 @@
-package com.ruoyi.framework.web.service;
+package vip.gpg123.framework.web.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,13 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.UserStatus;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.service.ISysUserService;
+import vip.gpg123.common.core.domain.entity.SysUser;
+import vip.gpg123.common.core.domain.model.LoginUser;
+import vip.gpg123.common.enums.UserStatus;
+import vip.gpg123.common.exception.ServiceException;
+import vip.gpg123.common.utils.MessageUtils;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.system.service.ISysUserService;
 
 /**
  * 用户验证处理

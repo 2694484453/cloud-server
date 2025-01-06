@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.bean;
+package vip.gpg123.common.utils.bean;
 
 import java.util.Set;
 import javax.validation.ConstraintViolation;

@@ -1,16 +1,16 @@
-package com.ruoyi.framework.web.domain;
+package vip.gpg123.framework.web.domain;
 
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import com.ruoyi.common.utils.Arith;
-import com.ruoyi.common.utils.ip.IpUtils;
-import com.ruoyi.framework.web.domain.server.Cpu;
-import com.ruoyi.framework.web.domain.server.Jvm;
-import com.ruoyi.framework.web.domain.server.Mem;
-import com.ruoyi.framework.web.domain.server.Sys;
-import com.ruoyi.framework.web.domain.server.SysFile;
+import vip.gpg123.common.utils.Arith;
+import vip.gpg123.common.utils.ip.IpUtils;
+import vip.gpg123.framework.web.domain.server.Cpu;
+import vip.gpg123.framework.web.domain.server.Jvm;
+import vip.gpg123.framework.web.domain.server.Mem;
+import vip.gpg123.framework.web.domain.server.Sys;
+import vip.gpg123.framework.web.domain.server.SysFile;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.CentralProcessor.TickType;

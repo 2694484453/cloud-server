@@ -1,4 +1,4 @@
-package com.ruoyi.common.utils.sign;
+package vip.gpg123.common.utils.sign;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

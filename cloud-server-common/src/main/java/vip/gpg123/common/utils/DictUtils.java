@@ -1,12 +1,12 @@
-package com.ruoyi.common.utils;
+package vip.gpg123.common.utils;
 
 import java.util.Collection;
 import java.util.List;
 import com.alibaba.fastjson2.JSONArray;
-import com.ruoyi.common.constant.CacheConstants;
-import com.ruoyi.common.core.domain.entity.SysDictData;
-import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.utils.spring.SpringUtils;
+import vip.gpg123.common.constant.CacheConstants;
+import vip.gpg123.common.core.domain.entity.SysDictData;
+import vip.gpg123.common.core.redis.RedisCache;
+import vip.gpg123.common.utils.spring.SpringUtils;
 
 /**
  * 字典工具类

@@ -1,4 +1,4 @@
-package com.ruoyi.quartz.util;
+package vip.gpg123.quartz.util;
 
 import java.util.Date;
 import org.quartz.Job;
@@ -6,15 +6,15 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.constant.ScheduleConstants;
-import com.ruoyi.common.utils.ExceptionUtil;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.bean.BeanUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.quartz.domain.SysJob;
-import com.ruoyi.quartz.domain.SysJobLog;
-import com.ruoyi.quartz.service.ISysJobLogService;
+import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.constant.ScheduleConstants;
+import vip.gpg123.common.utils.ExceptionUtil;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.common.utils.bean.BeanUtils;
+import vip.gpg123.common.utils.spring.SpringUtils;
+import vip.gpg123.quartz.domain.SysJob;
+import vip.gpg123.quartz.domain.SysJobLog;
+import vip.gpg123.quartz.service.ISysJobLogService;
 
 /**
  * 抽象quartz调用

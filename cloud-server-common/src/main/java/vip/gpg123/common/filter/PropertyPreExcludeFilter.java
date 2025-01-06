@@ -1,4 +1,4 @@
-package com.ruoyi.common.filter;
+package vip.gpg123.common.filter;
 
 import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
 

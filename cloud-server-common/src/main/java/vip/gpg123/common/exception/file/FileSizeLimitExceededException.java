@@ -1,4 +1,4 @@
-package com.ruoyi.common.exception.file;
+package vip.gpg123.common.exception.file;
 
 /**
  * 文件名大小限制异常类
