@@ -9,9 +9,9 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import vip.gpg123.common.annotation.Sensitive;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.DesensitizedType;
-import com.ruoyi.common.utils.SecurityUtils;
+import vip.gpg123.common.core.domain.model.LoginUser;
+import vip.gpg123.common.enums.DesensitizedType;
+import vip.gpg123.common.utils.SecurityUtils;
 
 /**
  * 数据脱敏序列化过滤

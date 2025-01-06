@@ -5,8 +5,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.ruoyi.common.constant.CacheConstants;
-import com.ruoyi.common.enums.LimitType;
+import vip.gpg123.common.constant.CacheConstants;
+import vip.gpg123.common.enums.LimitType;
 
 /**
  * 限流注解

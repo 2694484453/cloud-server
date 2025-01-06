@@ -19,7 +19,7 @@ import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.common.utils.bean.BeanValidators;
 import vip.gpg123.common.utils.spring.SpringUtils;
-import vip.gpg.system.domain.SysPost;
+import vip.gpg123.system.domain.SysPost;
 import vip.gpg123.system.domain.SysUserPost;
 import vip.gpg123.system.domain.SysUserRole;
 import vip.gpg123.system.mapper.SysPostMapper;

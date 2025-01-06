@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import vip.gpg123.common.constant.UserConstants;
 import vip.gpg123.common.exception.ServiceException;
 import vip.gpg123.common.utils.StringUtils;
-import vip.gpg.system.domain.SysPost;
+import vip.gpg123.system.domain.SysPost;
 import vip.gpg123.system.mapper.SysPostMapper;
 import vip.gpg123.system.mapper.SysUserPostMapper;
 import vip.gpg123.system.service.ISysPostService;

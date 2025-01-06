@@ -1,7 +1,7 @@
 package vip.gpg123.system.mapper;
 
 import java.util.List;
-import com.ruoyi.common.core.domain.entity.SysDictType;
+import vip.gpg123.common.core.domain.entity.SysDictType;
 
 /**
  * 字典表 数据层
