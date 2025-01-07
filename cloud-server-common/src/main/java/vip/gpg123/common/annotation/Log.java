@@ -28,7 +28,7 @@ public @interface Log
     /**
      * 功能
      */
-    public BusinessType businessType() default;
+    public BusinessType businessType() default BusinessType.OTHER;
 
     /**
      * 操作人类别
