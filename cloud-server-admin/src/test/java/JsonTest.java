@@ -1,6 +1,6 @@
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
-import vip.gpg.build.domain.GiteeRepo;
+import vip.gpg123.admin.build.domain.GiteeRepo;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;

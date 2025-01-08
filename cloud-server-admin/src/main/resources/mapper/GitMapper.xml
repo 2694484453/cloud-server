@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vip.gpg.git.mapper.GitMapper">
+<mapper namespace="vip.gpg123.admin.git.mapper.GitMapper">
 
-    <resultMap id="BaseResultMap" type="vip.gpg.git.domain.Git">
+    <resultMap id="BaseResultMap" type="vip.gpg123.admin.git.domain.Git">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="code" column="code" jdbcType="VARCHAR"/>

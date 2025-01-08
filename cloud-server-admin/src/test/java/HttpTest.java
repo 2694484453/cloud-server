@@ -1,7 +1,7 @@
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import vip.gpg.git.domain.Gitee;
+import vip.gpg123.admin.git.domain.Gitee;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
