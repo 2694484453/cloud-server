@@ -219,8 +219,8 @@
         <!--jaeger-->
         <dependency>
             <groupId>io.opentracing.contrib</groupId>
-            <artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>
-            <version>3.3.1</version>
+            <artifactId>opentracing-spring-jaeger-web-starter</artifactId>
+            <version>3.1.1</version>
         </dependency>
     </dependencies>
     <modules>
