@@ -1,5 +1,6 @@
 package vip.gpg123.common.config;
 
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -8,9 +9,10 @@ import org.springframework.stereotype.Component;
  *
  * @author gpg123
  */
+@Getter
 @Component
-@ConfigurationProperties(prefix = "gpg123")
-public class RuoYiConfig
+@ConfigurationProperties(prefix = "cloud-server")
+public class CloudServerConfig
 {
     /** 项目名称 */
     private String name;
@@ -22,27 +24,20 @@ public class RuoYiConfig
     private String copyrightYear;
 
     /** 上传路径 */
+    @Getter
     private static String profile;
 
     /** 获取地址开关 */
+    @Getter
     private static boolean addressEnabled;
 
     /** 验证码类型 */
+    @Getter
     private static String captchaType;
-
-    public String getName()
-    {
-        return name;
-    }
 
     public void setName(String name)
     {
         this.name = name;
-    }
-
-    public String getVersion()
-    {
-        return version;
     }
 
     public void setVersion(String version)
@@ -50,42 +45,23 @@ public class RuoYiConfig
         this.version = version;
     }
 
-    public String getCopyrightYear()
-    {
-        return copyrightYear;
-    }
-
     public void setCopyrightYear(String copyrightYear)
     {
         this.copyrightYear = copyrightYear;
     }
 
-    public static String getProfile()
-    {
-        return profile;
-    }
-
     public void setProfile(String profile)
     {
-        RuoYiConfig.profile = profile;
-    }
-
-    public static boolean isAddressEnabled()
-    {
-        return addressEnabled;
+        CloudServerConfig.profile = profile;
     }
 
     public void setAddressEnabled(boolean addressEnabled)
     {
-        RuoYiConfig.addressEnabled = addressEnabled;
-    }
-
-    public static String getCaptchaType() {
-        return captchaType;
+        CloudServerConfig.addressEnabled = addressEnabled;
     }
 
     public void setCaptchaType(String captchaType) {
-        RuoYiConfig.captchaType = captchaType;
+        CloudServerConfig.captchaType = captchaType;
     }
 
     /**

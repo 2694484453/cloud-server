@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.config.CloudServerConfig;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.common.utils.http.HttpUtils;
@@ -31,7 +31,7 @@ public class AddressUtils
         {
             return "内网IP";
         }
-        if (RuoYiConfig.isAddressEnabled())
+        if (CloudServerConfig.isAddressEnabled())
         {
             try
             {

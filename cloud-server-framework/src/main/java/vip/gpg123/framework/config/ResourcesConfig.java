@@ -11,7 +11,7 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.config.CloudServerConfig;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.framework.interceptor.RepeatSubmitInterceptor;
 
@@ -31,7 +31,7 @@ public class ResourcesConfig implements WebMvcConfigurer
     {
         /** 本地文件上传路径 */
         registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**")
-                .addResourceLocations("file:" + RuoYiConfig.getProfile() + "/");
+                .addResourceLocations("file:" + CloudServerConfig.getProfile() + "/");
 
         /** swagger配置 */
         registry.addResourceHandler("/swagger-ui/**")

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.config.CloudServerConfig;
 import vip.gpg123.common.utils.DateUtils;
 import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.common.utils.uuid.IdUtils;
@@ -73,7 +73,7 @@ public class FileUtils
      */
     public static String writeImportBytes(byte[] data) throws IOException
     {
-        return writeBytes(data, RuoYiConfig.getImportPath());
+        return writeBytes(data, CloudServerConfig.getImportPath());
     }
 
     /**

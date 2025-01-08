@@ -11,7 +11,7 @@ import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.code.kaptcha.Producer;
-import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.config.CloudServerConfig;
 import vip.gpg123.common.constant.CacheConstants;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -61,7 +61,7 @@ public class CaptchaController
         BufferedImage image = null;
 
         // 生成验证码
-        String captchaType = RuoYiConfig.getCaptchaType();
+        String captchaType = CloudServerConfig.getCaptchaType();
         if ("math".equals(captchaType))
         {
             String capText = captchaProducerMath.createText();

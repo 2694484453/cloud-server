@@ -74,7 +74,7 @@ import vip.gpg123.common.annotation.Excel;
 import vip.gpg123.common.annotation.Excel.ColumnType;
 import vip.gpg123.common.annotation.Excel.Type;
 import vip.gpg123.common.annotation.Excels;
-import vip.gpg123.common.config.RuoYiConfig;
+import vip.gpg123.common.config.CloudServerConfig;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.text.Convert;
 import vip.gpg123.common.exception.UtilException;
@@ -1393,7 +1393,7 @@ public class ExcelUtil<T>
      */
     public String getAbsoluteFile(String filename)
     {
-        String downloadPath = RuoYiConfig.getDownloadPath() + filename;
+        String downloadPath = CloudServerConfig.getDownloadPath() + filename;
         File desc = new File(downloadPath);
         if (!desc.getParentFile().exists())
         {
