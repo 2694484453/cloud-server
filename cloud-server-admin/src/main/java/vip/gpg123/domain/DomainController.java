@@ -1,0 +1,97 @@
+package vip.gpg123.domain;
+
+import cn.hutool.core.lang.Console;
+import cn.hutool.setting.Setting;
+import com.aliyun.alidns20150109.Client;
+import com.aliyun.alidns20150109.models.DescribeDomainRecordsRequest;
+import com.aliyun.alidns20150109.models.DescribeDomainRecordsResponse;
+import com.aliyun.tea.TeaException;
+import com.aliyun.tea.TeaModel;
+import com.aliyun.teaopenapi.models.Config;
+import vip.gpg123.common.core.domain.AjaxResult;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * @author gaopuguang
+ * @date 2024/9/3 0:43
+ **/
+@RestController
+@RequestMapping("/domain")
+public class DomainController {
+
+    /**
+     * 查询域名列表
+     *
+     * @return r
+     */
+    @GetMapping("/domainList")
+    public AjaxResult list() {
+        Setting setting = getSetting();
+        String domainNames = setting.getStr("DOMAIN", "domain", "gpg123.cn");
+        String[] domainNameArr = domainNames.split(",");
+        return AjaxResult.success(domainNameArr);
+    }
+
+    /**
+     * DescribeDomainRecords 查询域名解析记录
+     *
+     * @param domainName 域名名称
+     */
+    @GetMapping("/page")
+    @ApiOperation(value = "查询域名解析记录")
+    public AjaxResult DescribeDomainRecords(@RequestParam(value = "domainName", required = false, defaultValue = "gpg123.cn") String domainName,
+                                            @RequestParam(value = "keyWord", required = false) String keyWord) {
+        DescribeDomainRecordsRequest req = new DescribeDomainRecordsRequest();
+        req.domainName = domainName;
+        req.setKeyWord(keyWord);
+        Console.log("查询域名(" + domainName + ")的解析记录(json)↓");
+        try {
+            DescribeDomainRecordsResponse resp = createClient().describeDomainRecords(req);
+            Console.log(com.aliyun.teautil.Common.toJSONString(TeaModel.buildMap(resp)));
+            Map<String, Object> resultMap = TeaModel.buildMap(resp);
+            Map<String, Object> bodyMap = (Map<String, Object>) resultMap.get("body");
+            return AjaxResult.success(bodyMap);
+        } catch (TeaException error) {
+            Console.log(error.message);
+        } catch (Exception _error) {
+            TeaException error = new TeaException(_error.getMessage(), _error);
+            Console.log(error.message);
+        }
+        return null;
+    }
+
+    /**
+     * 创建客户端
+     *
+     * @return r
+     * @throws Exception e
+     */
+    private Client createClient() throws Exception {
+        Setting setting = getSetting();
+//        Config config = new Config()
+//                // 必填，请确保代码运行环境设置了环境变量 ALIBABA_CLOUD_ACCESS_KEY_ID。
+//                .setAccessKeyId(setting.getStr("ALIBABA_CLOUD_ACCESS_KEY_ID", "account", ""))
+//                // 必填，请确保代码运行环境设置了环境变量 ALIBABA_CLOUD_ACCESS_KEY_SECRET。
+//                .setAccessKeySecret(setting.getStr("ALIBABA_CLOUD_ACCESS_KEY_SECRET", "account", ""))
+//                // Endpoint 请参考 https://api.aliyun.com/product/Domain
+//                .setEndpoint(setting.getStr("ENDPOINT", "account", ""));
+//        return new Client(config);
+        Config config = new Config();
+        config.setAccessKeyId(setting.getStr("ALIBABA_CLOUD_ACCESS_KEY_ID", "account", ""));
+        config.setAccessKeySecret(setting.getStr("ALIBABA_CLOUD_ACCESS_KEY_SECRET", "account", ""));
+        config.setRegionId("cn-hangzhou");
+        config.setSignatureVersion("2024-08-29");
+        config.setEndpoint(setting.getStr("ENDPOINT", "account", ""));
+        return new Client(config);
+    }
+
+    private Setting getSetting() {
+        return new Setting("config/config");
+    }
+}
