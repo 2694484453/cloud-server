@@ -11,6 +11,11 @@ build:
   helm: /home/helm-repo
 etcd:
   endpoints: http://server.gpg123.vip:12379
+repo:
+  helm:
+    name: gpg_dev
+    url: https://helm-repo.gpg123.vip/index.yaml
+
 basePath: /home
 #git应用
 git:
