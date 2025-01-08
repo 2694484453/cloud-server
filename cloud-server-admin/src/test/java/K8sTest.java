@@ -1,6 +1,6 @@
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import com.ruoyi.common.utils.K8sUtil;
+import vip.gpg123.common.utils.K8sUtil;
 import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ListOptions;

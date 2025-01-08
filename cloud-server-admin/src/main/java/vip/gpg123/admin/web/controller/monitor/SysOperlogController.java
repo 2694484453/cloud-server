@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import vip.gpg123.admin.system.domain.SysOperLog;
-import vip.gpg123.admin.system.service.ISysOperLogService;
+import vip.gpg123.common.annotation.Log;
+import vip.gpg123.common.core.controller.BaseController;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.enums.BusinessType;
+import vip.gpg123.common.utils.poi.ExcelUtil;
+import vip.gpg123.system.domain.SysOperLog;
+import vip.gpg123.system.service.ISysOperLogService;
 
 /**
  * 操作日志记录

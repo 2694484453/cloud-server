@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ruoyi.common.constant.CacheConstants;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.StringUtils;
-import vip.gpg123.admin.system.domain.SysCache;
+import vip.gpg123.common.constant.CacheConstants;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.system.domain.SysCache;
 
 /**
  * 缓存监控

@@ -1,11 +1,11 @@
 package vip.gpg123.admin.traefik;
 
 import cn.hutool.core.convert.Convert;
-import com.ruoyi.common.utils.K8sUtil;
-import com.ruoyi.common.core.domain.AjaxResult;
+import vip.gpg123.common.utils.K8sUtil;
+import vip.gpg123.common.core.domain.AjaxResult;
 
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.utils.PageUtils;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.utils.PageUtils;
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
 import io.fabric8.kubernetes.api.model.networking.v1.IngressList;
 import io.swagger.annotations.Api;

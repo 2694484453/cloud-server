@@ -18,7 +18,7 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.redis.RedisCache;
 import vip.gpg123.common.utils.sign.Base64;
 import vip.gpg123.common.utils.uuid.IdUtils;
-import vip.gpg123.admin.system.service.ISysConfigService;
+import vip.gpg123.system.service.ISysConfigService;
 
 /**
  * 验证码操作处理
