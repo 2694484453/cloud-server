@@ -2,7 +2,7 @@ version: "3"
 services:
   jdk8-mvn-build:
     image: maven:3.8.4-openjdk-8
-    container_name: jdk8-mvn-build
+    container_name: jdk8-mvn-devops
     privileged: true
     user: root
     #entrypoint: [ "/bin/sh","-c","wget https://dev-1306623386.cos.ap-shanghai.myqcloud.com/shell/mvn-entrypoint.sh -o /usr/local/bin/mvn-entrypoint.sh && chmod +x /usr/local/bin/mvn-entrypoint.sh && /usr/local/bin/mvn-entrypoint.sh" ]

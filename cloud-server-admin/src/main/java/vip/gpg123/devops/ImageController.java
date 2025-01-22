@@ -1,4 +1,4 @@
-package vip.gpg123.build;
+package vip.gpg123.devops;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -64,7 +64,6 @@ public class ImageController {
         types = ArrayUtil.append(types,
                 "registry.cn-hangzhou.aliyuncs.com",
                 "repo.gpg123.vip");
-
         return AjaxResult.success(types);
     }
 

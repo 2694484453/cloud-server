@@ -10,7 +10,7 @@ spec:
     spec:
       restartPolicy: OnFailure
       containers:
-        - name: jdk8-build
+        - name: jdk8-devops
           image: maven:3.8.4-openjdk-8
           imagePullPolicy: IfNotPresent
           command: [ "/bin/sh","-c","/usr/local/bin/entrypoint.sh" ]
