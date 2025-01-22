@@ -33,4 +33,4 @@ opentracing:
     enable128-bit-traces: true # 使用短TraceID（可以不配置）
     udp-sender:
       host: 124.221.2.29 # 配置Jaeger服务器地址
-      port: 4318
+      port: 6831

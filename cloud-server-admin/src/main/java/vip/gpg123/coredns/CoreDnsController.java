@@ -1,4 +1,4 @@
-package vip.gpg123.dns;
+package vip.gpg123.coredns;
 
 import cn.hutool.core.convert.Convert;
 import vip.gpg123.common.core.domain.AjaxResult;

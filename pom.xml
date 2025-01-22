@@ -31,6 +31,7 @@
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
         <k8s.version>6.5.1</k8s.version>
+        <opentelemetry.version>1.36.0</opentelemetry.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -216,7 +217,7 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-        <!--jaeger-->
+        <!-- Jaeger Spring Boot Starter -->
         <dependency>
             <groupId>io.opentracing.contrib</groupId>
             <artifactId>opentracing-spring-jaeger-web-starter</artifactId>

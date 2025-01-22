@@ -1,5 +1,6 @@
 package vip.gpg123.common.utils;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PageUtil;
 import cn.hutool.core.util.TypeUtil;
@@ -44,7 +45,7 @@ public class PageUtils extends PageHelper {
         if (total - 1 <= endIndex) {
             endIndex = total - 1;
         }
-        list = list.subList(startIndex, endIndex);
+        list = ListUtil.sub(list, startIndex, endIndex + 1);
         return new TableDataInfo(total, totalPage, list);
     }
 
