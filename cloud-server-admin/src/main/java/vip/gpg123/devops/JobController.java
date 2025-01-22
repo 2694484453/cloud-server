@@ -68,7 +68,7 @@ public class JobController {
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam("name") String name) {
-        Job job = K8sUtil.createKClient().batch().v1().jobs().withName(name).get();
+        Job job = K8sUtil.createKClient().batch().v1().jobs().inNamespace("default").withName(name).get();
         if (ObjectUtil.isNotEmpty(job)) {
             return AjaxResult.success("查询成功", job);
         }
