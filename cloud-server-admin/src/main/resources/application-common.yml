@@ -27,10 +27,11 @@ git:
     client_secret: 3774068556c18b1e70400229c45530a1385dad8189612dc1dfaf7a5b06a84c04
     api: https://gitee.com/oauth/token
 #链路追踪
-opentracing:
-  jaeger:
-    enabled: true # 启用对接Jaeger（可以不配置，默认true）
-    enable128-bit-traces: true # 使用短TraceID（可以不配置）
-    udp-sender:
-      host: 124.221.2.29 # 配置Jaeger服务器地址
-      port: 6831
+otel:
+  service:
+    name: ${spring.application.name}
+  exporter:
+    otlp:
+      endpoint: http://124.221.2.29:4318
+      timeout: 10s
+
