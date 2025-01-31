@@ -34,4 +34,10 @@ otel:
     otlp:
       endpoint: http://124.221.2.29:4318
       timeout: 10s
+#
+ai:
+  tyqw:
+    api-key: sk-37d9ef3dd4e74516b355f7ccba0f73cd
+    http: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+    sdk: https://dashscope.aliyuncs.com/compatible-mode/v1
 

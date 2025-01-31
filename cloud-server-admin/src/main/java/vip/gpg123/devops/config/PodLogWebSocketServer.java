@@ -1,4 +1,4 @@
-package vip.gpg123.framework.config;
+package vip.gpg123.devops.config;
 
 import cn.hutool.core.thread.ThreadUtil;
 import vip.gpg123.common.utils.K8sUtil;
