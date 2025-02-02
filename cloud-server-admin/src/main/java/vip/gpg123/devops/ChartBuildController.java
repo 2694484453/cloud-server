@@ -6,6 +6,10 @@ import cn.hutool.core.io.unit.DataSizeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import io.swagger.annotations.ApiOperation;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullResult;
+import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import io.swagger.annotations.Api;
@@ -50,6 +54,9 @@ public class ChartBuildController {
 
     @Value("${build.helm}")
     private String rootDir;
+
+    @Value("${build.helm}")
+    private String helm;
 
     private static final String UPLOAD_DIR = "uploads/";
 
@@ -256,6 +263,28 @@ public class ChartBuildController {
             log.error(e.getMessage());
             return ResponseEntity.status(500).body("Failed to create file " + fileName + ".");
         }
+    }
+
+    /**
+     * 一键同步
+     * @return r
+     */
+    @PostMapping("/syncPull")
+    @ApiOperation(value = "同步")
+    public AjaxResult sync(){
+        // 你的本地仓库路径
+        File repoPath = new File(helm);
+        try {
+            // 打开现有的仓库
+            Git git = Git.open(repoPath);
+            // 调用pull()方法来拉取最新的更改
+            PullResult result = git.pull().call();
+            // 输出pull操作的一些信息
+            System.out.println("Pull result: " + result.toString());
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
+        }
+        return AjaxResult.success("同步成功");
     }
 
 
