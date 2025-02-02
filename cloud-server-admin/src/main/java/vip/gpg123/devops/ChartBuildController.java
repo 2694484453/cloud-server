@@ -74,6 +74,7 @@ public class ChartBuildController {
      * @return r
      */
     @GetMapping("/list")
+    @ApiOperation(value = "获取文件夹列表")
     public ResponseEntity<List<Map<String, Object>>> dirList(@RequestParam(value = "name", required = false) String name) {
         List<Map<String, Object>> fileMapList = new ArrayList<>();
         // 获取目录下的文件夹，排除文件
@@ -105,6 +106,7 @@ public class ChartBuildController {
      * @return r
      */
     @GetMapping("/page")
+    @ApiOperation(value = "分页查询")
     public ResponseEntity<Object> dirPage(@RequestParam(value = "name", required = false) String name,
                                           @RequestParam(value = "pageNum", defaultValue = "1") String pageNumber,
                                           @RequestParam(value = "pageSize", defaultValue = "10") String pageSize) {
@@ -122,6 +124,7 @@ public class ChartBuildController {
      * @return r
      */
     @GetMapping("/tree")
+    @ApiOperation(value = "目录")
     public ResponseEntity<Object> tree(@RequestParam(value = "name", required = false) String name,
                                        @RequestParam("path") String path) {
         File folder = FileUtil.file(path);
@@ -146,6 +149,7 @@ public class ChartBuildController {
      * @return r
      */
     @GetMapping("/read")
+    @ApiOperation(value = "读文件")
     public ResponseEntity<Object> read(@RequestParam("path") String path) {
         File file = FileUtil.file(path);
         try {
