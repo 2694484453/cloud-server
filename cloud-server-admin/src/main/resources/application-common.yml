@@ -21,6 +21,7 @@ basePath: /home
 git:
   #gitee仓库
   gitee:
+    username: gpg-dev_admin
     access_token: d325b8ea7d9ecb538909fab590b204b8
     grant_type: authorization_code
     redirect_uri: https://gpg123.cn/git/gitee

@@ -44,6 +44,9 @@ public class GiteeController {
     @Value("${git.gitee.api}")
     private String api;
 
+    @Value("${git.gitee.username}")
+    private String username;
+
     @Value("${git.gitee.access_token}")
     private String accessToken;
 
@@ -72,11 +75,12 @@ public class GiteeController {
 
     /**
      * 分页查询
+     *
      * @return r
      */
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
-    public TableDataInfo repos(){
+    public TableDataInfo repos() {
         List<?> repoList = repoList();
         return PageUtils.toPage(repoList);
     }
@@ -84,20 +88,23 @@ public class GiteeController {
 
     /**
      * 列表查询
+     *
      * @return r
      */
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
-    public AjaxResult list(){
+    public AjaxResult list() {
         List<?> repoList = repoList();
         return AjaxResult.success(repoList);
     }
+
     /**
      * 获取公开仓库
+     *
      * @return r
      */
-    private List<?> repoList(){
-        HttpResponse httpResponse = HttpUtil.createGet("https://gitee.com/api/v5/users/gpg-dev_admin/repos?access_token="+accessToken+"?&type=all&sort=full_name&page=1&per_page=100")
+    private List<?> repoList() {
+        HttpResponse httpResponse = HttpUtil.createGet("https://gitee.com/api/v5/users/" + username + "/repos?access_token=" + accessToken + "?&type=all&sort=full_name&page=1&per_page=100")
                 .timeout(1000)
                 .setConnectionTimeout(1000)
                 .execute();
