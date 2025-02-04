@@ -210,6 +210,7 @@ public class ChartBuildController {
 
     // 文件上传接口
     @PostMapping("/upload")
+    @ApiOperation(value = "上传")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Failed to upload. File is empty.");
@@ -227,6 +228,7 @@ public class ChartBuildController {
 
     // 文件下载接口
     @GetMapping("/download/{fileName:.+}")
+    @ApiOperation(value = "下载")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
         Path path = Paths.get(UPLOAD_DIR + fileName);
         Resource resource;
@@ -246,6 +248,7 @@ public class ChartBuildController {
 
     // 新增文件夹接口
     @PostMapping("/mkdir/{folderName}")
+    @ApiOperation(value = "新增文件夹")
     public ResponseEntity<String> createFolder(@PathVariable String folderName) {
         File folder = new File(UPLOAD_DIR + folderName);
         if (!folder.exists()) {
@@ -258,6 +261,7 @@ public class ChartBuildController {
 
     // 新增文件接口（例如通过文本内容创建新文件）
     @PostMapping("/createfile")
+    @ApiOperation(value = "新增")
     public ResponseEntity<String> createFile(@RequestParam String fileName, @RequestParam String content) {
         Path path = Paths.get(UPLOAD_DIR + fileName);
         try {
