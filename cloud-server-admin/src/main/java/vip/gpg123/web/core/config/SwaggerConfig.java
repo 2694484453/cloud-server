@@ -59,7 +59,8 @@ public class SwaggerConfig
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 // 扫描指定包中的swagger注解
                 // .apis(RequestHandlerSelectors.basePackage("vip.gpg123.project.tool.swagger"))
-                // 扫描所有 .apis(RequestHandlerSelectors.any())
+                // 扫描所有
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
                 /* 设置安全模式，swagger可以设置访问token */
@@ -113,7 +114,7 @@ public class SwaggerConfig
         // 用ApiInfoBuilder进行定制
         return new ApiInfoBuilder()
                 // 设置标题
-                .title("标题：管理系统_接口文档")
+                .title("标题：cloud-server管理系统_接口文档")
                 // 描述
                 .description("描述：用于管理集团旗下公司的人员信息,具体包括XXX,XXX模块...")
                 // 作者信息
