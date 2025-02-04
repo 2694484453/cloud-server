@@ -4,6 +4,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,10 +105,11 @@ public class GiteeController {
      * @return r
      */
     private List<?> repoList() {
-        HttpResponse httpResponse = HttpUtil.createGet("https://gitee.com/api/v5/users/" + username + "/repos?access_token=" + accessToken + "?&type=all&sort=full_name&page=1&per_page=100")
-                .timeout(1000)
-                .setConnectionTimeout(1000)
+        HttpResponse httpResponse = HttpUtil.createGet("https://gitee.com/api/v5/users/" + username + "/repos?access_token=" + accessToken + "&type=all&sort=full_name&page=1&per_page=100")
+                .timeout(10000)
+                .setConnectionTimeout(10000)
                 .execute();
-        return Convert.toList(httpResponse.body());
+        JSONArray jsonArray = JSONUtil.parseArray(httpResponse.body());
+        return Convert.toList(jsonArray);
     }
 }
