@@ -5,6 +5,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import org.springframework.web.bind.annotation.GetMapping;
 import vip.gpg123.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +39,9 @@ public class GiteeController {
     @Value("${git.gitee.api}")
     private String api;
 
+    @Value("${git.gitee.access_token}")
+    private String accessToken;
+
     /**
      * 获取accessToken
      *
@@ -57,6 +61,20 @@ public class GiteeController {
                 .contentType(ContentType.JSON.getValue())
                 .body(JSONUtil.toJsonStr(jsonObject))
                 .timeout(5000)
+                .execute();
+        return AjaxResult.success(httpResponse.body());
+    }
+
+    /**
+     * 获取公开仓库
+     * @return r
+     */
+    @GetMapping("/repos")
+    @ApiOperation(value = "【获取公开仓库】")
+    public AjaxResult repos(){
+        HttpResponse httpResponse = HttpUtil.createGet("https://gitee.com/api/v5/users/gpg-dev_admin/repos?access_token="+accessToken+"?&type=all&sort=full_name&page=1&per_page=100")
+                .timeout(1000)
+                .setConnectionTimeout(1000)
                 .execute();
         return AjaxResult.success(httpResponse.body());
     }
