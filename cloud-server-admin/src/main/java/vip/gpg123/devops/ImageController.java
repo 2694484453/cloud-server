@@ -5,6 +5,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.Api;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
@@ -28,6 +29,7 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/build/image")
+@Api(tags = "【devops】镜像管理控制")
 public class ImageController {
 
     @Value("${build.image}")

@@ -48,7 +48,7 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/build/chart")
-@Api(tags = "chart编排")
+@Api(tags = "【build】chart编排")
 @Slf4j
 public class ChartBuildController {
 

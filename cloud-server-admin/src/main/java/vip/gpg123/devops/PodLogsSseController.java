@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
  **/
 @RestController
 @RequestMapping("/sse")
-@Api(tags = "sse控制")
+@Api(tags = "【devops】sse控制")
 public class PodLogsSseController {
 
     /**

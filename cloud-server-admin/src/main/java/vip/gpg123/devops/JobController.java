@@ -26,7 +26,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/devops")
-@Api(tags = "DevOps流水线任务管理")
+@Api(tags = "【devops】流水线任务管理")
 public class JobController {
 
     @Qualifier("KubernetesClient")
