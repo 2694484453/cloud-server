@@ -1,5 +1,6 @@
 package vip.gpg123.git;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.utils.PageUtils;
+
+import java.util.List;
 
 /**
  * @author gaopuguang
@@ -66,16 +71,36 @@ public class GiteeController {
     }
 
     /**
+     * 分页查询
+     * @return r
+     */
+    @GetMapping("/page")
+    @ApiOperation(value = "【分页查询】")
+    public TableDataInfo repos(){
+        List<?> repoList = repoList();
+        return PageUtils.toPage(repoList);
+    }
+
+
+    /**
+     * 列表查询
+     * @return r
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "【列表查询】")
+    public AjaxResult list(){
+        List<?> repoList = repoList();
+        return AjaxResult.success(repoList);
+    }
+    /**
      * 获取公开仓库
      * @return r
      */
-    @GetMapping("/repos")
-    @ApiOperation(value = "【获取公开仓库】")
-    public AjaxResult repos(){
+    private List<?> repoList(){
         HttpResponse httpResponse = HttpUtil.createGet("https://gitee.com/api/v5/users/gpg-dev_admin/repos?access_token="+accessToken+"?&type=all&sort=full_name&page=1&per_page=100")
                 .timeout(1000)
                 .setConnectionTimeout(1000)
                 .execute();
-        return AjaxResult.success(httpResponse.body());
+        return Convert.toList(httpResponse.body());
     }
 }
