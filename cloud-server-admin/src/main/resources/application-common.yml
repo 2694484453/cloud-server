@@ -28,6 +28,9 @@ git:
     client_id: 4205d9756e46effb45c437308d808f7b551414563cbec9f5aa0ec9402e0753d6
     client_secret: 3774068556c18b1e70400229c45530a1385dad8189612dc1dfaf7a5b06a84c04
     api: https://gitee.com/oauth/token
+  github:
+    username: 2694484453
+    access_token: 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
 #链路追踪
 otel:
   service:
