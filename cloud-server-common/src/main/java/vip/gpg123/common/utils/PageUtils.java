@@ -44,8 +44,11 @@ public class PageUtils extends PageHelper {
         int totalPage = PageUtil.totalPage(total, pageSize);
         if (total - 1 <= endIndex) {
             endIndex = total - 1;
+            endIndex = endIndex + 1;
+        } else {
+            endIndex = endIndex - 1;
         }
-        list = ListUtil.sub(list, startIndex, endIndex + 1);
+        list = ListUtil.sub(list, startIndex, endIndex);
         return new TableDataInfo(total, totalPage, list);
     }
 
