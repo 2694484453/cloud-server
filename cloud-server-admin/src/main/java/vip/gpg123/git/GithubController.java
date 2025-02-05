@@ -23,7 +23,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/github")
-@Api(tags = "【github】")
+@Api(tags = "【github】仓库管理")
 public class GithubController {
 
     @Value("${git.github.username}")

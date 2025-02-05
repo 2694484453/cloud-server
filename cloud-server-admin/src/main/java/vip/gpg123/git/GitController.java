@@ -29,7 +29,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/git")
-@Api(tags = "git仓库")
+@Api(tags = "【git】仓库管理")
 public class GitController {
 
     @Autowired

@@ -27,7 +27,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/gitee")
-@Api(tags = "gitee认证控制")
+@Api(tags = "【gitee】仓库管理")
 public class GiteeController {
 
     @Value("${git.gitee.grant_type}")
