@@ -1,4 +1,4 @@
-package vip.gpg123.trace;
+package vip.gpg123.tracing;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.http.HttpResponse;
@@ -23,9 +23,9 @@ import java.util.List;
  * @date 2025/2/7 1:42
  **/
 @RestController
-@RequestMapping("/trace")
-@Api(tags = "【trace】链路追踪")
-public class TraceController {
+@RequestMapping("/tracing")
+@Api(tags = "【tracing】链路追踪")
+public class TracingController {
 
     @Value("${trace.api}")
     private String api;
