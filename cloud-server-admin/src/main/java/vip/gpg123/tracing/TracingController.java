@@ -16,7 +16,10 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author gaopuguang
@@ -66,6 +69,16 @@ public class TracingController {
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
         JSONArray jsonArray = JSONUtil.parseArray(jsonObject.get("data"));
-        return Convert.toList(jsonArray);
+        List<?> list = Convert.toList(jsonArray);
+        List<Map<String, Object>> result = new ArrayList<>();
+        list.forEach(e -> {
+            result.add(new HashMap<String, Object>() {{
+                put("name", e.toString());
+                put("status", "ok");
+                put("description", "");
+                put("type", "jaeger");
+            }});
+        });
+        return result;
     }
 }
