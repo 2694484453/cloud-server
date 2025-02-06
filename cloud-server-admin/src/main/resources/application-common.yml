@@ -39,10 +39,14 @@ otel:
     otlp:
       endpoint: http://124.221.2.29:4318
       timeout: 10s
-#
+# 大模型
 ai:
   tyqw:
     api-key: sk-37d9ef3dd4e74516b355f7ccba0f73cd
     http: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
     sdk: https://dashscope.aliyuncs.com/compatible-mode/v1
+
+# 链路追踪
+trace:
+  api: http://ecs.gpg123.vip:16686/api
 

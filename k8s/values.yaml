@@ -4246,7 +4246,7 @@ prometheus:
     #      - a1.app.local
     #      - b1.app.local
 
-    ## TracingConfig configures tracing in Prometheus.
+    ## TracingConfig configures trace in Prometheus.
     ## See https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#prometheustracingconfig
     tracingConfig: {}
 
