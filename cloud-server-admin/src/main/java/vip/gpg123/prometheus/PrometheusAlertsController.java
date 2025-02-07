@@ -65,7 +65,7 @@ public class PrometheusAlertsController {
                 .setConnectionTimeout(10000)
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
-        JSONObject data = JSONUtil.parseObj(jsonObject);
+        JSONObject data = JSONUtil.parseObj(jsonObject.get("data"));
         JSONArray alerts = JSONUtil.parseArray(data.get("alerts"));
         return Convert.toList(alerts);
     }
