@@ -45,6 +45,8 @@ public class CoreDnsCloudController {
                 put("value", v);
                 put("namespace", "kube-system");
                 put("name", "coredns-custom");
+                put("kind", configMap.getKind());
+                put("createTime", configMap.getMetadata().getCreationTimestamp());
             }});
         });
         return AjaxResult.success(mapList);
