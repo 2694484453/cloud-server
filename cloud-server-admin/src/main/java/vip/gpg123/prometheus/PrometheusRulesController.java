@@ -1,10 +1,6 @@
 package vip.gpg123.prometheus;
 
 import cn.hutool.core.convert.Convert;
-import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.K8sUtil;
-import vip.gpg123.common.utils.PageUtils;
 import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfig;
 import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfigList;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -13,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.utils.PageUtils;
 
 import java.util.List;
 
@@ -21,8 +20,8 @@ import java.util.List;
  * @date 2024/11/18 0:44
  **/
 @RestController
-@RequestMapping("/alert")
-public class AlertManagerController {
+@RequestMapping("/prometheus/rules")
+public class PrometheusRulesController {
 
     @Autowired
     private OpenShiftClient openShiftClient;
