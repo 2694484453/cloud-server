@@ -4,6 +4,7 @@ import cn.hutool.core.convert.Convert;
 import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfig;
 import io.fabric8.openshift.api.model.monitoring.v1alpha1.AlertmanagerConfigList;
 import io.fabric8.openshift.client.OpenShiftClient;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/prometheus/rules")
+@Api(tags = "【rules】管理")
 public class PrometheusRulesController {
 
     @Autowired

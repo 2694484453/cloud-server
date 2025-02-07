@@ -49,4 +49,9 @@ ai:
 # 链路追踪
 trace:
   api: http://ecs.gpg123.vip:16686/api
-
+#监控
+monitor:
+  prometheus:
+    endpoint: https://prometheus.gpg123.vip
+  alertmanager:
+    endpoint: https://alertmanager.gpg123.vip

@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 @RequestMapping("/prometheus/alertManager")
-public class PrometheusAlertManagerController {
+public class AlertManagerController {
 
 }
