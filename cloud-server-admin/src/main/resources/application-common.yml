@@ -34,7 +34,7 @@ git:
 #链路追踪
 otel:
   service:
-    name: ${spring.application.name}
+    name: ${spring.application.name}-${os.name}
   exporter:
     otlp:
       endpoint: http://124.221.2.29:4318
