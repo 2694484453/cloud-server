@@ -15,7 +15,9 @@ repo:
   helm:
     name: gpg_dev
     url: https://helm-repo.gpg123.vip/index.yaml
-
+  docker:
+    - name: aliyun
+      url:
 basePath: /home
 #git应用
 git:
