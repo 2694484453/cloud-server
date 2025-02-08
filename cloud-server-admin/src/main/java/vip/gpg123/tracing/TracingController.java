@@ -76,7 +76,7 @@ public class TracingController {
                 put("name", e.toString());
                 put("status", "ok");
                 put("description", "");
-                put("type", "jaeger");
+                put("type", "OpenTelemetry");
             }});
         });
         return result;
