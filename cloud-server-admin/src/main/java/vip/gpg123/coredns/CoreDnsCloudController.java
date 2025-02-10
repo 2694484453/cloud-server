@@ -1,9 +1,5 @@
 package vip.gpg123.coredns;
 
-import cn.hutool.core.convert.Convert;
-import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.PageUtils;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +7,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.utils.PageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +35,22 @@ public class CoreDnsCloudController {
      */
     @GetMapping("/list")
     public AjaxResult list() {
+        List<?> list = getConfigMaps();
+        return AjaxResult.success(list);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @return r
+     */
+    @GetMapping("/page")
+    public TableDataInfo page() {
+        List<?> list = getConfigMaps();
+        return PageUtils.toPage(list);
+    }
+
+    private List<?> getConfigMaps() {
         ConfigMap configMap = kubernetesClient.configMaps().inNamespace("kube-system").withName("coredns-custom").get();
         Map<String, String> map = configMap.getData();
         List<HashMap<String, Object>> mapList = new ArrayList<>();
@@ -49,18 +64,6 @@ public class CoreDnsCloudController {
                 put("createTime", configMap.getMetadata().getCreationTimestamp());
             }});
         });
-        return AjaxResult.success(mapList);
-    }
-
-    /**
-     * 分页查询
-     *
-     * @return r
-     */
-    @GetMapping("/page")
-    public TableDataInfo page() {
-        AjaxResult ajaxResult = list();
-        List<?> mapList = Convert.toList(ajaxResult.get("data"));
-        return PageUtils.toPage(mapList);
+        return mapList;
     }
 }
