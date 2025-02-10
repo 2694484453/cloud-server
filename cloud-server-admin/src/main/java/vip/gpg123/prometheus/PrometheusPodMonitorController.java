@@ -1,8 +1,18 @@
 package vip.gpg123.prometheus;
 
+import io.fabric8.openshift.api.model.monitoring.v1.PodMonitor;
+import io.fabric8.openshift.client.OpenShiftClient;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.utils.K8sUtil;
+import vip.gpg123.common.utils.PageUtils;
+
+import java.util.List;
 
 /**
  * @author gaopuguang
@@ -12,4 +22,42 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/prometheus/podMonitor")
 @Api(tags = "【podMonitor】管理")
 public class PrometheusPodMonitorController {
+
+    /**
+     * 分页查询
+     *
+     * @return r
+     */
+    @GetMapping("/page")
+    @ApiOperation(value = "分页查询")
+    public TableDataInfo page() {
+        List<?> list = getPodMonitors();
+        return PageUtils.toPage(list);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @return r
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "列表查询")
+    public AjaxResult list() {
+        List<?> list = getPodMonitors();
+        return AjaxResult.success("查询成功", list);
+    }
+
+    /**
+     * 查询资源
+     * @return r
+     */
+    private List<?> getPodMonitors() {
+        List<PodMonitor> list;
+        try (OpenShiftClient client = K8sUtil.createOClient()) {
+            list = client.monitoring().podMonitors().inAnyNamespace().list().getItems();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 }
