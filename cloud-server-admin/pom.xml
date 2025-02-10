@@ -68,7 +68,7 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-model-apiextensions</artifactId>
-            <version>6.13.4</version>
+            <version>6.5.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -76,6 +76,7 @@
             <artifactId>openshift-client</artifactId>
             <version>6.5.1</version>
         </dependency>
+        <!--test-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

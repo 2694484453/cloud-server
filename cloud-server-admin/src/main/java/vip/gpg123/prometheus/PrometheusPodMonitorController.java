@@ -1,9 +1,12 @@
 package vip.gpg123.prometheus;
 
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.api.model.monitoring.v1.PodMonitor;
 import io.fabric8.openshift.client.OpenShiftClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +25,10 @@ import java.util.List;
 @RequestMapping("/prometheus/podMonitor")
 @Api(tags = "【podMonitor】管理")
 public class PrometheusPodMonitorController {
+
+    @Qualifier("OpenShiftClient")
+    @Autowired
+    private OpenShiftClient openShiftClient;
 
     /**
      * 分页查询
@@ -49,12 +56,13 @@ public class PrometheusPodMonitorController {
 
     /**
      * 查询资源
+     *
      * @return r
      */
     private List<?> getPodMonitors() {
         List<PodMonitor> list;
-        try (OpenShiftClient client = K8sUtil.createOClient()) {
-            list = client.monitoring().podMonitors().inAnyNamespace().list().getItems();
+        try {
+            list = openShiftClient.monitoring().podMonitors().inAnyNamespace().list().getItems();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
