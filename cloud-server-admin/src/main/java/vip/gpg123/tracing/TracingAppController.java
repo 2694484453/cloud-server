@@ -26,9 +26,9 @@ import java.util.Map;
  * @date 2025/2/7 1:42
  **/
 @RestController
-@RequestMapping("/tracing")
-@Api(tags = "【tracing】链路追踪")
-public class TracingController {
+@RequestMapping("/tracing/app")
+@Api(tags = "【tracing】链路追踪-应用")
+public class TracingAppController {
 
     @Value("${trace.api}")
     private String api;
