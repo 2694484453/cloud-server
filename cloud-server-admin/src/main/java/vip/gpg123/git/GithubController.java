@@ -51,6 +51,10 @@ public class GithubController {
         return AjaxResult.success(repoList());
     }
 
+    /**
+     * 获取仓库列表
+     * @return r
+     */
     private List<?> repoList() {
         HttpResponse httpResponse = HttpUtil.createGet("https://api.github.com/users/" + username + "/repos")
                 .timeout(10000)
