@@ -1,6 +1,7 @@
 package vip.gpg123.tracing;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
@@ -72,7 +73,7 @@ public class TracingTracesController {
      * @return r
      */
     private List<?> getServiceList(String service, String limit, String start, String end, String lookBack, String operation) {
-        HttpResponse httpResponse = HttpUtil.createGet(api + "/api/traces?end=" + end + "&limit=" + limit + "&lookback=" + lookBack + "&maxDuration&minDuration&service=" + service + "&start=" + start + "&operation=" + operation)
+        HttpResponse httpResponse = HttpUtil.createGet(api + "/api/traces?end=" + StrUtil.blankToDefault(end, "") + "&limit=" + StrUtil.blankToDefault(limit, "") + "&lookback=" + StrUtil.blankToDefault(lookBack, "") + "&maxDuration=&minDuration=&service=" + StrUtil.blankToDefault(service, "") + "&start=" + StrUtil.blankToDefault(start, "") + "&operation=" + StrUtil.blankToDefault(operation, ""))
                 .timeout(10000)
                 .setConnectionTimeout(10000)
                 .execute();
