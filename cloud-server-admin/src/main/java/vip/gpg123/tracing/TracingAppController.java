@@ -62,7 +62,7 @@ public class TracingAppController {
      *
      * @return r
      */
-    private List<?> getServiceList() {
+    public List<?> getServiceList() {
         HttpResponse httpResponse = HttpUtil.createGet(api + "/services")
                 .timeout(10000)
                 .setConnectionTimeout(10000)
