@@ -61,7 +61,7 @@ public class ChartBuildController {
     private static final String UPLOAD_DIR = "uploads/";
 
     // 初始化上传目录
-    {
+    static {
         File uploadDir = new File(UPLOAD_DIR);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
