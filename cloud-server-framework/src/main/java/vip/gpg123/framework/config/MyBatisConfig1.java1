@@ -30,7 +30,7 @@ import vip.gpg123.common.utils.StringUtils;
  * @author gpg123
  */
 @Configuration
-public class MyBatisConfig
+public class MyBatisConfig1
 {
     @Autowired
     private Environment env;

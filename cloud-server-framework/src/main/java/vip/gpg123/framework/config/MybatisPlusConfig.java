@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * mybatis-plush分页器
  *
- * @author yys
+ * @author gpg
  * @version 1.0
  * @description:
  * @date 2023/8/18 10:03
