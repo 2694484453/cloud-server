@@ -24,6 +24,7 @@ import vip.gpg123.common.utils.PageUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +40,19 @@ public class JobController {
     @Autowired
     private KubernetesClient client;
 
+
+    /**
+     * 概览
+     *
+     * @return r
+     */
+    @GetMapping("/overView")
+    @ApiOperation(value = "概览")
+    public AjaxResult overView() {
+
+        return null;
+    }
+
     /**
      * 列表查询
      *
@@ -47,7 +61,7 @@ public class JobController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        List<Job> jobs = client.batch().v1().jobs().inNamespace("default").list().getItems();
+        List<?> jobs = getJobs();
         return AjaxResult.success(jobs);
     }
 
@@ -59,25 +73,23 @@ public class JobController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page() {
-        AjaxResult ajaxResult = list();
-        List<?> list = Convert.toList(ajaxResult.get("data"));
-        return PageUtils.toPage(list);
+        List<?> jobs = getJobs();
+        return PageUtils.toPage(jobs);
     }
 
     /**
      * 查询详情
      *
-     * @param name 名称
+     * @param jobName   名称
+     * @param nameSpace 名称
      * @return r
      */
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
-    public AjaxResult info(@RequestParam("name") String name) {
-        Job job = client.batch().v1().jobs().inNamespace("default").withName(name).get();
-        if (ObjectUtil.isNotEmpty(job)) {
-            return AjaxResult.success("查询成功", job);
-        }
-        return AjaxResult.success("查询成功", null);
+    public AjaxResult info(@RequestParam("jobName") String jobName,
+                           @RequestParam("nameSpace") String nameSpace) {
+        Job job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).get();
+        return ObjectUtil.isNotEmpty(job) ? AjaxResult.success("查询成功", job) : AjaxResult.success("查询成功", new ArrayList<Job>());
     }
 
     /**
@@ -89,7 +101,7 @@ public class JobController {
     @ApiOperation(value = "新增")
     public AjaxResult add(@RequestParam("name") String name) {
         // 执行创建
-        Job job = K8sUtil.createKClient().batch().v1().jobs().inNamespace("default").withName(name).create();
+        Job job = client.batch().v1().jobs().inNamespace("default").withName(name).create();
         return AjaxResult.success("操作成功", job);
     }
 
@@ -153,5 +165,20 @@ public class JobController {
             }
         });
         return emitter;
+    }
+
+    /**
+     * 获取job
+     *
+     * @return r
+     */
+    private List<?> getJobs() {
+        List<Job> jobList;
+        try {
+            jobList = client.batch().v1().jobs().inAnyNamespace().list().getItems();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return jobList;
     }
 }
