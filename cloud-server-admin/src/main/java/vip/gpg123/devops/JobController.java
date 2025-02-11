@@ -129,7 +129,7 @@ public class JobController {
      * @param nameSpace ns
      * @return r
      */
-    @GetMapping("/podLogs")
+    @GetMapping("/jobLogs")
     @ApiOperation(value = "日志")
     public SseEmitter podLogs(@RequestParam(value = "jobName") String jobName,
                               @RequestParam(value = "nameSpace") String nameSpace) {
