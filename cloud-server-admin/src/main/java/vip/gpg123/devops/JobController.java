@@ -58,15 +58,15 @@ public class JobController {
         // 今日新增
         jobs.forEach(job -> {
             // 激活次数
-            if (job.getStatus().getActive() == 1) {
+            if (ObjectUtil.isNull(job.getStatus().getActive()) || (ObjectUtil.isNotNull(job.getStatus().getActive()) && job.getStatus().getActive() == 1)) {
                 actives.getAndSet(actives.get() + 1);
             }
             // 失败次数
-            if (job.getStatus().getFailed() == 1) {
+            if (ObjectUtil.isNull(job.getStatus().getFailed()) || (ObjectUtil.isNotNull(job.getStatus().getFailed()) && job.getStatus().getFailed() == 1)) {
                 actives.getAndSet(fails.get() + 1);
             }
             // 成功次数
-            if (job.getStatus().getSucceeded() == 1) {
+            if (ObjectUtil.isNull(job.getStatus().getSucceeded()) || (ObjectUtil.isNotNull(job.getStatus().getSucceeded()) && job.getStatus().getSucceeded() == 1)) {
                 successes.getAndSet(successes.get() + 1);
             }
         });
@@ -138,7 +138,7 @@ public class JobController {
     /**
      * 执行
      *
-     * @param name 名称
+     * @param jobName 名称
      * @return r
      */
     @PostMapping("/run")
@@ -155,7 +155,7 @@ public class JobController {
     /**
      * 获取日志
      *
-     * @param name 名称
+     * @param jobName 名称
      * @return r
      */
     @GetMapping("/log")
