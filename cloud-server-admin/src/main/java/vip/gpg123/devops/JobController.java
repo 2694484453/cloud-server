@@ -1,11 +1,10 @@
 package vip.gpg123.devops;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
+import io.fabric8.kubernetes.api.model.batch.v1.JobList;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.PodResource;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,13 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author gaopuguang
@@ -49,8 +50,36 @@ public class JobController {
     @GetMapping("/overView")
     @ApiOperation(value = "概览")
     public AjaxResult overView() {
-
-        return null;
+        JobList jobList = client.batch().v1().jobs().inAnyNamespace().list();
+        List<Job> jobs = jobList.getItems();
+        AtomicReference<Integer> actives = new AtomicReference<>(0);
+        AtomicReference<Integer> fails = new AtomicReference<>(0);
+        AtomicReference<Integer> successes = new AtomicReference<>(0);
+        // 今日新增
+        jobs.forEach(job -> {
+            // 激活次数
+            if (job.getStatus().getActive() == 1) {
+                actives.getAndSet(actives.get() + 1);
+            }
+            // 失败次数
+            if (job.getStatus().getFailed() == 1) {
+                actives.getAndSet(fails.get() + 1);
+            }
+            // 成功次数
+            if (job.getStatus().getSucceeded() == 1) {
+                successes.getAndSet(successes.get() + 1);
+            }
+        });
+        Map<String, Object> map = new HashMap<>();
+        // job总数
+        map.put("jobs", jobList.getItems().size());
+        // 激活数
+        map.put("actives", actives);
+        // 失败数
+        map.put("fails", fails);
+        // 成功数
+        map.put("successes", successes);
+        return AjaxResult.success(map);
     }
 
     /**
