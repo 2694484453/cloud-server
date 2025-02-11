@@ -25,7 +25,7 @@ import java.util.List;
  * @date 2024/11/11 0:18
  **/
 @RestController
-@RequestMapping("/devops")
+@RequestMapping("/devops/job")
 @Api(tags = "【devops】流水线任务管理")
 public class JobController {
 
@@ -41,7 +41,6 @@ public class JobController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        KubernetesClient client = K8sUtil.createKClient();
         List<Job> jobs = client.batch().v1().jobs().inNamespace("default").list().getItems();
         return AjaxResult.success(jobs);
     }
@@ -68,7 +67,7 @@ public class JobController {
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam("name") String name) {
-        Job job = K8sUtil.createKClient().batch().v1().jobs().inNamespace("default").withName(name).get();
+        Job job = client.batch().v1().jobs().inNamespace("default").withName(name).get();
         if (ObjectUtil.isNotEmpty(job)) {
             return AjaxResult.success("查询成功", job);
         }
