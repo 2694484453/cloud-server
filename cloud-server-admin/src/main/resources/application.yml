@@ -115,13 +115,13 @@ token:
   expireTime: 30
 
 # MyBatis配置
-#mybatis:
-#  # 搜索指定包别名
-#  typeAliasesPackage: vip.gpg123.**.**.domain
-#  # 配置mapper的扫描，找到所有的mapper.xml映射文件
-#  mapperLocations: classpath*:mapper/**/*Mapper.xml
-#  # 加载全局的配置文件
-#  configLocation: classpath:mybatis/mybatis-config.xml
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: vip.gpg123.**.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
 
 mybatis-plus:
   # Mapper.xml 文件位置 Maven 多模块项目的扫描路径需以 classpath*: 开头
