@@ -73,7 +73,7 @@ public class TracingTracesController {
      * @return r
      */
     private List<?> getServiceList(String service, String limit, String start, String end, String lookBack, String operation) {
-        String url = api + "/api/traces?end=" + StrUtil.blankToDefault(end, "") + "&limit=" + StrUtil.blankToDefault(limit, "") + "&lookback=" + StrUtil.blankToDefault(lookBack, "") + "&maxDuration=&minDuration=&service=" + StrUtil.blankToDefault(service, "") + "&start=" + StrUtil.blankToDefault(start, "") + "&operation=" + StrUtil.blankToDefault(operation, "");
+        String url = api + "/traces?end=" + StrUtil.blankToDefault(end, "") + "&limit=" + StrUtil.blankToDefault(limit, "") + "&lookback=" + StrUtil.blankToDefault(lookBack, "") + "&maxDuration=&minDuration=&service=" + StrUtil.blankToDefault(service, "") + "&start=" + StrUtil.blankToDefault(start, "") + "&operation=" + StrUtil.blankToDefault(operation, "");
         HttpResponse httpResponse = HttpUtil.createGet(url)
                 .timeout(10000)
                 .setConnectionTimeout(10000)
