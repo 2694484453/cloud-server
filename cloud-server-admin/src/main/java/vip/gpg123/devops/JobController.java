@@ -99,9 +99,10 @@ public class JobController {
      */
     @GetMapping("/add")
     @ApiOperation(value = "新增")
-    public AjaxResult add(@RequestParam("name") String name) {
+    public AjaxResult add(@RequestParam("jobName") String jobName,
+                          @RequestParam("nameSpace") String nameSpace) {
         // 执行创建
-        Job job = client.batch().v1().jobs().inNamespace("default").withName(name).create();
+        Job job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).create();
         return AjaxResult.success("操作成功", job);
     }
 
@@ -113,11 +114,12 @@ public class JobController {
      */
     @PostMapping("/run")
     @ApiOperation(value = "执行")
-    public AjaxResult run(@RequestParam("name") String name) {
+    public AjaxResult run(@RequestParam("jobName") String jobName,
+                          @RequestParam("nameSpace") String nameSpace) {
         //
-        client.batch().v1().jobs().inNamespace("default").withName(name).scale(0);
+        client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).scale(0);
         //
-        client.batch().v1().jobs().inNamespace("default").withName(name).scale(1);
+        client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).scale(1);
         return AjaxResult.success("操作成功", true);
     }
 
@@ -129,8 +131,9 @@ public class JobController {
      */
     @GetMapping("/log")
     @ApiOperation(value = "日志流")
-    public AjaxResult log(@RequestParam("name") String name) {
-        String logs = client.batch().v1().jobs().inNamespace("default").withName(name).getLog(true);
+    public AjaxResult log(@RequestParam("jobName") String jobName,
+                          @RequestParam("nameSpace") String nameSpace) {
+        String logs = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).getLog(true);
         return AjaxResult.success(logs);
     }
 
