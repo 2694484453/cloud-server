@@ -32,6 +32,11 @@ public class PageUtils extends PageHelper {
         PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
     }
 
+    /**
+     * 手动分页处理
+     * @param list list
+     * @return r
+     */
     public static TableDataInfo toPage(List<?> list) {
         PageDomain pageDomain = TableSupport.buildPageRequest();
         Integer pageNum = pageDomain.getPageNum();
