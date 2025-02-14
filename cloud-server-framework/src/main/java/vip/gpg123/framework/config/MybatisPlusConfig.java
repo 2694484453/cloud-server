@@ -3,6 +3,8 @@ package vip.gpg123.framework.config;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.github.pagehelper.PageInterceptor;
+import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +18,23 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class MybatisPlusConfig {
+
+//    @Bean
+//    public PaginationInnerInterceptor paginationInnerInterceptor() {
+//        return new PaginationInnerInterceptor();
+//    }
+//
+//    @Bean
+//    ConfigurationCustomizer mybatisConfigurationCustomizer(){
+//
+//        return new ConfigurationCustomizer() {
+//            @Override
+//            public void customize(org.apache.ibatis.session.Configuration configuration) {
+//                configuration.addInterceptor(new PageInterceptor());
+//            }
+//        };
+//    }
+
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
