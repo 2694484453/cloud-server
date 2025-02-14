@@ -31,7 +31,7 @@ import java.util.List;
  * @date 2025/2/14 15:44
  */
 @RestController
-@RequestMapping("/ide")
+@RequestMapping("/ide/codeSpace")
 @Api(tags = "【ide】code空间管理")
 public class IdeCodeSpaceController {
 
