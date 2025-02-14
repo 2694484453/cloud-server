@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PageUtil;
 import cn.hutool.core.util.TypeUtil;
 import cn.hutool.json.JSONArray;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.pagehelper.PageHelper;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
@@ -34,6 +35,7 @@ public class PageUtils extends PageHelper {
 
     /**
      * 手动分页处理
+     *
      * @param list list
      * @return r
      */
@@ -53,6 +55,21 @@ public class PageUtils extends PageHelper {
         }
         list = ListUtil.sub(list, startIndex, endIndex);
         return new TableDataInfo(total, totalPage, list);
+    }
+
+    /**
+     * iPage 转table
+     *
+     * @param iPage i
+     * @return r
+     */
+    public static TableDataInfo toPageByIPage(IPage<?> iPage) {
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(200);
+        rspData.setMsg("操作成功");
+        rspData.setRows(iPage.getRecords());
+        rspData.setTotal(iPage.getTotal());
+        return rspData;
     }
 
     /**
