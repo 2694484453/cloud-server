@@ -8,10 +8,12 @@ import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.framework.config.domain.JaegerClient;
 import vip.gpg123.framework.config.domain.PrometheusClient;
 
 import java.util.HashMap;
@@ -35,6 +37,10 @@ public class TracingOverViewController {
     @Autowired
     private PrometheusClient prometheusClient;
 
+    @Qualifier("JaegerClient")
+    @Autowired
+    private JaegerClient jaegerClient;
+
     /**
      * 概览
      *
@@ -46,9 +52,18 @@ public class TracingOverViewController {
         List<?> list = tracingAppController.getServiceList();
         Map<String, Object> map = new HashMap<>();
         // 应用总数
-        map.put("apps", list.size());
+        map.put("apps", getAppTotal());
         map.put("upTime", queryUpTime());
         return AjaxResult.success(map);
+    }
+
+    public String getAppTotal() {
+        HttpResponse httpResponse = HttpUtil.createGet(jaegerClient.getEndpoint() + "/services")
+                .timeout(10000)
+                .setConnectionTimeout(10000)
+                .execute();
+        JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
+        return jsonObject.get("total").toString();
     }
 
     public Object queryUpTime() {
