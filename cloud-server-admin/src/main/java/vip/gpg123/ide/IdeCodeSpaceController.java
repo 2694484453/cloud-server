@@ -19,6 +19,7 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.git.domain.IdeCodeSpace;
 import vip.gpg123.git.service.IdeCodeSpaceService;
 
@@ -79,12 +80,15 @@ public class IdeCodeSpaceController {
      */
     @PostMapping("/add")
     public AjaxResult add(@RequestBody IdeCodeSpace ideCodeSpace) {
+        ideCodeSpace.setCreateBy(SecurityUtils.getUsername());
+        ideCodeSpace.setWorkPath("/home/coder/" + SecurityUtils.getUsername() + "/" + ideCodeSpace.getName());
         boolean isSuccess = codeSpaceService.save(ideCodeSpace);
         return isSuccess ? AjaxResult.success("新增成功", true) : AjaxResult.error("新增失败", false);
     }
 
     /**
      * 修改
+     *
      * @param ideCodeSpace i
      * @return r
      */
@@ -96,6 +100,7 @@ public class IdeCodeSpaceController {
 
     /**
      * 删除
+     *
      * @param name 名称
      * @return r
      */
