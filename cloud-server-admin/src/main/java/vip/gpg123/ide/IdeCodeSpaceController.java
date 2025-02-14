@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +47,7 @@ public class IdeCodeSpaceController {
      * @return r
      */
     @GetMapping("/page")
+    @ApiOperation(value = "分页查询")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name) {
         PageDomain pageDomain = TableSupport.buildPageRequest();
         IPage<IdeCodeSpace> page = new Page<>();
@@ -65,6 +67,7 @@ public class IdeCodeSpaceController {
      * @return r
      */
     @GetMapping("/list")
+    @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name) {
         List<?> list = codeSpaceService.list(new LambdaQueryWrapper<IdeCodeSpace>()
                 .like(StrUtil.isNotBlank(name), IdeCodeSpace::getName, name)
@@ -79,6 +82,7 @@ public class IdeCodeSpaceController {
      * @return r
      */
     @PostMapping("/add")
+    @ApiOperation(value = "新增")
     public AjaxResult add(@RequestBody IdeCodeSpace ideCodeSpace) {
         ideCodeSpace.setCreateBy(SecurityUtils.getUsername());
         ideCodeSpace.setWorkPath("/home/coder/" + SecurityUtils.getUsername() + "/" + ideCodeSpace.getName());
@@ -93,6 +97,7 @@ public class IdeCodeSpaceController {
      * @return r
      */
     @PutMapping("/edit")
+    @ApiOperation(value = "修改")
     public AjaxResult edit(@RequestBody IdeCodeSpace ideCodeSpace) {
         boolean isSuccess = codeSpaceService.updateById(ideCodeSpace);
         return isSuccess ? AjaxResult.success("修改成功", true) : AjaxResult.error("修改失败", false);
@@ -105,6 +110,7 @@ public class IdeCodeSpaceController {
      * @return r
      */
     @DeleteMapping("/delete")
+    @ApiOperation(value = "删除")
     public AjaxResult delete(@RequestParam("name") String name) {
         boolean isSuccess = codeSpaceService.removeById(name);
         return isSuccess ? AjaxResult.success("删除成功", true) : AjaxResult.error("删除失败", false);
