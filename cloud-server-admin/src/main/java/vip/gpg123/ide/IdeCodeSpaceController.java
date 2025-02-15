@@ -21,8 +21,8 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.git.domain.IdeCodeSpace;
-import vip.gpg123.git.service.IdeCodeSpaceService;
+import vip.gpg123.ide.domain.IdeCodeSpace;
+import vip.gpg123.ide.service.IdeCodeSpaceService;
 
 import java.util.List;
 

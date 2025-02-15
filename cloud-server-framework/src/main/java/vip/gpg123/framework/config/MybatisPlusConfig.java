@@ -19,28 +19,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MybatisPlusConfig {
 
-//    @Bean
-//    public PaginationInnerInterceptor paginationInnerInterceptor() {
-//        return new PaginationInnerInterceptor();
-//    }
-//
-//    @Bean
-//    ConfigurationCustomizer mybatisConfigurationCustomizer(){
-//
-//        return new ConfigurationCustomizer() {
-//            @Override
-//            public void customize(org.apache.ibatis.session.Configuration configuration) {
-//                configuration.addInterceptor(new PageInterceptor());
-//            }
-//        };
-//    }
-
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
+        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
         // 溢出总页数后是否进行处理
         paginationInnerInterceptor.setOverflow(true);
+        paginationInnerInterceptor.setDbType(DbType.MYSQL);
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
         return interceptor;
     }

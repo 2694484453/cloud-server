@@ -1,4 +1,4 @@
-package vip.gpg123.git.domain;
+package vip.gpg123.ide.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;

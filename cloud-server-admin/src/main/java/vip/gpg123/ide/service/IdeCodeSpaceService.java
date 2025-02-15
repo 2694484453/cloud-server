@@ -1,6 +1,6 @@
-package vip.gpg123.git.service;
+package vip.gpg123.ide.service;
 
-import vip.gpg123.git.domain.IdeCodeSpace;
+import vip.gpg123.ide.domain.IdeCodeSpace;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

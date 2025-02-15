@@ -1,14 +1,14 @@
-package vip.gpg123.git.mapper;
+package vip.gpg123.ide.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import vip.gpg123.git.domain.IdeCodeSpace;
+import vip.gpg123.ide.domain.IdeCodeSpace;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
 * @author Administrator
 * @description 针对表【ide_code_space】的数据库操作Mapper
 * @createDate 2025-02-14 16:09:25
-* @Entity vip.gpg123.git.domain.IdeCodeSpace
+* @Entity vip.gpg123.ide.domain.IdeCodeSpace
 */
 @Mapper
 public interface IdeCodeSpaceMapper extends BaseMapper<IdeCodeSpace> {

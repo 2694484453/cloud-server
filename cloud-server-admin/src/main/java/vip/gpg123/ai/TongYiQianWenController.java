@@ -25,8 +25,8 @@ import java.util.Map;
  * @date 2025/1/29 3:00
  **/
 @RestController
-@RequestMapping("/ai")
-@Api(tags = "ai")
+@RequestMapping("/ai/tyqw")
+@Api(tags = "【ai】通义千问大模型")
 public class TongYiQianWenController {
 
     @Value("${ai.tyqw.api-key}")

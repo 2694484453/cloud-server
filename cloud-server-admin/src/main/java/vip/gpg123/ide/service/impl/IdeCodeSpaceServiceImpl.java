@@ -1,9 +1,9 @@
-package vip.gpg123.git.service.impl;
+package vip.gpg123.ide.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import vip.gpg123.git.domain.IdeCodeSpace;
-import vip.gpg123.git.service.IdeCodeSpaceService;
-import vip.gpg123.git.mapper.IdeCodeSpaceMapper;
+import vip.gpg123.ide.domain.IdeCodeSpace;
+import vip.gpg123.ide.service.IdeCodeSpaceService;
+import vip.gpg123.ide.mapper.IdeCodeSpaceMapper;
 import org.springframework.stereotype.Service;
 
 /**

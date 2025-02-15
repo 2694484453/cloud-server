@@ -59,12 +59,6 @@
         <dependency>
             <groupId>vip.gpg123</groupId>
             <artifactId>cloud-server-quartz</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jsqlparser</artifactId>
-                    <groupId>com.github.jsqlparser</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
