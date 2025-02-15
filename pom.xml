@@ -17,14 +17,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-boot.version>2.7.3</spring-boot.version>
+        <spring-boot.version>2.5.3</spring-boot.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <spring-framework.version>5.3.33</spring-framework.version>
         <druid.version>1.2.20</druid.version>
         <bitwalker.version>1.21</bitwalker.version>
         <swagger.version>3.0.0</swagger.version>
         <kaptcha.version>2.3.3</kaptcha.version>
-        <pagehelper.boot.version>1.4.6</pagehelper.boot.version>
+        <!-- 指定 PageHelper 版本 -->
+        <pagehelper.boot.version>1.2.5</pagehelper.boot.version>
         <fastjson.version>2.0.43</fastjson.version>
         <oshi.version>6.5.0</oshi.version>
         <commons.io.version>2.13.0</commons.io.version>
@@ -33,9 +34,16 @@
         <jwt.version>0.9.1</jwt.version>
         <k8s.version>6.5.1</k8s.version>
         <opentelemetry.version>1.36.0</opentelemetry.version>
+        <!--mysql-driver-->
         <mysql-connector.version>8.0.33</mysql-connector.version>
+        <!--mybatis-->
+        <mybatis.version>3.5.13</mybatis.version>
+        <!--mbp-->
         <mybatis-plus-boot-starter.version>3.4.2</mybatis-plus-boot-starter.version>
+        <!--kubernetes-->
         <k8s.version>6.5.1</k8s.version>
+        <!-- 确保 JSqlParser 版本兼容 -->
+        <jsqlparser.version>4.9</jsqlparser.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -88,10 +96,17 @@
             </dependency>
 
             <!-- pagehelper 分页插件 -->
+<!--            <dependency>-->
+<!--                <groupId>com.github.pagehelper</groupId>-->
+<!--                <artifactId>pagehelper-spring-boot-starter</artifactId>-->
+<!--                <version>${pagehelper.boot.version}</version>-->
+<!--            </dependency>-->
+
+            <!-- 手动指定 JSqlParser 版本 -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper.boot.version}</version>
+                <artifactId>pagehelper</artifactId>
+                <version>5.2.0</version>
             </dependency>
 
             <!-- 获取系统信息 -->

@@ -94,6 +94,11 @@
             <groupId>io.fabric8</groupId>
             <artifactId>openshift-client</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
