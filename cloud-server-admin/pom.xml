@@ -37,18 +37,6 @@
             <version>1.6.2</version>
         </dependency>
 
-        <!-- Mysql驱动包 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <!--mybatis-plus-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-
         <!-- 核心模块-->
         <dependency>
             <groupId>vip.gpg123</groupId>
@@ -65,23 +53,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!--k8s-->
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-client</artifactId>
-            <version>6.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-model-apiextensions</artifactId>
-            <version>6.5.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>openshift-client</artifactId>
-            <version>6.5.1</version>
-        </dependency>
+
         <!--test-->
         <dependency>
             <groupId>junit</groupId>

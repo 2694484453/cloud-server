@@ -37,12 +37,12 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>mybatis</artifactId>
-                    <groupId>org.mybatis</groupId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+
+        <!-- Mysql驱动包 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <!-- 自定义验证注解 -->
@@ -129,20 +129,33 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
+
+        <!--k8s-->
         <dependency>
             <groupId>io.fabric8</groupId>
-            <artifactId>openshift-client-api</artifactId>
-            <version>6.7.2</version>
+            <artifactId>kubernetes-client</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-model-apiextensions</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openshift-client</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
+        <!--mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-core</artifactId>
-            <version>3.5.7</version>
-            <scope>compile</scope>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
     </dependencies>

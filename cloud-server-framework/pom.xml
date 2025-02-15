@@ -63,6 +63,7 @@
             <artifactId>cloud-server-system</artifactId>
         </dependency>
 
+        <!--git操作-->
         <dependency>
             <groupId>io.etcd</groupId>
             <artifactId>jetcd-core</artifactId>
@@ -70,18 +71,29 @@
             <scope>compile</scope>
         </dependency>
 
+        <!--websocket-->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-websocket</artifactId>
             <version>9.0.75</version>
         </dependency>
+
+        <!--k8s-->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-extension</artifactId>
-            <version>3.5.1</version>
-            <scope>compile</scope>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-model-apiextensions</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openshift-client</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

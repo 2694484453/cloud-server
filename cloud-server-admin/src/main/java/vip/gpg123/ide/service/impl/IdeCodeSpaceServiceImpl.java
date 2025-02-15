@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-02-14 16:09:25
 */
 @Service
-public class IdeCodeSpaceServiceImpl extends ServiceImpl<IdeCodeSpaceMapper, IdeCodeSpace>
-    implements IdeCodeSpaceService{
+public class IdeCodeSpaceServiceImpl extends ServiceImpl<IdeCodeSpaceMapper, IdeCodeSpace> implements IdeCodeSpaceService{
 
 }
 

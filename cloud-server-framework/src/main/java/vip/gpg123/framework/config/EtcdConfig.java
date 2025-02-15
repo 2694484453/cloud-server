@@ -1,4 +1,4 @@
-package vip.gpg123.framework;
+package vip.gpg123.framework.config;
 
 import io.etcd.jetcd.Client;
 import org.springframework.beans.factory.annotation.Value;
