@@ -57,7 +57,7 @@ public class PrometheusTargetsController {
      * @return r
      */
     private List<?> targets(){
-        HttpResponse httpResponse = HttpUtil.createGet(endpoint+"/api/v1/targets")
+        HttpResponse httpResponse = HttpUtil.createGet(endpoint+"/targets")
                 .setConnectionTimeout(10000)
                 .timeout(10000)
                 .execute();
