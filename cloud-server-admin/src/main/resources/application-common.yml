@@ -60,3 +60,6 @@ monitor:
     endpoint: https://prometheus.gpg123.vip/api/v1
   alertmanager:
     endpoint: https://alertmanager.gpg123.vip
+# ide
+ide:
+  path: /home/ide

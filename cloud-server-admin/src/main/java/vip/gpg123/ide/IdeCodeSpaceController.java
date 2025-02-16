@@ -1,11 +1,17 @@
 package vip.gpg123.ide;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Console;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +27,12 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.framework.config.domain.IdeClient;
+import vip.gpg123.ide.domain.IdeCodeOpen;
 import vip.gpg123.ide.domain.IdeCodeSpace;
 import vip.gpg123.ide.service.IdeCodeSpaceService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,6 +48,9 @@ public class IdeCodeSpaceController {
 
     @Autowired
     private IdeCodeSpaceService codeSpaceService;
+
+    @Autowired
+    private IdeClient ideClient;
 
     /**
      * 分页查询
@@ -88,6 +100,67 @@ public class IdeCodeSpaceController {
         ideCodeSpace.setWorkPath("/home/coder/" + SecurityUtils.getUsername() + "/" + ideCodeSpace.getName());
         boolean isSuccess = codeSpaceService.save(ideCodeSpace);
         return isSuccess ? AjaxResult.success("新增成功", true) : AjaxResult.error("新增失败", false);
+    }
+
+    /**
+     * 打开工作空间
+     * @param ideCodeOpen i
+     * @return r
+     */
+    @PostMapping("/open")
+    @ApiOperation(value = "打开")
+    public AjaxResult open(@RequestBody IdeCodeOpen ideCodeOpen) {
+        // 检查名称
+        String name = ideCodeOpen.getName();
+        IdeCodeSpace ideCodeSpace = codeSpaceService.getOne(new LambdaQueryWrapper<IdeCodeSpace>()
+                .eq(StrUtil.isNotBlank(name), IdeCodeSpace::getName, name)
+        );
+        // 判断是否存在
+        if (ObjectUtil.isNotNull(ideCodeOpen)) {
+            return AjaxResult.success(ideCodeOpen);
+        } else {
+            // 进行克隆下载
+            String parentDir = ideClient.getPath() + "/" + SecurityUtils.getUsername();
+            String targetDir = parentDir + "/" + name;
+            try {
+                Git git = Git.cloneRepository()
+                        .setGitDir(FileUtil.file(parentDir))
+                        .setBranch("")
+                        .setDirectory(FileUtil.file(targetDir))
+                        .setCallback(new CloneCommand.Callback() {
+                            /**
+                             * 初始化回调
+                             * @param submodules
+                             * the submodules
+                             */
+                            @Override
+                            public void initializedSubmodules(Collection<String> submodules) {
+                                Console.log("[}初始化了", name);
+                            }
+
+                            @Override
+                            public void cloningSubmodule(String path) {
+
+                            }
+
+                            @Override
+                            public void checkingOut(AnyObjectId commit, String path) {
+
+                            }
+                        }).setURI(ideCodeOpen.getHtmlUrl())
+                        .call();
+                // 新增记录
+                IdeCodeSpace ideCodeSpaceSave = new IdeCodeSpace();
+                ideCodeSpaceSave.setCreateBy(SecurityUtils.getUsername());
+                ideCodeSpaceSave.setName(name);
+                ideCodeSpaceSave.setGitHttp(ideCodeOpen.getHtmlUrl());
+                ideCodeSpaceSave.setDescription("xx");
+                boolean isSuccess = codeSpaceService.save(ideCodeSpaceSave);
+                return isSuccess ? AjaxResult.success("操作成功", true) : AjaxResult.error("克隆失败", false);
+            } catch (Exception e) {
+                return AjaxResult.error(e.getMessage());
+            }
+        }
     }
 
     /**
