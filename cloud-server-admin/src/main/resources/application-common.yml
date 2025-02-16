@@ -1,9 +1,3 @@
-prometheus:
-  spring-boot: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\spring-boot.json
-  node-exporter: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\node-exporter.json
-  nginx-exporter: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\nginx-exporter.json
-  caddy: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\nginx-exporter.json
-  traefik: D:\Project\my-server\ruoyi-admin\src\main\resources\monitor\traefik
 traefik:
   path: /home/my-traefik/config
 build:
@@ -63,3 +57,9 @@ monitor:
 # ide
 ide:
   path: /home/ide
+#远程主机
+remote:
+  host: tcs.gpg123.vip
+  port: 22
+  userName: root
+  passWord: 1999y4m30D%
