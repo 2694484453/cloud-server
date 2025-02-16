@@ -95,13 +95,6 @@
                 <version>${mybatis-plus-boot-starter.version}</version>
             </dependency>
 
-            <!-- pagehelper 分页插件 -->
-<!--            <dependency>-->
-<!--                <groupId>com.github.pagehelper</groupId>-->
-<!--                <artifactId>pagehelper-spring-boot-starter</artifactId>-->
-<!--                <version>${pagehelper.boot.version}</version>-->
-<!--            </dependency>-->
-
             <!-- 手动指定 JSqlParser 版本 -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
@@ -215,6 +208,12 @@
                 <groupId>io.fabric8</groupId>
                 <artifactId>openshift-client</artifactId>
                 <version>${k8s.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk15on</artifactId>
+                <version>1.60</version>
             </dependency>
 
             <!--opentelemetry-->

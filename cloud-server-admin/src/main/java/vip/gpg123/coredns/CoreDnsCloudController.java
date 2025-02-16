@@ -21,7 +21,7 @@ import java.util.Map;
  * @date 2024/10/9 1:34
  **/
 @RestController
-@RequestMapping("/corednsCloud")
+@RequestMapping("/coredns")
 public class CoreDnsCloudController {
 
     @Qualifier("KubernetesClient")
