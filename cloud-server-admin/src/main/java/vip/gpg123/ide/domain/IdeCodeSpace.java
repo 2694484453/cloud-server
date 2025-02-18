@@ -27,6 +27,11 @@ public class IdeCodeSpace {
     /**
      *
      */
+    private String tags;
+
+    /**
+     *
+     */
     private String gitHttp;
 
     /**

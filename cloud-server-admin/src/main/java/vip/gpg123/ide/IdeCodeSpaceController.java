@@ -104,6 +104,7 @@ public class IdeCodeSpaceController {
 
     /**
      * 打开工作空间
+     *
      * @param ideCodeOpen i
      * @return r
      */
@@ -116,15 +117,14 @@ public class IdeCodeSpaceController {
                 .eq(StrUtil.isNotBlank(name), IdeCodeSpace::getName, name)
         );
         // 判断是否存在
-        if (ObjectUtil.isNotNull(ideCodeOpen)) {
-            return AjaxResult.success(ideCodeOpen);
+        if (ObjectUtil.isNotNull(ideCodeSpace)) {
+            return AjaxResult.success(ideCodeSpace);
         } else {
             // 进行克隆下载
             String parentDir = ideClient.getPath() + "/" + SecurityUtils.getUsername();
             String targetDir = parentDir + "/" + name;
             try {
                 Git git = Git.cloneRepository()
-                        .setGitDir(FileUtil.file(parentDir))
                         .setBranch("")
                         .setDirectory(FileUtil.file(targetDir))
                         .setCallback(new CloneCommand.Callback() {
@@ -135,17 +135,17 @@ public class IdeCodeSpaceController {
                              */
                             @Override
                             public void initializedSubmodules(Collection<String> submodules) {
-                                Console.log("[}初始化了", name);
+                                Console.log("[}-initializedSubmodules", name);
                             }
 
                             @Override
                             public void cloningSubmodule(String path) {
-
+                                Console.log("[}-cloningSubmodule", name);
                             }
 
                             @Override
                             public void checkingOut(AnyObjectId commit, String path) {
-
+                                Console.log("[}-checkingOut", name);
                             }
                         }).setURI(ideCodeOpen.getHtmlUrl())
                         .call();
@@ -155,7 +155,7 @@ public class IdeCodeSpaceController {
                 ideCodeSpaceSave.setName(name);
                 ideCodeSpaceSave.setGitHttp(ideCodeOpen.getHtmlUrl());
                 ideCodeSpaceSave.setDescription("xx");
-                boolean isSuccess = codeSpaceService.save(ideCodeSpaceSave);
+                boolean isSuccess = codeSpaceService.saveOrUpdate(ideCodeSpaceSave);
                 return isSuccess ? AjaxResult.success("操作成功", true) : AjaxResult.error("克隆失败", false);
             } catch (Exception e) {
                 return AjaxResult.error(e.getMessage());
