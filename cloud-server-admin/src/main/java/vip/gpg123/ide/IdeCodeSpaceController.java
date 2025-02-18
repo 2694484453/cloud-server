@@ -125,7 +125,7 @@ public class IdeCodeSpaceController {
             String targetDir = parentDir + "/" + name;
             try {
                 Git git = Git.cloneRepository()
-                        .setBranch("")
+                        .setBranch(ideCodeOpen.getBranch())
                         .setDirectory(FileUtil.file(targetDir))
                         .setCallback(new CloneCommand.Callback() {
                             /**
@@ -149,18 +149,20 @@ public class IdeCodeSpaceController {
                             }
                         }).setURI(ideCodeOpen.getHtmlUrl())
                         .call();
+            } catch (Exception e) {
+                return AjaxResult.error(e.getMessage());
+            } finally {
                 // 新增记录
                 IdeCodeSpace ideCodeSpaceSave = new IdeCodeSpace();
                 ideCodeSpaceSave.setCreateBy(SecurityUtils.getUsername());
                 ideCodeSpaceSave.setName(name);
                 ideCodeSpaceSave.setGitHttp(ideCodeOpen.getHtmlUrl());
-                ideCodeSpaceSave.setDescription("xx");
+                ideCodeSpaceSave.setDescription(ideCodeSpace.getDescription());
                 boolean isSuccess = codeSpaceService.saveOrUpdate(ideCodeSpaceSave);
-                return isSuccess ? AjaxResult.success("操作成功", true) : AjaxResult.error("克隆失败", false);
-            } catch (Exception e) {
-                return AjaxResult.error(e.getMessage());
+                Console.log("插入结果：{}",isSuccess);
             }
         }
+        return AjaxResult.success("操作成功");
     }
 
     /**
