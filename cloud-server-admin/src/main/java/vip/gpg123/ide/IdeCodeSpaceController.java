@@ -5,6 +5,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.mail.MailAccount;
+import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,6 +16,7 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +55,9 @@ public class IdeCodeSpaceController {
 
     @Autowired
     private IdeClient ideClient;
+
+    @Autowired
+    private MailAccount mailAccount;
 
     /**
      * 分页查询
@@ -161,7 +167,9 @@ public class IdeCodeSpaceController {
                 ideCodeSpaceSave.setGitHttp(ideCodeOpen.getHtmlUrl());
                 ideCodeSpaceSave.setDescription(ideCodeOpen.getDescription());
                 boolean isSuccess = codeSpaceService.saveOrUpdate(ideCodeSpaceSave);
-                Console.log("插入结果：{}",isSuccess);
+                Console.log("插入结果：{}", isSuccess);
+                // 发送邮件
+                sendEmail(ideCodeOpen.getName());
             }
         }
         return AjaxResult.success("操作成功");
@@ -191,5 +199,10 @@ public class IdeCodeSpaceController {
     public AjaxResult delete(@RequestParam("name") String name) {
         boolean isSuccess = codeSpaceService.removeById(name);
         return isSuccess ? AjaxResult.success("删除成功", true) : AjaxResult.error("删除失败", false);
+    }
+
+    @Async
+    public void sendEmail(String workSpace) {
+        MailUtil.send(mailAccount, SecurityUtils.getLoginUser().getUser().getEmail(), "云开发工作空间变动提醒", "尊敬的用户:" + SecurityUtils.getUsername() + ",您的" + workSpace + "已创建成功！", false);
     }
 }
