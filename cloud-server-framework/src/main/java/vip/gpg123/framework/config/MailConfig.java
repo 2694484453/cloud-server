@@ -1,10 +1,6 @@
 package vip.gpg123.framework.config;
 
 import cn.hutool.extra.mail.MailAccount;
-import cn.hutool.extra.mail.MailUtil;
-
-import javax.mail.Session;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
