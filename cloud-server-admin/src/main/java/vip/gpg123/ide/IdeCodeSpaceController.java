@@ -1,5 +1,6 @@
 package vip.gpg123.ide;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ObjectUtil;
@@ -155,9 +156,10 @@ public class IdeCodeSpaceController {
                 // 新增记录
                 IdeCodeSpace ideCodeSpaceSave = new IdeCodeSpace();
                 ideCodeSpaceSave.setCreateBy(SecurityUtils.getUsername());
+                ideCodeSpaceSave.setCreateTime(DateUtil.date());
                 ideCodeSpaceSave.setName(name);
                 ideCodeSpaceSave.setGitHttp(ideCodeOpen.getHtmlUrl());
-                ideCodeSpaceSave.setDescription(ideCodeSpace.getDescription());
+                ideCodeSpaceSave.setDescription(ideCodeOpen.getDescription());
                 boolean isSuccess = codeSpaceService.saveOrUpdate(ideCodeSpaceSave);
                 Console.log("插入结果：{}",isSuccess);
             }

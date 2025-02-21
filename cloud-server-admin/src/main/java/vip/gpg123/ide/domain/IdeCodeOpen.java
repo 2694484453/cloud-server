@@ -23,4 +23,9 @@ public class IdeCodeOpen {
      * 分支
      */
     private String branch;
+
+    /**
+     * 备注
+     */
+    private String description;
 }
