@@ -105,6 +105,11 @@ spring:
       exporter:
         otlp:
           endpoint: http://124.221.2.29:4317
+  #
+  cloud:
+    nacos:
+      discovery: #启用 spring cloud nacos discovery
+        server-addr: ecs.gpg123.vip:8848
 # token配置
 token:
   # 令牌自定义标识

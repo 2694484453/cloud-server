@@ -8,8 +8,8 @@
     <artifactId>cloud-server</artifactId>
     <version>3.8.7</version>
 
-    <name>my-server</name>
-    <url>http://cloud-server.gpg123.vip</url>
+    <name>cloud-server</name>
+    <url>https://gpg123.cn</url>
     <description>云服务管理系统</description>
 
     <properties>
@@ -17,7 +17,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-boot.version>2.5.3</spring-boot.version>
+        <!--boot-->
+        <spring-boot.version>2.6.3</spring-boot.version>
+        <!--cloud-->
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <!--alibaba-cloud-->
+        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <spring-framework.version>5.3.33</spring-framework.version>
         <druid.version>1.2.20</druid.version>
@@ -63,6 +68,24 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--springCloud的依赖配置-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--springCloud-alibaba的依赖配置-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -222,17 +245,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!--aliyun-sdk-->
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-domain</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>3.5.0</version>
-        </dependency>
         <!--远程工具-->
         <dependency>
             <groupId>com.jcraft</groupId>
@@ -245,6 +257,46 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.22</version>
         </dependency>
+
+        <!--kubernetes-client -->
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+            <version>${k8s.version}</version>
+        </dependency>
+
+        <!--prometheus-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!-- otlp -->
+        <dependency>
+            <groupId>io.opentelemetry.instrumentation</groupId>
+            <artifactId>opentelemetry-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Nacos 服务发现 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!-- 服务发现：OpenFeign服务调用 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!-- 负载均衡器 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
         <!--aliyun-sdk-->
         <dependency>
             <groupId>com.aliyun</groupId>
@@ -256,25 +308,58 @@
             <artifactId>alidns20150109</artifactId>
             <version>3.4.3</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/io.fabric8/kubernetes-client -->
+
+        <!--jgit-->
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>5.3.0.201903130848-r</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                    <groupId>org.bouncycastle</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>bcpg-jdk15on</artifactId>
+                    <groupId>org.bouncycastle</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>bcpkix-jdk15on</artifactId>
+                    <groupId>org.bouncycastle</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--etcd-->
+        <dependency>
+            <groupId>io.etcd</groupId>
+            <artifactId>jetcd-core</artifactId>
+            <version>0.5.11</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--websocket-->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>9.0.75</version>
+        </dependency>
+
+        <!--k8s-->
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
-            <version>${k8s.version}</version>
         </dependency>
-        <!--prometheus-->
+
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-model-apiextensions</artifactId>
+            <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-        <!-- otlp -->
-        <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-spring-boot-starter</artifactId>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openshift-client</artifactId>
         </dependency>
     </dependencies>
     <modules>
