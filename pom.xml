@@ -345,22 +345,7 @@
             <version>9.0.75</version>
         </dependency>
 
-        <!--k8s-->
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-client</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-model-apiextensions</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>openshift-client</artifactId>
-        </dependency>
     </dependencies>
     <modules>
         <module>cloud-server-admin</module>

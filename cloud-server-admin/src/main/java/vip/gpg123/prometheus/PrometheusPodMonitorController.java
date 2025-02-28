@@ -1,6 +1,5 @@
 package vip.gpg123.prometheus;
 
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.api.model.monitoring.v1.PodMonitor;
 import io.fabric8.openshift.client.OpenShiftClient;
 import io.swagger.annotations.Api;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 
 import java.util.List;

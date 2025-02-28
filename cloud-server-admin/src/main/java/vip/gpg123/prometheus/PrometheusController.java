@@ -1,9 +1,11 @@
 package vip.gpg123.prometheus;
 
 import cn.hutool.core.convert.Convert;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRule;
 import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRuleList;
@@ -25,6 +27,10 @@ import java.util.List;
 @Api(tags = "监控中心云原生版")
 public class PrometheusController {
 
+    @Qualifier("OpenShiftClient")
+    @Autowired
+    private OpenShiftClient openShiftClient;
+
     /**
      * 列表查询
      * @return r
@@ -32,7 +38,6 @@ public class PrometheusController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        OpenShiftClient openShiftClient = K8sUtil.createOClient();
         List<PrometheusRule> prometheusRules;
         try {
             PrometheusRuleList prometheusRuleList = openShiftClient.monitoring().prometheusRules().inAnyNamespace().list();

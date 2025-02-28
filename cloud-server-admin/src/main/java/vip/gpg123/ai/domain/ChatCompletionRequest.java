@@ -4,16 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author gaopuguang
  * @date 2025/1/29 3:53
  **/
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Messages {
+public class ChatCompletionRequest {
 
-    private String role;
+    private String model;
 
-    private String content;
+    private List<RequestMessage> messages;
+
+
+
 }

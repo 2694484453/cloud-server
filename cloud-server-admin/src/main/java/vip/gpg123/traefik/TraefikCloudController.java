@@ -1,7 +1,9 @@
 package vip.gpg123.traefik;
 
 import cn.hutool.core.convert.Convert;
-import vip.gpg123.common.utils.K8sUtil;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import vip.gpg123.common.core.domain.AjaxResult;
 
 import vip.gpg123.common.core.page.TableDataInfo;
@@ -25,6 +27,10 @@ import java.util.List;
 @Api(tags = "traefik云原生版")
 public class TraefikCloudController {
 
+    @Qualifier("KubernetesClient")
+    @Autowired
+    private KubernetesClient kubernetesClient;
+
     /**
      * 列表查询
      *
@@ -33,7 +39,7 @@ public class TraefikCloudController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        IngressList list = K8sUtil.createKClient().network().v1().ingresses().list();
+        IngressList list = kubernetesClient.network().v1().ingresses().list();
         List<Ingress> ingressList = list.getItems();
         return AjaxResult.success(ingressList);
     }

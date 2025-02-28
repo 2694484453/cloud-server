@@ -1,11 +1,8 @@
 package vip.gpg123.ai.config;
 
-import cn.hutool.core.thread.ThreadUtil;
-import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import vip.gpg123.common.utils.K8sUtil;
 
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
@@ -14,9 +11,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

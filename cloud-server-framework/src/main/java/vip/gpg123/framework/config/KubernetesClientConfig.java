@@ -44,8 +44,7 @@ public class KubernetesClientConfig {
         return kubernetesClient.adapt(OpenShiftClient.class);
     }
 
-    @Bean(name = "defaultConfigPath")
-    public String defaultConfigPath() {
+    public static String defaultConfigPath() {
         return configFile;
     }
 }

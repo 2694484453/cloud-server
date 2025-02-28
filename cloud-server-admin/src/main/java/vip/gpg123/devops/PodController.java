@@ -1,9 +1,11 @@
 package vip.gpg123.devops;
 
 import cn.hutool.core.convert.Convert;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.swagger.annotations.Api;
@@ -24,6 +26,10 @@ import java.util.List;
 @Api(tags = "【devops】pod控制管理")
 public class PodController {
 
+    @Qualifier("KubernetesClient")
+    @Autowired
+    private KubernetesClient kubernetesClient;
+
     /**
      * 列表查询
      *
@@ -35,7 +41,7 @@ public class PodController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "podName", required = false) String podName,
                            @RequestParam(value = "nameSpace", required = false) String nameSpace) {
-        List<Pod> pods = K8sUtil.createKClient().pods().inAnyNamespace().list().getItems();
+        List<Pod> pods = kubernetesClient.pods().inAnyNamespace().list().getItems();
         return AjaxResult.success("查询成功", pods);
     }
 

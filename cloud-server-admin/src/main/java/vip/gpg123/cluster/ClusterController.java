@@ -9,9 +9,12 @@ import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.NamedAuthInfo;
 import io.fabric8.kubernetes.api.model.NamedCluster;
 import io.fabric8.kubernetes.api.model.NamedContext;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.framework.config.KubernetesClientConfig;
 
 import javax.servlet.ServletResponse;
 import java.io.File;
@@ -41,6 +44,7 @@ import java.util.List;
 @Api(value = "集群管理")
 public class ClusterController {
 
+
     /**
      * 集群列表
      *
@@ -52,7 +56,7 @@ public class ClusterController {
         List<NamedCluster> clusterList;
         try {
             // 配置文件信息
-            File file = FileUtil.file(K8sUtil.defaultConfigFilePath());
+            File file = FileUtil.file(KubernetesClientConfig.defaultConfigPath());
             Config config = KubeConfigUtils.parseConfig(file);
             clusterList = config.getClusters();
         } catch (Exception e) {
@@ -87,7 +91,7 @@ public class ClusterController {
         OutputStream outputStream = null;
         try {
             // 配置文件信息
-            File configFile = FileUtil.file(K8sUtil.defaultConfigFilePath());
+            File configFile = FileUtil.file(KubernetesClientConfig.defaultConfigPath());
             Config config = KubeConfigUtils.parseConfig(configFile);
             // 临时文件
             File tempFile = FileUtil.createTempFile();
@@ -105,7 +109,7 @@ public class ClusterController {
             List<NamedAuthInfo> users = config.getUsers();
             users.addAll(tempConfig.getUsers());
             // 重新写入
-            KubeConfigUtils.persistKubeConfigIntoFile(config, K8sUtil.defaultConfigFilePath());
+            KubeConfigUtils.persistKubeConfigIntoFile(config, KubernetesClientConfig.defaultConfigPath());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -116,7 +120,7 @@ public class ClusterController {
     @ApiOperation(value = "导出")
     public AjaxResult export(ServletResponse response, @RequestParam(value = "name", required = false) String name) {
         // 获取配置文件位置
-        File configFile = FileUtil.file(K8sUtil.defaultConfigFilePath());
+        File configFile = FileUtil.file(KubernetesClientConfig.defaultConfigPath());
         try {
             OutputStream outputStream = response.getOutputStream();
             // 不指定名字默认为全部
@@ -153,7 +157,7 @@ public class ClusterController {
     public AjaxResult delete(@RequestParam("name") String name) {
         try {
             // 配置文件信息
-            File configFile = FileUtil.file(K8sUtil.defaultConfigFilePath());
+            File configFile = FileUtil.file(KubernetesClientConfig.defaultConfigPath());
             Config config = KubeConfigUtils.parseConfig(configFile);
             // 集群
             List<NamedCluster> clusters = config.getClusters();
@@ -188,7 +192,7 @@ public class ClusterController {
             config.setClusters(newClusters);
             config.setContexts(newContexts);
             config.setUsers(newUsers);
-            KubeConfigUtils.persistKubeConfigIntoFile(config, K8sUtil.defaultConfigFilePath());
+            KubeConfigUtils.persistKubeConfigIntoFile(config, KubernetesClientConfig.defaultConfigPath());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

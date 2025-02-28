@@ -1,10 +1,12 @@
 package vip.gpg123.devops;
 
 import cn.hutool.core.thread.ThreadUtil;
-import vip.gpg123.common.utils.K8sUtil;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +25,10 @@ import java.io.InputStreamReader;
 @Api(tags = "【devops】sse控制")
 public class PodLogsSseController {
 
+    @Qualifier("KubernetesClient")
+    @Autowired
+    private KubernetesClient kubernetesClient;
+
     /**
      * 获取日志
      * @param podName pd
@@ -37,7 +43,7 @@ public class PodLogsSseController {
         SseEmitter emitter = new SseEmitter();
         ThreadUtil.execute(()->{
             try {
-                PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
+                PodResource podResource = kubernetesClient.pods().inNamespace(nameSpace).withName(podName);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(podResource.watchLog().getOutput()));
                 String line;
                 while ((line = reader.readLine()) != null) {

@@ -6,7 +6,6 @@ import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.api.model.NamespaceList;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionList;
-import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
@@ -15,7 +14,6 @@ import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRule;
 import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRuleList;
 import io.fabric8.openshift.client.OpenShiftClient;
 import org.junit.Test;
-import vip.gpg123.common.utils.K8sUtil;
 
 import java.io.File;
 import java.io.IOException;

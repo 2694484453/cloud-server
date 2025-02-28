@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.ai.config.AiWebSocketConfig;
-import vip.gpg123.ai.domain.Messages;
-import vip.gpg123.ai.domain.TyParams;
+import vip.gpg123.ai.domain.ChatCompletionRequest;
+import vip.gpg123.ai.domain.RequestMessage;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -52,17 +52,17 @@ public class TongYiQianWenController {
         // http
         try {
             //
-            TyParams tyParams = new TyParams();
-            tyParams.setModel("qwen-max");
-            tyParams.setMessages(new ArrayList<Messages>() {{
-                new Messages("system","欢迎");
-                new Messages("user","你是谁");
+            ChatCompletionRequest chatCompletionRequest = new ChatCompletionRequest();
+            chatCompletionRequest.setModel("qwen-max");
+            chatCompletionRequest.setMessages(new ArrayList<RequestMessage>() {{
+                new RequestMessage("system", "欢迎");
+                new RequestMessage("user", "你是谁");
             }});
             //
             httpResponse = HttpUtil.createPost(http)
-                    .body(JSONUtil.toJsonStr(tyParams))
+                    .body(JSONUtil.toJsonStr(chatCompletionRequest))
                     .contentType("application/json")
-                    .header("Authorization","Bearer "+apiKey)
+                    .header("Authorization", "Bearer " + apiKey)
                     .disableCache()
                     .timeout(1000)
                     .execute();

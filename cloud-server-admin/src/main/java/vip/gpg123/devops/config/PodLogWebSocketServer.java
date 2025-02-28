@@ -1,10 +1,12 @@
 package vip.gpg123.devops.config;
 
 import cn.hutool.core.thread.ThreadUtil;
-import vip.gpg123.common.utils.K8sUtil;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.CloseReason;
@@ -24,6 +26,10 @@ import java.util.Map;
 @ServerEndpoint(value = "/ws/podLog")
 @Component
 public class PodLogWebSocketServer {
+
+    @Qualifier("KubernetesClient")
+    @Autowired
+    private KubernetesClient kubernetesClient;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PodLogWebSocketServer.class);
 
@@ -84,10 +90,10 @@ public class PodLogWebSocketServer {
     /**
      * 发送消息
      */
-    public static void sendMessageToClient(String podName, String nameSpace) {
+    public void sendMessageToClient(String podName, String nameSpace) {
         Session session = sessionMap.get("podLog");
         if (session != null && session.isOpen()) {
-            PodResource podResource = K8sUtil.createKClient().pods().inNamespace(nameSpace).withName(podName);
+            PodResource podResource = kubernetesClient.pods().inNamespace(nameSpace).withName(podName);
             ThreadUtil.execute(() -> {
                 try {
                     session.getBasicRemote().sendText(podResource.getLog());

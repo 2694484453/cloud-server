@@ -7,6 +7,8 @@ import cn.hutool.json.JSONUtil;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 
@@ -30,6 +31,10 @@ import java.util.List;
 @RequestMapping("/ide")
 @Api(tags = "【ide】管理")
 public class IdeController {
+
+    @Qualifier("KubernetesClient")
+    @Autowired
+    private KubernetesClient kubernetesClient;
 
     @Value("${repo.helm.name}")
     private String repoName;
@@ -89,11 +94,7 @@ public class IdeController {
     private List<?> ides() {
         List<?> list;
         String user = SecurityUtils.getUsername();
-        try (KubernetesClient kubernetesClient = K8sUtil.createKClient()) {
-            list = kubernetesClient.apps().deployments().inNamespace("ide").withLabel(user).list().getItems();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        list = kubernetesClient.apps().deployments().inNamespace("ide").withLabel(user).list().getItems();
         return list;
     }
 }
