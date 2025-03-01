@@ -76,7 +76,6 @@ public abstract class AbstractAiServiceImpl implements AbstractAiService {
                     .contentType("application/json")
                     .header("Authorization", "Bearer " + apiKey)
                     .disableCache()
-                    .timeout(1000)
                     .execute();
             JSONObject result = JSONUtil.parseObj(httpResponse.body());
             chatCompletionResponse = JSONUtil.toBean(result.toString(), ChatCompletionResponse.class);

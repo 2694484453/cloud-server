@@ -108,7 +108,7 @@ spring:
       exporter:
         otlp:
           endpoint: http://124.221.2.29:4317
-  #
+  # spring-cloud
   cloud:
     nacos:
       config:
@@ -119,7 +119,17 @@ spring:
         server-addr: 110.42.40.8:8848
         namespace: gaopuguang
         group: DEFAULT_GROUP
-
+#    stream:
+#      rocketmq:
+#        binder:
+#          name-server: 110.42.40.8:9876
+#        bindings:
+#          producer-out-0:
+#            producer:
+#              group: cloud_server
+#      bindings:
+#        producer-out-0:
+#          destination: broadcast
 # token配置
 token:
   # 令牌自定义标识

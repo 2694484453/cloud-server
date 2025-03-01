@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.ai.config.AiWebSocketConfig;
 import vip.gpg123.ai.domain.ChatCompletionRequest;
 import vip.gpg123.ai.domain.RequestMessage;
+import vip.gpg123.ai.service.TongYiQianWenAiService;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -36,6 +37,9 @@ public class TongYiQianWenController {
     private String http;
 
     @Autowired
+    private TongYiQianWenAiService tongYiQianWenAiService;
+
+    @Autowired
     private AiWebSocketConfig aiWebSocketConfig;
 
     /**
@@ -46,7 +50,7 @@ public class TongYiQianWenController {
      */
     @PostMapping("/send")
     @ApiOperation(value = "发送")
-    public void send(@RequestParam("id") String id, @RequestBody Map<String, String> params) {
+    public void send(@RequestParam(value = "id",required = false) String id, @RequestBody Map<String, String> params) {
         String message = "";
         HttpResponse httpResponse;
         // http

@@ -1,6 +1,7 @@
 package vip.gpg123.ai;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ public class DeepSeekR1Controller {
      * @return r
      */
     @PostMapping("/demo")
+    @ApiOperation(value = "测试")
     public AjaxResult sendMessageDemo() {
         // 设置消息
         List<RequestMessage> messages = new ArrayList<RequestMessage>() {{
@@ -47,12 +49,11 @@ public class DeepSeekR1Controller {
      * @return r
      */
     @PostMapping("/send")
+    @ApiOperation(value = "发送")
     public AjaxResult sendMessage() {
         // 设置消息
-        List<RequestMessage> messages = new ArrayList<RequestMessage>() {{
-            new RequestMessage("system", "欢迎");
-            new RequestMessage("user", "你是谁");
-        }};
+        List<RequestMessage> messages = new ArrayList<>();
+        messages.add(new RequestMessage("user", "9.9和9.11谁大"));
         Object result = deepSeekR1Service.sendQuestion(messages);
         return AjaxResult.success(result);
     }
