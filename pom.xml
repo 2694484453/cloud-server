@@ -37,7 +37,7 @@
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
-        <k8s.version>6.5.1</k8s.version>
+        <!--open-telemetry-->
         <opentelemetry.version>1.36.0</opentelemetry.version>
         <!--mysql-driver-->
         <mysql-connector.version>8.0.33</mysql-connector.version>
@@ -46,7 +46,7 @@
         <!--mbp-->
         <mybatis-plus-boot-starter.version>3.4.2</mybatis-plus-boot-starter.version>
         <!--kubernetes-->
-        <k8s.version>6.5.1</k8s.version>
+        <fabric8.kubernetes-client.version>6.5.1</fabric8.kubernetes-client.version>
         <!-- 确保 JSqlParser 版本兼容 -->
         <jsqlparser.version>4.9</jsqlparser.version>
     </properties>
@@ -89,6 +89,35 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!--k8s的依赖配置-->
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-client-bom</artifactId>
+                <version>${fabric8.kubernetes-client.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-client-api</artifactId>
+                <version>${fabric8.kubernetes-client.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>openshift-client</artifactId>
+                <version>${fabric8.kubernetes-client.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-model-dependencies</artifactId>
+                <version>6.5.1</version>
+            </dependency>
+
 
             <!-- 阿里数据库连接池 -->
             <dependency>
@@ -215,24 +244,6 @@
                 <version>${server.version}</version>
             </dependency>
 
-            <!--k8s-->
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>kubernetes-client</artifactId>
-                <version>${k8s.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>kubernetes-model-apiextensions</artifactId>
-                <version>${k8s.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>openshift-client</artifactId>
-                <version>${k8s.version}</version>
-            </dependency>
-
             <!--opentelemetry-->
             <dependency>
                 <groupId>io.opentelemetry.instrumentation</groupId>
@@ -251,18 +262,12 @@
             <artifactId>jsch</artifactId>
             <version>0.1.54</version>
         </dependency>
+
         <!--工具-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.8.22</version>
-        </dependency>
-
-        <!--kubernetes-client -->
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-client</artifactId>
-            <version>${k8s.version}</version>
         </dependency>
 
         <!--prometheus-->
@@ -275,7 +280,7 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
-        <!-- otlp -->
+        <!-- otlp链路追踪 -->
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-spring-boot-starter</artifactId>
@@ -286,11 +291,13 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+
         <!-- 服务发现：OpenFeign服务调用 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+
         <!-- 负载均衡器 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -344,7 +351,6 @@
             <artifactId>tomcat-embed-websocket</artifactId>
             <version>9.0.75</version>
         </dependency>
-
 
     </dependencies>
     <modules>
