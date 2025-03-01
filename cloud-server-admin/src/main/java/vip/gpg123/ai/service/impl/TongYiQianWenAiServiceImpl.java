@@ -1,9 +1,8 @@
 package vip.gpg123.ai.service.impl;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import vip.gpg123.ai.domain.RequestMessage;
-import vip.gpg123.ai.service.AbstractAiService;
+import vip.gpg123.ai.service.TongYiQianWenAiService;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  * @date 2025/3/2 0:26
  **/
 @Service
-public class TongYiQianWenAiServiceImpl extends AbstractAiServiceImpl implements AbstractAiService {
+public class TongYiQianWenAiServiceImpl extends AbstractAiServiceImpl implements TongYiQianWenAiService {
 
     private static final String model = "qwen-max";
 

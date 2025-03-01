@@ -1,6 +1,5 @@
 package vip.gpg123.ai.service;
 
-import vip.gpg123.ai.domain.ChatCompletionRequest;
 import vip.gpg123.ai.domain.RequestMessage;
 
 import java.util.List;
