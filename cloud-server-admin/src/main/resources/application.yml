@@ -56,6 +56,9 @@ user:
 spring:
   application:
     name: cloud-server
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   # 资源信息
   messages:
     # 国际化资源文件路径
@@ -108,8 +111,13 @@ spring:
   #
   cloud:
     nacos:
+      config:
+        server-addr: hcs.gpg123.vip:8848
+        namespace: gaopuguang
+        group: DEFAULT_GROUP
       discovery: #启用 spring cloud nacos discovery
-        server-addr: ecs.gpg123.vip:8848
+        server-addr: hcs.gpg123.vip:8848
+
 # token配置
 token:
   # 令牌自定义标识

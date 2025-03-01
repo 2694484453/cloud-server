@@ -292,6 +292,12 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
+        <!-- Nacos 服务配置 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
         <!-- 服务发现：OpenFeign服务调用 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
