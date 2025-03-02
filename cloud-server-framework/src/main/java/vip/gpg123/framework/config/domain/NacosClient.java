@@ -30,6 +30,16 @@ public class NacosClient {
     private String password;
 
     /**
+     * 指标状态
+     */
+    public String status(){
+        HttpResponse httpResponse = HttpUtil.createGet(api + "/nacos/v1/ns/operator/metrics")
+                .execute();
+        JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
+        return jsonObject.get("status").toString();
+    }
+
+    /**
      * 命名空间
      *
      * @return r

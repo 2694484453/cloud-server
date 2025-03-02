@@ -26,6 +26,7 @@ public class NacosOverViewController {
 
     /**
      * 概览
+     *
      * @return r
      */
     @GetMapping("/overView")
@@ -35,6 +36,7 @@ public class NacosOverViewController {
         Map<String, Object> result = new HashMap<>();
         result.put("namespaceCount", namespaceList.size());
         result.put("serviceCount", serviceList.size());
+        result.put("status", nacosClient.status());
         return AjaxResult.success(result);
     }
 }
