@@ -73,7 +73,7 @@ public class NacosClient {
         List<?> serviceList = Convert.toList(serviceListJsonArr);
         serviceList.forEach(e -> {
             JSONObject service = JSONUtil.parseObj(e);
-            service.append("namespace", namespace);
+            service.putOpt("namespace", namespace);
             result.add(service);
         });
         return result;
