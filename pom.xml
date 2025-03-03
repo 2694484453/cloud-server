@@ -311,10 +311,10 @@
         </dependency>
 
         <!--rocketmq-->
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alibaba.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>-->
+        <!--        </dependency>-->
 
         <!--aliyun-sdk-->
         <dependency>
@@ -385,9 +385,21 @@
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <skip>true</skip>
+                    <excludes>
+                        <exclude>**/._*</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/._*</exclude>
+                    <exclude>**/.DS_store</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
     <repositories>
