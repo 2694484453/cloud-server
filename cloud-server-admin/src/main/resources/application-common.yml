@@ -51,7 +51,7 @@ trace:
 #监控
 monitor:
   prometheus:
-    endpoint: https://prometheus.gpg123.vip/api/v1
+    endpoint: https://prometheus.gpg123.vip
   alertmanager:
     endpoint: https://alertmanager.gpg123.vip
 # ide

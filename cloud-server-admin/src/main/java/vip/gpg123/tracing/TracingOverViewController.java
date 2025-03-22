@@ -67,7 +67,7 @@ public class TracingOverViewController {
     }
 
     public Object queryUpTime() {
-        HttpResponse httpResponse = HttpUtil.createGet(prometheusClient.getEndpoint() + "/query?query=otelcol_process_uptime{service='opentelemetry'}")
+        HttpResponse httpResponse = HttpUtil.createGet(prometheusClient.getEndpoint() + "/api/v1/query?query=otelcol_process_uptime{service='opentelemetry'}")
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
         JSONObject data = JSONUtil.parseObj(jsonObject.get("data"));

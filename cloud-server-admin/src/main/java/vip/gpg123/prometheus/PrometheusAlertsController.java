@@ -8,6 +8,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.framework.config.domain.PrometheusClient;
 
 import java.util.List;
 
@@ -28,8 +30,8 @@ import java.util.List;
 @Api(tags = "【alerts】管理")
 public class PrometheusAlertsController {
 
-    @Value("${monitor.prometheus.endpoint}")
-    private String endpoint;
+    @Autowired
+    private PrometheusClient prometheusClient;
 
     /**
      * 分页查询
@@ -60,7 +62,7 @@ public class PrometheusAlertsController {
      * @return r
      */
     private List<?> alertList() {
-        HttpResponse httpResponse = HttpUtil.createGet(endpoint + "/api/v1/alerts")
+        HttpResponse httpResponse = HttpUtil.createGet(prometheusClient.getEndpoint() + "/api/v1/alerts")
                 .timeout(10000)
                 .setConnectionTimeout(10000)
                 .execute();
