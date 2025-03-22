@@ -118,7 +118,6 @@
                 <version>6.5.1</version>
             </dependency>
 
-
             <!-- 阿里数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -363,6 +362,27 @@
             <artifactId>tomcat-embed-websocket</artifactId>
             <version>9.0.75</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.aliyun.schedulerx</groupId>-->
+<!--            <artifactId>schedulerx2-spring-boot-starter</artifactId>-->
+<!--            <version>1.4.2</version>-->
+<!--            &lt;!&ndash;如果使用logback，需要将log4j和log4j2排除 &ndash;&gt;-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.logging.log4j</groupId>-->
+<!--                    <artifactId>log4j-api</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.logging.log4j</groupId>-->
+<!--                    <artifactId>log4j-core</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>log4j</groupId>-->
+<!--                    <artifactId>log4j</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
     </dependencies>
     <modules>

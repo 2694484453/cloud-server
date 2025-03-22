@@ -1,0 +1,7 @@
+spring:
+  schedulerx2:
+    domain-name: addr-hz-internal.edas.aliyun.com
+    endpoint: addr-hz-internal.edas.aliyun.com
+    namespace: 26584be8-e785-4ad7-ae83-128debdad613
+    groupId: demo-app
+    appKey: bD4tcfvDgPKQrUGsyVQvbw

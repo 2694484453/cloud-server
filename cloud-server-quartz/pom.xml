@@ -9,12 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cloud-server-quartz</artifactId>
-    <description>
-        quartz定时任务
-    </description>
+    <description>quartz定时任务</description>
 
     <dependencies>
-
         <!-- 定时任务 -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
