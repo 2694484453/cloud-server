@@ -5,12 +5,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 邮件配置
  * @author gaopuguang
  * @date 2025/2/21 23:49
  **/
 @Configuration
 public class MailConfig {
 
+    /**
+     * 账号bean
+     * @return r
+     */
     @Bean
     public MailAccount mailAccount() {
         MailAccount account = new MailAccount();
