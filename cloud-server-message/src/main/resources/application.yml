@@ -1,0 +1,16 @@
+server:
+  port: 9098
+
+spring:
+  application:
+    name: cloud-server-message
+  cloud:
+    nacos:
+      config:
+        server-addr: 110.42.40.8:8848
+        namespace: gaopuguang
+        group: DEFAULT_GROUP
+      discovery: #启用 spring cloud nacos discovery
+        server-addr: 110.42.40.8:8848
+        namespace: gaopuguang
+        group: DEFAULT_GROUP
