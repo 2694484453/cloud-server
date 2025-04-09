@@ -27,14 +27,6 @@ git:
   github:
     username: 2694484453
     access_token: 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
-#链路追踪
-otel:
-  service:
-    name: ${spring.application.name}-${os.name}
-  exporter:
-    otlp:
-      endpoint: http://124.221.2.29:4318
-      timeout: 10s
 # 大模型
 ai:
   tyqw:

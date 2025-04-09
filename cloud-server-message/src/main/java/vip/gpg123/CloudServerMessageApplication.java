@@ -11,9 +11,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-public class CloudServerMessage {
+public class CloudServerMessageApplication {
     public static void main(String[] args) {
 
-        SpringApplication.run(CloudServerMessage.class, args);
+        SpringApplication.run(CloudServerMessageApplication.class, args);
     }
 }
