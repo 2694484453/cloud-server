@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: cloud-server-message
+  profiles:
+    active: seata
   cloud:
     nacos:
       config:
