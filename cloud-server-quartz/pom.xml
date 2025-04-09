@@ -12,6 +12,13 @@
     <description>quartz定时任务</description>
 
     <dependencies>
+        <!-- spring-boot-devtools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional> <!-- 表示依赖不会传递 -->
+        </dependency>
+
         <!-- 定时任务 -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -28,6 +35,12 @@
         <dependency>
             <groupId>vip.gpg123</groupId>
             <artifactId>cloud-server-common</artifactId>
+        </dependency>
+
+        <!-- 核心模块-->
+        <dependency>
+            <groupId>vip.gpg123</groupId>
+            <artifactId>cloud-server-framework</artifactId>
         </dependency>
 
     </dependencies>
