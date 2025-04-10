@@ -28,3 +28,7 @@ systemctl status k3s
 
 #
 k3s-uninstall.sh
+
+#
+#docker
+curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -s - --docker --etcd-expose-metrics=true --private-registry="/etc/rancher/k3s/registries.yaml" --write-kubeconfig ~/.kube/config --write-kubeconfig-mode 644 --service-node-port-range 1-65535 --node-ip 110.42.40.35 --node-external-ip 110.42.40.35 --node-name 110.42.40.35
