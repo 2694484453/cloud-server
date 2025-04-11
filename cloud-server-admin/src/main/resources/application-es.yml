@@ -1,0 +1,8 @@
+spring:
+  elasticsearch:
+    rest:
+      uris: http://hcs.gpg123.vip:9200
+      connection-timeout: 10s
+      read-timeout: 30s
+      username: elastic
+      password: elastic
