@@ -1,5 +1,7 @@
 package vip.gpg123.framework.web.service;
 
+import cn.hutool.extra.mail.MailUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.constant.CacheConstants;
@@ -17,6 +19,8 @@ import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.framework.manager.factory.AsyncFactory;
 import vip.gpg123.system.service.ISysConfigService;
 import vip.gpg123.system.service.ISysUserService;
+
+import java.util.TimerTask;
 
 /**
  * 注册校验方法
@@ -39,6 +43,40 @@ public class SysRegisterService {
      */
     public String register(RegisterBody registerBody) {
         String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword(), phone = registerBody.getPhone(), email = registerBody.getEmail();
+
+        // 判断使用类型
+        switch (registerBody.getType()) {
+            // 账号登录
+            case "username":
+                if (StringUtils.isEmpty(username)) {
+                    msg = "用户名不能为空";
+                }
+                break;
+
+            // 邮箱登录
+            case "email":
+                if (StringUtils.isEmpty(email)) {
+                    msg = "邮箱不能为空";
+                }
+                username = email;
+                // 检查邮箱是否被使用
+                int count = userService.count(new LambdaQueryWrapper<SysUser>()
+                        .eq(SysUser::getEmail,email)
+                );
+                if (count >= 1) {
+                    msg = "已存在相同邮箱";
+                    throw new RuntimeException(msg);
+                }
+                break;
+
+            // 手机号登录
+            case "phone":
+                if (StringUtils.isEmpty(phone)) {
+                    msg = "手机号不能为空";
+                }
+                break;
+        }
+
         SysUser sysUser = new SysUser();
         sysUser.setUserName(username);
         sysUser.setEmail(registerBody.getEmail());
@@ -50,29 +88,6 @@ public class SysRegisterService {
             validateCaptcha(username, registerBody.getCode(), registerBody.getUuid());
         }
 
-        // 判断使用类型
-        switch (registerBody.getType()) {
-            // 账号登录
-            case "account":
-                if (StringUtils.isEmpty(username)) {
-                    msg = "用户名不能为空";
-                }
-                break;
-
-            // 邮箱登录
-            case "email":
-                if (StringUtils.isEmpty(email)) {
-                    msg = "邮箱不能为空";
-                }
-                break;
-
-            // 手机号登录
-            case "phone":
-                if (StringUtils.isEmpty(phone)) {
-                    msg = "手机号不能为空";
-                }
-                break;
-        }
         if (StringUtils.isEmpty(password)) {
             msg = "用户密码不能为空";
         } else if (username.length() < UserConstants.USERNAME_MIN_LENGTH
@@ -84,13 +99,21 @@ public class SysRegisterService {
         } else if (!userService.checkUserNameUnique(sysUser)) {
             msg = "保存用户'" + username + "'失败，注册账号已存在";
         } else {
+
+            //
             sysUser.setNickName(username);
             sysUser.setPassword(SecurityUtils.encryptPassword(password));
             boolean regFlag = userService.registerUser(sysUser);
             if (!regFlag) {
                 msg = "注册失败,请联系系统管理人员";
+                throw new RuntimeException(msg);
             } else {
+                msg = "注册成功,可以进行登录";
+                // 登录日志
                 AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.REGISTER, MessageUtils.message("user.register.success")));
+
+                // 发送邮件
+                AsyncManager.me().execute(AsyncFactory.sendRegisterEmail(sysUser));
             }
         }
         return msg;

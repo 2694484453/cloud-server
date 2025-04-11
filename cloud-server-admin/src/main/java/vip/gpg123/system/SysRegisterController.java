@@ -27,7 +27,6 @@ import java.util.TimerTask;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/register")
 @Api(tags = "【用户注册】注册管理")
 public class SysRegisterController extends BaseController {
     @Autowired
@@ -36,48 +35,12 @@ public class SysRegisterController extends BaseController {
     @Autowired
     private ISysConfigService configService;
 
-    @Autowired
-    private ISysUserService sysUserService;
-
-    @Autowired
-    private MailAccount mailAccount;
-
-    @PostMapping("/registerNon")
+    @PostMapping("/register")
     public AjaxResult register(@RequestBody RegisterBody user) {
         if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
             return error("当前系统没有开启注册功能！");
         }
         String msg = registerService.register(user);
-        return StringUtils.isEmpty(msg) ? success() : error(msg);
-    }
-
-    /**
-     * 邮箱注册
-     *
-     * @param register r
-     * @return r
-     */
-    @PostMapping("/byMail")
-    public AjaxResult registerByMail(@RequestBody RegisterUserByMail register) {
-        //
-        SysUser user = new SysUser();
-        user.setEmail(register.getEmail());
-        boolean isEmailExist = sysUserService.checkEmailUnique(user);
-        if (isEmailExist) {
-            return AjaxResult.warn("此邮箱已被使用！");
-        } else {
-            user.setPassword(register.getPassword());
-            user.setNickName(register.getEmail());
-            user.setUserName(register.getEmail());
-            int r = sysUserService.insertUser(user);
-            // 发送邮件
-            AsyncManager.me().execute(new TimerTask() {
-                @Override
-                public void run() {
-                    MailUtil.send(mailAccount, register.getEmail(), "新用户注册通知邮件", "尊敬的" + register.getEmail() + "用户：感谢注册cloud-server平台！", false);
-                }
-            });
-            return r > 0 ? AjaxResult.success("注册成功，请查询邮箱通知！") : AjaxResult.error("注册失败，请重新！");
-        }
+        return StringUtils.contains(msg, "成功") ? AjaxResult.success(msg) : AjaxResult.error(msg, null);
     }
 }

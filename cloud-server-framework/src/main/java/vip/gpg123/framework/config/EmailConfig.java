@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 邮件配置
+ *
  * @author gaopuguang
  * @date 2025/2/21 23:49
  **/
@@ -14,10 +15,19 @@ public class EmailConfig {
 
     /**
      * 账号bean
+     *
      * @return r
      */
     @Bean
     public MailAccount mailAccount() {
+        return createMailAccount();
+    }
+
+    /**
+     * 创建mail账号
+     * @return r
+     */
+    public static MailAccount createMailAccount() {
         MailAccount account = new MailAccount();
         account.setPort(25);
         account.setHost("smtpdm.aliyun.com");
