@@ -42,7 +42,7 @@ public class SysRegisterService {
      * 注册
      */
     public String register(RegisterBody registerBody) {
-        String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword(), phone = registerBody.getPhone(), email = registerBody.getEmail();
+        String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword(), phone = registerBody.getPhone(), email = registerBody.getEmail(), cluster = registerBody.getCluster();
 
         // 判断使用类型
         switch (registerBody.getType()) {
@@ -61,7 +61,7 @@ public class SysRegisterService {
                 username = email;
                 // 检查邮箱是否被使用
                 int count = userService.count(new LambdaQueryWrapper<SysUser>()
-                        .eq(SysUser::getEmail,email)
+                        .eq(SysUser::getEmail, email)
                 );
                 if (count >= 1) {
                     msg = "已存在相同邮箱";
@@ -73,6 +73,21 @@ public class SysRegisterService {
             case "phone":
                 if (StringUtils.isEmpty(phone)) {
                     msg = "手机号不能为空";
+                }
+                break;
+            // 使用集群注册
+            case "cluster":
+                username = cluster;
+                if (StringUtils.isEmpty(cluster)) {
+                    msg = "集群域名/IP不能为空";
+                    throw new RuntimeException(msg);
+                }
+                int clusterCount = userService.count(new LambdaQueryWrapper<SysUser>()
+                        .eq(SysUser::getUserName, cluster)
+                );
+                if (clusterCount >=1 ) {
+                    msg = "已存在相同集群域名/IP，不允许再注册";
+                    throw new RuntimeException(msg);
                 }
                 break;
         }

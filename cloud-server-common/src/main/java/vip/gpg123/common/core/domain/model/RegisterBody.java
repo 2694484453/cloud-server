@@ -12,4 +12,8 @@ import lombok.EqualsAndHashCode;
 @Data
 public class RegisterBody extends LoginBody {
 
+    /**
+     * 类型
+     */
+    private String type;
 }

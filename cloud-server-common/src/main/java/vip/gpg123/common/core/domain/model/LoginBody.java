@@ -41,7 +41,7 @@ public class LoginBody
     private String phone;
 
     /**
-     * 类型
+     * 集群
      */
-    private String type;
+    private String cluster;
 }
