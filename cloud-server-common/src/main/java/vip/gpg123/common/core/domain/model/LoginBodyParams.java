@@ -1,10 +1,15 @@
 package vip.gpg123.common.core.domain.model;
 
+import lombok.Data;
+import lombok.Getter;
+
 /**
  * 用户登录对象
  *
  * @author gpg123
  */
+@Getter
+@Data
 public class LoginBodyParams
 {
     /**
@@ -26,36 +31,4 @@ public class LoginBodyParams
      * 唯一标识
      */
     private String uuid;
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
 }
