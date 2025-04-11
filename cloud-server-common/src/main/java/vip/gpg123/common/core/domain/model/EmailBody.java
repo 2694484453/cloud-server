@@ -4,9 +4,10 @@ import cn.hutool.extra.mail.MailAccount;
 import lombok.Data;
 
 import javax.mail.Multipart;
+import java.io.Serializable;
 
 @Data
-public class EmailBody {
+public class EmailBody implements Serializable {
 
     /**
      * 邮箱帐户信息以及一些客户端配置信息
