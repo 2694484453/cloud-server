@@ -1,9 +1,5 @@
 package vip.gpg123.system;
 
-import java.util.List;
-import java.util.Set;
-
-import vip.gpg123.common.core.domain.model.LoginBodyParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +9,14 @@ import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysMenu;
 import vip.gpg123.common.core.domain.entity.SysUser;
-import vip.gpg123.common.core.domain.model.LoginBody;
+import vip.gpg123.common.core.domain.model.LoginBodyParams;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.web.service.SysLoginService;
 import vip.gpg123.framework.web.service.SysPermissionService;
 import vip.gpg123.system.service.ISysMenuService;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 登录验证
