@@ -9,23 +9,17 @@ import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.NamedAuthInfo;
 import io.fabric8.kubernetes.api.model.NamedCluster;
 import io.fabric8.kubernetes.api.model.NamedContext;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import vip.gpg123.cluster.service.ClusterService;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.config.KubernetesClientConfig;
 
 import javax.servlet.ServletResponse;
@@ -44,6 +38,8 @@ import java.util.List;
 @Api(value = "集群管理")
 public class ClusterController {
 
+    @Autowired
+    private ClusterService clusterService;
 
     /**
      * 集群列表
@@ -53,16 +49,7 @@ public class ClusterController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     private AjaxResult list() {
-        List<NamedCluster> clusterList;
-        try {
-            // 配置文件信息
-            File file = FileUtil.file(KubernetesClientConfig.defaultConfigPath());
-            Config config = KubeConfigUtils.parseConfig(file);
-            clusterList = config.getClusters();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return AjaxResult.success("查询成功", clusterList);
+        return AjaxResult.success("查询成功", clusterService.list());
     }
 
     /**
@@ -76,6 +63,19 @@ public class ClusterController {
         AjaxResult ajaxResult = list();
         List<?> clusters = Convert.toList(ajaxResult.get("data"));
         return PageUtils.toPage(clusters);
+    }
+
+    /**
+     * 获取详情
+     *
+     * @param name 名称
+     * @return r
+     */
+    @GetMapping("/info")
+    @ApiOperation(value = "详情")
+    private AjaxResult info(@RequestParam(value = "name", required = false) String name) {
+        name = StrUtil.isBlank(name) ? SecurityUtils.getUsername() : name;
+        return AjaxResult.success(clusterService.one(name));
     }
 
     /**
@@ -133,7 +133,7 @@ public class ClusterController {
                 // 否则获取部分
                 Config resultConfig = new Config();
                 Config config = KubeConfigUtils.parseConfig(configFile);
-                config.getClusters().forEach(e->{
+                config.getClusters().forEach(e -> {
                     if (name.equals(e.getName())) {
 
                     }
