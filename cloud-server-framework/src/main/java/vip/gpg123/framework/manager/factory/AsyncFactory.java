@@ -1,7 +1,6 @@
 package vip.gpg123.framework.manager.factory;
 
-import java.util.TimerTask;
-
+import eu.bitwalker.useragentutils.UserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vip.gpg123.common.constant.Constants;
@@ -15,7 +14,8 @@ import vip.gpg123.system.domain.SysLogininfor;
 import vip.gpg123.system.domain.SysOperLog;
 import vip.gpg123.system.service.ISysLogininforService;
 import vip.gpg123.system.service.ISysOperLogService;
-import eu.bitwalker.useragentutils.UserAgent;
+
+import java.util.TimerTask;
 
 /**
  * 异步工厂（产生任务用）
@@ -23,7 +23,9 @@ import eu.bitwalker.useragentutils.UserAgent;
  * @author gpg123
  */
 public class AsyncFactory {
+
     private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
+
 
     /**
      * 记录登录信息
@@ -69,6 +71,8 @@ public class AsyncFactory {
                 }
                 // 插入数据
                 SpringUtils.getBean(ISysLogininforService.class).insertLogininfor(logininfor);
+                // 发送通知邮件
+
             }
         };
     }

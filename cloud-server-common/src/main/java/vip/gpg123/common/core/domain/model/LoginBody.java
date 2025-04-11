@@ -29,4 +29,19 @@ public class LoginBody
      * 唯一标识
      */
     private String uuid;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 手机
+     */
+    private String phone;
+
+    /**
+     * 类型
+     */
+    private String type;
 }
