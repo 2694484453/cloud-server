@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2025/2/21 23:49
  **/
 @Configuration
-public class MailConfig {
+public class EmailConfig {
 
     /**
      * 账号bean
