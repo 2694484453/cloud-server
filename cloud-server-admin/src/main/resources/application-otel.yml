@@ -4,5 +4,5 @@ otel:
     name: ${spring.application.name}-${os.name}
   exporter:
     otlp:
-      endpoint: http://124.221.2.29:4318
+      endpoint: http://hcs.gpg123.vip:4318
       timeout: 10s
