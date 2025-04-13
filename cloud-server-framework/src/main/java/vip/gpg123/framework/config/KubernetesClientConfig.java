@@ -34,6 +34,9 @@ public class KubernetesClientConfig {
      */
     private static final String defaultContext = "ark.gpg123.vip";
 
+    /**
+     * 默认构造器
+     */
     public KubernetesClientConfig() {
         String osName = SystemUtil.getOsInfo().getName();
         switch (osName) {
@@ -49,14 +52,21 @@ public class KubernetesClientConfig {
         }
     }
 
+    /**
+     * k8s-client
+     * @return r
+     */
     @Bean(name = "KubernetesClient")
     public KubernetesClient kubernetesClient() {
         try {
+            // 读取配置文件
             String content = FileUtil.readString(configFile, StandardCharsets.UTF_8);
             Config config = Config.fromKubeconfig(content);
+            // 设置一个context
             NamedContext namedContext = new NamedContext();
             namedContext.setName(defaultContext);
             config.setCurrentContext(namedContext);
+            // 返回客户端
             return new KubernetesClientBuilder()
                     .withConfig(config)
                     .build();
@@ -65,12 +75,20 @@ public class KubernetesClientConfig {
         }
     }
 
-
+    /**
+     * open client
+     * @param kubernetesClient k
+     * @return r
+     */
     @Bean(name = "OpenShiftClient")
     public OpenShiftClient openShiftClient(@Qualifier("KubernetesClient") KubernetesClient kubernetesClient) {
         return kubernetesClient.adapt(OpenShiftClient.class);
     }
 
+    /**
+     * 配置文件
+     * @return r
+     */
     public static String defaultConfigPath() {
         return configFile;
     }
