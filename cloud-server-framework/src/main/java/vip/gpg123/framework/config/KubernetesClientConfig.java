@@ -1,19 +1,21 @@
 package vip.gpg123.framework.config;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 import io.fabric8.kubernetes.api.model.NamedContext;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.openshift.client.OpenShiftClient;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import vip.gpg123.common.utils.SecurityUtils;
 
 import java.nio.charset.StandardCharsets;
 
@@ -21,8 +23,11 @@ import java.nio.charset.StandardCharsets;
  * @author gaopuguang
  * @date 2024/11/24 2:26
  **/
-@Component
+@Configuration
 public class KubernetesClientConfig {
+
+    @Autowired
+    private ApplicationContext context;
 
     /**
      * 配置文件地址
@@ -32,7 +37,8 @@ public class KubernetesClientConfig {
     /**
      * 默认context
      */
-    private static final String defaultContext = "ark.gpg123.vip";
+    private static String defaultContext = "ark.gpg123.vip";
+
 
     /**
      * 默认构造器
@@ -52,11 +58,19 @@ public class KubernetesClientConfig {
         }
     }
 
+
+    // 根据当前用户获取客户端
+    public KubernetesClient getClient() {
+        String username = SecurityUtils.getUsername(); // 获取当前用户（需自行实现）
+        return context.getBean(KubernetesClient.class, username);
+    }
+
     /**
      * k8s-client
      * @return r
      */
     @Bean(name = "KubernetesClient")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)// 每次请求生成新实例
     public KubernetesClient kubernetesClient() {
         try {
             // 读取配置文件
