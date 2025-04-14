@@ -56,6 +56,9 @@ user:
 spring:
   application:
     name: cloud-server
+  main:
+    # 允许bean定义覆盖
+    allow-bean-definition-overriding: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -64,7 +67,7 @@ spring:
     # 国际化资源文件路径
     basename: i18n/messages
   profiles:
-    active: druid,common,otel,seata,amqp,es
+    active: druid,common,k8s,otel,seata,amqp,es
   # 文件上传
   servlet:
     multipart:

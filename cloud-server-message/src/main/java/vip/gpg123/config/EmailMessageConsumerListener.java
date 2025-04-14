@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RabbitListener(queuesToDeclare = @Queue(value = "cloud-server-email"))  //表示RabbitMQ消费者,声明一个队列
-public class EmailMessageConsumer {
+public class EmailMessageConsumerListener {
 
     /**
      * 当消费者从队列取出消息时的回调方法
