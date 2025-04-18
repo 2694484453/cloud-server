@@ -1,6 +1,7 @@
 package vip.gpg123.repo;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RuntimeUtil;
@@ -19,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.repo.domain.ChartApp;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,21 +49,30 @@ public class HelmRepoController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        HttpResponse httpResponse = HttpUtil.createGet(url).
+        // 请求仓库列表
+        HttpResponse httpResponse = HttpUtil.createGet(url+"/index.yaml").
                 timeout(3000).
                 contentType(ContentType.JSON.getValue()).
                 charset(StandardCharsets.UTF_8).execute();
         String res = httpResponse.body();
         Map map = YamlUtil.load(IoUtil.toUtf8Stream(res), Map.class);
-        JSONArray jsonArray = JSONUtil.createArray();
         Map<String, Object> enties = Convert.toMap(String.class, Object.class, map.get("entries"));
+        String generated = map.get("generated").toString();
+        // 返回结果
+        List<ChartApp> chartApps = new ArrayList<>();
         enties.forEach((k, v) -> {
-            List<Object> list = Convert.toList(Object.class, v);
-            if (!list.isEmpty()) {
-                jsonArray.addAll(list);
-            }
+            ChartApp chartApp = new ChartApp();
+            // 一个key就是一个应用，list数量即为版本数量
+            chartApp.setName(k);
+            chartApp.setVersionCount(JSONUtil.parseArray(v).size());
+            chartApp.setItems(v);
+            chartApp.setGenerated(generated);
+            chartApp.setType("application");
+            chartApp.setRepoName(repoName);
+            chartApp.setRepoUrl(url);
+            chartApps.add(chartApp);
         });
-        return AjaxResult.success(jsonArray);
+        return AjaxResult.success(chartApps);
     }
 
     /**
@@ -71,11 +83,19 @@ public class HelmRepoController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page() {
-        AjaxResult ajaxResult = list();
-        JSONArray jsonArray = (JSONArray) ajaxResult.get("data");
-        return PageUtils.toPage(jsonArray);
+        List<?> list = Convert.toList(list().get("data"));
+        return PageUtils.toPage(list);
     }
 
+
+    /**
+     * 查询详情
+     *
+     * @param name    名称
+     * @param version 版本
+     * @param type    类型
+     * @return r
+     */
     @GetMapping("info")
     @ApiOperation(value = "查看详情")
     public AjaxResult info(@RequestParam(value = "name") String name,
