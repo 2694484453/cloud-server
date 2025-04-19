@@ -48,6 +48,22 @@ public class HelmUtils {
         return Convert.toList(HelmApp.class, jsonArray);
     }
 
+    /**
+     * helm install
+     * @param namespace 命名空间
+     * @param chartName chart名称
+     * @param version v
+     * @param kubeContext kubeContext
+     */
+    public static void install(String namespace, String repoName, String chartName, String version, String kubeContext) {
+        namespace = StrUtil.isBlank(namespace) ? chartName : namespace;
+        String[] init = new String[]{"helm", "install", chartName, repoName + "/" + chartName, "--namespace", namespace, "--kube-context", kubeContext, "--output", "json"};
+        if (StrUtil.isNotBlank(version)) {
+            init = ArrayUtil.append(init, "--version", version);
+        }
+        RuntimeUtil.exec(init);
+    }
+
     public static String getChartVersion(String chartName) {
         return chartName.split("-")[1];
     }

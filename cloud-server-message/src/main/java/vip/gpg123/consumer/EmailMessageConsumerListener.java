@@ -1,9 +1,14 @@
-package vip.gpg123.config;
+package vip.gpg123.consumer;
 
+import cn.hutool.core.lang.Console;
+import cn.hutool.core.util.ArrayUtil;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import vip.gpg123.config.EmailClient;
+import vip.gpg123.domain.Email;
 
 /**
  * 邮件消费者
@@ -18,12 +23,20 @@ import org.springframework.stereotype.Component;
 @RabbitListener(queuesToDeclare = @Queue(value = "cloud-server-email"))  //表示RabbitMQ消费者,声明一个队列
 public class EmailMessageConsumerListener {
 
+    @Autowired
+    private EmailClient emailClient;
+
     /**
      * 当消费者从队列取出消息时的回调方法
-     * @param message 消息
+     * @param email 消息
      */
     @RabbitHandler
-    public void receive(String message) {
-        System.out.println("message = " + message);
+    public void receive(Email email) {
+        // 接收人
+        String[] tos = email.getTos();
+        String to =ArrayUtil.join(tos,",");
+        Console.log("开始发送邮件:{}",to);
+        // 执行发送
+        emailClient.send(to, email.getTitle(), email.getContent());
     }
 }
