@@ -21,6 +21,8 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.repo.domain.ChartApp;
+import vip.gpg123.repo.domain.HelmApp;
+import vip.gpg123.repo.util.HelmUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class HelmRepoController {
         String generated = map.get("generated").toString();
         // 返回结果
         List<ChartApp> chartApps = new ArrayList<>();
+        List<HelmApp> helmApps = HelmUtils.list("");
         enties.forEach((k, v) -> {
             ChartApp chartApp = new ChartApp();
             // 一个key就是一个应用，list数量即为版本数量
@@ -70,6 +73,14 @@ public class HelmRepoController {
             chartApp.setType("application");
             chartApp.setRepoName(repoName);
             chartApp.setRepoUrl(url);
+            // 检查是否已经安装
+            helmApps.forEach(helmApp -> {
+                if (helmApp.getName().equals(k)) {
+                    chartApp.setIsInstalled(true);
+                }else {
+                    chartApp.setIsInstalled(false);
+                }
+            });
             chartApps.add(chartApp);
         });
         return AjaxResult.success(chartApps);

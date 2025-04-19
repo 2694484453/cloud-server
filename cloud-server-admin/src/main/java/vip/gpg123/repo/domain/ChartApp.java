@@ -41,6 +41,11 @@ public class ChartApp implements Serializable {
     private String generated;
 
     /**
+     * 是否安装
+     */
+    private Boolean isInstalled;
+
+    /**
      * 版本列表
      */
     private Object items;

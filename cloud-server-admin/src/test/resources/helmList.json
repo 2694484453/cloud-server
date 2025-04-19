@@ -1,0 +1,47 @@
+[
+  {
+    "name": "cloud-server",
+    "namespace": "cloud-server",
+    "revision": "10",
+    "updated": "2025-04-19 01:00:12.115801 +0800 CST",
+    "status": "deployed",
+    "chart": "cloud-server-1.0.0",
+    "app_version": "1.16.0"
+  },
+  {
+    "name": "kube-prometheus-stack",
+    "namespace": "monitoring",
+    "revision": "1",
+    "updated": "2025-04-11 02:45:13.53552 +0800 CST",
+    "status": "deployed",
+    "chart": "kube-prometheus-stack-58.0.0",
+    "app_version": "v0.73.0"
+  },
+  {
+    "name": "kubernetes-dashboard",
+    "namespace": "kubernetes-dashboard",
+    "revision": "1",
+    "updated": "2025-04-14 00:41:11.174764 +0800 CST",
+    "status": "deployed",
+    "chart": "kubernetes-dashboard-7.5.0",
+    "app_version": ""
+  },
+  {
+    "name": "traefik",
+    "namespace": "kube-system",
+    "revision": "11",
+    "updated": "2025-04-19 00:54:13.26626 +0800 CST",
+    "status": "failed",
+    "chart": "traefik-30.1.0",
+    "app_version": "v3.1.2"
+  },
+  {
+    "name": "traefik-crd",
+    "namespace": "kube-system",
+    "revision": "1",
+    "updated": "2025-04-10 18:25:00.992069384 +0000 UTC",
+    "status": "deployed",
+    "chart": "traefik-crd-34.2.1+up34.2.0",
+    "app_version": "v3.3.2"
+  }
+]
