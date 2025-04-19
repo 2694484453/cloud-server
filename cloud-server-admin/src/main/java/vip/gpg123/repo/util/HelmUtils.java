@@ -17,13 +17,14 @@ public class HelmUtils {
      * @param namespace 命名空间
      * @return r
      */
-    public static String listJsonStr(String namespace) {
+    public static String listJsonStr(String namespace,String kubeContext) {
         String[] init = new String[]{"helm", "list", "--output", "json"};
         if (StrUtil.isBlank(namespace)) {
             init = ArrayUtil.append(init, "-A");
         } else {
             init = ArrayUtil.append(init, "--namespace ", namespace);
         }
+        init = ArrayUtil.append(init, "--kube-context", kubeContext);
         return RuntimeUtil.execForStr(init);
     }
 
@@ -32,8 +33,8 @@ public class HelmUtils {
      * @param namespace 命名空间
      * @return r
      */
-    public static JSONArray listJsonArray(String namespace) {
-        String jsonStr =listJsonStr(namespace);
+    public static JSONArray listJsonArray(String namespace,String kubeContext) {
+        String jsonStr = listJsonStr(namespace,kubeContext);
         return JSONUtil.parseArray(jsonStr);
     }
 
@@ -42,8 +43,8 @@ public class HelmUtils {
      * @param namespace 命名空间
      * @return r
      */
-    public static List<HelmApp> list(String namespace) {
-        JSONArray jsonArray = listJsonArray(namespace);
+    public static List<HelmApp> list(String namespace,String kubeContext) {
+        JSONArray jsonArray = listJsonArray(namespace,kubeContext);
         return Convert.toList(HelmApp.class, jsonArray);
     }
 
@@ -55,7 +56,4 @@ public class HelmUtils {
         return chartName.split("-")[0];
     }
 
-    public static void main(String[] args) {
-        System.out.println(list(""));
-    }
 }

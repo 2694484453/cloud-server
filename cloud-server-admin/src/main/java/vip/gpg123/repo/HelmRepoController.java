@@ -1,14 +1,14 @@
 package vip.gpg123.repo;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.yaml.YamlUtil;
 import io.swagger.annotations.ApiOperation;
@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.repo.domain.ChartApp;
 import vip.gpg123.repo.domain.HelmApp;
 import vip.gpg123.repo.util.HelmUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +64,9 @@ public class HelmRepoController {
         String generated = map.get("generated").toString();
         // 返回结果
         List<ChartApp> chartApps = new ArrayList<>();
-        List<HelmApp> helmApps = HelmUtils.list("");
+        List<HelmApp> helmApps = HelmUtils.list("", SecurityUtils.getUsername());
+        Map<String,HelmApp> helmAppMap = new HashMap<>();
+        CollectionUtil.toMap(helmApps, helmAppMap,HelmApp::getName);
         enties.forEach((k, v) -> {
             ChartApp chartApp = new ChartApp();
             // 一个key就是一个应用，list数量即为版本数量
@@ -74,13 +78,7 @@ public class HelmRepoController {
             chartApp.setRepoName(repoName);
             chartApp.setRepoUrl(url);
             // 检查是否已经安装
-            helmApps.forEach(helmApp -> {
-                if (helmApp.getName().equals(k)) {
-                    chartApp.setIsInstalled(true);
-                }else {
-                    chartApp.setIsInstalled(false);
-                }
-            });
+            chartApp.setIsInstalled(helmAppMap.containsKey(k));
             chartApps.add(chartApp);
         });
         return AjaxResult.success(chartApps);
