@@ -55,7 +55,8 @@ public class HelmRepoController {
     public AjaxResult list() {
         // 请求仓库列表
         HttpResponse httpResponse = HttpUtil.createGet(url+"/index.yaml").
-                timeout(3000).
+                timeout(10000).
+                setConnectionTimeout(10000).
                 contentType(ContentType.JSON.getValue()).
                 charset(StandardCharsets.UTF_8).execute();
         String res = httpResponse.body();
