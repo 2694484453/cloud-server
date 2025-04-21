@@ -2,6 +2,8 @@ package vip.gpg123.consumer;
 
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.extra.mail.MailAccount;
+import cn.hutool.extra.mail.MailUtil;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,7 +26,7 @@ import vip.gpg123.domain.Email;
 public class EmailMessageConsumerListener {
 
     @Autowired
-    private EmailClient emailClient;
+    private MailAccount mailAccount;
 
     /**
      * 当消费者从队列取出消息时的回调方法
@@ -37,6 +39,7 @@ public class EmailMessageConsumerListener {
         String to =ArrayUtil.join(tos,",");
         Console.log("开始发送邮件:{}",to);
         // 执行发送
-        emailClient.send(to, email.getTitle(), email.getContent());
+        String res = MailUtil.send(mailAccount, to, email.getTitle(), email.getContent(), false);
+        Console.log("发送结果：{}",res);
     }
 }
