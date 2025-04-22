@@ -1,0 +1,21 @@
+import cn.hutool.json.JSONArray;
+import org.junit.Test;
+import vip.gpg123.repo.domain.HelmApp;
+import vip.gpg123.repo.util.HelmUtils;
+
+import java.util.List;
+
+public class HelmTest {
+
+    private static final String HELM_REPO_URL = "https://charts.bitnami.com/bitnami";
+
+    private static final String HELM_REPO_NAME = "bitnami";
+
+    private static final String context = "ark.gpg123.vip";
+
+    @Test
+    public void test() {
+        JSONArray jsonArray = HelmUtils.listJsonArray("",context);
+        List<HelmApp> helmApps = HelmUtils.list("",context);
+    }
+}
