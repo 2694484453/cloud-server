@@ -24,7 +24,7 @@ import java.util.List;
  * 我的应用
  */
 @RestController
-@RequestMapping("/helm/app")
+@RequestMapping("/helmApp")
 @Api(value = "我的应用")
 public class MineAppController extends BaseController {
 
