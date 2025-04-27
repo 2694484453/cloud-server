@@ -1,10 +1,9 @@
-package vip.gpg123.repo.domain;
+package vip.gpg123.helm.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 public class ChartApp implements Serializable {
