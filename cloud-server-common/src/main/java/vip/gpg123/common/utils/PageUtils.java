@@ -1,9 +1,12 @@
 package vip.gpg123.common.utils;
 
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.PageUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.poi.ss.formula.functions.T;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
@@ -17,6 +20,7 @@ import java.util.List;
  * @author gpg123
  */
 public class PageUtils extends PageHelper {
+
     /**
      * 设置请求分页数据
      */
@@ -66,6 +70,19 @@ public class PageUtils extends PageHelper {
         rspData.setRows(iPage.getRecords());
         rspData.setTotal(iPage.getTotal());
         return rspData;
+    }
+
+    /**
+     * 转分页参数
+     * @return r
+     */
+    public static IPage<?> toIPage(IPage<?> iPage) {
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize();
+        iPage.setCurrent(Convert.toLong(pageNum));
+        iPage.setSize(Convert.toLong(pageSize));
+        return iPage;
     }
 
     /**

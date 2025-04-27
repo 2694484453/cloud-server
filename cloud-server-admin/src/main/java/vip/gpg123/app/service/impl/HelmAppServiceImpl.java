@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-04-27 23:35:55
 */
 @Service
-public class HelmAppServiceImpl extends ServiceImpl<HelmAppMapper, HelmApp>
-    implements HelmAppService{
+public class HelmAppServiceImpl extends ServiceImpl<HelmAppMapper, HelmApp> implements HelmAppService{
 
 }
 

@@ -1,5 +1,6 @@
 package vip.gpg123.app.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import vip.gpg123.app.domain.HelmApp;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-04-27 23:35:55
 * @Entity vip.gpg123.app.domain.HelmApp
 */
+@Mapper
 public interface HelmAppMapper extends BaseMapper<HelmApp> {
 
 }
