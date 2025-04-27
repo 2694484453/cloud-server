@@ -63,6 +63,16 @@ public class HelmUtils {
         RuntimeUtil.exec(init);
     }
 
+    /**
+     * helm uninstall
+     * @param namespace 命名空间
+     * @param releaseName 发布名称
+     * @param kubeContext kubeContext
+     */
+    public static void uninstall(String namespace, String releaseName, String kubeContext) {
+        RuntimeUtil.exec("helm", "uninstall", releaseName, "--namespace", namespace, "--kube-context", kubeContext);
+    }
+
     public static String getChartVersion(String chartName) {
         return chartName.split("-")[1];
     }
@@ -70,5 +80,6 @@ public class HelmUtils {
     public static String getChartName(String chartName) {
         return chartName.split("-")[0];
     }
+
 
 }

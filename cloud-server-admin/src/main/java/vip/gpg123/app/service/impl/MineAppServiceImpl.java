@@ -1,9 +1,9 @@
 package vip.gpg123.app.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import vip.gpg123.app.domain.HelmApp;
-import vip.gpg123.app.service.HelmAppService;
-import vip.gpg123.app.mapper.HelmAppMapper;
+import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.service.MineAppService;
+import vip.gpg123.app.mapper.MineAppMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-04-27 23:35:55
 */
 @Service
-public class HelmAppServiceImpl extends ServiceImpl<HelmAppMapper, HelmApp> implements HelmAppService{
+public class MineAppServiceImpl extends ServiceImpl<MineAppMapper, MineApp> implements MineAppService {
 
 }
 
