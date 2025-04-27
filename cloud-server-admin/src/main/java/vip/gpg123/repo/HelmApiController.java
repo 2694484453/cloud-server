@@ -14,8 +14,8 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.repo.domain.HelmApp;
-import vip.gpg123.repo.util.HelmUtils;
+import vip.gpg123.common.utils.helm.HelmApp;
+import vip.gpg123.common.utils.helm.HelmUtils;
 
 import java.util.List;
 import java.util.TimerTask;
@@ -27,7 +27,7 @@ import java.util.TimerTask;
 @RestController
 @RequestMapping("/helm")
 @Api(value = "Helm安装列表")
-public class HelmController {
+public class HelmApiController {
 
     @Value("${repo.helm.url}")
     private String url;

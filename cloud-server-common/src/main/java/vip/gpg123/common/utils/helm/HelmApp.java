@@ -1,4 +1,4 @@
-package vip.gpg123.repo.domain;
+package vip.gpg123.common.utils.helm;
 
 import lombok.Data;
 

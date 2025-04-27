@@ -1,7 +1,7 @@
 import cn.hutool.json.JSONArray;
 import org.junit.Test;
-import vip.gpg123.repo.domain.HelmApp;
-import vip.gpg123.repo.util.HelmUtils;
+import vip.gpg123.common.utils.helm.HelmApp;
+import vip.gpg123.common.utils.helm.HelmUtils;
 
 import java.util.List;
 
