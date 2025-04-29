@@ -29,6 +29,8 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    private static final String ROUTING_KEY = "cloud-server-email";
+
     /**
      * 安装
      *
@@ -82,7 +84,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                     email.setTos(tos);
                     email.setTitle("应用安装通知");
                     email.setContent("安装" + chartName + ",结果：" + mineApp.getStatus());
-                    rabbitTemplate.convertAndSend("cloud-server-email", email);
+                    rabbitTemplate.convertAndSend(ROUTING_KEY, email);
                 }
             });
         }
@@ -128,7 +130,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                         email.setTos(tos);
                         email.setTitle("应用卸载通知");
                         email.setContent("卸载" + releaseName + ",结果：" + mineApp.getStatus());
-                        rabbitTemplate.convertAndSend("cloud-server-email", email);
+                        rabbitTemplate.convertAndSend(ROUTING_KEY, email);
                     }
                 });
             }
