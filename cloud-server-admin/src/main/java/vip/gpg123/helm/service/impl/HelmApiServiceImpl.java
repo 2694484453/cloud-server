@@ -1,11 +1,12 @@
 package vip.gpg123.helm.service.impl;
 
 
-import org.springframework.stereotype.Service;
 import vip.gpg123.common.utils.helm.HelmUtils;
 import vip.gpg123.helm.service.HelmApiService;
 
-@Service
+/**
+ * helm抽象类
+ */
 public abstract class HelmApiServiceImpl implements HelmApiService {
 
     /**

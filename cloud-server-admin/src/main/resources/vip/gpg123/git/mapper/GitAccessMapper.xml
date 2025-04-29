@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.git.mapper.GitAccessMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.git.domain.GitAccess">
+            <id property="id" column="id" />
+            <result property="home_url" column="home_url" />
+            <result property="access_token" column="access_token" />
+            <result property="tag" column="tag" />
+            <result property="description" column="description" />
+            <result property="create_by" column="create_by" />
+            <result property="create_time" column="create_time" />
+            <result property="update_by" column="update_by" />
+            <result property="update_time" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,home_url,access_token,tag,description,create_by,
+        create_time,update_by,update_time
+    </sql>
+</mapper>
