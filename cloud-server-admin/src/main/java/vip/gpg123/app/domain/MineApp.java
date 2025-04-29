@@ -50,6 +50,12 @@ public class MineApp implements Serializable {
     private String status;
 
     /**
+     * 安装结果
+     */
+    @TableField(value = "result")
+    private String result;
+
+    /**
      * 参数
      */
     @TableField(value = "value")

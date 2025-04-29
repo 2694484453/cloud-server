@@ -84,4 +84,29 @@ public class MineAppController extends BaseController {
         return save ? success() : error();
     }
 
+    /**
+     * 修改
+     * @param mineApp app
+     * @return  r
+     */
+    @PutMapping("/edit")
+    @ApiOperation(value = "修改")
+    public AjaxResult edit(@RequestBody MineApp mineApp) {
+        // 修改
+        boolean update = helmAppService.updateById(mineApp);
+        return update ? success() : error();
+    }
+
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "删除")
+    public AjaxResult delete(@RequestParam(value = "id") Long id) {
+        // 删除
+        boolean remove = helmAppService.removeById(id);
+        return remove ? success() : error();
+    }
 }

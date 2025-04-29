@@ -1,4 +1,4 @@
-package vip.gpg123.helm;
+package vip.gpg123.app;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -8,8 +8,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import vip.gpg123.app.MineAppController;
 import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.service.AppService;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
@@ -30,7 +30,7 @@ import java.util.TimerTask;
 @RestController
 @RequestMapping("/helm")
 @Api(value = "Helm安装列表")
-public class HelmApiController {
+public class HelmAppManagerController {
 
     @Value("${repo.helm.url}")
     private String url;
@@ -39,13 +39,7 @@ public class HelmApiController {
     private String repoName;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Autowired
-    private MineAppController mineAppController;
-
-    @Autowired
-    private HelmApiService helmApiService;
+    private AppService appService;
 
     /**
      * 列表查询
@@ -79,22 +73,7 @@ public class HelmApiController {
     @PostMapping("/install")
     @ApiOperation(value = "安装")
     public AjaxResult install(@RequestParam(value = "name") String name, @RequestBody MineApp mineApp) {
-        helmApiService.install(name, repoName, name,"", SecurityUtils.getUsername());
-        String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
-        mineAppController.add(mineApp);
-        AsyncManager.me().execute(new TimerTask() {
-            @Override
-            public void run() {
-                // 组装消息
-                Email email = new Email();
-                String[] tos = new String[]{};
-                tos = ArrayUtil.append(tos, userEmail);
-                email.setTos(tos);
-                email.setTitle("应用安装通知");
-                email.setContent("安装"+name+",结果："+ mineApp.getStatus());
-                rabbitTemplate.convertAndSend("cloud-server-email", email);
-            }
-        });
+        appService.install(name, repoName, name,"", SecurityUtils.getUsername());
         return AjaxResult.success();
     }
 }
