@@ -17,6 +17,7 @@ import vip.gpg123.git.domain.GitAccess;
 import vip.gpg123.git.service.GitAccessService;
 import vip.gpg123.git.service.GiteeApiService;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class GitRepoController extends BaseController {
                 .eq(GitAccess::getCreateBy, getUsername())
         );
         if (gitAccess == null) {
-            return PageUtils.toPage(new ArrayList<>());
+            throw new RuntimeException("请先添加"+ type +"类型认证");
         }
 
         String accessToken = gitAccess.getAccessToken();
