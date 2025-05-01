@@ -25,7 +25,7 @@ import java.util.List;
  * @date 2024/11/16 0:08
  **/
 @RestController
-@RequestMapping("/git")
+@RequestMapping("/gitRepo")
 @Api(tags = "【git】仓库管理")
 public class GitRepoController extends BaseController {
 
@@ -41,7 +41,7 @@ public class GitRepoController extends BaseController {
      *
      * @return r
      */
-    @GetMapping("/git/types")
+    @GetMapping("/types")
     @ApiOperation(value = "获取type")
     public AjaxResult token() {
         List<String> types = new ArrayList<>();

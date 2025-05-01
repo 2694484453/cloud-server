@@ -11,7 +11,6 @@
             <result property="type" column="type" jdbcType="VARCHAR"/>
             <result property="home" column="home" jdbcType="VARCHAR"/>
             <result property="httpUrl" column="http_url" jdbcType="VARCHAR"/>
-            <result property="sslUrl" column="ssl_url" jdbcType="VARCHAR"/>
             <result property="hasJob" column="has_job" jdbcType="TINYINT"/>
             <result property="language" column="language" jdbcType="VARCHAR"/>
             <result property="jobTypes" column="job_types" jdbcType="OTHER"/>
