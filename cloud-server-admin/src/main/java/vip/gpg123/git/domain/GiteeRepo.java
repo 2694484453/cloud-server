@@ -17,6 +17,10 @@ public class GiteeRepo {
 
     private String human_name;
 
+    private String language;
+
+    private String status;
+
     private String description;
 
     private String html_url;
