@@ -183,3 +183,11 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+feign:
+  client:
+    config:
+      default: # 全局配置
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: basic # 可选：none/basic/headers/full
