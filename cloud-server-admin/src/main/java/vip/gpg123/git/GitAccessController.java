@@ -99,6 +99,15 @@ public class GitAccessController extends BaseController {
     @PostMapping("/add")
     @ApiOperation(value = "添加")
     public AjaxResult add(@RequestBody GitAccess gitAccess) {
+        // 查询
+        int count = gitAccessService.count(new LambdaQueryWrapper<GitAccess>()
+                .eq(GitAccess::getCreateBy, getUsername())
+                .eq(GitAccess::getType, gitAccess.getType())
+        );
+        // 判断是否已经添加
+        if (count >= 1) {
+            return AjaxResult.error("您已经添加过" + gitAccess.getType() + "类型的认证，请勿重复添加");
+        }
         // 获取邮箱
         String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
         // 获取用户名

@@ -1,10 +1,8 @@
 package vip.gpg123.app;
 
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.util.ArrayUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +12,10 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.domain.Email;
-import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.common.utils.helm.HelmApp;
 import vip.gpg123.common.utils.helm.HelmUtils;
-import vip.gpg123.helm.service.HelmApiService;
 
 import java.util.List;
-import java.util.TimerTask;
 
 /**
  * @author gpg
