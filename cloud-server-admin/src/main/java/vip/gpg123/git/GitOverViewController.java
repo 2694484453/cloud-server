@@ -34,7 +34,7 @@ public class GitOverViewController {
      * 概览
      * @return r
      */
-    @GetMapping("/overview")
+    @GetMapping("/overView")
     @ApiOperation(value = "概览")
     public AjaxResult overview() {
         Map<String, Object> map = new HashMap<>();

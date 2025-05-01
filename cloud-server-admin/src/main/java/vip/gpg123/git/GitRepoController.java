@@ -7,6 +7,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import vip.gpg123.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.git.service.GitAccessService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/gitee")
 @Api(tags = "【gitee】仓库管理")
-public class GiteeController {
+public class GitRepoController {
 
     @Value("${git.gitee.grant_type}")
     private String grant_type;
@@ -51,27 +54,26 @@ public class GiteeController {
     @Value("${git.gitee.access_token}")
     private String accessToken;
 
+    @Autowired
+    private GitAccessService gitAccessService;
+
+    private static final String GITEE_REPO_URL = "https://gitee.com/api/v5/user/repos";
+
     /**
-     * 获取accessToken
+     * 获取type
      *
-     * @param code code
      * @return r
      */
-    @PostMapping("/getAccessToken")
-    @ApiOperation(value = "获取accessToken")
-    private AjaxResult getAccessToken(@RequestParam("code") String code) {
-        JSONObject jsonObject = JSONUtil.createObj();
-        jsonObject.set("grant_type", grant_type);
-        jsonObject.set("redirect_uri", redirect_uri);
-        jsonObject.set("client_id", client_id);
-        jsonObject.set("client_secret", client_secret);
-        jsonObject.set("code", code);
-        HttpResponse httpResponse = HttpUtil.createPost(api)
-                .contentType(ContentType.JSON.getValue())
-                .body(JSONUtil.toJsonStr(jsonObject))
-                .timeout(5000)
-                .execute();
-        return AjaxResult.success(httpResponse.body());
+    @GetMapping("/git/types")
+    @ApiOperation(value = "获取type")
+    public AjaxResult token() {
+        List<String> types = new ArrayList<>();
+        types.add("gitee");
+        types.add("github");
+        types.add("gitlab");
+        types.add("github");
+        types.add("gitcode");
+        return AjaxResult.success(types);
     }
 
     /**
@@ -81,8 +83,8 @@ public class GiteeController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
-    public TableDataInfo repos() {
-        List<?> repoList = repoList();
+    public TableDataInfo repos(@RequestParam(value = "type") String type) {
+        List<?> repoList = giteerepoList();
         return PageUtils.toPage(repoList);
     }
 
@@ -95,7 +97,7 @@ public class GiteeController {
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
     public AjaxResult list() {
-        List<?> repoList = repoList();
+        List<?> repoList = giteerepoList();
         return AjaxResult.success(repoList);
     }
 
@@ -104,8 +106,8 @@ public class GiteeController {
      *
      * @return r
      */
-    private List<?> repoList() {
-        HttpResponse httpResponse = HttpUtil.createGet("https://gitee.com/api/v5/users/" + username + "/repos?access_token=" + accessToken + "&type=all&sort=full_name&page=1&per_page=100")
+    private List<?> giteerepoList() {
+        HttpResponse httpResponse = HttpUtil.createGet(GITEE_REPO_URL + "?access_token=" + accessToken + "&visibility=all&sort=full_name&page=1&per_page=9999")
                 .timeout(10000)
                 .setConnectionTimeout(10000)
                 .execute();
