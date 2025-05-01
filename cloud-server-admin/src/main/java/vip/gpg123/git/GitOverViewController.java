@@ -2,7 +2,9 @@ package vip.gpg123.git;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -32,7 +34,8 @@ public class GitOverViewController {
      * 概览
      * @return r
      */
-    @RequestMapping("/overview")
+    @GetMapping("/overview")
+    @ApiOperation(value = "概览")
     public AjaxResult overview() {
         Map<String, Object> map = new HashMap<>();
         // 总配置数量
