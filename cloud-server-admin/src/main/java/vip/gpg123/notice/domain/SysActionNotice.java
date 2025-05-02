@@ -43,25 +43,25 @@ public class SysActionNotice implements Serializable {
      * 发送渠道
      */
     @TableField(value = "send_type")
-    private String send_type;
+    private String sendType;
 
     /**
      * 发送对象
      */
     @TableField(value = "to_user")
-    private String to_user;
+    private String toUser;
 
     /**
      * 发送地址
      */
     @TableField(value = "to_address")
-    private String to_address;
+    private String toAddress;
 
     /**
      * 是否确认
      */
     @TableField(value = "is_confirm")
-    private Integer is_confirm;
+    private Integer isConfirm;
 
     /**
      * 状态
@@ -73,19 +73,19 @@ public class SysActionNotice implements Serializable {
      * 创建者
      */
     @TableField(value = "create_by")
-    private String create_by;
+    private String createBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    private Date create_time;
+    private Date createTime;
 
     /**
      * 更新者
      */
     @TableField(value = "update_by")
-    private String update_by;
+    private String updateBy;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
