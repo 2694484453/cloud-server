@@ -16,6 +16,7 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.git.domain.GitAccess;
 import vip.gpg123.git.service.GitAccessService;
 import vip.gpg123.git.service.GiteeApiService;
+import vip.gpg123.git.service.GithubApiService;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ public class GitRepoController extends BaseController {
 
     @Autowired
     private GiteeApiService giteeApiService;
+
+    @Autowired
+    private GithubApiService githubApiService;
 
 
     /**
@@ -68,7 +72,7 @@ public class GitRepoController extends BaseController {
                 .eq(GitAccess::getCreateBy, getUsername())
         );
         if (gitAccess == null) {
-            throw new RuntimeException("请先添加"+ type +"类型认证");
+            throw new RuntimeException("请先添加" + type + "类型认证");
         }
 
         String accessToken = gitAccess.getAccessToken();
@@ -80,9 +84,9 @@ public class GitRepoController extends BaseController {
             case "gitee":
                 repoList = giteeApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "full_name", "all");
                 return PageUtils.toPage(repoList);
-//            case "github":
-//                List<?> githubRepoList = githubRepoList();
-//                return PageUtils.toPage(githubRepoList);
+            case "github":
+                List<?> githubRepoList = githubApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "created", "all");
+                return PageUtils.toPage(githubRepoList);
 //            case "gitlab":
 //                List<?> gitlabRepoList = gitlabRepoList();
 //                return PageUtils.toPage(gitlabRepoList);

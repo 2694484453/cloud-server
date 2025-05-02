@@ -2,12 +2,14 @@ package vip.gpg123.git.domain;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author gaopuguang
  * @date 2024/11/30 3:59
  **/
 @Data
-public class GiteeRepo {
+public class GiteeRepo implements Serializable {
 
     private String id;
 
