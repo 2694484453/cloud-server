@@ -1,5 +1,6 @@
 package vip.gpg123.discovery.service;
 
+import cn.hutool.json.JSONObject;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,16 @@ public interface NacosApiService {
      */
     @GetMapping("/nacos/v1/console/namespaces")
     NacosResponse<NacosNameSpace> namespaces();
+
+    /**
+     * 获取服务列表
+     * @param namespaceId id
+     * @param pageNo 分页
+     * @param pageSize 分页
+     * @return r
+     */
+    @GetMapping("/nacos/v1/ns/service/list")
+    NacosService service(@RequestParam(value = "namespaceId") String namespaceId, @RequestParam(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize);
 
     /**
      * 创建ns

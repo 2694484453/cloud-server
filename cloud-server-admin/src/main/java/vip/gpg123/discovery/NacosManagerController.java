@@ -103,4 +103,15 @@ public class NacosManagerController extends BaseController {
         }
         return AjaxResult.success();
     }
+
+    @GetMapping("/list")
+    @ApiOperation(value = "列表")
+    public AjaxResult list() {
+        NacosResponse<NacosNameSpace> response = nacosApiService.namespaces();
+        if (response.getCode() != 200) {
+            return AjaxResult.error("nacos服务异常");
+        }
+        List<NacosNameSpace> data = response.getData();
+        return AjaxResult.success(data);
+    }
 }
