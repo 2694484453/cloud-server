@@ -2,6 +2,7 @@ package vip.gpg123.framework.web.service;
 
 import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.constant.CacheConstants;
@@ -129,6 +130,9 @@ public class SysRegisterService {
 
                 // 发送邮件
                 AsyncManager.me().execute(AsyncFactory.sendRegisterEmail(sysUser));
+
+                // 服务初始化
+                AsyncManager.me().execute(AsyncFactory.initService(sysUser));
             }
         }
         return msg;

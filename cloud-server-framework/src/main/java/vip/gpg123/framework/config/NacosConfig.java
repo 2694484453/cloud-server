@@ -1,5 +1,6 @@
 package vip.gpg123.framework.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import vip.gpg123.framework.config.domain.NacosClient;

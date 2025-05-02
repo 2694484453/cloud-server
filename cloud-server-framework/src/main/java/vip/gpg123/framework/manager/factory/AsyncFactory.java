@@ -4,8 +4,6 @@ import cn.hutool.extra.mail.MailUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.LogUtils;
@@ -111,5 +109,14 @@ public class AsyncFactory {
                 MailUtil.send(EmailConfig.createMailAccount(), sysUser.getEmail(), "新用户注册通知邮件", "尊敬的" + sysUser.getEmail() + "用户：感谢注册cloud-server平台！", false);
             }
         };
+    }
+
+    /**
+     * 初始化服务
+     * @param sysUser 用户
+     * @return r
+     */
+    public static TimerTask initService(SysUser sysUser) {
+        return null;
     }
 }
