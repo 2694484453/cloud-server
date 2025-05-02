@@ -40,8 +40,6 @@ public class NacosManagerController extends BaseController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    private final String nameSpaceId = getUsername().replaceAll("\\.", "-");
-
     private static final String ROUTING_KEY = "cloud-server-email";
 
     /**
@@ -51,6 +49,8 @@ public class NacosManagerController extends BaseController {
     @GetMapping("/check")
     @ApiOperation(value = "检查")
     public AjaxResult check() {
+        // 获取用户名
+        String nameSpaceId = getUsername().replaceAll("\\.", "-");
         // 查询是否有命名空间
         NacosResponse<NacosNameSpace> response = nacosApiService.namespaces();
         if (response.getCode() != 200) {
