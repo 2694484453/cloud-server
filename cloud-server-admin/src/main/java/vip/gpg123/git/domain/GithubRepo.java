@@ -15,6 +15,8 @@ public class GithubRepo implements Serializable {
 
     private String html_name;
 
+    private String html_url;
+
     private String git_url;
 
     private String ssh_url;

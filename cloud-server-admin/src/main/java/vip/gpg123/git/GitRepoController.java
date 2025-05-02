@@ -18,7 +18,6 @@ import vip.gpg123.git.service.GitAccessService;
 import vip.gpg123.git.service.GiteeApiService;
 import vip.gpg123.git.service.GithubApiService;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +84,7 @@ public class GitRepoController extends BaseController {
                 repoList = giteeApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "full_name", "all");
                 return PageUtils.toPage(repoList);
             case "github":
-                List<?> githubRepoList = githubApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "created", "all");
+                List<?> githubRepoList = githubApiService.repos("Bearer " + accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "created", "all");
                 return PageUtils.toPage(githubRepoList);
 //            case "gitlab":
 //                List<?> gitlabRepoList = gitlabRepoList();

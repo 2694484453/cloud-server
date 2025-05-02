@@ -3,6 +3,7 @@ package vip.gpg123.git.service;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import vip.gpg123.git.domain.GithubRepo;
 
@@ -25,7 +26,7 @@ public interface GithubApiService {
      * @return r
      */
     @GetMapping("/user/repos")
-    List<GithubRepo> repos(@RequestParam(value = "access_token") String access_token,
+    List<GithubRepo> repos(@RequestHeader("Authorization") String access_token,
                            @RequestParam(value = "page",  required = false, defaultValue = "1") String page,
                            @RequestParam(value = "per_page",  required = false, defaultValue = "20") String per_page,
                            @RequestParam(value = "sort", required = false, defaultValue = "created") String sort,
