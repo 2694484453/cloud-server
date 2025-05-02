@@ -28,7 +28,6 @@ import java.util.TimerTask;
  *
  * @author gpg123
  */
-@Configuration
 public class AsyncFactory {
 
     private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
