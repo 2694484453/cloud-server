@@ -14,6 +14,8 @@ import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.helm.service.impl.HelmApiServiceImpl;
+import vip.gpg123.notice.domain.SysActionNotice;
+import vip.gpg123.notice.service.SysActionNoticeService;
 
 import java.util.TimerTask;
 
@@ -28,6 +30,9 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private SysActionNoticeService sysActionNoticeService;
 
     private static final String ROUTING_KEY = "cloud-server-email";
 
@@ -73,17 +78,32 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
             mineAppService.updateById(mineApp);
             // 获取用户邮箱
             String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
+            // 获取用户名
+            String userName = SecurityUtils.getLoginUser().getUser().getUserName();
             // 异步消息任务
             AsyncManager.me().execute(new TimerTask() {
                 @Override
                 public void run() {
+                    String title = "应用安装通知";
+                    String content = "安装" + chartName + ",结果：" + mineApp.getStatus();
+                    // 站内消息
+                    SysActionNotice sysActionNotice = new SysActionNotice();
+                    sysActionNotice.setTitle(title);
+                    sysActionNotice.setCreateBy(userName);
+                    sysActionNotice.setCreateTime(DateUtil.date());
+                    sysActionNotice.setContent(content);
+                    sysActionNotice.setType("helmInstall");
+                    sysActionNotice.setSendType("email");
+                    sysActionNotice.setToUser(userName);
+                    sysActionNotice.setToAddress(userEmail);
+                    sysActionNoticeService.save(sysActionNotice);
                     // 组装消息
                     Email email = new Email();
                     String[] tos = new String[]{};
                     tos = ArrayUtil.append(tos, userEmail);
                     email.setTos(tos);
-                    email.setTitle("应用安装通知");
-                    email.setContent("安装" + chartName + ",结果：" + mineApp.getStatus());
+                    email.setTitle(title);
+                    email.setContent(content);
                     rabbitTemplate.convertAndSend(ROUTING_KEY, email);
                 }
             });
@@ -119,17 +139,32 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
             } finally {
                 // 获取用户邮箱
                 String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
+                // 获取用户名
+                String userName = SecurityUtils.getLoginUser().getUser().getUserName();
                 // 异步消息任务
                 AsyncManager.me().execute(new TimerTask() {
                     @Override
                     public void run() {
+                        String title = "应用卸载通知";
+                        String content = "卸载" + releaseName + ",结果：" + mineApp.getStatus();
+                        // 站内消息
+                        SysActionNotice sysActionNotice = new SysActionNotice();
+                        sysActionNotice.setTitle(title);
+                        sysActionNotice.setCreateBy(userName);
+                        sysActionNotice.setCreateTime(DateUtil.date());
+                        sysActionNotice.setContent(content);
+                        sysActionNotice.setType("helmUninstall");
+                        sysActionNotice.setSendType("email");
+                        sysActionNotice.setToUser(userName);
+                        sysActionNotice.setToAddress(userEmail);
+                        sysActionNoticeService.save(sysActionNotice);
                         // 组装消息
                         Email email = new Email();
                         String[] tos = new String[]{};
                         tos = ArrayUtil.append(tos, userEmail);
                         email.setTos(tos);
-                        email.setTitle("应用卸载通知");
-                        email.setContent("卸载" + releaseName + ",结果：" + mineApp.getStatus());
+                        email.setTitle(title);
+                        email.setContent(content);
                         rabbitTemplate.convertAndSend(ROUTING_KEY, email);
                     }
                 });

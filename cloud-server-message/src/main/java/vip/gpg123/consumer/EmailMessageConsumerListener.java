@@ -40,5 +40,6 @@ public class EmailMessageConsumerListener {
         // 执行发送
         String res = MailUtil.send(mailAccount, to, email.getTitle(), email.getContent(), false);
         Console.log("发送结果：{}",res);
+        // 站内通知
     }
 }
