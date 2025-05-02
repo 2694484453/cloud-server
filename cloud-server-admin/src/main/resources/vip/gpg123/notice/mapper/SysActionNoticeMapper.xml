@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.notice.mapper.SysActionNoticeMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.notice.domain.SysActionNotice">
+            <id property="id" column="id" />
+            <result property="title" column="title" />
+            <result property="content" column="content" />
+            <result property="type" column="type" />
+            <result property="send_type" column="send_type" />
+            <result property="to_user" column="to_user" />
+            <result property="to_address" column="to_address" />
+            <result property="is_confirm" column="is_confirm" />
+            <result property="status" column="status" />
+            <result property="create_by" column="create_by" />
+            <result property="create_time" column="create_time" />
+            <result property="update_by" column="update_by" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,content,type,send_type,to_user,
+        to_address,is_confirm,status,create_by,create_time,
+        update_by
+    </sql>
+</mapper>
