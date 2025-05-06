@@ -3,18 +3,24 @@ package vip.gpg123.discovery;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.discovery.domain.NacosNameSpace;
 import vip.gpg123.discovery.domain.NacosResponse;
+import vip.gpg123.discovery.domain.NacosService;
 import vip.gpg123.discovery.service.NacosApiService;
 import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
@@ -104,14 +110,36 @@ public class NacosManagerController extends BaseController {
         return AjaxResult.success();
     }
 
-    @GetMapping("/list")
+    /**
+     * 获取命名空间列表
+     * @param name 名称
+     * @return r
+     */
+    @GetMapping("/service/list")
     @ApiOperation(value = "列表")
-    public AjaxResult list() {
-        NacosResponse<NacosNameSpace> response = nacosApiService.namespaces();
-        if (response.getCode() != 200) {
-            return AjaxResult.error("nacos服务异常");
-        }
-        List<NacosNameSpace> data = response.getData();
+    public AjaxResult list(@RequestParam(value = "name",required = false) String name) {
+        // 获取用户名
+        String nameSpaceId = getUsername().replaceAll("\\.", "-");
+        NacosService response = nacosApiService.service(nameSpaceId, 1, 9999);
+        List<String> data = response.getDoms();
         return AjaxResult.success(data);
+    }
+
+    /**
+     * 分页
+     * @param name 名称
+     * @return r
+     */
+    @GetMapping("/service/page")
+    @ApiOperation(value = "分页")
+    public TableDataInfo page(@RequestParam(value = "name",required = false) String name) {
+        // 获取用户名
+        String nameSpaceId = getUsername().replaceAll("\\.", "-");
+        NacosService response = nacosApiService.service(nameSpaceId, TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
+        List<String> data = response.getDoms();
+        if (StrUtil.isNotBlank(name)) {
+            data = CollectionUtil.filter(data, item -> item.contains(name));
+        }
+        return PageUtils.toPage(data);
     }
 }

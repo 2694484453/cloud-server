@@ -32,7 +32,9 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/ns/service/list")
-    NacosService service(@RequestParam(value = "namespaceId") String namespaceId, @RequestParam(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize);
+    NacosService service(@RequestParam(value = "namespaceId") String namespaceId,
+                         @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
+                         @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize);
 
     /**
      * 创建ns
