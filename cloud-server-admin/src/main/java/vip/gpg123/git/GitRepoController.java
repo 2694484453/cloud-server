@@ -102,8 +102,27 @@ public class GitRepoController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
-    public AjaxResult list() {
+    public AjaxResult list(@RequestParam(value = "type") String type) {
+        // 获取token
+        GitAccess gitAccess = gitAccessService.getOne(new LambdaQueryWrapper<GitAccess>()
+                .eq(GitAccess::getType, type)
+                .eq(GitAccess::getCreateBy, getUsername())
+        );
+        if (gitAccess == null) {
+            throw new RuntimeException("请先添加" + type + "类型认证");
+        }
+        //
+        String accessToken = gitAccess.getAccessToken();
+        Integer pageNum = 1;
         List<?> repoList = new ArrayList<>();
+        switch (type) {
+            case "gitee":
+                repoList = giteeApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(100), "full_name", "all");
+                return AjaxResult.success(repoList);
+            case "github":
+                repoList = githubApiService.repos("Bearer " + accessToken, String.valueOf(pageNum), String.valueOf(9999), "created", "all");
+                return AjaxResult.success(repoList);
+            }
         return AjaxResult.success(repoList);
     }
 
