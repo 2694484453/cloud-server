@@ -28,6 +28,12 @@ public class DevopsJob implements Serializable {
     private String name;
 
     /**
+     * 命名空间
+     */
+    @TableField(value = "name_space")
+    private String nameSpace;
+
+    /**
      * 标签
      */
     @TableField(value = "labels")
