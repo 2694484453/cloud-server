@@ -5,17 +5,21 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.yaml.YamlUtil;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.Yaml;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
@@ -23,6 +27,9 @@ import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.helm.domain.ChartApp;
 import vip.gpg123.common.utils.helm.HelmApp;
 import vip.gpg123.common.utils.helm.HelmUtils;
+import vip.gpg123.repo.domain.HelmRepo;
+import vip.gpg123.repo.domain.HelmRepoResponse;
+import vip.gpg123.repo.service.HelmRepoApiService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -44,6 +51,9 @@ public class HelmRepoController {
     @Value("${repo.helm.name}")
     private String repoName;
 
+    @Autowired
+    private HelmRepoApiService helmRepoApiService;
+
     /**
      * 查询list
      *
@@ -53,25 +63,20 @@ public class HelmRepoController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
         // 请求仓库列表
-        HttpResponse httpResponse = HttpUtil.createGet(url+"/index.yaml").
-                timeout(10000).
-                setConnectionTimeout(10000).
-                contentType(ContentType.JSON.getValue()).
-                charset(StandardCharsets.UTF_8).execute();
-        String res = httpResponse.body();
-        Map map = YamlUtil.load(IoUtil.toUtf8Stream(res), Map.class);
-        Map<String, Object> enties = Convert.toMap(String.class, Object.class, map.get("entries"));
-        String generated = map.get("generated").toString();
+        String res =  helmRepoApiService.index();
+        HelmRepoResponse repoResponse = YamlUtil.load(StrUtil.getReader(res),HelmRepoResponse.class);
+        Map<String, List<HelmRepo>> entries = repoResponse.getEntries();
+        String generated = repoResponse.getGenerated();
         // 返回结果
         List<ChartApp> chartApps = new ArrayList<>();
         List<HelmApp> helmApps = HelmUtils.list("", SecurityUtils.getUsername());
         Map<String,HelmApp> helmAppMap = new HashMap<>();
         CollectionUtil.toMap(helmApps, helmAppMap,HelmApp::getName);
-        enties.forEach((k, v) -> {
+        entries.forEach((k, v) -> {
             ChartApp chartApp = new ChartApp();
             // 一个key就是一个应用，list数量即为版本数量
             chartApp.setName(k);
-            chartApp.setVersionCount(JSONUtil.parseArray(v).size());
+            chartApp.setVersionCount(v.size());
             chartApp.setItems(v);
             chartApp.setGenerated(generated);
             chartApp.setType("application");
