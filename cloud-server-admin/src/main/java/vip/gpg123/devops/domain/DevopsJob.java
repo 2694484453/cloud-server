@@ -24,8 +24,8 @@ public class DevopsJob implements Serializable {
     /**
      * 名称
      */
-    @TableField(value = "name")
-    private String name;
+    @TableField(value = "job_name")
+    private String jobName;
 
     /**
      * 命名空间

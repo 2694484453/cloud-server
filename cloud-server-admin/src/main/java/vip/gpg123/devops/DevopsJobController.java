@@ -104,7 +104,7 @@ public class DevopsJobController extends BaseController {
                            @RequestParam(value = "nameSpace",required = false) String nameSpace) {
         List<?> jobs = devopsJobService.list(new LambdaQueryWrapper<DevopsJob>()
                 .eq(DevopsJob::getCreateBy, getUsername())
-                .like(StrUtil.isNotBlank(name), DevopsJob::getName, name)
+                .like(StrUtil.isNotBlank(name), DevopsJob::getJobName, name)
                 .like(StrUtil.isNotBlank(nameSpace), DevopsJob::getNameSpace, nameSpace)
                 .orderByDesc(DevopsJob::getCreateTime)
         );
@@ -122,7 +122,7 @@ public class DevopsJobController extends BaseController {
                               @RequestParam(value = "nameSpace",required = false) String nameSpace) {
         IPage<DevopsJob> page = new Page<>(TableSupport.buildPageRequest().getPageNum(),TableSupport.buildPageRequest().getPageSize());
         page = devopsJobService.page(page, new LambdaQueryWrapper<DevopsJob>()
-                        .like(StrUtil.isNotBlank(name), DevopsJob::getName, name)
+                        .like(StrUtil.isNotBlank(name), DevopsJob::getJobName, name)
                         .like(StrUtil.isNotBlank(nameSpace), DevopsJob::getNameSpace, nameSpace)
                         .orderByDesc(DevopsJob::getCreateTime));
         return PageUtils.toPageByIPage(page);
