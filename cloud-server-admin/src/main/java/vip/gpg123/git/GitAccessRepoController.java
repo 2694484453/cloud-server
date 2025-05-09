@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.git.domain.GitAccess;
 import vip.gpg123.git.service.GitAccessService;
@@ -35,23 +34,6 @@ public class GitAccessRepoController extends BaseController {
 
     @Autowired
     private GithubApiService githubApiService;
-
-    /**
-     * 获取type
-     *
-     * @return r
-     */
-    @GetMapping("/types")
-    @ApiOperation(value = "获取type")
-    public AjaxResult token() {
-        List<String> types = new ArrayList<>();
-        types.add("gitee");
-        types.add("github");
-        types.add("gitlab");
-        types.add("github");
-        types.add("gitcode");
-        return AjaxResult.success(types);
-    }
 
     /**
      * 分页查询

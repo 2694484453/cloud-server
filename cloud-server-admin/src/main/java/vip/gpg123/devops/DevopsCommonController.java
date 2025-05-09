@@ -2,8 +2,6 @@ package vip.gpg123.devops;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.dom4j.Branch;
-import org.springframework.boot.context.properties.bind.Name;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +22,7 @@ public class DevopsCommonController extends BaseController {
      *
      * @return r
      */
-    @GetMapping("types")
+    @GetMapping("/types")
     @ApiOperation(value = "获取构建类型")
     public AjaxResult types() {
         List<String> types = new ArrayList<>();
@@ -48,13 +46,12 @@ public class DevopsCommonController extends BaseController {
         return AjaxResult.success(types);
     }
 
-
     /**
      * 获取镜像
      * @param type 类型
      * @return r
      */
-    @GetMapping("images")
+    @GetMapping("/images")
     @ApiOperation(value = "获取镜像")
     public AjaxResult images(@RequestParam(value = "type",required = false) String type) {
         List<String> images = new ArrayList<>();
