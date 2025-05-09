@@ -12,12 +12,12 @@ import lombok.Data;
  *
  * @TableName git
  */
-@TableName(value ="git")
+@TableName(value ="git_repo")
 @Data
 public class GitRepo implements Serializable {
 
     /**
-     *
+     * 主键
      */
     @TableId(type = IdType.AUTO)
     private Long id;
