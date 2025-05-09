@@ -14,11 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -27,6 +23,9 @@ import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.devops.domain.DevopsJob;
 import vip.gpg123.devops.service.DevopsJobService;
+import vip.gpg123.devops.service.DevopsTaskBuildService;
+import vip.gpg123.devops.service.DevopsTaskGitService;
+import vip.gpg123.devops.vo.DevopsVo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -51,6 +50,12 @@ public class DevopsJobController extends BaseController {
 
     @Autowired
     private DevopsJobService devopsJobService;
+
+    @Autowired
+    private DevopsTaskGitService devopsTaskGitService;
+
+    @Autowired
+    private DevopsTaskBuildService devopsTaskBuildService;
 
 
     /**
@@ -148,10 +153,23 @@ public class DevopsJobController extends BaseController {
      *
      * @return r
      */
-    @GetMapping("/add")
+    @PostMapping("/add")
     @ApiOperation(value = "新增")
-    public AjaxResult add(@RequestParam("jobName") String jobName,
-                          @RequestParam("nameSpace") String nameSpace) {
+    public AjaxResult add(@RequestParam(value = "jobName",required = false) String jobName,
+                          @RequestParam(value = "nameSpace", required = false) String nameSpace,
+                          @RequestBody DevopsVo devopsVo) {
+        boolean isGitSaved = false;
+        boolean isBuildSaved = false;
+        // 解析仓库
+        if (ObjectUtil.isNotNull(devopsVo.getGit())) {
+            // 执行保存
+            isGitSaved = devopsTaskGitService.save(devopsVo.getGit());
+        }
+        // 解析构建
+        if (ObjectUtil.isNotNull(devopsVo.getBuild())) {
+            // 执行保存
+            isBuildSaved = devopsTaskBuildService.save(devopsVo.getBuild());
+        }
         // 执行创建
         Job job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).create();
         return AjaxResult.success("操作成功", job);
