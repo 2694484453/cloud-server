@@ -1,0 +1,106 @@
+package vip.gpg123.git;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.controller.BaseController;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.git.domain.GitAccess;
+import vip.gpg123.git.service.GitAccessService;
+import vip.gpg123.git.service.GiteeApiService;
+import vip.gpg123.git.service.GithubApiService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/git/accessRepo")
+@Api(tags = "【git】认证查询仓库管理")
+public class GitAccessRepoController extends BaseController {
+
+    @Autowired
+    private GitAccessService gitAccessService;
+
+    @Autowired
+    private GiteeApiService giteeApiService;
+
+    @Autowired
+    private GithubApiService githubApiService;
+
+    /**
+     * 分页查询
+     *
+     * @return r
+     */
+    @GetMapping("/page")
+    @ApiOperation(value = "【分页查询】")
+    public TableDataInfo repos(@RequestParam(value = "type") String type) {
+        // 获取token
+        GitAccess gitAccess = gitAccessService.getOne(new LambdaQueryWrapper<GitAccess>()
+                .eq(GitAccess::getType, type)
+                .eq(GitAccess::getCreateBy, getUsername())
+        );
+        if (gitAccess == null) {
+            throw new RuntimeException("请先添加" + type + "类型认证");
+        }
+
+        String accessToken = gitAccess.getAccessToken();
+        Integer pageNum = TableSupport.buildPageRequest().getPageNum();
+        Integer pageSize = TableSupport.buildPageRequest().getPageSize();
+        //
+        List<?> repoList = new ArrayList<>();
+        switch (type) {
+            case "gitee":
+                repoList = giteeApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "full_name", "all");
+                return PageUtils.toPage(repoList);
+            case "github":
+                List<?> githubRepoList = githubApiService.repos("Bearer " + accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "created", "all");
+                return PageUtils.toPage(githubRepoList);
+//            case "gitlab":
+//                List<?> gitlabRepoList = gitlabRepoList();
+//                return PageUtils.toPage(gitlabRepoList);
+//            case "gitcode":
+        }
+        return PageUtils.toPage(repoList);
+    }
+
+
+    /**
+     * 列表查询
+     *
+     * @return r
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "【列表查询】")
+    public AjaxResult list(@RequestParam(value = "type") String type) {
+        // 获取token
+        GitAccess gitAccess = gitAccessService.getOne(new LambdaQueryWrapper<GitAccess>()
+                .eq(GitAccess::getType, type)
+                .eq(GitAccess::getCreateBy, getUsername())
+        );
+        if (gitAccess == null) {
+            throw new RuntimeException("请先添加" + type + "类型认证");
+        }
+        //
+        String accessToken = gitAccess.getAccessToken();
+        Integer pageNum = 1;
+        List<?> repoList = new ArrayList<>();
+        switch (type) {
+            case "gitee":
+                repoList = giteeApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(100), "full_name", "all");
+                return AjaxResult.success(repoList);
+            case "github":
+                repoList = githubApiService.repos("Bearer " + accessToken, String.valueOf(pageNum), String.valueOf(9999), "created", "all");
+                return AjaxResult.success(repoList);
+        }
+        return AjaxResult.success(repoList);
+    }
+}
