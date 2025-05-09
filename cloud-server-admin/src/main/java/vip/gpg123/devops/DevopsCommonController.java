@@ -28,19 +28,19 @@ public class DevopsCommonController extends BaseController {
         List<String> types = new ArrayList<>();
         // java构建
         types.add("maven");
-        types.add("maven+docker");
+        types.add("maven-docker");
         // gradle构建
         types.add("gradle");
-        types.add("gradle+docker");
+        types.add("gradle-docker");
         // nodejs构建
         types.add("nodejs");
-        types.add("nodejs+docker");
+        types.add("nodejs-docker");
         // python构建
         types.add("python");
-        types.add("python+docker");
+        types.add("python-docker");
         // shell构建
         types.add("shell");
-        types.add("shell+docker");
+        types.add("shell-docker");
         // 镜像构建
         types.add("docker");
         return AjaxResult.success(types);
@@ -61,7 +61,7 @@ public class DevopsCommonController extends BaseController {
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-11");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-17");
                 break;
-            case "maven+docker":
+            case "maven-docker":
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-8");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-11");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-17");
@@ -70,7 +70,7 @@ public class DevopsCommonController extends BaseController {
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-8");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-11");
                 break;
-            case "gradle+docker":
+            case "gradle-docker":
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-8");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-11");
                 break;
