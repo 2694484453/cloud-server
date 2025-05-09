@@ -1,5 +1,6 @@
 package vip.gpg123.git;
 
+import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +37,23 @@ public class GitAccessRepoController extends BaseController {
     private GithubApiService githubApiService;
 
     /**
+     * 获取type
+     *
+     * @return r
+     */
+    @GetMapping("/types")
+    @ApiOperation(value = "获取type")
+    public AjaxResult token() {
+        List<String> types = new ArrayList<>();
+        types.add("gitee");
+        types.add("github");
+        types.add("gitlab");
+        types.add("github");
+        types.add("gitcode");
+        return AjaxResult.success(types);
+    }
+
+    /**
      * 分页查询
      *
      * @return r
@@ -51,24 +69,8 @@ public class GitAccessRepoController extends BaseController {
         if (gitAccess == null) {
             throw new RuntimeException("请先添加" + type + "类型认证");
         }
-
-        String accessToken = gitAccess.getAccessToken();
-        Integer pageNum = TableSupport.buildPageRequest().getPageNum();
-        Integer pageSize = TableSupport.buildPageRequest().getPageSize();
-        //
-        List<?> repoList = new ArrayList<>();
-        switch (type) {
-            case "gitee":
-                repoList = giteeApiService.repos(accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "full_name", "all");
-                return PageUtils.toPage(repoList);
-            case "github":
-                List<?> githubRepoList = githubApiService.repos("Bearer " + accessToken, String.valueOf(pageNum), String.valueOf(pageSize), "created", "all");
-                return PageUtils.toPage(githubRepoList);
-//            case "gitlab":
-//                List<?> gitlabRepoList = gitlabRepoList();
-//                return PageUtils.toPage(gitlabRepoList);
-//            case "gitcode":
-        }
+        // 查询
+        List<?> repoList = Convert.toList(list(type).get("data"));
         return PageUtils.toPage(repoList);
     }
 

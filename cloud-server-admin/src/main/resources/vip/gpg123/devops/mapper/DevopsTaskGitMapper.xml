@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.devops.mapper.DevopsTaskGitMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.devops.domain.DevopsTaskGit">
+            <id property="id" column="id" />
+            <result property="jobId" column="job_id" />
+            <result property="taskGitType" column="task_git_type" />
+            <result property="taskGitName" column="task_git_name" />
+            <result property="taskGitUrl" column="task_git_url" />
+            <result property="taskGitBranch" column="task_git_branch" />
+            <result property="createBy" column="create_by" />
+            <result property="createTime" column="create_time" />
+            <result property="updateBy" column="update_by" />
+            <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,job_id,task_git_type,task_git_name,task_git_url,task_git_branch,
+        create_by,create_time,update_by,update_time
+    </sql>
+</mapper>

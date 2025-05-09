@@ -1,4 +1,4 @@
-package vip.gpg123.git.domain;
+package vip.gpg123.devops.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -9,97 +9,70 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- *
- * @TableName git
+ * 
+ * @TableName devops_task_git
  */
-@TableName(value ="git_repo")
+@TableName(value ="devops_task_git")
 @Data
-public class GitRepo implements Serializable {
-
+public class DevopsTaskGit implements Serializable {
     /**
      * 主键
      */
-    @TableId(type = IdType.INPUT)
+    @TableId(value = "id")
     private String id;
 
     /**
-     * 名称
+     * 任务id
      */
-    private String name;
-
-    /**
-     * 全名
-     */
-    private String fullName;
-
-    /**
-     * 归属
-     */
-    private String human_name;
-
-    /**
-     * 代号
-     */
-    private String code;
+    @TableField(value = "job_id")
+    private String jobId;
 
     /**
      * 类型
      */
-    private String type;
+    @TableField(value = "task_git_type")
+    private String taskGitType;
 
     /**
-     * 主页
+     * 名称
      */
-    private String homeUrl;
+    @TableField(value = "task_git_name")
+    private String taskGitName;
 
     /**
-     * http地址
+     * 地址
      */
-    private String htmlUrl;
+    @TableField(value = "task_git_url")
+    private String taskGitUrl;
 
     /**
-     * 仓库地址
+     * 分支
      */
-    private String gitUrl;
-
-    /**
-     * ssh地址
-     */
-    private String sshUrl;
-
-    /**
-     * 语言
-     */
-    private String language;
-
-    /**
-     * 状态
-     */
-    private String status;
-
-    /**
-     * 描述
-     */
-    private String description;
+    @TableField(value = "task_git_branch")
+    private String taskGitBranch;
 
     /**
      * 创建者
      */
+    @TableField(value = "create_by")
     private String createBy;
 
     /**
      * 创建时间
      */
+    @TableField(value = "create_time")
     private Date createTime;
 
     /**
      * 更新者
      */
+    @TableField(value = "update_by")
     private String updateBy;
 
     /**
      * 更新时间
      */
+    @TableField(value = "update_time")
     private Date updateTime;
 
     @TableField(exist = false)

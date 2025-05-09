@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.devops.mapper.DevopsTaskBuildMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.devops.domain.DevopsTaskBuild">
+            <id property="taskBuildId" column="task_build_id" />
+            <result property="jobId" column="job_id" />
+            <result property="taskBuildType" column="task_build_type" />
+            <result property="taskBuildName" column="task_build_name" />
+            <result property="taskBuildImage" column="task_build_image" />
+            <result property="imageSource" column="image_source" />
+            <result property="createBy" column="create_by" />
+            <result property="createTime" column="create_time" />
+            <result property="updateBy" column="update_by" />
+            <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        task_build_id,job_id,task_build_type,task_build_name,task_build_image,image_source,
+        create_by,create_time,update_by,update_time
+    </sql>
+</mapper>

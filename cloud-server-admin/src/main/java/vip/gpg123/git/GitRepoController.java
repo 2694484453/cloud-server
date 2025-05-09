@@ -37,24 +37,6 @@ public class GitRepoController extends BaseController {
     @Autowired
     private GitRepoService gitRepoService;
 
-
-    /**
-     * 获取type
-     *
-     * @return r
-     */
-    @GetMapping("/types")
-    @ApiOperation(value = "获取type")
-    public AjaxResult token() {
-        List<String> types = new ArrayList<>();
-        types.add("gitee");
-        types.add("github");
-        types.add("gitlab");
-        types.add("github");
-        types.add("gitcode");
-        return AjaxResult.success(types);
-    }
-
     /**
      * 列表查询
      *
@@ -66,7 +48,7 @@ public class GitRepoController extends BaseController {
     public AjaxResult list(@RequestParam(value = "type", required = false) String type,
                            @RequestParam(value = "name", required = false) String name) {
         return AjaxResult.success(gitRepoService.list(new LambdaQueryWrapper<GitRepo>()
-                .eq(GitRepo::getType, type)
+                .eq(StrUtil.isNotBlank(type), GitRepo::getType, type)
                 .like(StrUtil.isNotBlank(name), GitRepo::getName, name)
                 .eq(GitRepo::getCreateBy, getUsername())
         ));
@@ -84,7 +66,7 @@ public class GitRepoController extends BaseController {
                               @RequestParam(value = "name", required = false) String name) {
         IPage<GitRepo> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
         page = gitRepoService.page(page, new LambdaQueryWrapper<GitRepo>()
-                .eq(GitRepo::getType, type)
+                .eq(StrUtil.isNotBlank(type), GitRepo::getType, type)
                 .like(StrUtil.isNotBlank(name), GitRepo::getName, name)
                 .eq(GitRepo::getCreateBy, getUsername())
         );
@@ -138,7 +120,7 @@ public class GitRepoController extends BaseController {
      * @param type     类型
      * @return r
      */
-    @PostMapping("/insertOrUpdate")
+    @PostMapping("/import")
     @ApiOperation(value = "【新增或更新】")
     public AjaxResult insertOrUpdate(@RequestBody List<GitRepo> gitRepos, @RequestParam(value = "type") String type) {
         // 获取token
