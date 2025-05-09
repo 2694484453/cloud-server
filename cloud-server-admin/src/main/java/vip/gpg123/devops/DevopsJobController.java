@@ -1,8 +1,10 @@
 package vip.gpg123.devops;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,6 +14,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +32,7 @@ import vip.gpg123.devops.vo.DevopsVo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -160,6 +160,7 @@ public class DevopsJobController extends BaseController {
                           @RequestBody DevopsVo devopsVo) {
         boolean isGitSaved = false;
         boolean isBuildSaved = false;
+        nameSpace = StrUtil.isBlank(nameSpace) ? "default" : nameSpace;
         // 解析仓库
         if (ObjectUtil.isNotNull(devopsVo.getGit())) {
             // 执行保存
@@ -170,8 +171,18 @@ public class DevopsJobController extends BaseController {
             // 执行保存
             isBuildSaved = devopsTaskBuildService.save(devopsVo.getBuild());
         }
+        DevopsJob devopsJob = new DevopsJob();
+        BeanUtils.copyProperties(devopsVo, devopsJob);
+        devopsJob.setCreateBy(getUsername());
+        devopsJob.setCreateTime(DateUtil.date());
+        boolean save = devopsJobService.save(devopsJob);
         // 执行创建
         Job job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).create();
+        if (ObjectUtil.isNotNull(job)) {
+            String jsonStr = JSONUtil.toJsonStr(job);
+            devopsJob.setContent(JSONUtil.formatJsonStr(jsonStr));
+            devopsJobService.updateById(devopsJob);
+        }
         return AjaxResult.success("操作成功", job);
     }
 
