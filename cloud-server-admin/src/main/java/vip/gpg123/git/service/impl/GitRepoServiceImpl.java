@@ -1,9 +1,9 @@
 package vip.gpg123.git.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import vip.gpg123.git.domain.Git;
-import vip.gpg123.git.service.GitService;
-import vip.gpg123.git.mapper.GitMapper;
+import vip.gpg123.git.domain.GitRepo;
+import vip.gpg123.git.service.GitRepoService;
+import vip.gpg123.git.mapper.GitRepoMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2024-12-01 01:00:54
 */
 @Service
-public class GitServiceImpl extends ServiceImpl<GitMapper, Git> implements GitService {
+public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> implements GitRepoService {
 
 }
 

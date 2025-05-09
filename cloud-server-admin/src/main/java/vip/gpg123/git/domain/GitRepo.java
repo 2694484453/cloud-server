@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="git")
 @Data
-public class Git implements Serializable {
+public class GitRepo implements Serializable {
 
     /**
      *

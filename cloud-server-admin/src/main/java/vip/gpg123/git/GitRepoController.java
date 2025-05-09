@@ -1,20 +1,20 @@
 package vip.gpg123.git;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.git.domain.GitAccess;
+import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.service.GitAccessService;
+import vip.gpg123.git.service.GitRepoService;
 import vip.gpg123.git.service.GiteeApiService;
 import vip.gpg123.git.service.GithubApiService;
 
@@ -38,6 +38,9 @@ public class GitRepoController extends BaseController {
 
     @Autowired
     private GithubApiService githubApiService;
+
+    @Autowired
+    private GitRepoService gitRepoService;
 
 
     /**
@@ -126,4 +129,35 @@ public class GitRepoController extends BaseController {
         return AjaxResult.success(repoList);
     }
 
+
+    /**
+     * 新增或更新
+     * @param gitRepos gitRepos
+     * @param type 类型
+     * @return r
+     */
+    @PostMapping("/insertOrUpdate")
+    @ApiOperation(value = "【新增或更新】")
+    public AjaxResult insertOrUpdate(@RequestBody List<GitRepo> gitRepos, @RequestParam(value = "type") String type) {
+        // 获取token
+        GitAccess gitAccess = gitAccessService.getOne(new LambdaQueryWrapper<GitAccess>()
+                .eq(GitAccess::getType, type)
+                .eq(GitAccess::getCreateBy, getUsername())
+        );
+        if (gitAccess == null) {
+            throw new RuntimeException("请先添加" + type + "类型认证");
+        }
+        // 开始执行新增或更新
+        gitRepos.forEach(gitRepo -> {
+            gitRepo.setCreateBy(getUsername());
+            gitRepo.setCreateTime(DateUtil.date());
+        });
+        if (!gitRepos.isEmpty()) {
+            boolean isSaved = gitRepoService.saveOrUpdateBatch(gitRepos);
+            if (!isSaved) {
+                throw new RuntimeException("保存失败");
+            }
+        }
+        return AjaxResult.success("保存成功");
+    }
 }

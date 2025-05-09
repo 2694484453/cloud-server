@@ -11,7 +11,7 @@ import java.util.Collection;
  * @author gaopuguang
  * @date 2025/2/19 2:09
  **/
-public class GitTest {
+public class GitRepoTest {
 
     @Test
     public void cloneTest() {

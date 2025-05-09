@@ -1,6 +1,6 @@
 package vip.gpg123.git.mapper;
 
-import vip.gpg123.git.domain.Git;
+import vip.gpg123.git.domain.GitRepo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity domain.git.vip.gpg.Git
 */
 @Mapper
-public interface GitMapper extends BaseMapper<Git> {
+public interface GitRepoMapper extends BaseMapper<GitRepo> {
 
 }
 
