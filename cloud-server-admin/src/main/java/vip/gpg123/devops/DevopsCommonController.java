@@ -57,12 +57,19 @@ public class DevopsCommonController extends BaseController {
         List<String> images = new ArrayList<>();
         switch (type) {
             case "maven":
+                images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-8");
+                images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-11");
+                images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-17");
+                break;
             case "maven+docker":
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-8");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-11");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/maven:3.8.4-openjdk-17");
                 break;
             case "gradle":
+                images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-8");
+                images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-11");
+                break;
             case "gradle+docker":
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-8");
                 images.add("registry.cn-hangzhou.aliyuncs.com/gpg_dev/gradle:3.8.4-openjdk-11");

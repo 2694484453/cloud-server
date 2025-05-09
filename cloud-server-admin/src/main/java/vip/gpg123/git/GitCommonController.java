@@ -27,7 +27,6 @@ public class GitCommonController {
         types.add("gitee");
         types.add("github");
         types.add("gitlab");
-        types.add("github");
         types.add("gitcode");
         return AjaxResult.success(types);
     }

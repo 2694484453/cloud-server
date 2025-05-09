@@ -27,7 +27,7 @@ public class MailTest {
         account.setUser("sysadmin@email.gpg123.vip");
         account.setPass("GAOpuguang2025");
         account.setSplitlongparameters(false);
-        account.setTimeout(1000);
+        account.setTimeout(60000);
         account.setAuth(true);
         return account;
     }
