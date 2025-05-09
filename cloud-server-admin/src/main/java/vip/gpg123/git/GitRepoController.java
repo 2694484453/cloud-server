@@ -19,7 +19,6 @@ import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.service.GitAccessService;
 import vip.gpg123.git.service.GitRepoService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,13 +77,23 @@ public class GitRepoController extends BaseController {
      * @param gitRepo gitRepo
      * @return r
      */
-    @PostMapping("/add")
+    @PostMapping("/import")
     @ApiOperation(value = "【新增】")
-    public AjaxResult add(@RequestBody GitRepo gitRepo) {
+    public AjaxResult importRepo(@RequestBody GitRepo gitRepo) {
+        // 设置信息
         gitRepo.setCreateBy(getUsername());
         gitRepo.setCreateTime(DateUtil.date());
-        boolean isSaved = gitRepoService.save(gitRepo);
-        return isSaved ? success() : error();
+        GitRepo search = gitRepoService.getOne(new LambdaQueryWrapper<GitRepo>()
+                .eq(GitRepo::getId, gitRepo.getId())
+                .eq(GitRepo::getCreateBy, getUsername())
+        );
+        boolean isSaved = gitRepoService.saveOrUpdate(gitRepo);
+        if (search != null) {
+            return isSaved ? success("更新成功") : error("更新失败");
+        }else {
+            return isSaved ? success("新增成功") : error("新增失败");
+        }
+
     }
 
     /**
@@ -120,7 +129,7 @@ public class GitRepoController extends BaseController {
      * @param type     类型
      * @return r
      */
-    @PostMapping("/import")
+    @PostMapping("/importBatch")
     @ApiOperation(value = "【新增或更新】")
     public AjaxResult insertOrUpdate(@RequestBody List<GitRepo> gitRepos, @RequestParam(value = "type") String type) {
         // 获取token
@@ -132,9 +141,9 @@ public class GitRepoController extends BaseController {
             throw new RuntimeException("请先添加" + type + "类型认证");
         }
         // 开始执行新增或更新
-        gitRepos.forEach(gitRepo -> {
-            gitRepo.setCreateBy(getUsername());
-            gitRepo.setCreateTime(DateUtil.date());
+        gitRepos.forEach(e -> {
+            e.setCreateBy(getUsername());
+            e.setCreateTime(DateUtil.date());
         });
         if (!gitRepos.isEmpty()) {
             boolean isSaved = gitRepoService.saveOrUpdateBatch(gitRepos);
