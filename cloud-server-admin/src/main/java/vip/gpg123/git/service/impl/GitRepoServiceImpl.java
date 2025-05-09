@@ -2,9 +2,11 @@ package vip.gpg123.git.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.domain.Email;
+import vip.gpg123.framework.config.EmailConfig;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.service.GitRepoService;
@@ -55,6 +57,8 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
                 sysActionNotice.setCreateTime(DateUtil.date());
                 sysActionNotice.setContent(userName + message + entity.getName() + "Git仓库，结果：" + (isSuccess ? "成功" : "失败"));
                 sysActionNotice.setType("gitRepo");
+                sysActionNotice.setToUser(userName);
+                sysActionNotice.setToAddress(userEmail);
                 sysActionNoticeService.save(sysActionNotice);
                 // 邮件消息
                 Email email = new Email();
@@ -63,6 +67,7 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
                 email.setTos(tos);
                 email.setTitle("Git仓库导入" + message + "通知");
                 email.setContent(userName + message + entity.getName() + "Git仓库，结果：" + (isSuccess ? "成功" : "失败"));
+                MailUtil.send(EmailConfig.createMailAccount(), userEmail, email.getTitle(), email.getContent(), false);
             }
         });
         return isSuccess;
@@ -101,8 +106,10 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
                 sysActionNotice.setTitle("Git仓库导入" + message + "通知");
                 sysActionNotice.setCreateBy(userName);
                 sysActionNotice.setCreateTime(DateUtil.date());
+                sysActionNotice.setToUser(userName);
                 sysActionNotice.setContent(userName + message + entity.getName() + " Git仓库，结果：" + (isSuccess ? "成功" : "失败"));
                 sysActionNotice.setType("gitRepo");
+                sysActionNotice.setToAddress(userEmail);
                 sysActionNoticeService.save(sysActionNotice);
                 // 邮件消息
                 Email email = new Email();
@@ -111,6 +118,7 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
                 email.setTos(tos);
                 email.setTitle("Git仓库导入" + message + "通知");
                 email.setContent(userName + message + entity.getName() + " Git仓库，结果：" + (isSuccess ? "成功" : "失败"));
+                MailUtil.send(EmailConfig.createMailAccount(), userEmail, email.getTitle(), email.getContent(), false);
             }
         });
         return isSuccess;
@@ -146,8 +154,10 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
                 sysActionNotice.setTitle("Git仓库导入" + message + "通知");
                 sysActionNotice.setCreateBy(userName);
                 sysActionNotice.setCreateTime(DateUtil.date());
+                sysActionNotice.setToUser(userName);
                 sysActionNotice.setContent(userName + message + entity.getName() + " Git仓库，结果：" + (isSuccess ? "成功" : "失败"));
                 sysActionNotice.setType("gitRepo");
+                sysActionNotice.setToAddress(userEmail);
                 sysActionNoticeService.save(sysActionNotice);
                 // 邮件消息
                 Email email = new Email();
@@ -156,6 +166,7 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
                 email.setTos(tos);
                 email.setTitle("Git仓库导入" + message + "通知");
                 email.setContent(userName + message + entity.getName() + " Git仓库，结果：" + (isSuccess ? "成功" : "失败"));
+                MailUtil.send(EmailConfig.createMailAccount(), userEmail, email.getTitle(), email.getContent(), false);
             }
         });
         return isSuccess;
