@@ -51,6 +51,12 @@ public class DockerRepoController extends BaseController {
         return AjaxResult.success(list);
     }
 
+    /**
+     * 分页查询
+     * @param name 名称
+     * @param type 类型
+     * @return r
+     */
     @GetMapping(value = "/page")
     @ApiOperation(value = "【分页查询】")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
