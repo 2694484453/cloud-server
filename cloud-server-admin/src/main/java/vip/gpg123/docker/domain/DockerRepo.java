@@ -47,7 +47,7 @@ public class DockerRepo {
     /**
      * 密码
      */
-    @TableField(value = "password")
+    @TableField(value = "password", select = false)
     private String password;
 
     /**
