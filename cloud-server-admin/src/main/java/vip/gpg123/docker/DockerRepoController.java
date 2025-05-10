@@ -71,24 +71,4 @@ public class DockerRepoController extends BaseController {
         return PageUtils.toPageByIPage(page);
     }
 
-    /**
-     * 登录
-     * @param dockerRepo 参数
-     * @return r
-     */
-    @PostMapping("/login")
-    @ApiOperation(value = "【登录】")
-    public AjaxResult login(@RequestBody DockerRepo dockerRepo) {
-        DockerRepo repo = dockerRepoService.getOne(new LambdaQueryWrapper<DockerRepo>()
-                .eq(StrUtil.isNotBlank(dockerRepo.getRepoName()), DockerRepo::getRepoName, dockerRepo.getRepoName())
-                .eq(StrUtil.isNotBlank(dockerRepo.getId()), DockerRepo::getId, dockerRepo.getId())
-                .eq(DockerRepo::getCreateBy, getUsername())
-        );
-        if (repo == null) {
-          String res = RuntimeUtil.execForStr("/bin/sh", "-c", "docker login --username " + dockerRepo.getRepoName() + " --password " + dockerRepo.getPassword() + " " + dockerRepo.getRepoHost());
-            return res.contains("success") ? AjaxResult.success() : AjaxResult.error();
-        }
-        return AjaxResult.error("没有查询到仓库配置");
-    }
-
 }
