@@ -39,6 +39,12 @@ public class KubernetesConfigController extends BaseController {
     @Autowired
     private KubernetesConfigService kubernetesConfigService;
 
+    /**
+     * 新增
+     * @param name 名称
+     * @param file 文件
+     * @return r
+     */
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
     public AjaxResult addConfig(@RequestParam(value = "name") String name,
@@ -137,4 +143,6 @@ public class KubernetesConfigController extends BaseController {
             throw new RuntimeException(e);
         }
     }
+
+
 }
