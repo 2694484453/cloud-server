@@ -14,6 +14,7 @@ import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRule;
 import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRuleList;
 import io.fabric8.openshift.client.OpenShiftClient;
 import org.junit.Test;
+import vip.gpg123.common.utils.K8sUtil;
 
 import java.io.File;
 import java.io.IOException;
