@@ -1,5 +1,6 @@
 package vip.gpg123.nas;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -8,7 +9,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +21,7 @@ import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.DateUtils;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.service.NasFrpClientService;
@@ -60,10 +66,11 @@ public class NasFrpClientController extends BaseController {
 
     /**
      * 分页查询
-     * @param name 名称
-     * @param type 类型
-     * @param ip ip
-     * @param port port
+     *
+     * @param name   名称
+     * @param type   类型
+     * @param ip     ip
+     * @param port   port
      * @param server server
      * @return r
      */
@@ -86,4 +93,57 @@ public class NasFrpClientController extends BaseController {
         return PageUtils.toPageByIPage(page);
     }
 
+    /**
+     * 详情
+     * @param id id
+     * @return r
+     */
+    @GetMapping("/info")
+    @ApiOperation(value = "【详情】")
+    private AjaxResult info(@RequestParam(value = "id") String id) {
+        NasFrpClient client = nasFrpClientService.getById(id);
+        return AjaxResult.success(client);
+    }
+
+    /**
+     * 新增
+     *
+     * @param nasFrpClient 客户端
+     * @return r
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "【新增】")
+    private AjaxResult add(@RequestBody NasFrpClient nasFrpClient) {
+        nasFrpClient.setCreateBy(getUsername());
+        nasFrpClient.setCreateTime(DateUtil.date());
+        boolean isSuccess = nasFrpClientService.save(nasFrpClient);
+        return isSuccess ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    /**
+     * 修改
+     *
+     * @param nasFrpClient 客户端
+     * @return r
+     */
+    @PutMapping("/edit")
+    @ApiOperation(value = "【修改】")
+    private AjaxResult edit(@RequestBody NasFrpClient nasFrpClient) {
+        nasFrpClient.setUpdateBy(getUsername());
+        nasFrpClient.setUpdateTime(DateUtil.date());
+        boolean isSuccess = nasFrpClientService.updateById(nasFrpClient);
+        return isSuccess ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "【删除】")
+    private AjaxResult delete(@RequestParam("id") String id) {
+        boolean isSuccess = nasFrpClientService.removeById(id);
+        return isSuccess ? AjaxResult.success() : AjaxResult.error();
+    }
 }
