@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.docker.mapper.DockerRepoMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.docker.domain.DockerRepo">
+            <id property="id" column="id" />
+            <result property="repoName" column="repo_name" />
+            <result property="repoType" column="repo_type" />
+            <result property="repoHost" column="repo_host" />
+            <result property="username" column="username" />
+            <result property="password" column="password" />
+            <result property="description" column="description" />
+            <result property="createBy" column="create_by" />
+            <result property="createTime" column="create_time" />
+            <result property="updateBy" column="update_by" />
+            <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,repo_name,repo_type,repo_host,username,password,
+        description,create_by,create_time,update_by,update_time
+    </sql>
+</mapper>
