@@ -1,4 +1,4 @@
-package vip.gpg123.cluster;
+package vip.gpg123.kubernetes;
 
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;

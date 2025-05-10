@@ -1,4 +1,4 @@
-package vip.gpg123.cluster.service;
+package vip.gpg123.kubernetes.service;
 
 import io.fabric8.kubernetes.api.model.NamedCluster;
 

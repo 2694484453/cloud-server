@@ -1,7 +1,7 @@
-package vip.gpg123.cluster.mapper;
+package vip.gpg123.kubernetes.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import vip.gpg123.cluster.domain.UserBindCluster;
+import vip.gpg123.kubernetes.domain.UserBindCluster;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

@@ -1,9 +1,9 @@
-package vip.gpg123.cluster.service.impl;
+package vip.gpg123.kubernetes.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import vip.gpg123.cluster.service.UserBindClusterService;
-import vip.gpg123.cluster.domain.UserBindCluster;
-import vip.gpg123.cluster.mapper.UserBindClusterMapper;
+import vip.gpg123.kubernetes.service.UserBindClusterService;
+import vip.gpg123.kubernetes.domain.UserBindCluster;
+import vip.gpg123.kubernetes.mapper.UserBindClusterMapper;
 import org.springframework.stereotype.Service;
 
 /**

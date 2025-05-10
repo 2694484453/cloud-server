@@ -1,11 +1,11 @@
-package vip.gpg123.cluster.service.impl;
+package vip.gpg123.kubernetes.service.impl;
 
 import cn.hutool.core.io.FileUtil;
 import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.NamedCluster;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import org.springframework.stereotype.Service;
-import vip.gpg123.cluster.service.ClusterService;
+import vip.gpg123.kubernetes.service.ClusterService;
 import vip.gpg123.framework.config.KubernetesClientConfig;
 
 import java.io.File;

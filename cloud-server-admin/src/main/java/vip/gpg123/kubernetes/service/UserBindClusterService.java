@@ -1,6 +1,6 @@
-package vip.gpg123.cluster.service;
+package vip.gpg123.kubernetes.service;
 
-import vip.gpg123.cluster.domain.UserBindCluster;
+import vip.gpg123.kubernetes.domain.UserBindCluster;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
