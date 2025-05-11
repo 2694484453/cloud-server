@@ -113,6 +113,15 @@ public class NasFrpClientController extends BaseController {
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
     private AjaxResult add(@RequestBody NasFrpClient nasFrpClient) {
+        if (StrUtil.isBlank(nasFrpClient.getName())) {
+            return AjaxResult.error("名称不能为空");
+        }
+        long count = nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getName, nasFrpClient.getName())
+        );
+        if (count > 1) {
+            return AjaxResult.error("名称已经存在，请更换");
+        }
         nasFrpClient.setCreateBy(getUsername());
         nasFrpClient.setCreateTime(DateUtil.date());
         boolean isSuccess = nasFrpClientService.save(nasFrpClient);

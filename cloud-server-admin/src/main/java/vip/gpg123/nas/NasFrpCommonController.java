@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/nas/frp/common")
-@Api(value = "nas-frpc通用管理")
+@Api(value = "nas-frp通用管理")
 public class NasFrpCommonController extends BaseController {
 
 

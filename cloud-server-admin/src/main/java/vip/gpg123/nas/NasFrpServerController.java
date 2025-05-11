@@ -45,7 +45,6 @@ public class NasFrpServerController extends BaseController {
                 .like(StrUtil.isNotBlank(name), NasFrpServer::getServerName, name)
                 .like(StrUtil.isNotBlank(ip), NasFrpServer::getServerIp, ip)
                 .like(ObjectUtil.isNotEmpty(port), NasFrpServer::getServerPort, port)
-                .eq(StrUtil.isNotBlank(getUsername()), NasFrpServer::getCreateBy, getUsername())
                 .orderByDesc(NasFrpServer::getCreateTime)
         );
         return AjaxResult.success(list);
@@ -69,7 +68,6 @@ public class NasFrpServerController extends BaseController {
                 .like(StrUtil.isNotBlank(name), NasFrpServer::getServerName, name)
                 .like(StrUtil.isNotBlank(ip), NasFrpServer::getServerIp, ip)
                 .like(ObjectUtil.isNotEmpty(port), NasFrpServer::getServerPort, port)
-                .eq(StrUtil.isNotBlank(getUsername()), NasFrpServer::getCreateBy, getUsername())
                 .orderByDesc(NasFrpServer::getCreateTime));
         return PageUtils.toPageByIPage(page);
     }
