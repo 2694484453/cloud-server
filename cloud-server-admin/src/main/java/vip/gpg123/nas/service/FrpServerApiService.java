@@ -16,4 +16,11 @@ public interface FrpServerApiService {
      */
     @GetMapping("/api/proxy/http")
     FrpServerHttpResponse httpList();
+
+    /**
+     * 查询所有http代理
+     * @return r
+     */
+    @GetMapping("/api/proxy/http")
+    String httpList2();
 }

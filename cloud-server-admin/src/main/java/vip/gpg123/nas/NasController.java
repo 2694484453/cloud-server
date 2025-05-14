@@ -14,6 +14,7 @@ import vip.gpg123.nas.service.NasFrpClientService;
 import vip.gpg123.nas.service.NasFrpServerService;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -34,10 +35,10 @@ public class NasController extends BaseController {
      * 概览
      * @return r
      */
-    @GetMapping("/overview")
+    @GetMapping("/overView")
     @ApiOperation(value = "【概览】")
     public AjaxResult overview() {
-        Map<String,Object> data = new HashMap<>();
+        Map<String,Object> data = new LinkedHashMap<>();
         // 服务端数量
         data.put("frpServerTotalCount", nasFrpServerService.count());
         // 客户端数量
@@ -56,11 +57,11 @@ public class NasController extends BaseController {
         // 在线数量
         data.put("frpClientOnlineCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getStatus, "online")
-        ));
+        ).size());
         // 离线
         data.put("frpClientOfflineCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getStatus, "offline")
-        ));
+        ).size());
         // http数量
         data.put("frpClientHttpCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getType, "http")
