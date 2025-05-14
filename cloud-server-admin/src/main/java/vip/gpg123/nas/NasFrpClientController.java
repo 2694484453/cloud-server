@@ -22,10 +22,16 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.git.domain.FrpServerHttp;
+import vip.gpg123.git.domain.FrpServerHttpResponse;
 import vip.gpg123.nas.domain.NasFrpClient;
+import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/nas/frpc")
@@ -34,6 +40,9 @@ public class NasFrpClientController extends BaseController {
 
     @Autowired
     private NasFrpClientService nasFrpClientService;
+
+    @Autowired
+    private FrpServerApiService frpServerApiService;
 
     /**
      * 列表查询
@@ -89,6 +98,27 @@ public class NasFrpClientController extends BaseController {
                 .eq(StrUtil.isNotBlank(server), NasFrpClient::getFrpServer, server)
                 .eq(StrUtil.isNotBlank(getUsername()), NasFrpClient::getCreateBy, getUsername())
                 .orderByDesc(NasFrpClient::getCreateTime));
+        // 查询http代理
+        List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
+        Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 获取list
+        List<NasFrpClient> list = page.getRecords();
+        list.forEach(item -> {
+            switch (item.getType()) {
+                case "http":
+                    if (httpMap.containsKey(item.getName())) {
+                        item.setStatus(httpMap.get(item.getName()).getStatus());
+                    }
+                    break;
+                case "tcp":
+                    break;
+                case "udp":
+                    break;
+                default:
+                    break;
+            }
+        });
+        page.setRecords(list);
         return PageUtils.toPageByIPage(page);
     }
 
