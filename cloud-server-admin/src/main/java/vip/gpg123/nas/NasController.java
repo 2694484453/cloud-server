@@ -61,6 +61,22 @@ public class NasController extends BaseController {
         data.put("frpClientOfflineCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getStatus, "offline")
         ));
+        // http数量
+        data.put("frpClientHttpCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getType, "http")
+        ).size());
+        // https数量
+        data.put("frpClientHttpsCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getType, "https")
+        ).size());
+        // tcp数量
+        data.put("frpClientTcpCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getType, "tcp")
+        ).size());
+        // udp数量
+        data.put("frpClientUdpCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getType, "udp")
+        ));
         return AjaxResult.success(data);
     }
 }
