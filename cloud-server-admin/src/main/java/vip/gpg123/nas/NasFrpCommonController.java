@@ -67,9 +67,9 @@ public class NasFrpCommonController extends BaseController {
     @PostMapping("/export")
     @ApiOperation(value = "【导出配置文件】")
     public void export(@RequestParam(value = "serverName", required = false, defaultValue = "hcs.gpg123.vip") String serverName,
-                             @RequestBody Map<String, Object> params,
-                             HttpServletRequest request,
-                             HttpServletResponse response) throws IOException {
+                       @RequestBody Map<String, Object> params,
+                       HttpServletRequest request,
+                       HttpServletResponse response) throws IOException {
         // 查询服务
         NasFrpServer nasFrpServer = nasFrpServerService.getOne(new LambdaQueryWrapper<NasFrpServer>()
                 .eq(NasFrpServer::getServerName, serverName)
@@ -77,48 +77,45 @@ public class NasFrpCommonController extends BaseController {
         if (ObjectUtil.isNull(nasFrpServer)) {
             throw new RuntimeException("服务不存在");
         }
-        List<NasFrpClient> list;
-        // 导出全部
-        list = nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
+        // 查询全部客户端
+        List<NasFrpClient> list = nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getFrpServer, serverName)
                 .eq(NasFrpClient::getCreateBy, getUsername())
                 .orderByDesc(NasFrpClient::getCreateTime)
         );
-        // 配置服务端
-        Setting setting = new Setting();
-        setting.set("serverAddr", nasFrpServer.getServerName());
-        setting.set("serverPort", nasFrpServer.getServerPort().toString());
-        setting.entrySet("auth");
-        setting.set("token", nasFrpServer.getAuthToken());
-        // client-admin-ui
-        setting.entrySet("webServer");
-        setting.set("webServer.addr", "127.0.0.1");
-        setting.set("webServer.port", "8081");
-        setting.set("webServer.user", "admin");
-        setting.set("webServer.password", "admin");
-        // proxies
-        for (NasFrpClient nasFrpClient : list) {
-            setting.entrySet("[[proxies]]");
-            setting.set("name", nasFrpClient.getName());
-            setting.set("type", nasFrpClient.getType());
-            setting.set("localIp", nasFrpClient.getLocalIp());
-            setting.set("localPort", nasFrpClient.getLocalPort().toString());
-            setting.set("customDomains", nasFrpClient.getCustomDomains());
-        }
-        setting.set("healthCheck.type", "http");
-        setting.set("healthCheck.path", "/status");
-        setting.set("healthCheck.timeoutSeconds", "3");
-        setting.set("healthCheck.maxFailed", "3");
-        setting.set("healthCheck.intervalSeconds", "10");
-        // 转换为 Map 结构
-        Map<String, Object> configMap = new HashMap<>();
-        setting.entrySet().forEach(entry -> {
-            configMap.put(entry.getKey(), entry.getValue());
-        });
 
+        StringBuilder sb = new StringBuilder();
+        // 配置服务端
+        sb.append("#服务端配置(不可修改)").append("\n");
+        sb.append("serverAddr = ").append("\"").append(nasFrpServer.getServerName()).append("\"").append("\n");
+        sb.append("auth.token = ").append("\"").append(nasFrpServer.getAuthToken()).append("\"").append("\n");
+        sb.append("#本地admin-ui(可修改)").append("\n");
+        // 配置客户端
+        sb.append("webServer.addr = ").append("\"").append("127.0.0.1").append("\"").append("\n");
+        sb.append("webServer.port = ").append("\"").append("7500").append("\"").append("\n");
+        sb.append("webServer.user = ").append("\"").append("admin").append("\"").append("\n");
+        sb.append("webServer.password = ").append("\"").append("admin").append("\"").append("\n");
+        // 配置代理
+        sb.append("#代理配置(不可修改)").append("\n");
+        list.forEach(nasFrpClient -> {
+            sb.append("[[proxies]]").append("\n");
+            sb.append("name = ").append("\"").append(nasFrpClient.getName()).append("\"").append("\n");
+            sb.append("type = ").append("\"").append(nasFrpClient.getType()).append("\"").append("\n");
+            sb.append("localIP = ").append("\"").append(nasFrpClient.getLocalIp()).append("\"").append("\n");
+            sb.append("localPort = ").append("\"").append(nasFrpClient.getLocalPort()).append("\"").append("\n");
+            sb.append("customDomains = ").append("[\"").append(nasFrpClient.getCustomDomains()).append("\"]").append("\n");
+        });
+        // 额外
+        sb.append("healthCheck.type = ").append("\"").append("http").append("\"").append("\n");
+        sb.append("healthCheck.path = ").append("\"").append("/status").append("\"").append("\n");
+        sb.append("healthCheck.timeoutSeconds = ").append(3).append("\n");
+        sb.append("healthCheck.maxFailed = ").append(3).append("\n");
+        sb.append("healthCheck.intervalSeconds = ").append(10).append("\n");
         // 写入 TOML 文件
         String tempFilePath = FileUtil.getTmpDirPath() + File.separator + "config.toml";
-        new TomlWriter().write(setting, new File(tempFilePath));
+        FileWriter fileWriter = new FileWriter(tempFilePath);
+        fileWriter.write(sb.toString());
+        fileWriter.close();
         try {
             File file = FileUtil.file(tempFilePath);
             // 1. 设置响应头
