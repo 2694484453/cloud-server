@@ -100,6 +100,15 @@ public class NasFrpClientController extends BaseController {
         // 查询http代理
         List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
         Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询https代理
+        List<FrpServerHttp> httpsList = frpServerApiService.httpsList().getProxies();
+        Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询tcp代理
+        List<FrpServerHttp> tcpList = frpServerApiService.tcpList().getProxies();
+        Map<String, FrpServerHttp> tcpMap = tcpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询udp代理
+        List<FrpServerHttp> udpList = frpServerApiService.udpList().getProxies();
+        Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         // 获取list
         List<NasFrpClient> list = page.getRecords();
         list.forEach(item -> {
@@ -109,9 +118,20 @@ public class NasFrpClientController extends BaseController {
                         item.setStatus(httpMap.get(item.getName()).getStatus());
                     }
                     break;
+                case "https":
+                    if (httpsMap.containsKey(item.getName())) {
+                        item.setStatus(httpsMap.get(item.getName()).getStatus());
+                    }
+                    break;
                 case "tcp":
+                    if (tcpMap.containsKey(item.getName())) {
+                        item.setStatus(tcpMap.get(item.getName()).getStatus());
+                    }
                     break;
                 case "udp":
+                    if (udpMap.containsKey(item.getName())) {
+                        item.setStatus(udpMap.get(item.getName()).getStatus());
+                    }
                     break;
                 default:
                     break;

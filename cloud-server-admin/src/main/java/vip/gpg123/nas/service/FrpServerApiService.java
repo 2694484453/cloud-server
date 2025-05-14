@@ -18,9 +18,23 @@ public interface FrpServerApiService {
     FrpServerHttpResponse httpList();
 
     /**
-     * 查询所有http代理
+     * 查询所有https代理
      * @return r
      */
-    @GetMapping("/api/proxy/http")
-    String httpList2();
+    @GetMapping("/api/proxy/https")
+    FrpServerHttpResponse httpsList();
+
+    /**
+     * 查询所有tcp代理
+     * @return r
+     */
+    @GetMapping("/api/proxy/tcp")
+    FrpServerHttpResponse tcpList();
+
+    /**
+     * 查询所有udp代理
+     * @return r
+     */
+    @GetMapping("/api/proxy/udp")
+    FrpServerHttpResponse udpList();
 }
