@@ -23,7 +23,6 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.git.domain.FrpServerHttp;
-import vip.gpg123.git.domain.FrpServerHttpResponse;
 import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;

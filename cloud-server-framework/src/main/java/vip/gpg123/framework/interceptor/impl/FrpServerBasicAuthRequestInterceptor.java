@@ -8,12 +8,12 @@ import vip.gpg123.framework.interceptor.BasicAuthRequestInterceptor;
 import java.util.Base64;
 
 @Component
-public abstract class FrpServerBasicAuthRequestInterceptor extends BasicAuthRequestInterceptor {
+public class FrpServerBasicAuthRequestInterceptor extends BasicAuthRequestInterceptor {
 
-  @Value("${frp.userName}")
+  @Value("${frp.server.userName}")
   private String userName;
 
-  @Value("${frp.passWord}")
+  @Value("${frp.server.passWord}")
   private String passWord;
 
   /**

@@ -51,8 +51,9 @@ remote:
   passWord: 1999y4m30D%
 #frp
 frp:
-  protocol: http
-  host: hcs.gpg123.vip
-  port: 7500
-  userName: gaopuguang
-  passWord: 1999y4m30d
+  server:
+    protocol: http
+    host: hcs.gpg123.vip
+    port: 7500
+    userName: gaopuguang
+    passWord: 1999y4m30d
