@@ -113,23 +113,15 @@ public class NasFrpCommonController extends BaseController {
         sb.append("healthCheck.maxFailed = ").append(3).append("\n");
         sb.append("healthCheck.intervalSeconds = ").append(10).append("\n");
         sb.append("#注意：如果要使用域名访问请设置您的域名为cName类型并解析到nas.frp.gpg123.vip").append("\n");
-        // 写入 TOML 文件
-        String tempFilePath = FileUtil.getTmpDirPath() + File.separator + "config.toml";
-        FileWriter fileWriter = new FileWriter(tempFilePath);
-        fileWriter.write(sb.toString());
-        fileWriter.close();
         try {
-            File file = FileUtil.file(tempFilePath);
             // 1. 设置响应头
             response.reset();
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("frpc.toml", "UTF-8"));
             // 2. 带缓冲的流复制
-            try (InputStream in = new BufferedInputStream(FileUtil.getInputStream(file));
-                 OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
-                IoUtil.copy(in, out);
-                IoUtil.close(in);
-                IoUtil.close(out);
+            try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
+                out.write(sb.toString().getBytes());
+                out.flush();
             }
         } catch (Exception e) {
             response.sendError(500, "文件导出失败：" + e.getMessage());
