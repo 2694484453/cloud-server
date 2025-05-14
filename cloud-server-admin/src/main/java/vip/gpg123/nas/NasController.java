@@ -9,13 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.git.domain.FrpServerHttp;
 import vip.gpg123.nas.domain.NasFrpClient;
+import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 import vip.gpg123.nas.service.NasFrpServerService;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * nasOverView控制
@@ -31,6 +36,9 @@ public class NasController extends BaseController {
     @Autowired
     private NasFrpClientService nasFrpClientService;
 
+    @Autowired
+    private FrpServerApiService frpServerApiService;
+
     /**
      * 概览
      * @return r
@@ -38,6 +46,18 @@ public class NasController extends BaseController {
     @GetMapping("/overView")
     @ApiOperation(value = "【概览】")
     public AjaxResult overview() {
+        // 查询http代理
+        List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
+        Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询https代理
+        List<FrpServerHttp> httpsList = frpServerApiService.httpsList().getProxies();
+        Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询tcp代理
+        List<FrpServerHttp> tcpList = frpServerApiService.tcpList().getProxies();
+        Map<String, FrpServerHttp> tcpMap = tcpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询udp代理
+        List<FrpServerHttp> udpList = frpServerApiService.udpList().getProxies();
+        Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         Map<String,Object> data = new LinkedHashMap<>();
         // 服务端数量
         data.put("frpServerTotalCount", nasFrpServerService.count());
@@ -63,21 +83,13 @@ public class NasController extends BaseController {
                 .eq(NasFrpClient::getStatus, "offline")
         ).size());
         // http数量
-        data.put("frpClientHttpCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
-                .eq(NasFrpClient::getType, "http")
-        ).size());
+        data.put("frpClientHttpCount", httpList.size());
         // https数量
-        data.put("frpClientHttpsCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
-                .eq(NasFrpClient::getType, "https")
-        ).size());
+        data.put("frpClientHttpsCount", httpsList.size());
         // tcp数量
-        data.put("frpClientTcpCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
-                .eq(NasFrpClient::getType, "tcp")
-        ).size());
+        data.put("frpClientTcpCount", tcpList.size());
         // udp数量
-        data.put("frpClientUdpCount", nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
-                .eq(NasFrpClient::getType, "udp")
-        ));
+        data.put("frpClientUdpCount", udpList.size());
         return AjaxResult.success(data);
     }
 }
