@@ -106,11 +106,13 @@ public class NasFrpCommonController extends BaseController {
             sb.append("customDomains = ").append("[\"").append(nasFrpClient.getCustomDomains()).append("\"]").append("\n");
         });
         // 额外
+        sb.append("#其他(可修改)").append("\n");
         sb.append("healthCheck.type = ").append("\"").append("http").append("\"").append("\n");
         sb.append("healthCheck.path = ").append("\"").append("/status").append("\"").append("\n");
         sb.append("healthCheck.timeoutSeconds = ").append(3).append("\n");
         sb.append("healthCheck.maxFailed = ").append(3).append("\n");
         sb.append("healthCheck.intervalSeconds = ").append(10).append("\n");
+        sb.append("#注意：如果要使用域名访问请设置您的域名为cName类型并解析到nas.frp.gpg123.vip").append("\n");
         // 写入 TOML 文件
         String tempFilePath = FileUtil.getTmpDirPath() + File.separator + "config.toml";
         FileWriter fileWriter = new FileWriter(tempFilePath);
