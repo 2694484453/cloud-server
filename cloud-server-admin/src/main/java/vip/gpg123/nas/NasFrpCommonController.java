@@ -92,6 +92,7 @@ public class NasFrpCommonController extends BaseController {
         // 配置代理
         sb.append("#代理配置(不可修改)").append("\n");
         list.forEach(nasFrpClient -> {
+            sb.append("#").append(nasFrpClient.getName()).append(",备注：").append(nasFrpClient.getDescription()).append("\n");
             sb.append("[[proxies]]").append("\n");
             sb.append("name = ").append("\"").append(nasFrpClient.getName()).append("\"").append("\n");
             sb.append("type = ").append("\"").append(nasFrpClient.getType()).append("\"").append("\n");
