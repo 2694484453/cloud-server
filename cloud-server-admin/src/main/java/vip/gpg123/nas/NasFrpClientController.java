@@ -218,6 +218,11 @@ public class NasFrpClientController extends BaseController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "【删除】")
     private AjaxResult delete(@RequestParam("id") String id) {
+        // 查询是否存在
+        NasFrpClient client = nasFrpClientService.getById(id);
+        if (client == null) {
+            return AjaxResult.error("id不存在");
+        }
         boolean isSuccess = nasFrpClientService.removeById(id);
         return isSuccess ? AjaxResult.success() : AjaxResult.error();
     }
