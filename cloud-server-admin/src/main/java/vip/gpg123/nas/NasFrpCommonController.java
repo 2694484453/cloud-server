@@ -107,7 +107,7 @@ public class NasFrpCommonController extends BaseController {
         sb.append("healthCheck.timeoutSeconds = ").append(3).append("\n");
         sb.append("healthCheck.maxFailed = ").append(3).append("\n");
         sb.append("healthCheck.intervalSeconds = ").append(10).append("\n");
-        sb.append("#注意：如果要使用域名访问请设置您的域名为cName类型并解析到nas.frp.gpg123.vip").append("\n");
+        sb.append("#注意：如果要使用域名访问请设置您的域名为cName类型并解析到frp.gpg123.vip").append("\n");
         try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
             // 1. 设置响应头
             response.setContentType("application/octet-stream");
