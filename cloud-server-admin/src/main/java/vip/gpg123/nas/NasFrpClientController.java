@@ -144,6 +144,7 @@ public class NasFrpClientController extends BaseController {
 
     /**
      * 详情
+     *
      * @param id id
      * @return r
      */
@@ -187,6 +188,21 @@ public class NasFrpClientController extends BaseController {
     @PutMapping("/edit")
     @ApiOperation(value = "【修改】")
     private AjaxResult edit(@RequestBody NasFrpClient nasFrpClient) {
+        if (StrUtil.isBlank(nasFrpClient.getId())) {
+            return AjaxResult.error("id不能为空");
+        }
+        // 查询旧数据
+        NasFrpClient old = nasFrpClientService.getById(nasFrpClient.getId());
+        // 判断是否修改
+        if (!old.getName().equals(nasFrpClient.getName())) {
+            // 如果修改了名称，需要判断是否与其他服务冲突
+            long count = nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+                    .eq(NasFrpClient::getName, nasFrpClient.getName())
+            );
+            if (count > 0) {
+                return AjaxResult.error("名称已被占用，请更换");
+            }
+        }
         nasFrpClient.setUpdateBy(getUsername());
         nasFrpClient.setUpdateTime(DateUtil.date());
         boolean isSuccess = nasFrpClientService.updateById(nasFrpClient);
@@ -195,6 +211,7 @@ public class NasFrpClientController extends BaseController {
 
     /**
      * 删除
+     *
      * @param id id
      * @return r
      */
