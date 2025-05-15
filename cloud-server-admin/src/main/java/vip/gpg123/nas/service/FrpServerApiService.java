@@ -37,4 +37,11 @@ public interface FrpServerApiService {
      */
     @GetMapping("/api/proxy/udp")
     FrpServerHttpResponse udpList();
+
+    /**
+     * 测试
+     * @return r
+     */
+    @GetMapping("/api/proxy/http")
+    String test();
 }

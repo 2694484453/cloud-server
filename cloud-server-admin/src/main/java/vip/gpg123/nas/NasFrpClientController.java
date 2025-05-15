@@ -98,6 +98,7 @@ public class NasFrpClientController extends BaseController {
                 .eq(StrUtil.isNotBlank(getUsername()), NasFrpClient::getCreateBy, getUsername())
                 .orderByDesc(NasFrpClient::getCreateTime));
         // 查询http代理
+        String o = frpServerApiService.test();
         List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
         Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         // 查询https代理
