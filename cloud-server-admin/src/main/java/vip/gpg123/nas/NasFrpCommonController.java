@@ -1,10 +1,12 @@
 package vip.gpg123.nas;
 
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
@@ -20,11 +22,11 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/nas/frp/common")
 @Api(value = "nas-frp通用管理")
+@Slf4j
 public class NasFrpCommonController extends BaseController {
 
     @Autowired
@@ -56,12 +58,10 @@ public class NasFrpCommonController extends BaseController {
      * 导出配置文件
      *
      * @param serverName 服务
-     * @param params     p
      */
     @PostMapping("/export")
     @ApiOperation(value = "【导出配置文件】")
     public void export(@RequestParam(value = "serverName", required = false, defaultValue = "hcs.gpg123.vip") String serverName,
-                       @RequestBody Map<String, Object> params,
                        HttpServletRequest request,
                        HttpServletResponse response) throws IOException {
         // 查询服务
@@ -107,17 +107,14 @@ public class NasFrpCommonController extends BaseController {
         sb.append("healthCheck.maxFailed = ").append(3).append("\n");
         sb.append("healthCheck.intervalSeconds = ").append(10).append("\n");
         sb.append("#注意：如果要使用域名访问请设置您的域名为cName类型并解析到nas.frp.gpg123.vip").append("\n");
-        try {
+        try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
             // 1. 设置响应头
-            response.reset();
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("frpc.toml", "UTF-8"));
             // 2. 带缓冲的流复制
-            try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
-                out.write(sb.toString().getBytes());
-                out.flush();
-            }
+            IoUtil.copy(IoUtil.toUtf8Stream(sb.toString()), out);
         } catch (Exception e) {
+            log.error("文件导出失败：{}", e.getMessage());
             response.sendError(500, "文件导出失败：" + e.getMessage());
         }
     }
