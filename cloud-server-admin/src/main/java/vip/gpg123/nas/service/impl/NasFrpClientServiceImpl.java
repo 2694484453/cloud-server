@@ -57,6 +57,8 @@ public class NasFrpClientServiceImpl extends ServiceImpl<NasFrpClientMapper, Nas
                 sysActionNotice.setCreateTime(DateUtil.date());
                 sysActionNotice.setContent(userName + "删除frp客户端，结果：" + (isSuccess ? "成功" : "失败"));
                 sysActionNotice.setType("frpClient");
+                sysActionNotice.setToUser(userName);
+                sysActionNotice.setToAddress(userEmail);
                 sysActionNoticeService.save(sysActionNotice);
                 // 邮件消息
                 if (StrUtil.isNotBlank(userEmail)) {
