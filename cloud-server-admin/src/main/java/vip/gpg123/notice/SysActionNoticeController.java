@@ -79,15 +79,34 @@ public class SysActionNoticeController extends BaseController {
      */
     @PutMapping("/setRead")
     @ApiOperation(value = "【设置已读】")
-    public AjaxResult setRead(@RequestParam("id") String id) {
-        SysActionNotice search = sysActionNoticeService.getById(id);
-        if (ObjectUtil.isNull(search)) {
-            return error("查询不到此id数据");
+    public AjaxResult setRead(@RequestParam(value = "id",required = false) String id) {
+        // 判断id是否为空
+        if (StrUtil.isBlank(id)) {
+            // 一键已读
+            List<SysActionNotice> list = sysActionNoticeService.list(new LambdaQueryWrapper<SysActionNotice>()
+                    .eq(SysActionNotice::getCreateBy,  getUsername())
+                    .eq(SysActionNotice::getIsConfirm,0)
+            );
+            list.forEach(item -> {
+                item.setIsConfirm(1);
+                item.setUpdateBy(getUsername());
+                item.setUpdateTime(DateUtil.date());
+            });
+            if (ObjectUtil.isNotEmpty(list)) {
+                sysActionNoticeService.updateBatchById(list);
+                return success();
+            }
+            return error();
+        } else {
+            SysActionNotice search = sysActionNoticeService.getById(id);
+            if (ObjectUtil.isNull(search)) {
+                return error("查询不到此id数据");
+            }
+            search.setIsConfirm(1);
+            search.setUpdateBy(getUsername());
+            search.setUpdateTime(DateUtil.date());
+            boolean update = sysActionNoticeService.updateById(search);
+            return update ? success() : error();
         }
-        search.setIsConfirm(1);
-        search.setUpdateBy(getUsername());
-        search.setUpdateTime(DateUtil.date());
-        boolean update = sysActionNoticeService.updateById(search);
-        return update ? success() : error();
     }
 }
