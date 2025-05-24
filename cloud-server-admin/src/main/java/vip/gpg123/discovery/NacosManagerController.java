@@ -21,6 +21,7 @@ import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.discovery.domain.NacosNameSpace;
 import vip.gpg123.discovery.domain.NacosResponse;
 import vip.gpg123.discovery.domain.NacosService;
+import vip.gpg123.discovery.domain.NameSpace;
 import vip.gpg123.discovery.service.NacosApiService;
 import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
@@ -58,13 +59,13 @@ public class NacosManagerController extends BaseController {
         // 获取用户名
         String nameSpaceId = getUsername().replaceAll("\\.", "-");
         // 查询是否有命名空间
-        NacosResponse<NacosNameSpace> response = nacosApiService.namespaces();
+        NacosResponse<NameSpace> response = nacosApiService.namespaces();
         if (response.getCode() != 200) {
             return AjaxResult.error("nacos服务异常");
         }
-        List<NacosNameSpace> data = response.getData();
-        Map<String, NacosNameSpace> map = new HashMap<>();
-        CollectionUtil.toMap(data, map, NacosNameSpace::getNamespace);
+        List<NameSpace> data = response.getData();
+        Map<String, NameSpace> map = new HashMap<>();
+        CollectionUtil.toMap(data, map, NameSpace::getNamespace);
         if (!map.containsKey(nameSpaceId)) {
             // 自动创建ns
             Boolean result = nacosApiService.createNs(new HashMap<String, String>() {{

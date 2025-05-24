@@ -1,12 +1,11 @@
 package vip.gpg123.discovery.service;
 
-import cn.hutool.json.JSONObject;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-import vip.gpg123.discovery.domain.NacosNameSpace;
 import vip.gpg123.discovery.domain.NacosResponse;
 import vip.gpg123.discovery.domain.NacosService;
+import vip.gpg123.discovery.domain.NameSpace;
 
 import java.util.Map;
 
@@ -22,7 +21,7 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/console/namespaces")
-    NacosResponse<NacosNameSpace> namespaces();
+    NacosResponse<NameSpace> namespaces();
 
     /**
      * 获取服务列表
