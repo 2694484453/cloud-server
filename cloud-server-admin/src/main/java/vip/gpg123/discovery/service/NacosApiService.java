@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.discovery.domain.NacosResponse;
 import vip.gpg123.discovery.domain.NacosService;
-import vip.gpg123.discovery.domain.NameSpace;
+import vip.gpg123.discovery.vo.NameSpace;
 
 import java.util.Map;
 

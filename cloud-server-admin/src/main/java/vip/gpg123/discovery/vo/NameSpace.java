@@ -1,4 +1,4 @@
-package vip.gpg123.discovery.domain;
+package vip.gpg123.discovery.vo;
 
 
 import lombok.Data;
