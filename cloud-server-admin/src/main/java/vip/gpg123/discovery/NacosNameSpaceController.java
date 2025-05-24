@@ -18,7 +18,6 @@ import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.discovery.domain.NacosNameSpace;
 import vip.gpg123.discovery.service.NacosNameSpaceService;
-import vip.gpg123.framework.config.domain.NacosClient;
 
 import java.util.List;
 
@@ -30,9 +29,6 @@ import java.util.List;
 @RequestMapping("/discovery/nacos/namespace")
 @Api(tags = "【discovery】nacos命名空间管理")
 public class NacosNameSpaceController extends BaseController {
-
-    @Autowired
-    private NacosClient nacosClient;
 
     @Autowired
     private NacosNameSpaceService nacosNameSpaceService;
