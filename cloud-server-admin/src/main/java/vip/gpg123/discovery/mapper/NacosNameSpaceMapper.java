@@ -1,5 +1,6 @@
 package vip.gpg123.discovery.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import vip.gpg123.discovery.domain.NacosNameSpace;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-05-24 23:56:39
 * @Entity vip.gpg123.discovery.domain.NacosNameSpace
 */
+@Mapper
 public interface NacosNameSpaceMapper extends BaseMapper<NacosNameSpace> {
 
 }
