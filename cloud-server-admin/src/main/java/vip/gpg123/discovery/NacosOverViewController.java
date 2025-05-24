@@ -1,11 +1,16 @@
 package vip.gpg123.discovery;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.discovery.domain.NacosNameSpace;
+import vip.gpg123.discovery.service.NacosApiService;
+import vip.gpg123.discovery.service.NacosNameSpaceService;
 import vip.gpg123.framework.config.domain.NacosClient;
 
 import java.util.HashMap;
@@ -19,10 +24,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/discovery/nacos")
 @Api(tags = "【discovery】nacos服务概览")
-public class NacosOverViewController {
+public class NacosOverViewController extends BaseController {
 
     @Autowired
     private NacosClient nacosClient;
+
+    @Autowired
+    private NacosNameSpaceService nacosNameSpaceService;
+
+    @Autowired
+    private NacosApiService nacosApiService;
 
     /**
      * 概览
@@ -31,12 +42,17 @@ public class NacosOverViewController {
      */
     @GetMapping("/overView")
     private AjaxResult overView() {
-        List<?> namespaceList = nacosClient.namespaceList();
-        List<?> serviceList = nacosClient.serviceList();
+        String userName = getUsername();
+        String nameSpaceId = userName.replaceAll("\\.","-");
         Map<String, Object> result = new HashMap<>();
-        result.put("namespaceCount", namespaceList.size());
-        result.put("serviceCount", serviceList.size());
-        result.put("status", nacosClient.status());
+        // 命名空间数量
+        result.put("nameSpaceCount", nacosNameSpaceService.count(new LambdaQueryWrapper<NacosNameSpace>()
+                .eq(NacosNameSpace::getCreateBy,  getUsername())
+        ));
+        // 服务数量
+        result.put("serviceCount", nacosApiService.service(nameSpaceId,1,9999).getCount());
+        // 状态
+        result.put("status", nacosApiService.metrics().get("status"));
         return AjaxResult.success(result);
     }
 }

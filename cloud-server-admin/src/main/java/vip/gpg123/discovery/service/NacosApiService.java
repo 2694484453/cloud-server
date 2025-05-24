@@ -13,6 +13,17 @@ import java.util.Map;
 @Service
 public interface NacosApiService {
 
+    /**
+     * 指标
+     * @return r
+     */
+    @GetMapping("/nacos/v1/ns/operator/metrics")
+    Map<String,Object> metrics();
+
+    /**
+     * 所有服务
+     * @return r
+     */
     @GetMapping("/nacos/v1/ns/service/list")
     NacosService services();
 
@@ -51,4 +62,21 @@ public interface NacosApiService {
      */
     @DeleteMapping("/nacos/v1/console/namespaces")
     Boolean deleteNs(@RequestParam(value = "namespaceId") String namespaceId);
+
+    /**
+     * 获取配置列表
+     * @param dataId id
+     * @param pageNo 分页
+     * @param pageSize 分页
+     * @param name 配置名称
+     * @return r
+     */
+    @GetMapping("/nacos/v1/cs/configs")
+    NacosApiService configs(@RequestParam(value = "dataId", required = false) String dataId,
+                         @RequestParam(value = "group",required = false) String group,
+                         @RequestParam(value = "appName",required = false) String appName,
+                         @RequestParam(value = "tenant",required = false) String tenant,
+                         @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
+                         @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize,
+                         @RequestParam(value = "name",required = false) String name);
 }
