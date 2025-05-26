@@ -3,8 +3,8 @@ package vip.gpg123.discovery.service;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-import vip.gpg123.discovery.domain.NacosResponse;
-import vip.gpg123.discovery.domain.NacosService;
+import vip.gpg123.discovery.vo.NacosNameSpaceResponse;
+import vip.gpg123.discovery.vo.NacosServiceResponse;
 import vip.gpg123.discovery.vo.NameSpace;
 
 import java.util.Map;
@@ -25,14 +25,14 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/ns/service/list")
-    NacosService services();
+    NacosServiceResponse services();
 
     /**
      * 获取命名空间列表
      * @return r
      */
     @GetMapping("/nacos/v1/console/namespaces")
-    NacosResponse<NameSpace> namespaces();
+    NacosNameSpaceResponse<NameSpace> namespaces();
 
     /**
      * 获取服务列表
@@ -42,9 +42,9 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/ns/service/list")
-    NacosService service(@RequestParam(value = "namespaceId") String namespaceId,
-                         @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
-                         @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize);
+    NacosServiceResponse service(@RequestParam(value = "namespaceId") String namespaceId,
+                                 @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
+                                 @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize);
 
     /**
      * 创建ns

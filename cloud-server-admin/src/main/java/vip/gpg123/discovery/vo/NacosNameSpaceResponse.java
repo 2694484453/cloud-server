@@ -1,4 +1,4 @@
-package vip.gpg123.discovery.domain;
+package vip.gpg123.discovery.vo;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class NacosResponse<T> implements Serializable {
+public class NacosNameSpaceResponse<T> implements Serializable {
 
     private Integer code;
 

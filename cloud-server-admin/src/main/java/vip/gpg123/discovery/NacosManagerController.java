@@ -18,8 +18,8 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.discovery.domain.NacosResponse;
-import vip.gpg123.discovery.domain.NacosService;
+import vip.gpg123.discovery.vo.NacosNameSpaceResponse;
+import vip.gpg123.discovery.vo.NacosServiceResponse;
 import vip.gpg123.discovery.vo.NameSpace;
 import vip.gpg123.discovery.service.NacosApiService;
 import vip.gpg123.domain.Email;
@@ -58,7 +58,7 @@ public class NacosManagerController extends BaseController {
         // 获取用户名
         String nameSpaceId = getUsername().replaceAll("\\.", "-");
         // 查询是否有命名空间
-        NacosResponse<NameSpace> response = nacosApiService.namespaces();
+        NacosNameSpaceResponse<NameSpace> response = nacosApiService.namespaces();
         if (response.getCode() != 200) {
             return AjaxResult.error("nacos服务异常");
         }
@@ -120,7 +120,7 @@ public class NacosManagerController extends BaseController {
     public AjaxResult list(@RequestParam(value = "name",required = false) String name) {
         // 获取用户名
         String nameSpaceId = getUsername().replaceAll("\\.", "-");
-        NacosService response = nacosApiService.service(nameSpaceId, 1, 9999);
+        NacosServiceResponse response = nacosApiService.service(nameSpaceId, 1, 9999);
         List<String> data = response.getDoms();
         return AjaxResult.success(data);
     }
@@ -135,7 +135,7 @@ public class NacosManagerController extends BaseController {
     public TableDataInfo page(@RequestParam(value = "name",required = false) String name) {
         // 获取用户名
         String nameSpaceId = getUsername().replaceAll("\\.", "-");
-        NacosService response = nacosApiService.service(nameSpaceId, TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
+        NacosServiceResponse response = nacosApiService.service(nameSpaceId, TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
         List<String> data = response.getDoms();
         if (StrUtil.isNotBlank(name)) {
             data = CollectionUtil.filter(data, item -> item.contains(name));

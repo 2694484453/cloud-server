@@ -17,6 +17,7 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.discovery.domain.NacosConfig;
+import vip.gpg123.discovery.service.NacosApiService;
 import vip.gpg123.discovery.service.NacosConfigService;
 
 import java.util.List;
@@ -28,6 +29,9 @@ public class NacosConfigController extends BaseController {
 
     @Autowired
     private NacosConfigService nacosConfigService;
+
+    @Autowired
+    private NacosApiService nacosApiService;
 
     /**
      * 列表查询

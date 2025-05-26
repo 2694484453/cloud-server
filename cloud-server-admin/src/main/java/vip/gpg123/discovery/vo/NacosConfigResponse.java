@@ -6,11 +6,11 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class NacosConfig implements Serializable {
+public class NacosConfigResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Object> pageItems;
+    private List<NacosConfigItem> pageItems;
 
     private Integer pageNum;
 
