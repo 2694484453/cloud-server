@@ -62,7 +62,7 @@ public interface NacosApiService {
      * @return r
      */
     @DeleteMapping("/nacos/v1/console/namespaces")
-    Boolean deleteNs(@RequestParam(value = "namespaceId") String namespaceId);
+    Boolean deleteNs(@RequestParam(name = "namespaceId") String namespaceId);
 
     /**
      * 获取配置列表
@@ -73,11 +73,11 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/cs/configs")
-    NacosConfigResponse configs(@RequestParam(value = "dataId", required = false, defaultValue = "") String dataId,
-                                @RequestParam(value = "group",required = false, defaultValue = "") String group,
-                                @RequestParam(value = "appName",required = false, defaultValue = "") String appName,
-                                @RequestParam(value = "tenant",required = false, defaultValue = "") String tenant,
-                                @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
-                                @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize,
-                                @RequestParam(value = "name",required = false, defaultValue = "") String name);
+    NacosConfigResponse configs(@RequestParam(name = "dataId", required = false, defaultValue = "") String dataId,
+                                @RequestParam(name = "group",required = false, defaultValue = "") String group,
+                                @RequestParam(name = "appName",required = false, defaultValue = "") String appName,
+                                @RequestParam(name = "tenant",required = false, defaultValue = "") String tenant,
+                                @RequestParam(name = "pageNo",required = false, defaultValue = "1") Integer pageNo,
+                                @RequestParam(name = "pageSize",required = false, defaultValue = "10") Integer pageSize,
+                                @RequestParam(name = "name",required = false, defaultValue = "") String name);
 }

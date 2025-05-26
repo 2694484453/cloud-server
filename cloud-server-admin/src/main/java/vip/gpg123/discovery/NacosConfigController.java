@@ -86,7 +86,7 @@ public class NacosConfigController extends BaseController {
     private List<NacosConfig> checkStatus(List<NacosConfig> list) {
         // 查询服务
         Map<String, NacosConfigItem> map = new HashMap<>();
-        NacosConfigResponse nacosConfigResponse = nacosApiService.configs("null", "", "", getUsername().replaceAll("\\.", "-"), 1, 9999, "");
+        NacosConfigResponse nacosConfigResponse = nacosApiService.configs("", "", "", getUsername().replaceAll("\\.", "-"), 1, 9999, "");
         if (nacosConfigResponse.getTotalCount() != 0) {
             map = nacosConfigResponse.getPageItems().stream().collect(Collectors.toMap(NacosConfigItem::getDataId, Function.identity()));
         }
