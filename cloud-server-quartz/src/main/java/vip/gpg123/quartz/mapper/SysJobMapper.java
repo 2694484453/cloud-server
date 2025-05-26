@@ -1,6 +1,9 @@
 package vip.gpg123.quartz.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import vip.gpg123.quartz.domain.SysJob;
 
 /**
@@ -8,7 +11,8 @@ import vip.gpg123.quartz.domain.SysJob;
  *
  * @author gpg123
  */
-public interface SysJobMapper
+@Mapper
+public interface SysJobMapper extends BaseMapper<SysJob>
 {
     /**
      * 查询调度任务日志集合

@@ -1,6 +1,8 @@
 package vip.gpg123.quartz.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.quartz.SchedulerException;
 import vip.gpg123.common.exception.job.TaskException;
 import vip.gpg123.quartz.domain.SysJob;
@@ -10,7 +12,7 @@ import vip.gpg123.quartz.domain.SysJob;
  *
  * @author gpg123
  */
-public interface ISysJobService
+public interface ISysJobService extends IService<SysJob>
 {
     /**
      * 获取quartz调度器的计划任务

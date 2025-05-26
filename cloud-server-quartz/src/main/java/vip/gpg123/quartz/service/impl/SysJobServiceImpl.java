@@ -16,14 +16,14 @@ import vip.gpg123.quartz.mapper.SysJobMapper;
 import vip.gpg123.quartz.service.ISysJobService;
 import vip.gpg123.quartz.util.CronUtils;
 import vip.gpg123.quartz.util.ScheduleUtils;
-
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 /**
  * 定时任务调度信息 服务层
  *
  * @author gpg123
  */
 @Service
-public class SysJobServiceImpl implements ISysJobService
+public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implements ISysJobService
 {
     @Autowired
     private Scheduler scheduler;
