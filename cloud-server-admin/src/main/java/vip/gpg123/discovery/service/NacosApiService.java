@@ -73,11 +73,11 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/cs/configs")
-    NacosConfigResponse configs(@RequestParam(value = "dataId", required = false) String dataId,
-                                @RequestParam(value = "group",required = false) String group,
-                                @RequestParam(value = "appName",required = false) String appName,
-                                @RequestParam(value = "tenant",required = false) String tenant,
+    NacosConfigResponse configs(@RequestParam(value = "dataId", required = false, defaultValue = "") String dataId,
+                                @RequestParam(value = "group",required = false, defaultValue = "") String group,
+                                @RequestParam(value = "appName",required = false, defaultValue = "") String appName,
+                                @RequestParam(value = "tenant",required = false, defaultValue = "") String tenant,
                                 @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
                                 @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize,
-                                @RequestParam(value = "name",required = false) String name);
+                                @RequestParam(value = "name",required = false, defaultValue = "") String name);
 }

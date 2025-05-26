@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/nacos/config")
+@RequestMapping("/discovery/nacos/config")
 @Api(tags = "【nacos】配置管理")
 public class NacosConfigController extends BaseController {
 
@@ -86,7 +86,7 @@ public class NacosConfigController extends BaseController {
     private List<NacosConfig> checkStatus(List<NacosConfig> list) {
         // 查询服务
         Map<String, NacosConfigItem> map = new HashMap<>();
-        NacosConfigResponse nacosConfigResponse = nacosApiService.configs(null, null, null, getUsername().replaceAll("\\.", "-"), 1, 9999, null);
+        NacosConfigResponse nacosConfigResponse = nacosApiService.configs("null", "", "", getUsername().replaceAll("\\.", "-"), 1, 9999, "");
         if (nacosConfigResponse.getTotalCount() != 0) {
             map = nacosConfigResponse.getPageItems().stream().collect(Collectors.toMap(NacosConfigItem::getDataId, Function.identity()));
         }
