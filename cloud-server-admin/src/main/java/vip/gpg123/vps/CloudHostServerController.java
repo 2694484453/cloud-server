@@ -1,10 +1,14 @@
 package vip.gpg123.vps;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.ssh.JschUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jcraft.jsch.Session;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,5 +125,26 @@ public class CloudHostServerController extends BaseController {
             return AjaxResult.success();
         }
         return AjaxResult.error();
+    }
+
+    /**
+     * 检查连接
+     * @param cloudHostServer cloudHostServer
+     * @return r
+     */
+    @PostMapping("/checkConnect")
+    @ApiOperation(value = "检查连接")
+    public AjaxResult checkConnect(@RequestBody CloudHostServer cloudHostServer) {
+        try {
+            Session session = JschUtil.createSession(cloudHostServer.getHostIp(), cloudHostServer.getPort(), cloudHostServer.getUserName(), cloudHostServer.getPassWord());
+            ThreadUtil.sleep(3000);
+            if (ObjectUtil.isNull(session)) {
+                return AjaxResult.error("连接失败");
+            }
+            session.disconnect();
+            return AjaxResult.success("连接成功");
+        } catch (Exception e) {
+            return AjaxResult.error("连接失败");
+        }
     }
 }
