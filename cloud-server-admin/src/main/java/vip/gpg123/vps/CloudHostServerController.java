@@ -1,5 +1,6 @@
 package vip.gpg123.vps;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -100,6 +101,7 @@ public class CloudHostServerController extends BaseController {
     @ApiOperation(value = "修改")
     public AjaxResult edit(@RequestBody CloudHostServer cloudHostServer) {
         cloudHostServer.setUpdateBy(getUsername());
+        cloudHostServer.setUpdateTime(DateUtil.date());
         boolean update = cloudHostServerService.updateById(cloudHostServer);
         return update ? AjaxResult.success() : AjaxResult.error();
     }
