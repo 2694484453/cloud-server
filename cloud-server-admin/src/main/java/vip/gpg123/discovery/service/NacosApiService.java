@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.discovery.vo.NacosNameSpaceResponse;
 import vip.gpg123.discovery.vo.NacosServiceResponse;
-import vip.gpg123.discovery.vo.NameSpace;
+import vip.gpg123.discovery.vo.NameSpaceItem;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/console/namespaces")
-    NacosNameSpaceResponse<NameSpace> namespaces();
+    NacosNameSpaceResponse<NameSpaceItem> namespaces();
 
     /**
      * 获取服务列表

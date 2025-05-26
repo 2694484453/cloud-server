@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class NameSpace implements Serializable {
+public class NameSpaceItem implements Serializable {
 
     private String namespace;
 
