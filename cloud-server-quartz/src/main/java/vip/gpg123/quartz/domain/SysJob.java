@@ -22,9 +22,8 @@ import vip.gpg123.quartz.util.CronUtils;
  *
  * @author gpg123
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class SysJob extends BaseEntity
+public class SysJob
 {
     private static final long serialVersionUID = 1L;
 
@@ -59,6 +58,30 @@ public class SysJob extends BaseEntity
     /** 任务状态（0正常 1暂停） */
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
     private String status;
+
+    /**
+     *
+     */
+    private String createBy;
+
+    /**
+     *
+     */
+    private String updateBy;
+
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    private String remark;
 
     public Long getJobId()
     {
