@@ -37,7 +37,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/scheduling/job")
 @Api(tags = "调度任务信息")
-public class SysJobController extends BaseController
+public class SysSchedulingJobController extends BaseController
 {
     @Autowired
     private ISysJobService jobService;
