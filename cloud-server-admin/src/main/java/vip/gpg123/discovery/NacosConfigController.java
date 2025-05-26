@@ -19,8 +19,14 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.discovery.domain.NacosConfig;
 import vip.gpg123.discovery.service.NacosApiService;
 import vip.gpg123.discovery.service.NacosConfigService;
+import vip.gpg123.discovery.vo.NacosConfigItem;
+import vip.gpg123.discovery.vo.NacosConfigResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/nacos/config")
@@ -44,13 +50,14 @@ public class NacosConfigController extends BaseController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "type", required = false) String type) {
-        List<?> list = nacosConfigService.list(new LambdaQueryWrapper<NacosConfig>()
+        List<NacosConfig> list = nacosConfigService.list(new LambdaQueryWrapper<NacosConfig>()
                 .eq(NacosConfig::getCreateBy, getUsername())
                 .eq(StrUtil.isNotBlank(type), NacosConfig::getConfigFileType, type)
                 .like(StrUtil.isNotBlank(name), NacosConfig::getConfigName, name)
                 .orderByDesc(NacosConfig::getCreateTime)
         );
-        return AjaxResult.success(list);
+        List<NacosConfig> res = checkStatus(list);
+        return AjaxResult.success(res);
     }
 
     /**
@@ -70,6 +77,27 @@ public class NacosConfigController extends BaseController {
                         .like(StrUtil.isNotBlank(name), NacosConfig::getConfigName, name)
                         .orderByDesc(NacosConfig::getCreateTime)
         );
+        List<NacosConfig> list = page.getRecords();
+        List<NacosConfig> res = checkStatus(list);
+        page.setRecords(res);
         return PageUtils.toPageByIPage(page);
+    }
+
+    private List<NacosConfig> checkStatus(List<NacosConfig> list) {
+        // 查询服务
+        Map<String, NacosConfigItem> map = new HashMap<>();
+        NacosConfigResponse nacosConfigResponse = nacosApiService.configs(null, null, null, getUsername().replaceAll("\\.", "-"), 1, 9999, null);
+        if (nacosConfigResponse.getTotalCount() != 0) {
+            map = nacosConfigResponse.getPageItems().stream().collect(Collectors.toMap(NacosConfigItem::getDataId, Function.identity()));
+        }
+        Map<String, NacosConfigItem> finalMap = map;
+        list.forEach(item -> {
+            if (finalMap.containsKey(item.getConfigName())) {
+                item.setConfigStatus("ok");
+            }else {
+                item.setConfigStatus("error");
+            }
+        });
+        return list;
     }
 }

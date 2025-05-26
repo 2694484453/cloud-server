@@ -3,6 +3,7 @@ package vip.gpg123.discovery.service;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import vip.gpg123.discovery.vo.NacosConfigResponse;
 import vip.gpg123.discovery.vo.NacosNameSpaceResponse;
 import vip.gpg123.discovery.vo.NacosServiceResponse;
 import vip.gpg123.discovery.vo.NameSpaceItem;
@@ -72,11 +73,11 @@ public interface NacosApiService {
      * @return r
      */
     @GetMapping("/nacos/v1/cs/configs")
-    NacosApiService configs(@RequestParam(value = "dataId", required = false) String dataId,
-                         @RequestParam(value = "group",required = false) String group,
-                         @RequestParam(value = "appName",required = false) String appName,
-                         @RequestParam(value = "tenant",required = false) String tenant,
-                         @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
-                         @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize,
-                         @RequestParam(value = "name",required = false) String name);
+    NacosConfigResponse configs(@RequestParam(value = "dataId", required = false) String dataId,
+                                @RequestParam(value = "group",required = false) String group,
+                                @RequestParam(value = "appName",required = false) String appName,
+                                @RequestParam(value = "tenant",required = false) String tenant,
+                                @RequestParam(value = "pageNo",required = false, defaultValue = "1") Integer pageNo,
+                                @RequestParam(value = "pageSize",required = false, defaultValue = "10") Integer pageSize,
+                                @RequestParam(value = "name",required = false) String name);
 }

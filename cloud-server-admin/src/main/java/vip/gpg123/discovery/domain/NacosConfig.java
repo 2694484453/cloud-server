@@ -52,6 +52,12 @@ public class NacosConfig implements Serializable {
     private String configContent;
 
     /**
+     * 状态
+     */
+    @TableField(value = "config_status")
+    private String configStatus;
+
+    /**
      * 描述
      */
     @TableField(value = "config_description")
