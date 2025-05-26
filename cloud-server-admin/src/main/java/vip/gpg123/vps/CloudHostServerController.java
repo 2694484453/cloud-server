@@ -88,6 +88,8 @@ public class CloudHostServerController extends BaseController {
     @ApiOperation(value = "新增")
     public AjaxResult add(@RequestBody CloudHostServer cloudHostServer) {
         cloudHostServer.setCreateBy(getUsername());
+        cloudHostServer.setCreateTime(DateUtil.date());
+        // 对密码特殊处理
         boolean save = cloudHostServerService.save(cloudHostServer);
         return save ? AjaxResult.success() : AjaxResult.error();
     }
