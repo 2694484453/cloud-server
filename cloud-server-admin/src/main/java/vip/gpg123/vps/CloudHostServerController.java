@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
@@ -67,5 +64,58 @@ public class CloudHostServerController extends BaseController {
                 .orderByDesc(CloudHostServer::getCreateTime)
         );
         return PageUtils.toPageByIPage(page);
+    }
+
+    /**
+     * 详情查询
+     * @param id id
+     * @return r
+     */
+    @GetMapping("/info")
+    @ApiOperation(value = "详情查询")
+    public AjaxResult info(@RequestParam(value = "id",required = false) String id) {
+        CloudHostServer cloudHostServer = cloudHostServerService.getById(id);
+        return AjaxResult.success(cloudHostServer);
+    }
+
+    /**
+     * 新增
+     * @param cloudHostServer cloudHostServer
+     * @return r
+     */
+    @GetMapping("/add")
+    @ApiOperation(value = "新增")
+    public AjaxResult add(@RequestBody CloudHostServer cloudHostServer) {
+        cloudHostServer.setCreateBy(getUsername());
+        boolean save = cloudHostServerService.save(cloudHostServer);
+        return save ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    /**
+     * 修改
+     * @param cloudHostServer cloudHostServer
+     * @return r
+     */
+    @PutMapping("/edit")
+    @ApiOperation(value = "修改")
+    public AjaxResult edit(@RequestBody CloudHostServer cloudHostServer) {
+        cloudHostServer.setUpdateBy(getUsername());
+        boolean update = cloudHostServerService.updateById(cloudHostServer);
+        return update ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @GetMapping("/delete")
+    @ApiOperation(value = "删除")
+    public AjaxResult delete(@RequestParam(value = "id",required = false) String id) {
+        boolean remove = cloudHostServerService.removeById(id);
+        if (remove) {
+            return AjaxResult.success();
+        }
+        return AjaxResult.error();
     }
 }
