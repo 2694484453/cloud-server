@@ -41,6 +41,7 @@ server:
 # 日志配置
 logging:
   level:
+    vip.gpg123: debug
     com.ruoyi: debug
     org.springframework: warn
 
