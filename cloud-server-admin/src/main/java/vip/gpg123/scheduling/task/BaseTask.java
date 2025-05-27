@@ -45,7 +45,7 @@ public abstract class BaseTask {
         sysJobLog.setJobName(sysJobLog.getJobName());
         sysJobLog.setJobGroup(sysJobLog.getJobGroup());
         sysJobLog.setInvokeTarget(sysJobLog.getInvokeTarget());
-        sysJobLog.setStartTime(DateUtil.date());
+        sysJobLog.setCreateTime(DateUtil.date());
         // 判空
         if (ObjectUtil.isNotNull(cloudHostServer)) {
             try {
@@ -53,7 +53,7 @@ public abstract class BaseTask {
                 session.connect();
                 String res = JschUtil.exec(session, cmd, StandardCharsets.UTF_8);
                 sysJobLog.setStatus("success");
-                sysJobLog.setJobMessage(res);
+                sysJobLog.setResultInfo(res);
             } catch (Exception e) {
                 sysJobLog.setStatus("fail");
                 sysJobLog.setExceptionInfo(e.getMessage());

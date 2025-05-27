@@ -3,12 +3,12 @@ package vip.gpg123.quartz.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import vip.gpg123.common.annotation.Excel;
-import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 定时任务调度日志表 sys_job_log
@@ -46,14 +46,18 @@ public class SysJobLog implements Serializable
     @Excel(name = "执行状态", readConverterExp = "0=正常,1=失败")
     private String status;
 
+    private String resultInfo;
+
     /** 异常信息 */
     @Excel(name = "异常信息")
     private String exceptionInfo;
 
     /** 开始时间 */
+    @TableField(exist = false)
     private Date startTime;
 
     /** 停止时间 */
+    @TableField(exist = false)
     private Date stopTime;
 
     /** 创建者 */
@@ -71,5 +75,6 @@ public class SysJobLog implements Serializable
     private Date updateTime;
 
     /** 备注 */
+    @TableField(exist = false)
     private String remark;
 }
