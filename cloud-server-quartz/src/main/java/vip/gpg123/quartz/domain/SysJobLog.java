@@ -3,6 +3,7 @@ package vip.gpg123.quartz.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -23,7 +24,7 @@ public class SysJobLog implements Serializable
 
     /** ID */
     @Excel(name = "日志序号")
-    @TableId
+    @TableId(value = "job_log_id", type = IdType.AUTO)
     private Long jobLogId;
 
     /** 任务名称 */
@@ -46,6 +47,10 @@ public class SysJobLog implements Serializable
     @Excel(name = "执行状态", readConverterExp = "0=正常,1=失败")
     private String status;
 
+    /**
+     * 结果信息
+     */
+    @TableField(value = "result_info")
     private String resultInfo;
 
     /** 异常信息 */

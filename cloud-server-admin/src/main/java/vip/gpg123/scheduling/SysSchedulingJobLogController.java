@@ -14,8 +14,8 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.scheduling.domain.SysJobLog;
-import vip.gpg123.scheduling.service.SysJobLogService;
+import vip.gpg123.quartz.domain.SysJobLog;
+import vip.gpg123.quartz.service.ISysJobLogService;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
 public class SysSchedulingJobLogController {
 
     @Autowired
-    private SysJobLogService sysJobLogService;
+    private ISysJobLogService sysJobLogService;
 
 
     /**
