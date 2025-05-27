@@ -41,7 +41,7 @@ public abstract class BaseTask {
         CloudHostServer cloudHostServer = cloudHostServerService.getById(hostIp);
         // 设置日志
         SysJobLog sysJobLog = new SysJobLog();
-        sysJobLog.setCreateBy(SecurityUtils.getUsername());
+        sysJobLog.setCreateBy("sys-job");
         sysJobLog.setJobName(sysJobLog.getJobName());
         sysJobLog.setJobGroup(sysJobLog.getJobGroup());
         sysJobLog.setInvokeTarget(sysJobLog.getInvokeTarget());
@@ -63,7 +63,7 @@ public abstract class BaseTask {
                 AsyncManager.me().execute(new TimerTask() {
                     @Override
                     public void run() {
-                        sysJobLogService.addJobLog(sysJobLog);
+                        sysJobLogService.save(sysJobLog);
                     }
                 });
             }

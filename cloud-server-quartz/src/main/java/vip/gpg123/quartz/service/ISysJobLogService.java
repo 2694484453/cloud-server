@@ -1,6 +1,8 @@
 package vip.gpg123.quartz.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import vip.gpg123.quartz.domain.SysJobLog;
 
 /**
@@ -8,7 +10,7 @@ import vip.gpg123.quartz.domain.SysJobLog;
  *
  * @author gpg123
  */
-public interface ISysJobLogService
+public interface ISysJobLogService extends IService<SysJobLog>
 {
     /**
      * 获取quartz调度器日志的计划任务
