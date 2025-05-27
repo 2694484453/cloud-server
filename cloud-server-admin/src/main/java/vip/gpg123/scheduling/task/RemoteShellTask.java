@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 /**
  * 远程命令执行
  */
-@Component("remoteSsh")
+@Component("remoteShell")
 public class RemoteShellTask extends BaseTask {
 
     /**
