@@ -99,11 +99,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return "anonymous"; // 或者抛出自定义异常、记录日志等处理方式
-        }
-        return authentication.getName();
+        return user.getUserName();
     }
 
 
