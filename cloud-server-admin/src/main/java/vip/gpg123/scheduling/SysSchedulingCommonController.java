@@ -29,11 +29,8 @@ public class SysSchedulingCommonController extends BaseController {
         List<Map<String,String>> types = new ArrayList<>();
         // 远程主机
         types.add(new HashMap<String,String>(){{
-            put("RemoteShell","远程主机命令");
-        }});
-        // 基本任务
-        types.add(new HashMap<String,String>(){{
-            put("common","普通任务");
+            put("value","RemoteShell");
+            put("label","执行远程主机命令");
         }});
         return AjaxResult.success(types);
     }
