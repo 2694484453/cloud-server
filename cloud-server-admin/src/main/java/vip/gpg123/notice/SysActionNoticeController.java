@@ -18,7 +18,9 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.notice.domain.SysActionNotice;
 import vip.gpg123.notice.service.SysActionNoticeService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/sysActionNotice")
@@ -108,5 +110,26 @@ public class SysActionNoticeController extends BaseController {
             boolean update = sysActionNoticeService.updateById(search);
             return update ? success() : error();
         }
+    }
+
+    /**
+     * 概览
+     * @return r
+     */
+    @GetMapping("/overView")
+    @ApiOperation(value = "【概览】")
+    public AjaxResult overview() {
+        Map<String, Object> data = new HashMap<>();
+        // 已读
+        data.put("read", sysActionNoticeService.count(new LambdaQueryWrapper<SysActionNotice>()
+                .eq(SysActionNotice::getCreateBy,  getUsername())
+                .eq(SysActionNotice::getIsConfirm,1)
+        ));
+        // 未读
+        data.put("unRead", sysActionNoticeService.count(new LambdaQueryWrapper<SysActionNotice>()
+                .eq(SysActionNotice::getCreateBy,  getUsername())
+                .eq(SysActionNotice::getIsConfirm,0)
+        ));
+        return AjaxResult.success(data);
     }
 }
