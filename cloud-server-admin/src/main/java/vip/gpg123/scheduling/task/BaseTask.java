@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.domain.SysJobLog;
@@ -17,7 +16,6 @@ import vip.gpg123.quartz.service.ISysJobService;
 import vip.gpg123.vps.domain.CloudHostServer;
 import vip.gpg123.vps.service.CloudHostServerService;
 
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.TimerTask;
 
@@ -75,7 +73,7 @@ public abstract class BaseTask {
                         sysJobLog.setExceptionInfo(e.getMessage());
                         sysJob.setRunResult(e.getMessage());
                         sysJob.setStatus("fail");
-                        throw new RuntimeException(e);
+                        //throw new RuntimeException(e);
                     } finally {
                         // 执行异步任务
                         AsyncManager.me().execute(new TimerTask() {
