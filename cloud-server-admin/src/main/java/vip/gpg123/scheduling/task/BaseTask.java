@@ -17,6 +17,7 @@ import vip.gpg123.quartz.service.ISysJobService;
 import vip.gpg123.vps.domain.CloudHostServer;
 import vip.gpg123.vps.service.CloudHostServerService;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.TimerTask;
 
@@ -41,11 +42,11 @@ public abstract class BaseTask {
      * @param hostIp 主机IP
      * @param cmd 命令
      */
-    public void runRemoteShell(String jobId, String hostIp, String cmd) {
+    public void runRemoteShell(Long jobId, String hostIp, String cmd) {
         log.info("执行{}类型定时任务: {}", remote_shell ,jobId);
         // 查询到任务
-        if (StringUtils.isNotBlank(jobId)) {
-            SysJob sysJob = sysJobService.getById(jobId);
+        if (ObjectUtil.isNotNull(jobId)) {
+            SysJob sysJob = sysJobService.selectJobById(jobId);
             if (ObjectUtil.isNotNull(sysJob)) {
                 sysJob.setRunTime(DateUtil.date());
                 sysJob.setStatus("running");
@@ -67,11 +68,13 @@ public abstract class BaseTask {
                         String res = JschUtil.exec(session, cmd, StandardCharsets.UTF_8);
                         sysJobLog.setStatus("success");
                         sysJobLog.setResultInfo(res);
-                        sysJob.setRunResult("success");
+                        sysJob.setRunResult(res);
+                        sysJob.setStatus("success");
                     } catch (Exception e) {
                         sysJobLog.setStatus("fail");
                         sysJobLog.setExceptionInfo(e.getMessage());
-                        sysJob.setRunResult("fail");
+                        sysJob.setRunResult(e.getMessage());
+                        sysJob.setStatus("fail");
                         throw new RuntimeException(e);
                     } finally {
                         // 执行异步任务

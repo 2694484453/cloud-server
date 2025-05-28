@@ -2,6 +2,8 @@ package vip.gpg123.scheduling.task;
 
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
+
 /**
  * 远程命令执行
  */
@@ -15,7 +17,7 @@ public class RemoteShellTask extends BaseTask {
      * @param cmd cmd
      */
     @Override
-    public void runRemoteShell(String jobId, String hostIp, String cmd) {
+    public void runRemoteShell(Long jobId, String hostIp, String cmd) {
         super.runRemoteShell(jobId, hostIp, cmd);
     }
 }
