@@ -3,6 +3,8 @@ package vip.gpg123.common.core.domain.model;
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 import lombok.Getter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +18,7 @@ import java.util.Set;
  */
 @Getter
 @Data
-public class LoginUser implements UserDetails
-{
+public class LoginUser implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -75,59 +76,43 @@ public class LoginUser implements UserDetails
      */
     private SysUser user;
 
-    public LoginUser()
-    {
+    public LoginUser() {
     }
 
-    public LoginUser(SysUser user, Set<String> permissions)
-    {
+    public LoginUser(SysUser user, Set<String> permissions) {
         this.user = user;
         this.permissions = permissions;
     }
 
-    public LoginUser(Long userId, Long deptId, SysUser user, Set<String> permissions)
-    {
+    public LoginUser(Long userId, Long deptId, SysUser user, Set<String> permissions) {
         this.userId = userId;
         this.deptId = deptId;
         this.user = user;
         this.permissions = permissions;
-    }
-
-    public void setUserId(Long userId)
-    {
-        this.userId = userId;
-    }
-
-    public void setDeptId(Long deptId)
-    {
-        this.deptId = deptId;
-    }
-
-    public void setToken(String token)
-    {
-        this.token = token;
     }
 
     @JSONField(serialize = false)
     @Override
-    public String getPassword()
-    {
+    public String getPassword() {
         return user.getPassword();
     }
 
     @Override
-    public String getUsername()
-    {
-        return user.getUserName();
+    public String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "anonymous"; // 或者抛出自定义异常、记录日志等处理方式
+        }
+        return authentication.getName();
     }
+
 
     /**
      * 账户是否未过期,过期无法验证
      */
     @JSONField(serialize = false)
     @Override
-    public boolean isAccountNonExpired()
-    {
+    public boolean isAccountNonExpired() {
         return true;
     }
 
@@ -138,8 +123,7 @@ public class LoginUser implements UserDetails
      */
     @JSONField(serialize = false)
     @Override
-    public boolean isAccountNonLocked()
-    {
+    public boolean isAccountNonLocked() {
         return true;
     }
 
@@ -150,8 +134,7 @@ public class LoginUser implements UserDetails
      */
     @JSONField(serialize = false)
     @Override
-    public boolean isCredentialsNonExpired()
-    {
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
@@ -162,54 +145,12 @@ public class LoginUser implements UserDetails
      */
     @JSONField(serialize = false)
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return true;
     }
 
-    public void setLoginTime(Long loginTime)
-    {
-        this.loginTime = loginTime;
-    }
-
-    public void setIpaddr(String ipaddr)
-    {
-        this.ipaddr = ipaddr;
-    }
-
-    public void setLoginLocation(String loginLocation)
-    {
-        this.loginLocation = loginLocation;
-    }
-
-    public void setBrowser(String browser)
-    {
-        this.browser = browser;
-    }
-
-    public void setOs(String os)
-    {
-        this.os = os;
-    }
-
-    public void setExpireTime(Long expireTime)
-    {
-        this.expireTime = expireTime;
-    }
-
-    public void setPermissions(Set<String> permissions)
-    {
-        this.permissions = permissions;
-    }
-
-    public void setUser(SysUser user)
-    {
-        this.user = user;
-    }
-
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities()
-    {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 }

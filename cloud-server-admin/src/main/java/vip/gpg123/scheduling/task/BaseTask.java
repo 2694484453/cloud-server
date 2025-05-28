@@ -41,7 +41,7 @@ public abstract class BaseTask {
         CloudHostServer cloudHostServer = cloudHostServerService.getById(hostIp);
         // 设置日志
         SysJobLog sysJobLog = new SysJobLog();
-        sysJobLog.setCreateBy("sys-job");
+        sysJobLog.setCreateBy(SecurityUtils.getUsername());
         sysJobLog.setJobName(sysJobLog.getJobName());
         sysJobLog.setJobGroup(sysJobLog.getJobGroup());
         sysJobLog.setInvokeTarget(sysJobLog.getInvokeTarget());
