@@ -123,6 +123,10 @@ spring:
         server-addr: 110.42.40.8:8848
         namespace: gaopuguang
         group: DEFAULT_GROUP
+  quartz:
+    properties:
+      org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+      org.quartz.scheduler.makeSchedulerThreadDaemon: true
 #    stream:
 #      rocketmq:
 #        binder:
