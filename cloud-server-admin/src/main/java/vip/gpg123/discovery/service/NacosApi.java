@@ -12,7 +12,7 @@ import java.util.Map;
 
 @FeignClient(name = "nacos-api", url = "http://hcs.gpg123.vip:8848")
 @Service
-public interface NacosApiService {
+public interface NacosApi {
 
     /**
      * 指标

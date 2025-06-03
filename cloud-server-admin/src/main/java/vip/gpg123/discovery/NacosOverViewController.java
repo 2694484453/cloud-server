@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.discovery.domain.NacosNameSpace;
-import vip.gpg123.discovery.service.NacosApiService;
+import vip.gpg123.discovery.service.NacosApi;
 import vip.gpg123.discovery.service.NacosNameSpaceService;
 import vip.gpg123.framework.config.domain.NacosClient;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +32,7 @@ public class NacosOverViewController extends BaseController {
     private NacosNameSpaceService nacosNameSpaceService;
 
     @Autowired
-    private NacosApiService nacosApiService;
+    private NacosApi nacosApi;
 
     /**
      * 概览
@@ -50,9 +49,9 @@ public class NacosOverViewController extends BaseController {
                 .eq(NacosNameSpace::getCreateBy,  getUsername())
         ));
         // 服务数量
-        result.put("serviceCount", nacosApiService.service(nameSpaceId,1,9999).getCount());
+        result.put("serviceCount", nacosApi.service(nameSpaceId,1,9999).getCount());
         // 状态
-        result.put("status", nacosApiService.metrics().get("status"));
+        result.put("status", nacosApi.metrics().get("status"));
         return AjaxResult.success(result);
     }
 }

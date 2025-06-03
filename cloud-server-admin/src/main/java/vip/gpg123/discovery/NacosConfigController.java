@@ -17,7 +17,7 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.discovery.domain.NacosConfig;
-import vip.gpg123.discovery.service.NacosApiService;
+import vip.gpg123.discovery.service.NacosApi;
 import vip.gpg123.discovery.service.NacosConfigService;
 import vip.gpg123.discovery.vo.NacosConfigItem;
 import vip.gpg123.discovery.vo.NacosConfigResponse;
@@ -37,7 +37,7 @@ public class NacosConfigController extends BaseController {
     private NacosConfigService nacosConfigService;
 
     @Autowired
-    private NacosApiService nacosApiService;
+    private NacosApi nacosApi;
 
     /**
      * 列表查询
@@ -86,7 +86,7 @@ public class NacosConfigController extends BaseController {
     private List<NacosConfig> checkStatus(List<NacosConfig> list) {
         // 查询服务
         Map<String, NacosConfigItem> map = new HashMap<>();
-        NacosConfigResponse nacosConfigResponse = nacosApiService.configs("", "", "", getUsername().replaceAll("\\.", "-"), 1, 9999, "");
+        NacosConfigResponse nacosConfigResponse = nacosApi.configs("", "", "", getUsername().replaceAll("\\.", "-"), 1, 9999, "");
         if (nacosConfigResponse.getTotalCount() != 0) {
             map = nacosConfigResponse.getPageItems().stream().collect(Collectors.toMap(NacosConfigItem::getDataId, Function.identity()));
         }

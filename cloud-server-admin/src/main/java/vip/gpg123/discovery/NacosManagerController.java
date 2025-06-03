@@ -21,7 +21,7 @@ import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.discovery.vo.NacosNameSpaceResponse;
 import vip.gpg123.discovery.vo.NacosServiceResponse;
 import vip.gpg123.discovery.vo.NameSpaceItem;
-import vip.gpg123.discovery.service.NacosApiService;
+import vip.gpg123.discovery.service.NacosApi;
 import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.notice.domain.SysActionNotice;
@@ -38,7 +38,7 @@ import java.util.TimerTask;
 public class NacosManagerController extends BaseController {
 
     @Autowired
-    private NacosApiService nacosApiService;
+    private NacosApi nacosApi;
 
     @Autowired
     private SysActionNoticeService sysActionNoticeService;
@@ -58,7 +58,7 @@ public class NacosManagerController extends BaseController {
         // 获取用户名
         String nameSpaceId = getUsername().replaceAll("\\.", "-");
         // 查询是否有命名空间
-        NacosNameSpaceResponse<NameSpaceItem> response = nacosApiService.namespaces();
+        NacosNameSpaceResponse<NameSpaceItem> response = nacosApi.namespaces();
         if (response.getCode() != 200) {
             return AjaxResult.error("nacos服务异常");
         }
@@ -67,7 +67,7 @@ public class NacosManagerController extends BaseController {
         CollectionUtil.toMap(data, map, NameSpaceItem::getNamespace);
         if (!map.containsKey(nameSpaceId)) {
             // 自动创建ns
-            Boolean result = nacosApiService.createNs(new HashMap<String, String>() {{
+            Boolean result = nacosApi.createNs(new HashMap<String, String>() {{
                     put("customNamespaceId",nameSpaceId);
                     put("namespaceName",nameSpaceId);
                     put("namespaceDesc","自动创建");
@@ -120,7 +120,7 @@ public class NacosManagerController extends BaseController {
     public AjaxResult list(@RequestParam(value = "name",required = false) String name) {
         // 获取用户名
         String nameSpaceId = getUsername().replaceAll("\\.", "-");
-        NacosServiceResponse response = nacosApiService.service(nameSpaceId, 1, 9999);
+        NacosServiceResponse response = nacosApi.service(nameSpaceId, 1, 9999);
         List<String> data = response.getDoms();
         return AjaxResult.success(data);
     }
@@ -135,7 +135,7 @@ public class NacosManagerController extends BaseController {
     public TableDataInfo page(@RequestParam(value = "name",required = false) String name) {
         // 获取用户名
         String nameSpaceId = getUsername().replaceAll("\\.", "-");
-        NacosServiceResponse response = nacosApiService.service(nameSpaceId, TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
+        NacosServiceResponse response = nacosApi.service(nameSpaceId, TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
         List<String> data = response.getDoms();
         if (StrUtil.isNotBlank(name)) {
             data = CollectionUtil.filter(data, item -> item.contains(name));
