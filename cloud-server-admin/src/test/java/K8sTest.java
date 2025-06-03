@@ -34,7 +34,7 @@ public class K8sTest {
 
     @Test
     public void t1() {
-        KubernetesClient client = K8sUtil.createKClient();
+        KubernetesClient client = K8sUtil.createDefaultKubernetesClient();
         ConfigMap configMap = client.configMaps().inNamespace("kube-system").withName("coredns-custom").get();
         List<ConfigMap> list = client.configMaps().inNamespace("kube-system").list().getItems();
         System.out.println(client);
@@ -42,7 +42,7 @@ public class K8sTest {
 
     @Test
     public void t2() {
-        KubernetesClient client = K8sUtil.createKClient();
+        KubernetesClient client = K8sUtil.createDefaultOpenShiftClient();
         NamespaceList namespaceList = client.namespaces().list();
         //System.out.println(namespaceList);
         ListOptions listOptions = new ListOptionsBuilder()
@@ -55,7 +55,7 @@ public class K8sTest {
 
     @Test
     public void t3() {
-        OpenShiftClient openShiftClient = K8sUtil.createOClient();
+        OpenShiftClient openShiftClient = K8sUtil.createDefaultOpenShiftClient();
         //MixedOperation<>   = openShiftClient.cr();
     }
 
@@ -74,7 +74,7 @@ public class K8sTest {
 
     @Test
     public void t6() {
-        OpenShiftClient openShiftClient = K8sUtil.createOClient();
+        OpenShiftClient openShiftClient = K8sUtil.createDefaultOpenShiftClient();
         List<PrometheusRule> prometheusRules;
         try {
             PrometheusRuleList prometheusRuleList = openShiftClient.monitoring().prometheusRules().inAnyNamespace().list();
@@ -87,7 +87,7 @@ public class K8sTest {
 
     @Test
     public void t7() {
-        KubernetesClient client = K8sUtil.createKClient();
+        KubernetesClient client = K8sUtil.createDefaultKubernetesClient();
         try {
             List<Job> jobs = client.batch().v1().jobs().inNamespace("default").list().getItems();
 
@@ -102,7 +102,7 @@ public class K8sTest {
         String file = "D:/log.txt";
         OutputStream outputStream = FileUtil.getOutputStream(file);
         InputStream inputStream = null;
-        KubernetesClient client = K8sUtil.createKClient();
+        KubernetesClient client = K8sUtil.createDefaultKubernetesClient();
         String logs = client.batch().v1().jobs().inNamespace("default").withName("my-server").getLog(true);
         LogWatch watch = client.batch().v1().jobs().inNamespace("default").withName("my-server").watchLog(outputStream);
         try {
@@ -123,7 +123,7 @@ public class K8sTest {
         String file = "D:/log.txt";
         OutputStream outputStream = FileUtil.getOutputStream(file);
         InputStream inputStream = null;
-        KubernetesClient client = K8sUtil.createKClient();
+        KubernetesClient client = K8sUtil.createDefaultKubernetesClient();
         try (LogWatch watch = client.pods().inNamespace("demo").withName("spring-boot-demo-56f6dfdffd-s2d6f").watchLog(outputStream)) {
             inputStream = watch.getOutput();
             //watch.wait();

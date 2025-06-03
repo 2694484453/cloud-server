@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.app.domain.MineApp;
 import vip.gpg123.app.service.AppService;
+import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.common.utils.helm.HelmApp;
+import vip.gpg123.common.utils.helm.HelmStatus;
 import vip.gpg123.common.utils.helm.HelmUtils;
 
 import java.util.List;
@@ -24,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/helm")
 @Api(value = "Helm安装列表")
-public class HelmAppManagerController {
+public class HelmAppManagerController extends BaseController {
 
     @Value("${repo.helm.url}")
     private String url;
@@ -69,5 +71,22 @@ public class HelmAppManagerController {
     public AjaxResult install(@RequestParam(value = "name") String name, @RequestBody MineApp mineApp) {
         appService.install(name, repoName, name,"", SecurityUtils.getUsername());
         return AjaxResult.success();
+    }
+
+    /**
+     * 查询详情
+     * @param name 名称
+     * @return r
+     */
+    @GetMapping("/info")
+    @ApiOperation(value = "详情")
+    public AjaxResult info(@RequestParam(value = "name") String name) {
+        try {
+            // 查询详情
+            HelmStatus status = HelmUtils.status(name, name, getUsername());
+            return AjaxResult.success(status);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

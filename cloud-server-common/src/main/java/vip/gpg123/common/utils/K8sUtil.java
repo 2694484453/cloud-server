@@ -1,15 +1,12 @@
 package vip.gpg123.common.utils;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.setting.yaml.YamlUtil;
+import cn.hutool.system.SystemUtil;
+import io.fabric8.kubernetes.api.model.NamedContext;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
-import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
 import io.fabric8.openshift.client.OpenShiftClient;
-import org.springframework.beans.BeanUtils;
-import org.yaml.snakeyaml.Yaml;
 
 import java.nio.charset.StandardCharsets;
 /**
@@ -21,8 +18,8 @@ public class K8sUtil {
     /**
      * 配置文件地址
      */
-    private static final String configFile = "D:\\project\\cloud-server\\k8s\\config";
-            //SystemUtil.getOsInfo().isWindows() ? "C:/Users/" + SystemUtil.getUserInfo().getName() + "/.kube/config" : "/root/.kube/config";
+    private static final String configFile = SystemUtil.getOsInfo().isWindows() ? "C:/Users/" + SystemUtil.getUserInfo().getName() + "/.kube/config" : "/root/.kube/config";
+            //"D:\\project\\cloud-server\\k8s\\config";
 
     /**
      * 获取配置对象
@@ -38,10 +35,10 @@ public class K8sUtil {
     }
 
     /**
-     * k8s客户端
+     * k8s客户端默认模式
      * @return r
      */
-    public static KubernetesClient createKClient() {
+    public static KubernetesClient createDefaultKubernetesClient() {
         try {
             Config config = getConfig();
             return new KubernetesClientBuilder()
@@ -53,14 +50,49 @@ public class K8sUtil {
     }
 
     /**
+     * 上下文模式
+     * @param context c
+     * @return r
+     */
+    public static KubernetesClient createKubernetesClient(String context) {
+        try {
+            // 设置上下文
+            NamedContext namedContext = new NamedContext();
+            namedContext.setName(context);
+            Config config = Config.fromKubeconfig(FileUtil.readString(configFile, StandardCharsets.UTF_8));
+            config.setCurrentContext(namedContext);
+            return new KubernetesClientBuilder()
+                    .withConfig(config)
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
      * openshift客户端
      * @return r
      */
-    public static OpenShiftClient createOClient() {
-        KubernetesClient kubernetesClient = createKClient();
+    public static OpenShiftClient createDefaultOpenShiftClient() {
+        KubernetesClient kubernetesClient = createDefaultKubernetesClient();
         return kubernetesClient.adapt(OpenShiftClient.class);
     }
 
+    /**
+     * openshift客户端
+     * @param context c
+     * @return r
+     */
+    public static OpenShiftClient createOpenShiftClient(String context) {
+        KubernetesClient kubernetesClient = createKubernetesClient(context);
+        return kubernetesClient.adapt(OpenShiftClient.class);
+    }
+
+    /**
+     * 默认路径
+     * @return r
+     */
     public static String defaultConfigFilePath() {
         return configFile;
     }

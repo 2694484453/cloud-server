@@ -13,10 +13,11 @@ public class HelmUtils {
 
     /**
      * helm list
+     *
      * @param namespace 命名空间
      * @return r
      */
-    public static String listJsonStr(String namespace,String kubeContext) {
+    public static String listJsonStr(String namespace, String kubeContext) {
         String[] init = new String[]{"helm", "list", "--output", "json"};
         if (StrUtil.isBlank(namespace)) {
             init = ArrayUtil.append(init, "-A");
@@ -29,29 +30,32 @@ public class HelmUtils {
 
     /**
      * helm list json
+     *
      * @param namespace 命名空间
      * @return r
      */
-    public static JSONArray listJsonArray(String namespace,String kubeContext) {
-        String jsonStr = listJsonStr(namespace,kubeContext);
+    public static JSONArray listJsonArray(String namespace, String kubeContext) {
+        String jsonStr = listJsonStr(namespace, kubeContext);
         return JSONUtil.parseArray(jsonStr);
     }
 
     /**
      * helm list
+     *
      * @param namespace 命名空间
      * @return r
      */
-    public static List<HelmApp> list(String namespace,String kubeContext) {
-        JSONArray jsonArray = listJsonArray(namespace,kubeContext);
+    public static List<HelmApp> list(String namespace, String kubeContext) {
+        JSONArray jsonArray = listJsonArray(namespace, kubeContext);
         return Convert.toList(HelmApp.class, jsonArray);
     }
 
     /**
      * helm install
-     * @param namespace 命名空间
-     * @param chartName chart名称
-     * @param version v
+     *
+     * @param namespace   命名空间
+     * @param chartName   chart名称
+     * @param version     v
      * @param kubeContext kubeContext
      */
     public static void install(String namespace, String repoName, String chartName, String version, String kubeContext) {
@@ -65,12 +69,25 @@ public class HelmUtils {
 
     /**
      * helm uninstall
-     * @param namespace 命名空间
+     *
+     * @param namespace   命名空间
      * @param releaseName 发布名称
      * @param kubeContext kubeContext
      */
     public static void uninstall(String namespace, String releaseName, String kubeContext) {
         RuntimeUtil.exec("helm", "uninstall", releaseName, "--namespace", namespace, "--kube-context", kubeContext);
+    }
+
+    /**
+     * 获取状态
+     *
+     * @param releaseName rn
+     * @param kubeContext kc
+     * @return r
+     */
+    public static HelmStatus status(String releaseName, String namespace, String kubeContext) {
+        String json = RuntimeUtil.execForStr("helm", "status", releaseName, "--namespace", namespace, "--kube-context", kubeContext, "--output", "json");
+        return JSONUtil.toBean(json, HelmStatus.class);
     }
 
     public static String getChartVersion(String chartName) {
