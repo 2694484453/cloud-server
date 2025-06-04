@@ -89,4 +89,17 @@ public class HelmAppManagerController extends BaseController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 管理
+     * @param name 名称
+     * @return r
+     */
+    @GetMapping("/manager")
+    @ApiOperation(value = "查询")
+    public AjaxResult manager(@RequestParam(value = "name") String name) {
+        // 查询工作负载
+
+        return AjaxResult.success(HelmUtils.list("", getUsername()));
+    }
 }
