@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/helm")
 @Api(value = "Helm安装列表")
-public class HelmAppManagerController extends BaseController {
+public class AppManagerController extends BaseController {
 
     @Value("${repo.helm.url}")
     private String url;
