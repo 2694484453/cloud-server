@@ -58,6 +58,7 @@ public abstract class BaseTask {
                 sysJobLog.setJobGroup(sysJobLog.getJobGroup());
                 sysJobLog.setInvokeTarget(sysJobLog.getInvokeTarget());
                 sysJobLog.setCreateTime(DateUtil.date());
+                sysJobLog.setJobType(sysJobLog.getJobType());
                 // 判空
                 if (ObjectUtil.isNotNull(cloudHostServer)) {
                     try {
@@ -90,4 +91,6 @@ public abstract class BaseTask {
             }
         }
     }
+
+
 }

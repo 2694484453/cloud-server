@@ -31,6 +31,10 @@ public class SysJobLog implements Serializable
     @Excel(name = "任务名称")
     private String jobName;
 
+    /** 任务类型 */
+    @Excel(name = "任务类型")
+    private String jobType;
+
     /** 任务组名 */
     @Excel(name = "任务组名")
     private String jobGroup;
