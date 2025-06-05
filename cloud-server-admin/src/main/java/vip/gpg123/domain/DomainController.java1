@@ -2,12 +2,8 @@ package vip.gpg123.domain;
 
 import cn.hutool.core.lang.Console;
 import cn.hutool.setting.Setting;
-import com.aliyun.alidns20150109.Client;
-import com.aliyun.alidns20150109.models.DescribeDomainRecordsRequest;
-import com.aliyun.alidns20150109.models.DescribeDomainRecordsResponse;
-import com.aliyun.tea.TeaException;
-import com.aliyun.tea.TeaModel;
-import com.aliyun.teaopenapi.models.Config;
+import com.aliyun.sdk.service.alidns20150109.models.DescribeDomainRecordsRequest;
+import com.aliyun.sdk.service.alidns20150109.models.DescribeDomainRecordsResponse;
 import vip.gpg123.common.core.domain.AjaxResult;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;

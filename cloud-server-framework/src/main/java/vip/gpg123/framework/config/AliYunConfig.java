@@ -7,7 +7,6 @@ import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import vip.gpg123.framework.client.AsyncDomainClient;
 
 @Configuration
 public class AliYunConfig {
@@ -30,9 +29,9 @@ public class AliYunConfig {
                 .build());
     }
 
-    @Bean
-    public AsyncDomainClient createClient() {
-        return (AsyncDomainClient) AsyncClient.builder()
+    @Bean(name = "AsyncDomainClient")
+    public AsyncClient createClient() {
+        return AsyncClient.builder()
                 .region("cn-hangzhou") // Region ID
                 //.httpClient(httpClient) // Use the configured HttpClient, otherwise use the default HttpClient (Apache HttpClient)
                 .credentialsProvider(staticCredentialsProvider())
@@ -43,7 +42,6 @@ public class AliYunConfig {
                                 // Endpoint 请参考 https://api.aliyun.com/product/Alidns
                                 .setEndpointOverride("alidns.cn-hangzhou.aliyuncs.com")
                         //.setConnectTimeout(Duration.ofSeconds(30))
-                )
-                .build();
+                ).build();
     }
 }

@@ -1,12 +1,14 @@
 package vip.gpg123.domain.service.impl;
 
+import com.aliyun.sdk.service.alidns20150109.AsyncClient;
 import com.aliyun.sdk.service.alidns20150109.models.AddDomainRecordRequest;
 import com.aliyun.sdk.service.alidns20150109.models.AddDomainRecordResponse;
 import com.aliyun.sdk.service.alidns20150109.models.AddDomainRecordResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import vip.gpg123.domain.service.AliYunDomainApi;
-import vip.gpg123.framework.client.AsyncDomainClient;
+
 
 import java.util.concurrent.CompletableFuture;
 
@@ -14,7 +16,8 @@ import java.util.concurrent.CompletableFuture;
 public class AliYunDomainApiServiceImpl implements AliYunDomainApi {
 
     @Autowired
-    private AsyncDomainClient asyncDomainClient;
+    @Qualifier("AsyncDomainClient")
+    private AsyncClient asyncClient;
 
     /**
      * 新增域名解析
@@ -35,7 +38,7 @@ public class AliYunDomainApiServiceImpl implements AliYunDomainApi {
                 // Request-level configuration rewrite, can set Http request parameters, etc.
                 // .requestConfiguration(RequestConfiguration.create().setHttpHeaders(new HttpHeaders()))
                 .build();
-        CompletableFuture<AddDomainRecordResponse> response = asyncDomainClient.addDomainRecord(addDomainRecordRequest);
+        CompletableFuture<AddDomainRecordResponse> response = asyncClient.addDomainRecord(addDomainRecordRequest);
         try {
             AddDomainRecordResponse resp = response.get();
             return resp.getBody();
