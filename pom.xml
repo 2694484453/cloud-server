@@ -352,16 +352,6 @@
         <!--aliyun-sdk-->
         <dependency>
             <groupId>com.aliyun</groupId>
-            <artifactId>domain20180129</artifactId>
-            <version>3.15.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>alidns20150109</artifactId>
-            <version>3.4.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
             <artifactId>alibabacloud-alidns20150109</artifactId>
             <version>3.0.25</version>
         </dependency>
