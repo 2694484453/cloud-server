@@ -57,3 +57,8 @@ frp:
     port: 7500
     userName: gaopuguang
     passWord: 1999y4m30d
+#cloud
+cloud:
+  aliyun:
+    accessKeyId: LTAI5tQU6m9mYnspgpVq8Rxu
+    accessKeySecret: hWWHQ5rLmblqskgowIoHdxBhxiD7Nc

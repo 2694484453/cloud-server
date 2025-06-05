@@ -360,6 +360,11 @@
             <artifactId>alidns20150109</artifactId>
             <version>3.4.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibabacloud-alidns20150109</artifactId>
+            <version>3.0.25</version>
+        </dependency>
 
         <!--jgit-->
         <dependency>
