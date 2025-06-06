@@ -9,11 +9,10 @@ import org.springframework.stereotype.Service;
 /**
 * @author gaopuguang
 * @description 针对表【platform_service_instance(平台服务实例配置信息表)】的数据库操作Service实现
-* @createDate 2025-06-07 00:34:09
+* @createDate 2025-06-07 00:39:54
 */
 @Service
-public class PlatformServiceInstanceServiceImpl extends ServiceImpl<PlatformServiceInstanceMapper, PlatformServiceInstance>
-    implements PlatformServiceInstanceService{
+public class PlatformServiceInstanceServiceImpl extends ServiceImpl<PlatformServiceInstanceMapper, PlatformServiceInstance> implements PlatformServiceInstanceService{
 
 }
 

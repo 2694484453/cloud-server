@@ -43,13 +43,13 @@ public class PlatformServiceInstance implements Serializable {
      * 面板地址
      */
     @TableField(value = "dashboard_path")
-    private String dashboard_path;
+    private String dashboardPath;
 
     /**
      * frame嵌入地址
      */
     @TableField(value = "frame_path")
-    private String frame_path;
+    private String framePath;
 
     /**
      * 状态
@@ -67,25 +67,25 @@ public class PlatformServiceInstance implements Serializable {
      * 创建者
      */
     @TableField(value = "create_by")
-    private String create_by;
+    private String createBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    private Date create_time;
+    private Date createTime;
 
     /**
      * 更新者
      */
     @TableField(value = "update_by")
-    private String update_by;
+    private String updateBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time")
-    private Date update_time;
+    private Date updateTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
