@@ -119,10 +119,14 @@ spring:
         server-addr: 110.42.40.8:8848
         namespace: gaopuguang
         group: DEFAULT_GROUP
+        username:
+        password:
       discovery: #启用 spring cloud nacos discovery
         server-addr: 110.42.40.8:8848
         namespace: gaopuguang
         group: DEFAULT_GROUP
+        username:
+        password:
   quartz:
     properties:
       org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true

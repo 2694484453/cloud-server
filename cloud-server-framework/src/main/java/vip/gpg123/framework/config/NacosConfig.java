@@ -1,43 +1,30 @@
 package vip.gpg123.framework.config;
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import vip.gpg123.framework.config.domain.NacosClient;
+import vip.gpg123.framework.client.NacosClient;
 
-/**
- * @author gaopuguang
- * @date 2025/3/2 15:49
- **/
 @Configuration
 public class NacosConfig {
 
-    private static final String api = "http://hcs.gpg123.vip:8848";
+    @Value("${spring.cloud.nacos.config.server-addr}")
+    private String serverAddr;
 
-    private static final String username = "";
+    @Value("${spring.cloud.nacos.config.namespace}")
+    private String namespace;
 
-    private static final String password = "";
+    @Value("${spring.cloud.nacos.config.group}")
+    private String group;
+
+    @Value("${spring.cloud.nacos.config.username}")
+    private String userName;
+
+    @Value("${spring.cloud.nacos.config.password}")
+    private String passWord;
 
     @Bean
     public NacosClient nacosClient() {
-        return new NacosClient(api, username, password);
-    }
-
-    /**
-     * 创建命名空间
-     * @param nameSpaceId id
-     * @param nameSpaceName name
-     * @param nameSpaceDesc desc
-     * @return r
-     */
-    public static Boolean createNs(String nameSpaceId, String nameSpaceName, String nameSpaceDesc) {
-        HttpResponse httpResponse = HttpRequest.post(api + "/nacos/v1/console/namespaces")
-                .form("customNamespaceId", nameSpaceId)
-                .form("namespaceName", nameSpaceName)
-                .form("namespaceDesc", nameSpaceDesc)
-                .execute();
-        return Boolean.valueOf(httpResponse.body());
+        return new NacosClient(serverAddr, namespace, group, userName, passWord);
     }
 }

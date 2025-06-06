@@ -1,12 +1,9 @@
 package vip.gpg123.framework.manager.factory;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.mail.MailUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.LogUtils;
@@ -16,7 +13,6 @@ import vip.gpg123.common.utils.ip.AddressUtils;
 import vip.gpg123.common.utils.ip.IpUtils;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.framework.config.EmailConfig;
-import vip.gpg123.framework.config.NacosConfig;
 import vip.gpg123.system.domain.SysLogininfor;
 import vip.gpg123.system.domain.SysOperLog;
 import vip.gpg123.system.service.ISysLogininforService;
@@ -126,13 +122,13 @@ public class AsyncFactory {
             @Override
             public void run() {
                 // nacos创建ns
-                Boolean isCreateNs = NacosConfig.createNs(sysUser.getUserName(), sysUser.getUserName(), "系统自动创建");
-                if (isCreateNs) {
-                    // 发送通知邮件
-                    String title = "Nacos命名空间创建通知";
-                    String content = "创建" + sysUser.getUserName() + ",结果：" + isCreateNs;
-                    MailUtil.send(EmailConfig.createMailAccount(), sysUser.getEmail(), title, content, false);
-                }
+//                Boolean isCreateNs = NacosConfig.createNs(sysUser.getUserName(), sysUser.getUserName(), "系统自动创建");
+//                if (isCreateNs) {
+//                    // 发送通知邮件
+//                    String title = "Nacos命名空间创建通知";
+//                    String content = "创建" + sysUser.getUserName() + ",结果：" + isCreateNs;
+//                    MailUtil.send(EmailConfig.createMailAccount(), sysUser.getEmail(), title, content, false);
+//                }
             }
         };
     }
