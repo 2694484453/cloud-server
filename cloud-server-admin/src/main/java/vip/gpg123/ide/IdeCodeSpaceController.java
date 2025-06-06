@@ -31,7 +31,7 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.framework.config.domain.IdeClient;
+import vip.gpg123.framework.client.IdeClient;
 import vip.gpg123.ide.domain.IdeCodeOpen;
 import vip.gpg123.ide.domain.IdeCodeSpace;
 import vip.gpg123.ide.service.IdeCodeSpaceService;

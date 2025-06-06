@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.framework.config.domain.JaegerClient;
-import vip.gpg123.framework.config.domain.PrometheusClient;
+import vip.gpg123.framework.client.JaegerClient;
+import vip.gpg123.framework.client.PrometheusClient;
 
 import java.util.HashMap;
 import java.util.List;

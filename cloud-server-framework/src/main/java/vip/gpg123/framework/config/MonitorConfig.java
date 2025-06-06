@@ -3,8 +3,8 @@ package vip.gpg123.framework.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import vip.gpg123.framework.config.domain.AlertManagerClient;
-import vip.gpg123.framework.config.domain.PrometheusClient;
+import vip.gpg123.framework.client.AlertManagerClient;
+import vip.gpg123.framework.client.PrometheusClient;
 
 /**
  * @author gaopuguang_zz

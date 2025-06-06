@@ -11,7 +11,6 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.discovery.domain.NacosNameSpace;
 import vip.gpg123.discovery.service.NacosApi;
 import vip.gpg123.discovery.service.NacosNameSpaceService;
-import vip.gpg123.framework.config.domain.NacosClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +23,6 @@ import java.util.Map;
 @RequestMapping("/discovery/nacos")
 @Api(tags = "【discovery】nacos服务概览")
 public class NacosOverViewController extends BaseController {
-
-    @Autowired
-    private NacosClient nacosClient;
 
     @Autowired
     private NacosNameSpaceService nacosNameSpaceService;

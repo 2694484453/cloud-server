@@ -3,7 +3,7 @@ package vip.gpg123.framework.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import vip.gpg123.framework.config.domain.JaegerClient;
+import vip.gpg123.framework.client.JaegerClient;
 
 /**
  * @author gaopuguang_zz

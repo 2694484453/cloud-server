@@ -1,4 +1,4 @@
-package vip.gpg123.framework.config.domain;
+package vip.gpg123.framework.client;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2025/2/14 14:35
  */
 @Data
-public class AlertManagerClient {
+public class PrometheusClient {
 
     /**
      * 版本
