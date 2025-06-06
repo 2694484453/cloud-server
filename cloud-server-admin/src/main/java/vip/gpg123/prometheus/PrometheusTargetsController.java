@@ -1,6 +1,8 @@
 package vip.gpg123.prometheus;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -22,6 +24,7 @@ import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.service.PrometheusApi;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,19 +49,27 @@ public class PrometheusTargetsController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "name") String name,
+    public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
                               @RequestParam(value = "state", required = false) String state) {
-        // 查询对应的实例设置url
-        PlatformServiceInstance platformServiceInstance = platformServiceInstanceService.getOne(new LambdaQueryWrapper<PlatformServiceInstance>()
+        PlatformServiceInstance platformServiceInstance;
+        LambdaQueryWrapper<PlatformServiceInstance> wrapper = new LambdaQueryWrapper<PlatformServiceInstance>()
                 .eq(PlatformServiceInstance::getName, name)
                 .eq(PlatformServiceInstance::getCreateBy, getUsername())
-                .eq(PlatformServiceInstance::getType, "prometheus")
-        );
-        // 动态设置Prometheus实例地址
-        URI dynamicUri = URI.create(platformServiceInstance.getHost());
-        PrometheusTargetResponse response = prometheusApi.targets(dynamicUri,state);
-        List<?> list = targets(response.getData());
-        return PageUtils.toPage(list);
+                .eq(PlatformServiceInstance::getType, "prometheus");
+        if (StrUtil.isNotBlank(name)) {
+            // 查询对应的实例设置url
+            platformServiceInstance = platformServiceInstanceService.getOne(wrapper);
+        }else {
+            platformServiceInstance = platformServiceInstanceService.list(wrapper).get(0);
+        }
+        if (ObjectUtil.isNotNull(platformServiceInstance)) {
+            // 动态设置Prometheus实例地址
+            URI dynamicUri = URI.create(platformServiceInstance.getHost());
+            PrometheusTargetResponse response = prometheusApi.targets(dynamicUri,state);
+            List<?> list = targets(response.getData());
+            return PageUtils.toPage(list);
+        }
+        return PageUtils.toPage(new ArrayList<>());
     }
 
     /**
@@ -71,16 +82,24 @@ public class PrometheusTargetsController extends BaseController {
     public AjaxResult list(@RequestParam(value = "name") String name,
                            @RequestParam(value = "state", required = false) String state) {
         // 查询对应的实例设置url
-        PlatformServiceInstance platformServiceInstance = platformServiceInstanceService.getOne(new LambdaQueryWrapper<PlatformServiceInstance>()
+        PlatformServiceInstance platformServiceInstance;
+        LambdaQueryWrapper<PlatformServiceInstance> wrapper = new LambdaQueryWrapper<PlatformServiceInstance>()
                 .eq(PlatformServiceInstance::getName, name)
                 .eq(PlatformServiceInstance::getCreateBy, getUsername())
-                .eq(PlatformServiceInstance::getType, "prometheus")
-        );
-        // 动态设置Prometheus实例地址
-        URI dynamicUri = URI.create(platformServiceInstance.getHost());
-        PrometheusTargetResponse response = prometheusApi.targets(dynamicUri,state);
-        List<?> list = targets(response.getData());
-        return AjaxResult.success(list);
+                .eq(PlatformServiceInstance::getType, "prometheus");
+        if (StrUtil.isNotBlank(name)) {
+            platformServiceInstance = platformServiceInstanceService.getOne(wrapper);
+        } else {
+            platformServiceInstance = platformServiceInstanceService.list(wrapper).get(0);
+        }
+        if (ObjectUtil.isNotNull(platformServiceInstance)) {
+            // 动态设置Prometheus实例地址
+            URI dynamicUri = URI.create(platformServiceInstance.getHost());
+            PrometheusTargetResponse response = prometheusApi.targets(dynamicUri,state);
+            List<?> list = targets(response.getData());
+            return AjaxResult.success(list);
+        }
+        return AjaxResult.success(new ArrayList<>());
     }
 
     /**
