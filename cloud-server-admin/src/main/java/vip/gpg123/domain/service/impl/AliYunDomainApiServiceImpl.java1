@@ -7,13 +7,12 @@ import com.aliyun.sdk.service.alidns20150109.models.AddDomainRecordResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import vip.gpg123.domain.service.AliYunDomainApi;
 
 
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class AliYunDomainApiServiceImpl implements AliYunDomainApi {
+public class AliYunDomainApiServiceImpl {
 
     @Autowired
     @Qualifier("AsyncDomainClient")
@@ -28,7 +27,7 @@ public class AliYunDomainApiServiceImpl implements AliYunDomainApi {
      * @param value      v
      * @return r
      */
-    @Override
+
     public AddDomainRecordResponseBody addDomainRecord(String domainName, String type, String Rr, String value) {
         AddDomainRecordRequest addDomainRecordRequest = AddDomainRecordRequest.builder()
                 .domainName(domainName)
