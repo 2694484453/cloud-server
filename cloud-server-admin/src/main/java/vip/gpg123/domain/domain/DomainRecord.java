@@ -11,12 +11,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
- * 应用域名信息
- * @TableName app_domain
+ * 应用域名解析记录信息
+ * @TableName domain_record
  */
-@TableName(value ="app_domain")
+@TableName(value ="domain_record")
 @Data
-public class AppDomainRecord implements Serializable {
+public class DomainRecord implements Serializable {
     /**
      * 主键
      */
