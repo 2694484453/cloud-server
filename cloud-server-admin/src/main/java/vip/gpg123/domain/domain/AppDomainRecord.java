@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="app_domain")
 @Data
-public class AppDomain implements Serializable {
+public class AppDomainRecord implements Serializable {
     /**
      * 主键
      */

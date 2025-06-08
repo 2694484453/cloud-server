@@ -1,9 +1,9 @@
 package vip.gpg123.domain.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import vip.gpg123.domain.domain.AppDomain;
-import vip.gpg123.domain.service.AppDomainService;
-import vip.gpg123.domain.mapper.AppDomainMapper;
+import vip.gpg123.domain.domain.AppDomainRecord;
+import vip.gpg123.domain.service.AppDomainRecordService;
+import vip.gpg123.domain.mapper.AppDomainRecordMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-06-06 01:16:02
 */
 @Service
-public class AppDomainServiceImpl extends ServiceImpl<AppDomainMapper, AppDomain> implements AppDomainService{
+public class AppDomainRecordServiceImpl extends ServiceImpl<AppDomainRecordMapper, AppDomainRecord> implements AppDomainRecordService {
 
 }
 
