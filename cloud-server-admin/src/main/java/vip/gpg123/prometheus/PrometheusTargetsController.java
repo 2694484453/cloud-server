@@ -53,7 +53,7 @@ public class PrometheusTargetsController extends BaseController {
                               @RequestParam(value = "state", required = false) String state) {
         PlatformServiceInstance platformServiceInstance;
         LambdaQueryWrapper<PlatformServiceInstance> wrapper = new LambdaQueryWrapper<PlatformServiceInstance>()
-                .eq(PlatformServiceInstance::getName, name)
+                .eq(StrUtil.isNotBlank(name), PlatformServiceInstance::getName, name)
                 .eq(PlatformServiceInstance::getCreateBy, getUsername())
                 .eq(PlatformServiceInstance::getType, "prometheus");
         if (StrUtil.isNotBlank(name)) {
@@ -79,12 +79,12 @@ public class PrometheusTargetsController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam(value = "name") String name,
+    public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "state", required = false) String state) {
         // 查询对应的实例设置url
         PlatformServiceInstance platformServiceInstance;
         LambdaQueryWrapper<PlatformServiceInstance> wrapper = new LambdaQueryWrapper<PlatformServiceInstance>()
-                .eq(PlatformServiceInstance::getName, name)
+                .eq(StrUtil.isNotBlank(name), PlatformServiceInstance::getName, name)
                 .eq(PlatformServiceInstance::getCreateBy, getUsername())
                 .eq(PlatformServiceInstance::getType, "prometheus");
         if (StrUtil.isNotBlank(name)) {
@@ -108,8 +108,7 @@ public class PrometheusTargetsController extends BaseController {
      * @return r
      */
     private List<?> targets(JSONObject jsonObject) {
-        JSONObject data = JSONUtil.parseObj(jsonObject.get("data"));
-        JSONArray activeTargets = JSONUtil.parseArray(data.get("activeTargets"));
+        JSONArray activeTargets = JSONUtil.parseArray(jsonObject.get("activeTargets"));
         return Convert.toList(activeTargets);
     }
 }
