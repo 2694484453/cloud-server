@@ -99,7 +99,6 @@ public class HelmRepoController extends BaseController {
             boolean isSuccess;
             try {
                 isSuccess = HelmUtils.repoUpdate(repoName);
-
                 // 如果成功更新仓库数据
                 if (isSuccess) {
                     // 请求仓库列表
@@ -111,6 +110,7 @@ public class HelmRepoController extends BaseController {
                         // 一个key就是一个应用，list数量即为版本数量
                         chartVersionNum.set(chartVersionNum.get() + v.size());
                     });
+                    helmRepo.setStatus("success");
                 }
             } catch (Exception e) {
                 helmRepo.setStatus("fail");
