@@ -3,10 +3,10 @@ package vip.gpg123.repo.service;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.yaml.snakeyaml.Yaml;
-import vip.gpg123.repo.domain.HelmRepoResponse;
 
-@FeignClient(name = "helm-repo-api", url = "https://helm-repo.gpg123.vip")
+import java.net.URI;
+
+@FeignClient(name = "helm-repo-api")
 @Service
 public interface HelmRepoApiService {
 
@@ -15,6 +15,6 @@ public interface HelmRepoApiService {
      * @return r
      */
     @GetMapping("/index.yaml")
-    String index();
+    String index(URI baseUri);
 
 }

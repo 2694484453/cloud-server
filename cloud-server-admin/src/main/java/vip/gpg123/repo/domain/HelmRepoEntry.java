@@ -9,5 +9,5 @@ import java.util.Map;
 @Data
 public class HelmRepoEntry implements Serializable {
 
-    private Map<String, List<HelmRepo>> name;
+    private Map<String, List<HelmRepoItem>> name;
 }

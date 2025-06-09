@@ -90,6 +90,16 @@ public class HelmUtils {
         return JSONUtil.toBean(json, HelmStatus.class);
     }
 
+    /**
+     * 更新仓库
+     * @param repoName repo
+     * @return r
+     */
+    public static boolean repoUpdate(String repoName) {
+        String res = RuntimeUtil.execForStr("helm", "repo", "update", repoName);
+        return StrUtil.isNotBlank(res) && res.contains("Successfully");
+    }
+
     public static String getChartVersion(String chartName) {
         return chartName.split("-")[1];
     }

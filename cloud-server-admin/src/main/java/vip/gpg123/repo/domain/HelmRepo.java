@@ -1,45 +1,98 @@
 package vip.gpg123.repo.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.List;
-
+/**
+ * helm仓库信息表
+ * @TableName helm_repo
+ */
+@TableName(value ="helm_repo")
 @Data
 public class HelmRepo implements Serializable {
-
     /**
-     * api版本
+     * 主键
      */
-    private String apiVersion;
+    @TableId(value = "id",type = IdType.ASSIGN_ID)
+    private String id;
 
     /**
      * 名称
      */
-    private String name;
+    @TableField(value = "repo_name")
+    private String repoName;
 
     /**
-     * url
+     * 地址
      */
-    private List<String> urls;
+    @TableField(value = "repo_url")
+    private String repoUrl;
 
     /**
-     * 版本
+     * 制品数量
      */
-    private String version;
+    @TableField(value = "artifact_total")
+    private Integer artifactTotal;
 
     /**
-     * 图标
+     * 制品版本总数量
      */
-    private String icon;
+    @TableField(value = "artifact_version_total")
+    private Integer artifactVersionTotal;
+
+    /**
+     * 
+     */
+    @TableField(value = "type")
+    private String type;
+
+    /**
+     * 状态
+     */
+    @TableField(value = "status")
+    private String status;
+
+    /**
+     * 描述
+     */
+    @TableField(value = "description")
+    private String description;
+
+    /**
+     * 仓库更新时间
+     */
+    @TableField(value = "repo_update_time")
+    private Date repoUpdateTime;
 
     /**
      * 创建时间
      */
-    private String created;
+    @TableField(value = "create_time")
+    private Date createTime;
 
     /**
-     * 签名
+     * 创建者
      */
-    private String digest;
+    @TableField(value = "create_by")
+    private String createBy;
+
+    /**
+     * 更新者
+     */
+    @TableField(value = "update_by")
+    private String updateBy;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time")
+    private Date updateTime;
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }

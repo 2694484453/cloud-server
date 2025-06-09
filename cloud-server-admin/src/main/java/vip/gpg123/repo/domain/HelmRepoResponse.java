@@ -1,6 +1,5 @@
 package vip.gpg123.repo.domain;
 
-import cn.hutool.json.JSONObject;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -23,7 +22,7 @@ public class HelmRepoResponse implements Serializable {
     /**
      * entries
      */
-    private Map<String, List<HelmRepo>> entries;
+    private Map<String, List<HelmRepoItem>> entries;
 
     /**
      * 生成
