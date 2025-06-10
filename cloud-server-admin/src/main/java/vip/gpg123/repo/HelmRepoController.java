@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.DumperOptions;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
@@ -254,7 +255,11 @@ public class HelmRepoController extends BaseController {
         File file = FileUtil.createTempFile();
         FileWriter fileWriter = new FileWriter(file);
         try (OutputStream out = new BufferedOutputStream(response.getOutputStream())){
-            YamlUtil.dump(new HelmRepoConfig("", DateUtil.date().toDateStr(), items), fileWriter);
+            DumperOptions dumperOptions = new DumperOptions();
+            dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            dumperOptions.setPrettyFlow(true);
+
+            YamlUtil.dump(new HelmRepoConfig("", DateUtil.date().toDateStr(), items), fileWriter ,dumperOptions);
             // 1. 设置响应头
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("repositories.yaml", "UTF-8"));
