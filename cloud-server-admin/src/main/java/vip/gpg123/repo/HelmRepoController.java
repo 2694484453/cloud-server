@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
@@ -258,7 +259,6 @@ public class HelmRepoController extends BaseController {
             DumperOptions dumperOptions = new DumperOptions();
             dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
             dumperOptions.setPrettyFlow(true);
-
             YamlUtil.dump(new HelmRepoConfig("", DateUtil.date().toDateStr(), items), fileWriter ,dumperOptions);
             // 1. 设置响应头
             response.setContentType("application/octet-stream");
