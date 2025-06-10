@@ -137,7 +137,7 @@ public class HelmRepoController extends BaseController {
                     String execRes = null;
                     try {
                         execRes = HelmUtils.repoUpdate(repoName);
-                        helmRepo.setUpdateResult(execRes);
+                        helmRepo.setExecResult(execRes);
                         // 如果成功更新仓库数据
                         if (StrUtil.isNotBlank(execRes) && execRes.contains("Successfully")) {
                             // 请求仓库列表
@@ -155,8 +155,8 @@ public class HelmRepoController extends BaseController {
                         helmRepo.setStatus("fail");
                         execRes = e.getMessage();
                     } finally {
-                        // zhi
-                        helmRepo.setUpdateResult(execRes);
+                        // 执行结果
+                        helmRepo.setExecResult(execRes);
                         helmRepo.setArtifactTotal(chartNum);
                         helmRepo.setArtifactVersionTotal(chartVersionNum.get());
                         helmRepo.setUpdateBy(userName);
@@ -168,6 +168,48 @@ public class HelmRepoController extends BaseController {
             return AjaxResult.success("正在更新中，请稍等片刻后刷新页面！");
         }
         return AjaxResult.error("未查询到仓库");
+    }
+
+    /**
+     * 删除仓库
+     * @param repoName repo
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "删除仓库")
+    public AjaxResult delete(@RequestParam(value = "repoName", required = false) String repoName) {
+        String userName = getUsername();
+        // 根据名称查询仓库信息
+        HelmRepo helmRepo = helmRepoService.getOne(new LambdaQueryWrapper<HelmRepo>()
+                .eq(HelmRepo::getRepoName, repoName));
+        // 查询到结果
+        if (ObjectUtil.isNotNull(helmRepo)) {
+            helmRepo.setStatus("deleting");
+            helmRepo.setUpdateTime(DateUtil.date());
+            helmRepo.setUpdateBy(userName);
+            helmRepoService.updateById(helmRepo);
+            // 执行异步
+            AsyncManager.me().execute(new TimerTask() {
+                @Override
+                public void run() {
+                    String execRes = null;
+                    try {
+                        execRes = HelmUtils.repoRemove(repoName);
+                        if (StrUtil.isNotBlank(execRes) && execRes.contains("removed")) {
+                           helmRepo.setStatus("deleteSuccess");
+                        }
+                    } catch (Exception e) {
+                        helmRepo.setStatus("deleteFail");
+                    } finally {
+                        helmRepo.setExecResult(execRes);
+                        helmRepoService.removeById(helmRepo.getId());
+                    }
+                }
+            });
+            return AjaxResult.success("正在删除中，请稍等片刻后刷新页面！");
+        } else {
+            return AjaxResult.error("未查询到仓库");
+        }
     }
 
 

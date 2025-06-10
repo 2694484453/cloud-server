@@ -108,6 +108,15 @@ public class HelmUtils {
         return RuntimeUtil.execForStr("helm", "repo", "update", repoName);
     }
 
+    /**
+     * 删除仓库
+     * @param repoName repo
+     * @return r
+     */
+    public static String repoRemove(String repoName) {
+        return RuntimeUtil.execForStr("helm", "repo", "remove", repoName);
+    }
+
     public static String getChartVersion(String chartName) {
         return chartName.split("-")[1];
     }
@@ -115,6 +124,7 @@ public class HelmUtils {
     public static String getChartName(String chartName) {
         return chartName.split("-")[0];
     }
+
 
 
 }

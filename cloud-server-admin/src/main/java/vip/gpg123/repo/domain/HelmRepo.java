@@ -104,8 +104,8 @@ public class HelmRepo implements Serializable {
     /**
      * 更新结果
      */
-    @TableField(value = "update_result")
-    private String updateResult;
+    @TableField(value = "exec_result")
+    private String execResult;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
