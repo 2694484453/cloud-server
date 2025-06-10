@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -22,6 +23,7 @@ import vip.gpg123.repo.domain.HelmRepoResponse;
 import vip.gpg123.repo.service.HelmRepoApiService;
 import vip.gpg123.repo.service.HelmRepoService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,11 +81,40 @@ public class HelmRepoController extends BaseController {
     }
 
     /**
+     * 添加仓库
+     * @param helmRepo repo
+     * @return r
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "新增仓库")
+    public AjaxResult add(@RequestBody @Valid HelmRepo helmRepo) {
+        // 执行添加
+        String addRes = HelmUtils.repoAdd(helmRepo.getRepoName(), helmRepo.getRepoUrl());
+        if (StrUtil.isNotBlank(addRes) && !addRes.contains("Error")) {
+            // 查询是否存在
+            int searchCount = helmRepoService.count(new LambdaQueryWrapper<HelmRepo>()
+                    .eq(HelmRepo::getRepoName, helmRepo.getRepoName())
+            );
+            if (searchCount > 0) {
+                return AjaxResult.error("已存在相同的名称仓库，请勿重复添加或更换名称！");
+            }
+            helmRepo.setCreateBy(getUsername());
+            helmRepo.setCreateTime(DateUtil.date());
+            boolean isSaved = helmRepoService.save(helmRepo);
+            if (isSaved) {
+                return AjaxResult.success(addRes);
+            }
+            return AjaxResult.error("保存失败",true);
+        }
+        return AjaxResult.error(addRes, false);
+    }
+
+    /**
      * 更新仓库
      * @param repoName repo
      * @return r
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     @ApiOperation(value = "更新仓库")
     public AjaxResult update(@RequestParam(value = "repoName", required = false) String repoName) {
         // 根据名称查询仓库信息
@@ -98,9 +129,9 @@ public class HelmRepoController extends BaseController {
             helmRepoService.updateById(helmRepo);
             boolean isSuccess;
             try {
-                isSuccess = HelmUtils.repoUpdate(repoName);
+                String updateRes = HelmUtils.repoUpdate(repoName);
                 // 如果成功更新仓库数据
-                if (isSuccess) {
+                if (StrUtil.isNotBlank(updateRes) && updateRes.contains("success")) {
                     // 请求仓库列表
                     String res = helmRepoApiService.index(URI.create(helmRepo.getRepoUrl()));
                     HelmRepoResponse repoResponse = YamlUtil.load(StrUtil.getReader(res), HelmRepoResponse.class);

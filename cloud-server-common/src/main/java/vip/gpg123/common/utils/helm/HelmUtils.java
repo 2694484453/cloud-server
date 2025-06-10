@@ -91,13 +91,21 @@ public class HelmUtils {
     }
 
     /**
+     * 新增仓库
+     * @param repoName repo名称
+     * @param repoUrl 地址
+     */
+    public static String repoAdd(String repoName, String repoUrl) {
+        return RuntimeUtil.execForStr("helm", "repo", "add", repoName, repoUrl);
+    }
+
+    /**
      * 更新仓库
      * @param repoName repo
      * @return r
      */
-    public static boolean repoUpdate(String repoName) {
-        String res = RuntimeUtil.execForStr("helm", "repo", "update", repoName);
-        return StrUtil.isNotBlank(res) && res.contains("Successfully");
+    public static String repoUpdate(String repoName) {
+        return RuntimeUtil.execForStr("helm", "repo", "update", repoName);
     }
 
     public static String getChartVersion(String chartName) {

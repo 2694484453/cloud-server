@@ -10,6 +10,8 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * helm仓库信息表
  * @TableName helm_repo
@@ -26,6 +28,7 @@ public class HelmRepo implements Serializable {
     /**
      * 名称
      */
+    @NotBlank(message = "仓库名称不能为空")
     @TableField(value = "repo_name")
     private String repoName;
 
