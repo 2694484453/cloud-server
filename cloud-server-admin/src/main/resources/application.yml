@@ -90,7 +90,7 @@ spring:
     # 数据库索引
     database: 0
     #
-    username: gaopuguang
+    username: default
     # 密码
     password: Gaopuguang@2024%
     # 连接超时时间
