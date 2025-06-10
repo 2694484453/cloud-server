@@ -15,18 +15,18 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.kubernetes.domain.KubernetesServer;
-import vip.gpg123.kubernetes.service.KubernetesServerService;
+import vip.gpg123.kubernetes.domain.KubernetesCluster;
+import vip.gpg123.kubernetes.service.KubernetesClusterService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/kubernetes/server")
 @Api(tags = "集群服务管理")
-public class KubernetesServerController extends BaseController {
+public class KubernetesClusterController extends BaseController {
 
     @Autowired
-    private KubernetesServerService kubernetesServerService;
+    private KubernetesClusterService kubernetesClusterService;
 
     /**
      * 列表查询
@@ -39,11 +39,11 @@ public class KubernetesServerController extends BaseController {
     @ApiOperation(value = "【列表查询】")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "status", required = false) String status) {
-        List<KubernetesServer> list = kubernetesServerService.list(new LambdaQueryWrapper<KubernetesServer>()
-                .like(KubernetesServer::getContextName, name)
-                .eq(KubernetesServer::getStatus, status)
-                .eq(KubernetesServer::getCreateBy, getUsername())
-                .orderByDesc(KubernetesServer::getCreateTime)
+        List<KubernetesCluster> list = kubernetesClusterService.list(new LambdaQueryWrapper<KubernetesCluster>()
+                .like(KubernetesCluster::getContextName, name)
+                .eq(KubernetesCluster::getStatus, status)
+                .eq(KubernetesCluster::getCreateBy, getUsername())
+                .orderByDesc(KubernetesCluster::getCreateTime)
         );
         return AjaxResult.success(list);
     }
@@ -58,12 +58,12 @@ public class KubernetesServerController extends BaseController {
     @ApiOperation(value = "【分页查询】")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
                               @RequestParam(value = "status", required = false) String status) {
-        IPage<KubernetesServer> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
-        page = kubernetesServerService.page(page, new LambdaQueryWrapper<KubernetesServer>()
-                .like(KubernetesServer::getContextName, name)
-                .eq(KubernetesServer::getStatus, status)
-                .eq(KubernetesServer::getCreateBy, getUsername())
-                .orderByDesc(KubernetesServer::getCreateTime)
+        IPage<KubernetesCluster> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
+        page = kubernetesClusterService.page(page, new LambdaQueryWrapper<KubernetesCluster>()
+                .like(KubernetesCluster::getContextName, name)
+                .eq(KubernetesCluster::getStatus, status)
+                .eq(KubernetesCluster::getCreateBy, getUsername())
+                .orderByDesc(KubernetesCluster::getCreateTime)
         );
         return PageUtils.toPageByIPage(page);
     }

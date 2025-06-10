@@ -10,7 +10,7 @@ public class KubernetesFileConfig implements Serializable {
 
     private String apiVersion;
 
-    private List<KubernetesCluster> clusters;
+    private List<KubernetesClusterConfig> clusters;
 
     @com.fasterxml.jackson.annotation.JsonProperty("current-context")
     private String currentContext;

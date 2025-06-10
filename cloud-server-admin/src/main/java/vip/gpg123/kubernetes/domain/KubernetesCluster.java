@@ -1,22 +1,82 @@
 package vip.gpg123.kubernetes.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.util.Date;
 import lombok.Data;
 
-import java.io.Serializable;
-
+/**
+ * k8s服务主机信息表
+ * @TableName kubernetes_server
+ */
+@TableName(value ="kubernetes_cluster")
 @Data
-public class KubernetesCluster implements Serializable {
+public class KubernetesCluster {
+    /**
+     * 主键
+     */
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private String id;
 
-    private String name;
+    /**
+     * 名称
+     */
+    @TableField(value = "cluster_name")
+    private String clusterName;
 
-    private Cluster cluster;
+    /**
+     * 用户
+     */
+    @TableField(value = "cluster_owner")
+    private String clusterOwner;
 
-    @Data
-    public static class Cluster implements Serializable {
+    /**
+     * 上下文名称
+     */
+    @TableField(value = "context_name")
+    private String contextName;
 
-        private String server;
+    /**
+     * 配置内容
+     */
+    @TableField(value = "config")
+    private String config;
 
-        @com.fasterxml.jackson.annotation.JsonProperty("certificate-authority-data")
-        private String certificateAuthorityData;
-    }
+    /**
+     * 状态
+     */
+    @TableField(value = "status")
+    private String status;
+
+    /**
+     * 描述
+     */
+    @TableField(value = "description")
+    private String description;
+
+    /**
+     * 创建者
+     */
+    @TableField(value = "create_by")
+    private String createBy;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time")
+    private Date createTime;
+
+    /**
+     * 更新者
+     */
+    @TableField(value = "update_by")
+    private String updateBy;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time")
+    private Date updateTime;
 }

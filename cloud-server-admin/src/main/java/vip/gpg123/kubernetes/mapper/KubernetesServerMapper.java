@@ -1,7 +1,7 @@
 package vip.gpg123.kubernetes.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import vip.gpg123.kubernetes.domain.KubernetesServer;
+import vip.gpg123.kubernetes.domain.KubernetesCluster;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity vip.gpg123.kubernetes.domain.KubernetesServer
 */
 @Mapper
-public interface KubernetesServerMapper extends BaseMapper<KubernetesServer> {
+public interface KubernetesServerMapper extends BaseMapper<KubernetesCluster> {
 
 }
 

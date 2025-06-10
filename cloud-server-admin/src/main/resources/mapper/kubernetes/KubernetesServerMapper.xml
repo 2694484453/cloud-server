@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vip.gpg123.kubernetes.mapper.KubernetesServerMapper">
 
-    <resultMap id="BaseResultMap" type="vip.gpg123.kubernetes.domain.KubernetesServer">
+    <resultMap id="BaseResultMap" type="vip.gpg123.kubernetes.domain.KubernetesCluster">
             <id property="id" column="id" />
             <result property="clusterName" column="cluster_name" />
             <result property="clusterOwner" column="cluster_owner" />

@@ -19,9 +19,9 @@ import org.yaml.snakeyaml.Yaml;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.kubernetes.domain.KubernetesServer;
+import vip.gpg123.kubernetes.domain.KubernetesCluster;
 import vip.gpg123.kubernetes.service.KubernetesConfigService;
-import vip.gpg123.kubernetes.service.KubernetesServerService;
+import vip.gpg123.kubernetes.service.KubernetesClusterService;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +34,7 @@ import java.util.TimerTask;
 public class KubernetesConfigController extends BaseController {
 
     @Autowired
-    private KubernetesServerService kubernetesServerService;
+    private KubernetesClusterService kubernetesClusterService;
 
     @Autowired
     private KubernetesConfigService kubernetesConfigService;
@@ -50,11 +50,11 @@ public class KubernetesConfigController extends BaseController {
     public AjaxResult addConfig(@RequestParam(value = "name") String name,
                                 @RequestBody MultipartFile file) {
         // 判断是否存在
-        long count = kubernetesServerService.count(new LambdaQueryWrapper<KubernetesServer>()
-                .eq(KubernetesServer::getContextName, name));
-        long countByName = kubernetesServerService.count(new LambdaQueryWrapper<KubernetesServer>()
-                .eq(KubernetesServer::getContextName, name)
-                .eq(KubernetesServer::getCreateBy, getUsername())
+        long count = kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
+                .eq(KubernetesCluster::getContextName, name));
+        long countByName = kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
+                .eq(KubernetesCluster::getContextName, name)
+                .eq(KubernetesCluster::getCreateBy, getUsername())
         );
         if (count > 0 && countByName > 0) {
             return AjaxResult.error(name + "配置已经存在，如果要修改请选择更新");
@@ -123,12 +123,12 @@ public class KubernetesConfigController extends BaseController {
             newConfig.put("current-context", name);
 
             // 保存
-            KubernetesServer kubernetesServer = new KubernetesServer();
-            kubernetesServer.setContextName(name);
-            kubernetesServer.setClusterOwner(getUsername());
-            kubernetesServer.setCreateBy(getUsername());
-            kubernetesServer.setConfig(new Yaml().dumpAsMap(newConfig));
-            boolean isSuccess = kubernetesServerService.save(kubernetesServer);
+            KubernetesCluster kubernetesCluster = new KubernetesCluster();
+            kubernetesCluster.setContextName(name);
+            kubernetesCluster.setClusterOwner(getUsername());
+            kubernetesCluster.setCreateBy(getUsername());
+            kubernetesCluster.setConfig(new Yaml().dumpAsMap(newConfig));
+            boolean isSuccess = kubernetesClusterService.save(kubernetesCluster);
 
             //异步执行
             AsyncManager.me().execute(new TimerTask() {
