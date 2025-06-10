@@ -1,5 +1,6 @@
 package vip.gpg123.kubernetes;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,7 +22,7 @@ import vip.gpg123.kubernetes.service.KubernetesClusterService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/kubernetes/server")
+@RequestMapping("/kubernetesCluster")
 @Api(tags = "集群服务管理")
 public class KubernetesClusterController extends BaseController {
 
@@ -31,17 +32,17 @@ public class KubernetesClusterController extends BaseController {
     /**
      * 列表查询
      *
-     * @param name   名称
+     * @param clusterName   名称
      * @param status 状态
      * @return r
      */
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
-    public AjaxResult list(@RequestParam(value = "name", required = false) String name,
+    public AjaxResult list(@RequestParam(value = "clusterName", required = false) String clusterName,
                            @RequestParam(value = "status", required = false) String status) {
         List<KubernetesCluster> list = kubernetesClusterService.list(new LambdaQueryWrapper<KubernetesCluster>()
-                .like(KubernetesCluster::getContextName, name)
-                .eq(KubernetesCluster::getStatus, status)
+                .like(StrUtil.isNotBlank(clusterName), KubernetesCluster::getClusterName, clusterName)
+                .eq(StrUtil.isNotBlank(status), KubernetesCluster::getStatus, status)
                 .eq(KubernetesCluster::getCreateBy, getUsername())
                 .orderByDesc(KubernetesCluster::getCreateTime)
         );
@@ -50,18 +51,18 @@ public class KubernetesClusterController extends BaseController {
 
     /**
      * 分页查询
-     * @param name 名称
+     * @param clusterName 名称
      * @param status 状态
      * @return r
      */
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
-    public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
+    public TableDataInfo page(@RequestParam(value = "clusterName", required = false) String clusterName,
                               @RequestParam(value = "status", required = false) String status) {
         IPage<KubernetesCluster> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
         page = kubernetesClusterService.page(page, new LambdaQueryWrapper<KubernetesCluster>()
-                .like(KubernetesCluster::getContextName, name)
-                .eq(KubernetesCluster::getStatus, status)
+                .like(StrUtil.isNotBlank(clusterName), KubernetesCluster::getClusterName, clusterName)
+                .eq(StrUtil.isNotBlank(status), KubernetesCluster::getStatus, status)
                 .eq(KubernetesCluster::getCreateBy, getUsername())
                 .orderByDesc(KubernetesCluster::getCreateTime)
         );
