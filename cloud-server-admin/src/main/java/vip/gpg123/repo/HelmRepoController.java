@@ -118,6 +118,7 @@ public class HelmRepoController extends BaseController {
     @PutMapping("/update")
     @ApiOperation(value = "更新仓库")
     public AjaxResult update(@RequestParam(value = "repoName", required = false) String repoName) {
+        String userName = getUsername();
         // 根据名称查询仓库信息
         HelmRepo helmRepo = helmRepoService.getOne(new LambdaQueryWrapper<HelmRepo>()
                 .eq(HelmRepo::getRepoName, repoName));
@@ -125,6 +126,7 @@ public class HelmRepoController extends BaseController {
         if (ObjectUtil.isNotNull(helmRepo)) {
             helmRepo.setStatus("updating");
             helmRepo.setUpdateTime(DateUtil.date());
+            helmRepo.setUpdateBy(userName);
             helmRepoService.updateById(helmRepo);
             // 异步任务处理
             AsyncManager.me().execute(new TimerTask() {
@@ -157,13 +159,13 @@ public class HelmRepoController extends BaseController {
                         helmRepo.setUpdateResult(execRes);
                         helmRepo.setArtifactTotal(chartNum);
                         helmRepo.setArtifactVersionTotal(chartVersionNum.get());
-                        helmRepo.setUpdateBy(getUsername());
+                        helmRepo.setUpdateBy(userName);
                         helmRepo.setRepoUpdateTime(DateUtil.date());
                         helmRepoService.updateById(helmRepo);
                     }
                 }
             });
-            return AjaxResult.success("正在更新中，请稍等片刻！");
+            return AjaxResult.success("正在更新中，请稍等片刻后刷新页面！");
         }
         return AjaxResult.error("未查询到仓库");
     }
