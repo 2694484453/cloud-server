@@ -17,6 +17,7 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.helm.HelmUtils;
+import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.repo.domain.HelmRepo;
 import vip.gpg123.repo.domain.HelmRepoItem;
 import vip.gpg123.repo.domain.HelmRepoResponse;
@@ -121,38 +122,48 @@ public class HelmRepoController extends BaseController {
         HelmRepo helmRepo = helmRepoService.getOne(new LambdaQueryWrapper<HelmRepo>()
                 .eq(HelmRepo::getRepoName, repoName));
         // 查询到结果
-        int chartNum = 0;
-        AtomicInteger chartVersionNum = new AtomicInteger();
         if (ObjectUtil.isNotNull(helmRepo)) {
             helmRepo.setStatus("updating");
             helmRepo.setUpdateTime(DateUtil.date());
             helmRepoService.updateById(helmRepo);
-            boolean isSuccess;
-            try {
-                String updateRes = HelmUtils.repoUpdate(repoName);
-                // 如果成功更新仓库数据
-                if (StrUtil.isNotBlank(updateRes) && updateRes.contains("success")) {
-                    // 请求仓库列表
-                    String res = helmRepoApiService.index(URI.create(helmRepo.getRepoUrl()));
-                    HelmRepoResponse repoResponse = YamlUtil.load(StrUtil.getReader(res), HelmRepoResponse.class);
-                    Map<String, List<HelmRepoItem>> entries = repoResponse.getEntries();
-                    chartNum = entries.size();
-                    entries.forEach((k, v) -> {
-                        // 一个key就是一个应用，list数量即为版本数量
-                        chartVersionNum.set(chartVersionNum.get() + v.size());
-                    });
-                    helmRepo.setStatus("success");
+            // 异步任务处理
+            AsyncManager.me().execute(new TimerTask() {
+                @Override
+                public void run() {
+                    int chartNum = 0;
+                    AtomicInteger chartVersionNum = new AtomicInteger();
+                    String execRes = null;
+                    try {
+                        execRes = HelmUtils.repoUpdate(repoName);
+                        helmRepo.setUpdateResult(execRes);
+                        // 如果成功更新仓库数据
+                        if (StrUtil.isNotBlank(execRes) && execRes.contains("Successfully")) {
+                            // 请求仓库列表
+                            String res = helmRepoApiService.index(URI.create(helmRepo.getRepoUrl()));
+                            HelmRepoResponse repoResponse = YamlUtil.load(StrUtil.getReader(res), HelmRepoResponse.class);
+                            Map<String, List<HelmRepoItem>> entries = repoResponse.getEntries();
+                            chartNum = entries.size();
+                            entries.forEach((k, v) -> {
+                                // 一个key就是一个应用，list数量即为版本数量
+                                chartVersionNum.set(chartVersionNum.get() + v.size());
+                            });
+                            helmRepo.setStatus("success");
+                        }
+                    } catch (Exception e) {
+                        helmRepo.setStatus("fail");
+                        execRes = e.getMessage();
+                    } finally {
+                        // zhi
+                        helmRepo.setUpdateResult(execRes);
+                        helmRepo.setArtifactTotal(chartNum);
+                        helmRepo.setArtifactVersionTotal(chartVersionNum.get());
+                        helmRepo.setUpdateBy(getUsername());
+                        helmRepo.setRepoUpdateTime(DateUtil.date());
+                        helmRepoService.updateById(helmRepo);
+                    }
                 }
-            } catch (Exception e) {
-                helmRepo.setStatus("fail");
-            } finally {
-                helmRepo.setArtifactTotal(chartNum);
-                helmRepo.setArtifactVersionTotal(chartVersionNum.get());
-                helmRepo.setUpdateBy(getUsername());
-                helmRepo.setRepoUpdateTime(DateUtil.date());
-                helmRepoService.updateById(helmRepo);
-            }
-            return AjaxResult.success("更新成功");
+            });
+            return AjaxResult.success("正在更新中，请稍等片刻！");
         }
         return AjaxResult.error("未查询到仓库");
     }
