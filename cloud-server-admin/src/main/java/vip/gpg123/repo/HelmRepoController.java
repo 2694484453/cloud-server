@@ -1,6 +1,8 @@
 package vip.gpg123.repo;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.setting.yaml.YamlUtil;
@@ -8,6 +10,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.FileUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +27,19 @@ import vip.gpg123.repo.domain.HelmRepoItem;
 import vip.gpg123.repo.domain.HelmRepoResponse;
 import vip.gpg123.repo.service.HelmRepoApiService;
 import vip.gpg123.repo.service.HelmRepoService;
+import vip.gpg123.repo.vo.HelmRepoConfig;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.*;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import static vip.gpg123.framework.datasource.DynamicDataSourceContextHolder.log;
 
 /**
  * @author gaopuguang
@@ -213,28 +225,47 @@ public class HelmRepoController extends BaseController {
     }
 
 
-//    /**
-//     * 查询详情
-//     *
-//     * @param name    名称
-//     * @param version 版本
-//     * @param type    类型
-//     * @return r
-//     */
-//    @GetMapping("info")
-//    @ApiOperation(value = "查看详情")
-//    public AjaxResult info(@RequestParam(value = "name") String name,
-//                           @RequestParam(value = "version", required = false) String version,
-//                           @RequestParam(value = "type", required = false, defaultValue = "values") String type) {
-//        String[] init = {"helm", "show"};
-//        switch (type) {
-//            case "values":
-//                init = ArrayUtil.append(init, "values", repoName + "/" + name);
-//                break;
-//            case "readme":
-//                init = ArrayUtil.append(init, "readme", repoName + "/" + name);
-//        }
-//        String res = RuntimeUtil.execForStr(init);
-//        return null;
-//    }
+    /**
+     * 导出仓库配置
+     *
+     * @param repoName   名称
+     * @return r
+     */
+    @PostMapping("export")
+    @ApiOperation(value = "导出仓库配置")
+    public void export(@RequestParam(value = "repoName", required = false) String repoName,
+                       HttpServletRequest request,
+                       HttpServletResponse response) throws IOException {
+        // 查询
+        List<HelmRepo> list = helmRepoService.list(new LambdaQueryWrapper<HelmRepo>()
+                .eq(HelmRepo::getCreateBy, getUsername())
+                .like(StrUtil.isNotBlank(repoName), HelmRepo::getRepoName, repoName)
+        );
+        List<HelmRepoConfig.HelmRepoConfigItem> items = list.stream().map(e->{
+            HelmRepoConfig.HelmRepoConfigItem item = new HelmRepoConfig.HelmRepoConfigItem();
+            BeanUtils.copyProperties(e, item);
+            item.setInsecure_skip_tls_verify(false);
+            item.setPass_credentials_all(false);
+            item.setName(e.getRepoName());
+            item.setUrl(e.getRepoUrl());
+            return item;
+        }).collect(Collectors.toList());
+        // 临时文件
+        File file = FileUtil.createTempFile();
+        FileWriter fileWriter = new FileWriter(file);
+        try (OutputStream out = new BufferedOutputStream(response.getOutputStream())){
+            YamlUtil.dump(new HelmRepoConfig("", DateUtil.date().toDateStr(), items), fileWriter);
+            // 1. 设置响应头
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("repositories.yaml", "UTF-8"));
+            // 2. 带缓冲的流复制
+            IoUtil.copy(FileUtil.getInputStream(file), out);
+        } catch (Exception e) {
+            log.error("文件导出失败：{}", e.getMessage());
+            response.sendError(500, "文件导出失败：" + e.getMessage());
+        } finally {
+            IoUtil.close(fileWriter);
+            FileUtil.del(file);
+        }
+    }
 }
