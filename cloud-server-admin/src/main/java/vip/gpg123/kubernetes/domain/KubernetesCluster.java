@@ -9,6 +9,9 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 /**
  * k8s服务主机信息表
  * @TableName kubernetes_server
@@ -26,6 +29,7 @@ public class KubernetesCluster {
      * 名称
      */
     @TableField(value = "cluster_name")
+    @NotBlank(message = "集群名称不能为空")
     private String clusterName;
 
     /**

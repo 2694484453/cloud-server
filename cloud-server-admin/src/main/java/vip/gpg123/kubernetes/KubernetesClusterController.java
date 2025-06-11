@@ -1,24 +1,29 @@
 package vip.gpg123.kubernetes;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.fabric8.kubernetes.client.Config;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.kubernetes.domain.KubernetesCluster;
 import vip.gpg123.kubernetes.service.KubernetesClusterService;
+import vip.gpg123.kubernetes.vo.KubernetesClusterVo;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -32,8 +37,8 @@ public class KubernetesClusterController extends BaseController {
     /**
      * 列表查询
      *
-     * @param clusterName   名称
-     * @param status 状态
+     * @param clusterName 名称
+     * @param status      状态
      * @return r
      */
     @GetMapping("/list")
@@ -51,8 +56,9 @@ public class KubernetesClusterController extends BaseController {
 
     /**
      * 分页查询
+     *
      * @param clusterName 名称
-     * @param status 状态
+     * @param status      状态
      * @return r
      */
     @GetMapping("/page")
@@ -67,5 +73,39 @@ public class KubernetesClusterController extends BaseController {
                 .orderByDesc(KubernetesCluster::getCreateTime)
         );
         return PageUtils.toPageByIPage(page);
+    }
+
+    /**
+     * 添加集群
+     * @param kubernetesClusterVo vo
+     * @return r
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "【添加集群】")
+    public AjaxResult add(@RequestBody KubernetesClusterVo kubernetesClusterVo) {
+        // 检查配置文件
+        if (kubernetesClusterVo.getFile() == null) {
+            return AjaxResult.error("无效的配置文件！");
+        }
+        Config config = null;
+        // 解析文件
+        try {
+            // 尝试转换
+            config = K8sUtil.parseConfig(kubernetesClusterVo.getFile());
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
+        } finally {
+            // 转换完成后
+           if (config != null) {
+               KubernetesCluster kubernetesCluster = new KubernetesCluster();
+               BeanUtils.copyProperties(kubernetesClusterVo, kubernetesCluster);
+               // 进行保存
+               kubernetesCluster.setCreateBy(getUsername());
+               kubernetesCluster.setCreateTime(DateUtil.date());
+               kubernetesCluster.setConfig(FileUtil.readString(kubernetesClusterVo.getFile(), StandardCharsets.UTF_8));
+               kubernetesClusterService.save(kubernetesCluster);
+           }
+        }
+        return AjaxResult.error("未知原因");
     }
 }

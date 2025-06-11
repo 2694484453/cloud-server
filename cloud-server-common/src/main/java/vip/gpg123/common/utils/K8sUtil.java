@@ -8,6 +8,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.openshift.client.OpenShiftClient;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 /**
  * @author gaopuguang
@@ -90,12 +91,30 @@ public class K8sUtil {
     }
 
     /**
+     * 解析文件
+     */
+    public static Config parseConfig(String content) {
+        return Config.fromKubeconfig(content);
+    }
+
+    /**
+     * 从文件解析
+     * @param file 文件
+     * @return r
+     */
+    public static Config parseConfig(File file) {
+        String content = FileUtil.readString(file, StandardCharsets.UTF_8);
+        return Config.fromKubeconfig(content);
+    }
+
+    /**
      * 默认路径
      * @return r
      */
     public static String defaultConfigFilePath() {
         return configFile;
     }
+
 
     public static void main(String[] args) {
         Config config = getConfig();
