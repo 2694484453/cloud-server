@@ -22,7 +22,6 @@ import vip.gpg123.kubernetes.domain.KubernetesCluster;
 import vip.gpg123.kubernetes.service.KubernetesClusterService;
 import vip.gpg123.kubernetes.vo.KubernetesClusterVo;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
