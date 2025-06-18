@@ -30,5 +30,26 @@ spec:
             limits:
               cpu: 800m
               memory: 2048Mi
+          volumeMounts:
+            - mountPath: /root/.config/helm/repositories.yaml
+              name: helm-config
+            - mountPath: /root/.cache/helm/repository
+              name: helm-cache
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+            - mountPath: /usr/bin/docker
+              name: docker
       restartPolicy: Always
-      
+      volumes:
+        - name: helm-config
+          hostPath:
+            path: /root/.config/helm/repositories.yaml
+        - name: helm-cache
+          hostPath:
+            path: /root/.cache/helm/repository
+        - name: docker
+          hostPath:
+            path: /usr/bin/docker
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
