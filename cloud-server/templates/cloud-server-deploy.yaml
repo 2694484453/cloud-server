@@ -20,6 +20,9 @@ spec:
         - name: cloud-server
           image: registry.cn-hangzhou.aliyuncs.com/gpg_dev/cloud-server:2025-04-14-01-04-42
           imagePullPolicy: IfNotPresent
+          env:
+            - name: APP_SUFFIX
+              value: prod
           ports:
             - containerPort: 9099
               protocol: TCP

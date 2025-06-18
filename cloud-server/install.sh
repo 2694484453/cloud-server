@@ -1,0 +1,1 @@
+helm install cloud-server ../cloud-server
