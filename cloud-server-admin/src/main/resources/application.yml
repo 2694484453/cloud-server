@@ -56,7 +56,7 @@ user:
 # Spring配置
 spring:
   application:
-    name: cloud-server-{$APP_SUFFIX:dev}
+    name: cloud-server-${APP_SUFFIX:dev}
   main:
     # 允许bean定义覆盖
     allow-bean-definition-overriding: true
