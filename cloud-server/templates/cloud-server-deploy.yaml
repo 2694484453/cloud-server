@@ -47,12 +47,16 @@ spec:
         - name: helm-config
           hostPath:
             path: /root/.config/helm/repositories.yaml
+            type: File
         - name: helm-cache
           hostPath:
             path: /root/.cache/helm/repository
+            type: Directory
         - name: docker
           hostPath:
             path: /usr/bin/docker
+            type: File
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
+            type: Socket
