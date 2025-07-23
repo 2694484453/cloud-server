@@ -2,95 +2,80 @@ package vip.gpg123.scheduling.task;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.extra.ssh.JschUtil;
-import com.jcraft.jsch.Session;
-import lombok.extern.slf4j.Slf4j;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.framework.manager.AsyncManager;
+import vip.gpg123.common.exception.job.TaskException;
 import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.domain.SysJobLog;
 import vip.gpg123.quartz.service.ISysJobLogService;
 import vip.gpg123.quartz.service.ISysJobService;
-import vip.gpg123.vps.domain.CloudHostServer;
-import vip.gpg123.vps.service.CloudHostServerService;
-
-import java.nio.charset.StandardCharsets;
-import java.util.TimerTask;
 
 @Component
-@Slf4j
 public abstract class BaseTask {
-
-    @Autowired
-    private CloudHostServerService cloudHostServerService;
-
-    @Autowired
-    private ISysJobLogService sysJobLogService;
 
     @Autowired
     private ISysJobService sysJobService;
 
-    private static final String remote_shell = "remoteShell";
+    @Autowired
+    private ISysJobLogService sysJobLogService;
 
     /**
-     * 远程执行shell
-     * @param jobId 任务ID
-     * @param hostIp 主机IP
-     * @param cmd 命令
+     * 更新任务
+     * @param sysJob 任务
      */
-    public void runRemoteShell(Long jobId, String hostIp, String cmd) {
-        log.info("执行{}类型定时任务: {}", remote_shell ,jobId);
-        // 查询到任务
-        if (ObjectUtil.isNotNull(jobId)) {
-            SysJob sysJob = sysJobService.selectJobById(jobId);
-            if (ObjectUtil.isNotNull(sysJob)) {
-                sysJob.setRunTime(DateUtil.date());
-                sysJob.setStatus("running");
-                sysJobService.updateById(sysJob);
-                // 查询主机
-                CloudHostServer cloudHostServer = cloudHostServerService.getById(hostIp);
-                // 设置日志
-                SysJobLog sysJobLog = new SysJobLog();
-                sysJobLog.setCreateBy(SecurityUtils.getUsername());
-                sysJobLog.setJobName(sysJobLog.getJobName());
-                sysJobLog.setJobGroup(sysJobLog.getJobGroup());
-                sysJobLog.setInvokeTarget(sysJobLog.getInvokeTarget());
-                sysJobLog.setCreateTime(DateUtil.date());
-                sysJobLog.setJobType(sysJobLog.getJobType());
-                // 判空
-                if (ObjectUtil.isNotNull(cloudHostServer)) {
-                    try {
-                        Session session = JschUtil.createSession(cloudHostServer.getHostIp(), cloudHostServer.getPort(), cloudHostServer.getUserName(), cloudHostServer.getPassWord());
-                        session.connect();
-                        String res = JschUtil.exec(session, cmd, StandardCharsets.UTF_8);
-                        sysJobLog.setStatus("success");
-                        sysJobLog.setResultInfo(res);
-                        sysJob.setRunResult(res);
-                        sysJob.setStatus("success");
-                    } catch (Exception e) {
-                        sysJobLog.setStatus("fail");
-                        sysJobLog.setExceptionInfo(e.getMessage());
-                        sysJob.setRunResult(e.getMessage());
-                        sysJob.setStatus("fail");
-                        //throw new RuntimeException(e);
-                    } finally {
-                        // 执行异步任务
-                        AsyncManager.me().execute(new TimerTask() {
-                            @Override
-                            public void run() {
-                                // 更新job状态
-                                sysJobService.updateById(sysJob);
-                                // 保存日志到数据库
-                                sysJobLogService.save(sysJobLog);
-                            }
-                        });
-                    }
-                }
-            }
-        }
+    public void updateJob(SysJob sysJob) {
+       try {
+           // 执行查询
+           SysJob search = sysJobService.selectJobById(sysJob.getJobId());
+           sysJob.setRunTime(DateUtil.date());
+           // 如果不为空
+           if (ObjectUtil.isNotNull(search)) {
+               sysJob.setStatus("running");
+           } else {
+               sysJob.setStatus("notFound");
+               sysJob.setRunResult("查询不到这个任务，请检查！");
+           }
+           sysJobService.updateJob(sysJob);
+       } catch (SchedulerException | TaskException e) {
+           sysJob.setStatus("error");
+           sysJob.setRunResult(e.getMessage());
+       }
     }
 
+    /**
+     * 保存日志
+     * @param sysJobLog 对象
+     */
+    public void saveJobLogs(SysJobLog sysJobLog) {
+        // 保存日志到数据库
+        sysJobLogService.save(sysJobLog);
+    }
 
+    /**
+     * 更新日志
+     * @param sysJobLog 对象
+     */
+    public void updateJobLogs(SysJobLog sysJobLog) {
+        // 更新日志到数据库
+        sysJobLogService.updateById(sysJobLog);
+    }
+
+    /**
+     * 保存或更新日志
+     * @param sysJobLog 对象
+     */
+    public void saveOrUpdateJobLogs(SysJobLog sysJobLog) {
+        // 保存或更新日志
+        sysJobLogService.saveOrUpdate(sysJobLog);
+    }
+
+    /**
+     * 删除日志
+     * @param logId id
+     */
+    public void deleteJobLogs(Long logId) {
+        // 删除日志
+        sysJobLogService.deleteJobLogById(logId);
+    }
 }

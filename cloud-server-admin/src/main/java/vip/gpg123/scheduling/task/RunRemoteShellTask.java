@@ -2,13 +2,11 @@ package vip.gpg123.scheduling.task;
 
 import org.springframework.stereotype.Component;
 
-import java.math.BigInteger;
-
 /**
  * 远程命令执行
  */
 @Component("remoteShellTask")
-public class RemoteShellTask extends BaseTask {
+public class RunRemoteShellTask extends ShellBaseTask {
 
     /**
      * 执行阿里云备份脚本
