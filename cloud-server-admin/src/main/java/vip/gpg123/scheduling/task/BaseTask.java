@@ -37,15 +37,9 @@ public abstract class BaseTask {
                sysJob.setStatus("notFound");
                sysJob.setRunResult("查询不到这个任务，请检查！");
            }
+           sysJobService.updateJob(sysJob);
        } catch (Exception e) {
-           sysJob.setStatus("error");
-           sysJob.setRunResult(e.getMessage());
-       } finally {
-           try {
-               sysJobService.updateJob(sysJob);
-           } catch (Exception e) {
-               System.out.println("<UNK>" + e.getMessage());
-           }
+           System.out.println("<UNK>" + e.getMessage());
        }
     }
 
