@@ -1,6 +1,5 @@
 package vip.gpg123.scheduling.task;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.ssh.JschUtil;
 import com.jcraft.jsch.Session;
@@ -40,7 +39,8 @@ public class ShellBaseTask extends BaseTask {
         // 查询到任务
         if (ObjectUtil.isNotNull(jobId)) {
             SysJob sysJob = sysJobService.selectJobById(jobId);
-            if (super.updateJob(sysJob)) {
+            if (ObjectUtil.isNotNull(sysJob)) {
+                super.updateJob(sysJob);
                 // 查询主机
                 CloudHostServer cloudHostServer = cloudHostServerService.getById(hostIp);
                 // 设置日志
