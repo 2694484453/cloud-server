@@ -7,7 +7,6 @@ otel:
       traces:
         protocol: http/protobuf
         endpoint: http://tracing-analysis-dc-hz.aliyuncs.com/adapt_fy40et0jbp@da5cc2ebef9f41f_fy40et0jbp@53df7ad2afe8301/api/otlp/traces
-      #endpoint: http://hcs.gpg123.vip:4318 #http://tracing-analysis-dc-hz-internal.aliyuncs.com/adapt_fy40et0jbp@da5cc2ebef9f41f_fy40et0jbp@53df7ad2afe8301/api/otlp/traces #http://hcs.gpg123.vip:4318
       timeout: 10s
       logs:
         protocol: http/protobuf
