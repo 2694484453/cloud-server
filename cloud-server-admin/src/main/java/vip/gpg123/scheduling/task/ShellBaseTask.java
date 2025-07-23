@@ -7,7 +7,6 @@ import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.domain.SysJobLog;
@@ -49,12 +48,10 @@ public class ShellBaseTask extends BaseTask {
                 CloudHostServer cloudHostServer = cloudHostServerService.getById(hostIp);
                 // 设置日志
                 SysJobLog sysJobLog = new SysJobLog();
-                sysJobLog.setCreateBy(SecurityUtils.getUsername());
-                sysJobLog.setJobName(sysJobLog.getJobName());
-                sysJobLog.setJobGroup(sysJobLog.getJobGroup());
-                sysJobLog.setInvokeTarget(sysJobLog.getInvokeTarget());
-                sysJobLog.setCreateTime(DateUtil.date());
-                sysJobLog.setJobType(sysJobLog.getJobType());
+                sysJobLog.setJobName(sysJob.getJobName());
+                sysJobLog.setJobGroup(sysJob.getJobGroup());
+                sysJobLog.setInvokeTarget(sysJob.getInvokeTarget());
+                sysJobLog.setJobType(sysJob.getJobType());
                 // 判空
                 if (ObjectUtil.isNotNull(cloudHostServer)) {
                     try {

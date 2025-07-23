@@ -47,6 +47,8 @@ public class SysJob implements Serializable {
     @Excel(name = "任务组名")
     private String jobGroup;
 
+    private String jobType;
+
     /** 调用目标字符串 */
     @Excel(name = "调用目标字符串")
     @NotBlank(message = "调用目标字符串不能为空")

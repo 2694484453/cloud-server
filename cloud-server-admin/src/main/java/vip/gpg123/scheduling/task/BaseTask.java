@@ -2,10 +2,8 @@ package vip.gpg123.scheduling.task;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import vip.gpg123.common.exception.job.TaskException;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.domain.SysJobLog;
@@ -34,6 +32,7 @@ public abstract class BaseTask {
            if (ObjectUtil.isNotNull(search)) {
                sysJob.setStatus("running");
            } else {
+               sysJob.setUpdateBy(SecurityUtils.getUsername());
                sysJob.setStatus("notFound");
                sysJob.setRunResult("查询不到这个任务，请检查！");
            }
@@ -55,6 +54,8 @@ public abstract class BaseTask {
      */
     public void saveJobLogs(SysJobLog sysJobLog) {
         // 保存日志到数据库
+        sysJobLog.setCreateBy(SecurityUtils.getUsername());
+        sysJobLog.setCreateTime(DateUtil.date());
         sysJobLogService.save(sysJobLog);
     }
 
@@ -64,6 +65,8 @@ public abstract class BaseTask {
      */
     public void updateJobLogs(SysJobLog sysJobLog) {
         // 更新日志到数据库
+        sysJobLog.setUpdateBy(SecurityUtils.getUsername());
+        sysJobLog.setUpdateTime(DateUtil.date());
         sysJobLogService.updateById(sysJobLog);
     }
 
@@ -73,6 +76,8 @@ public abstract class BaseTask {
      */
     public void saveOrUpdateJobLogs(SysJobLog sysJobLog) {
         // 保存或更新日志
+        sysJobLog.setCreateBy(SecurityUtils.getUsername());
+        sysJobLog.setUpdateBy(SecurityUtils.getUsername());
         sysJobLogService.saveOrUpdate(sysJobLog);
     }
 
