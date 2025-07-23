@@ -28,11 +28,12 @@ public abstract class BaseTask {
            // 执行查询
            SysJob search = sysJobService.selectJobById(sysJob.getJobId());
            sysJob.setRunTime(DateUtil.date());
+           sysJob.setUpdateTime(DateUtil.date());
+           sysJob.setStatus("running");
+           sysJob.setUpdateBy(SecurityUtils.getUsername());
+           sysJob.setRunResult(null);
            // 如果不为空
-           if (ObjectUtil.isNotNull(search)) {
-               sysJob.setStatus("running");
-           } else {
-               sysJob.setUpdateBy(SecurityUtils.getUsername());
+           if (ObjectUtil.isNull(search)) {
                sysJob.setStatus("notFound");
                sysJob.setRunResult("查询不到这个任务，请检查！");
            }
