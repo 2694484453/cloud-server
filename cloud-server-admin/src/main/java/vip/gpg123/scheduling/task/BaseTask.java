@@ -23,7 +23,7 @@ public abstract class BaseTask {
      * 更新任务
      * @param sysJob 任务
      */
-    public void updateJob(SysJob sysJob) {
+    public boolean updateJob(SysJob sysJob) {
        try {
            // 执行查询
            SysJob search = sysJobService.selectJobById(sysJob.getJobId());
@@ -36,11 +36,14 @@ public abstract class BaseTask {
            if (ObjectUtil.isNull(search)) {
                sysJob.setStatus("notFound");
                sysJob.setRunResult("查询不到这个任务，请检查！");
+               return false;
+           }else {
+               return sysJobService.updateJob(sysJob) > 0;
            }
-           sysJobService.updateJob(sysJob);
        } catch (Exception e) {
            System.out.println("<UNK>" + e.getMessage());
        }
+        return false;
     }
 
     /**

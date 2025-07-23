@@ -40,10 +40,7 @@ public class ShellBaseTask extends BaseTask {
         // 查询到任务
         if (ObjectUtil.isNotNull(jobId)) {
             SysJob sysJob = sysJobService.selectJobById(jobId);
-            if (ObjectUtil.isNotNull(sysJob)) {
-                sysJob.setRunTime(DateUtil.date());
-                sysJob.setStatus("running");
-                super.updateJob(sysJob);
+            if (super.updateJob(sysJob)) {
                 // 查询主机
                 CloudHostServer cloudHostServer = cloudHostServerService.getById(hostIp);
                 // 设置日志
