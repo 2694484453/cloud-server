@@ -6,6 +6,7 @@ import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.exception.job.TaskException;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.domain.SysJobLog;
 import vip.gpg123.quartz.service.ISysJobLogService;
@@ -36,10 +37,15 @@ public abstract class BaseTask {
                sysJob.setStatus("notFound");
                sysJob.setRunResult("查询不到这个任务，请检查！");
            }
-           sysJobService.updateJob(sysJob);
-       } catch (SchedulerException | TaskException e) {
+       } catch (Exception e) {
            sysJob.setStatus("error");
            sysJob.setRunResult(e.getMessage());
+       } finally {
+           try {
+               sysJobService.updateJob(sysJob);
+           } catch (Exception e) {
+               System.out.println("<UNK>" + e.getMessage());
+           }
        }
     }
 
