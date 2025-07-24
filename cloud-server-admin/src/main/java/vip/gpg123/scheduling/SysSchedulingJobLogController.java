@@ -55,7 +55,7 @@ public class SysSchedulingJobLogController {
     @GetMapping("/page")
     @ApiOperation(value = "分页")
     public TableDataInfo page(SysJobLog sysJobLog) {
-        IPage<SysJobLog> page = sysJobLogService.page(new Page<SysJobLog>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()), new LambdaQueryWrapper<SysJobLog>()
+        IPage<SysJobLog> page = sysJobLogService.page(new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()), new LambdaQueryWrapper<SysJobLog>()
                 .like(StrUtil.isNotBlank(sysJobLog.getJobName()), SysJobLog::getJobName, sysJobLog.getJobName())
                 .like(StrUtil.isNotBlank(sysJobLog.getJobGroup()), SysJobLog::getJobGroup, sysJobLog.getJobGroup())
                 .orderByDesc(SysJobLog::getCreateTime)
