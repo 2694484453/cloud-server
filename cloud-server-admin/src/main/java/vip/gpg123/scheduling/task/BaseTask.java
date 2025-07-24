@@ -11,7 +11,7 @@ import vip.gpg123.quartz.service.ISysJobLogService;
 import vip.gpg123.quartz.service.ISysJobService;
 
 @Component
-public abstract class BaseTask {
+public class BaseTask  {
 
     @Autowired
     private ISysJobService sysJobService;
