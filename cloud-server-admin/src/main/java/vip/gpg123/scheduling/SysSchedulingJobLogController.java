@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
@@ -30,6 +32,7 @@ public class SysSchedulingJobLogController {
 
     /**
      * 列表
+     *
      * @param sysJobLog 参数
      * @return r
      */
@@ -49,6 +52,7 @@ public class SysSchedulingJobLogController {
 
     /**
      * 分页查询
+     *
      * @param sysJobLog 参数
      * @return r
      */
@@ -61,5 +65,17 @@ public class SysSchedulingJobLogController {
                 .orderByDesc(SysJobLog::getCreateTime)
         );
         return PageUtils.toPageByIPage(page);
+    }
+
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "删除")
+    public AjaxResult delete(@RequestParam(value = "id") String id) {
+        int r = sysJobLogService.deleteJobLogById(Long.valueOf(id));
+        return r > 0 ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }
 }
