@@ -26,7 +26,7 @@ public class WebTools implements Serializable {
     /**
      * 
      */
-    @TableField(value = "index")
+    @TableField(exist = false)
     private Integer index;
 
     /**

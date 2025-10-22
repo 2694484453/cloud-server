@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="vip.gpg123.tools.domain.WebTools">
             <id property="id" column="id" />
-            <result property="index" column="index" />
+            <result property="index" column="id" />
             <result property="name" column="name" />
             <result property="banner" column="banner" />
             <result property="type" column="type" />
@@ -17,7 +17,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,index,name,banner,type,description,
+        id,name,banner,type,description,
         is_setup,create_time,update_time
     </sql>
 </mapper>
