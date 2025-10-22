@@ -5,20 +5,23 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.extra.ssh.JschUtil;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import vip.gpg123.framework.manager.AsyncManager;
+import vip.gpg123.common.exception.job.TaskException;
 import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.service.ISysJobService;
 import vip.gpg123.vps.domain.CloudHostServer;
 import vip.gpg123.vps.service.CloudHostServerService;
 
 import java.nio.charset.StandardCharsets;
-import java.util.TimerTask;
 
 @Component
 @Slf4j
-public class ShellBaseTask extends BaseTask {
+public abstract class ShellBaseTask extends BaseTask {
 
     @Autowired
     private CloudHostServerService cloudHostServerService;
@@ -33,17 +36,15 @@ public class ShellBaseTask extends BaseTask {
     /**
      * 远程执行shell
      *
-     * @param jobId  任务ID
      * @param hostIp 主机IP
      * @param cmd    命令
      */
-    public void runRemoteShell(Long jobId, String hostIp, String cmd) {
-        log.info("执行{}类型定时任务: {}", remote_shell, jobId);
-        // 查询到任务
-        if (ObjectUtil.isNotNull(jobId)) {
-            SysJob sysJob = sysJobService.selectJobById(jobId);
+    public void runRemoteShell(String hostIp, String cmd) throws SchedulerException, TaskException {
+        Long taskId = TaskContext.getCurrentTaskId();
+        log.info("执行{}类型定时任务,{}", remote_shell, taskId);
+
+            SysJob sysJob = sysJobService.selectJobById(taskId);
             if (ObjectUtil.isNotNull(sysJob)) {
-                super.updateJob(sysJob);
                 // 查询主机
                 CloudHostServer cloudHostServer = cloudHostServerService.getById(hostIp);
                 // 判空
@@ -58,18 +59,11 @@ public class ShellBaseTask extends BaseTask {
                         sysJob.setRunResult(e.getMessage());
                         sysJob.setStatus("fail");
                     } finally {
-                        // 执行异步任务
-                        AsyncManager.me().execute(new TimerTask() {
-                            @Override
-                            public void run() {
-                                // 更新job状态
-                                ShellBaseTask.super.updateJob(sysJob);
-                            }
-                        });
+                        // 更新job状态
+                        sysJobService.updateJob(sysJob);
                     }
                 }
             }
-        }
     }
 
     /**
@@ -84,7 +78,7 @@ public class ShellBaseTask extends BaseTask {
         if (ObjectUtil.isNotNull(jobId)) {
             SysJob sysJob = sysJobService.selectJobById(jobId);
             if (ObjectUtil.isNotNull(sysJob)) {
-                super.updateJob(sysJob);
+                //super.updateJob(sysJob);
                 try {
                     String res = RuntimeUtil.execForStr(StandardCharsets.UTF_8, cmd);
                     sysJob.setRunResult(res);
@@ -92,17 +86,9 @@ public class ShellBaseTask extends BaseTask {
                 } catch (Exception e) {
                     sysJob.setRunResult(e.getMessage());
                     sysJob.setStatus("fail");
-                } finally {
-                    // 执行异步任务
-                    AsyncManager.me().execute(new TimerTask() {
-                        @Override
-                        public void run() {
-                            // 更新job状态
-                            ShellBaseTask.super.updateJob(sysJob);
-                        }
-                    });
                 }
             }
         }
     }
+
 }

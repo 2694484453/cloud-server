@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.tools.mapper.WebToolsMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.tools.domain.WebTools">
+            <id property="id" column="id" />
+            <result property="index" column="index" />
+            <result property="name" column="name" />
+            <result property="banner" column="banner" />
+            <result property="type" column="type" />
+            <result property="description" column="description" />
+            <result property="isSetup" column="is_setup" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,index,name,banner,type,description,
+        is_setup
+    </sql>
+</mapper>

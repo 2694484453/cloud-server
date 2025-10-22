@@ -45,10 +45,14 @@ public class Constants
      */
     public static final String SUCCESS = "0";
 
+    public static final String SUCCESS_TAG = "success";
+
     /**
      * 通用失败标识
      */
     public static final String FAIL = "1";
+
+    public static final String FAIL_TAG = "fail";
 
     /**
      * 登录成功
