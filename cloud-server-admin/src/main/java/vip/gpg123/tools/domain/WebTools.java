@@ -59,10 +59,16 @@ public class WebTools implements Serializable {
     @TableField(value = "is_setup")
     private Integer isSetup;
 
+    /**
+     * 创建
+     */
     @TableField(value = "create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    /**
+     * 更新
+     */
     @TableField(value = "update_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;

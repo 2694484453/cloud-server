@@ -1,5 +1,6 @@
 package vip.gpg123.tools.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import vip.gpg123.tools.domain.WebTools;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-10-23 02:24:22
 * @Entity vip.gpg123.tools.domain.WebTools
 */
+@Mapper
 public interface WebToolsMapper extends BaseMapper<WebTools> {
 
 }

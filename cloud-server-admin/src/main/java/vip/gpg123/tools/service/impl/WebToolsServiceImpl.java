@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-10-23 02:24:22
 */
 @Service
-public class WebToolsServiceImpl extends ServiceImpl<WebToolsMapper, WebTools>
-    implements WebToolsService{
+public class WebToolsServiceImpl extends ServiceImpl<WebToolsMapper, WebTools> implements WebToolsService{
 
 }
 

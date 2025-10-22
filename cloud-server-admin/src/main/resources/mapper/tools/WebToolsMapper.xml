@@ -12,10 +12,12 @@
             <result property="type" column="type" />
             <result property="description" column="description" />
             <result property="isSetup" column="is_setup" />
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,index,name,banner,type,description,
-        is_setup
+        is_setup,create_time,update_time
     </sql>
 </mapper>
