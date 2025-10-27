@@ -99,6 +99,20 @@
             <artifactId>kubernetes-model-core</artifactId>
             <version>6.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>vip.gpg123</groupId>
+            <artifactId>cloud-server-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-auth</artifactId>
+            <version>0.2.15-beta</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.17.4</version>
+        </dependency>
 
     </dependencies>
 
