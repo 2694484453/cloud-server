@@ -22,7 +22,7 @@ public class WallPaperController {
 
     private static final String bucketName= "dev-gpg";
 
-    private static final String keyPrefix = "image";
+    private static final String keyPrefix = "";
 
     @GetMapping("/list")
     public String list(){

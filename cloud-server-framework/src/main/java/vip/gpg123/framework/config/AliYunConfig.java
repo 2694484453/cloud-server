@@ -5,10 +5,8 @@ import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
 import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
-import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyuncs.exceptions.ClientException;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +17,10 @@ import org.springframework.context.annotation.Configuration;
 public class AliYunConfig {
 
     @Value("${cloud.aliyun.accessKeyId}")
-    private static String accessKeyId;
+    private String accessKeyId;
 
     @Value("${cloud.aliyun.accessKeySecret}")
-    private static String accessKeySecret;
+    private String accessKeySecret;
 
     @Bean
     public StaticCredentialProvider staticCredentialsProvider() {
@@ -57,10 +55,6 @@ public class AliYunConfig {
     public OSS ossClient() throws ClientException {
         // Endpoint以华东1（杭州）为例，其它Region请按实际情况填写。
         String endpoint = "https://oss-cn-hangzhou.aliyuncs.com";
-        // 填写Bucket名称，例如examplebucket。
-        String bucketName = "examplebucket";
-        // 指定前缀，例如exampledir/object。
-        String keyPrefix = "exampledir/object";
         // 填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
         String region = "cn-hangzhou";
 
