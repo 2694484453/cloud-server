@@ -32,7 +32,7 @@ public class AliYunConfig {
 
     @Bean
     public DefaultCredentialProvider defaultCredentialProvider() {
-        return CredentialsProviderFactory.newDefaultCredentialProvider(accessKeyId,accessKeyId);
+        return new DefaultCredentialProvider(accessKeyId,accessKeyId);
     }
 
 //    @Bean(name = "AsyncDomainClient")
@@ -52,7 +52,7 @@ public class AliYunConfig {
 //    }
 
     @Bean
-    public OSS ossClient() throws ClientException {
+    public OSS ossClient() {
         // Endpoint以华东1（杭州）为例，其它Region请按实际情况填写。
         String endpoint = "https://oss-cn-hangzhou.aliyuncs.com";
         // 填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
