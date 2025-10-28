@@ -62,3 +62,5 @@ cloud:
   aliyun:
     accessKeyId: LTAI5tQU6m9mYnspgpVq8Rxu
     accessKeySecret: hWWHQ5rLmblqskgowIoHdxBhxiD7Nc
+    endpoint: https://oss-cn-hangzhou.aliyuncs.com
+    ossDomain: https://oss.gpg123.vip

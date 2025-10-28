@@ -1,5 +1,6 @@
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.ListObjectsV2Request;
 import com.aliyun.oss.model.ListObjectsV2Result;
 import com.aliyun.oss.model.OSSObjectSummary;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class OssTest {
         OSS client = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            final String keyPrefix = "";
+            final String keyPrefix = "wallpaper/";
 
 //            if (!client.doesBucketExist(bucketName)) {
 //                client.createBucket(bucketName);
@@ -38,13 +39,17 @@ public class OssTest {
 //            }
 //            System.out.println("Put " + keys.size() + " objects completed.");
             // 列举文件。如果不设置keyPrefix，则列举存储空间下的所有文件。如果设置keyPrefix，则列举包含指定前缀的文件。
-            ListObjectsV2Result result = client.listObjectsV2(bucketName, keyPrefix);
+            // 设定从start-after之后按字母排序开始返回Object。
+            ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName);
+            listObjectsV2Request.setStartAfter("wallpaper/");
+            listObjectsV2Request.setPrefix("wallpaper/");
+            ListObjectsV2Result result = client.listObjectsV2(listObjectsV2Request);
+                    //client.listObjectsV2(bucketName, keyPrefix);
             List<OSSObjectSummary> ossObjectSummaries = result.getObjectSummaries();
 
             for (OSSObjectSummary s : ossObjectSummaries) {
                 System.out.println("\t" + s.getKey());
             }
-            System.out.println(ossObjectSummaries);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

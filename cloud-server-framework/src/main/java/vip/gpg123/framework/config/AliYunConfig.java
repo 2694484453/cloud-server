@@ -2,12 +2,9 @@ package vip.gpg123.framework.config;
 
 import com.aliyun.auth.credentials.Credential;
 import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
-import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
-import com.aliyun.oss.common.comm.Protocol;
-import com.aliyun.oss.common.comm.SignVersion;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +17,9 @@ public class AliYunConfig {
 
     @Value("${cloud.aliyun.accessKeySecret}")
     private String accessKeySecret;
+
+    @Value("${cloud.aliyun.endpoint}")
+    private String endpoint;
 
     @Bean
     public StaticCredentialProvider staticCredentialsProvider() {
@@ -34,39 +34,15 @@ public class AliYunConfig {
         return new DefaultCredentialProvider(accessKeyId,accessKeyId);
     }
 
-//    @Bean(name = "AsyncDomainClient")
-//    public AsyncClient createClient() {
-//        return AsyncClient.builder()
-//                .region("cn-hangzhou") // Region ID
-//                //.httpClient(httpClient) // Use the configured HttpClient, otherwise use the default HttpClient (Apache HttpClient)
-//                .credentialsProvider(staticCredentialsProvider())
-//                //.serviceConfiguration(Configuration.create()) // Service-level configuration
-//                // Client-level configuration rewrite, can set Endpoint, Http request parameters, etc.
-//                .overrideConfiguration(
-//                        ClientOverrideConfiguration.create()
-//                                // Endpoint 请参考 https://api.aliyun.com/product/Alidns
-//                                .setEndpointOverride("alidns.cn-hangzhou.aliyuncs.com")
-//                        //.setConnectTimeout(Duration.ofSeconds(30))
-//                ).build();
-//    }
 
+    /**
+     * oss简单实例
+     * @return r
+     */
     @Bean
     public OSS ossClient() {
         // Endpoint以华东1（杭州）为例，其它Region请按实际情况填写。
-        String endpoint = "https://oss-cn-hangzhou.aliyuncs.com";
         // 填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
-        String region = "cn-hangzhou";
-
-        // 创建OSSClient实例。
-        ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
-        clientBuilderConfiguration.setProtocol(Protocol.HTTP);
-        clientBuilderConfiguration.setSignatureVersion(SignVersion.V2);
-        clientBuilderConfiguration.setConnectionTimeout(30000);
-        return OSSClientBuilder.create()
-                .endpoint(endpoint)
-                .credentialsProvider(defaultCredentialProvider())
-                .clientConfiguration(clientBuilderConfiguration)
-                .region(region)
-                .build();
+        return new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     }
 }
