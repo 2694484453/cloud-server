@@ -5,10 +5,9 @@ import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
 import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.common.comm.SignVersion;
-import com.aliyuncs.exceptions.ClientException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,9 +58,10 @@ public class AliYunConfig {
         String region = "cn-hangzhou";
 
         // 创建OSSClient实例。
-        // 当OSSClient实例不再使用时，调用shutdown方法以释放资源。
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
-        clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
+        clientBuilderConfiguration.setProtocol(Protocol.HTTP);
+        clientBuilderConfiguration.setSignatureVersion(SignVersion.V2);
+        clientBuilderConfiguration.setConnectionTimeout(30000);
         return OSSClientBuilder.create()
                 .endpoint(endpoint)
                 .credentialsProvider(defaultCredentialProvider())
