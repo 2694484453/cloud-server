@@ -10,4 +10,4 @@ RUN chmod +x /usr/local/bin/helm
 #&& helm repo add gpg_dev https://helm-repo.gpg123.vip && helm repo update
 ENTRYPOINT ["/bin/sh", "-c", "cd / && java -jar cloud-server-admin.jar"]
 EXPOSE 9099 9099
-#111
+#1112
