@@ -69,7 +69,11 @@ public class AppMarketController extends BaseController {
                               @RequestParam(value = "status", required = false) String status) {
         // 获取分页参数
         PageUtils.toIPage(page);
-        IPage<HelmAppMarket> pageRes = helmAppMarketService.page(page, new LambdaQueryWrapper<HelmAppMarket>());
+        IPage<HelmAppMarket> pageRes = helmAppMarketService.page(page, new LambdaQueryWrapper<HelmAppMarket>()
+                .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
+                .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
+                .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
+                .eq(HelmAppMarket::getCreateBy, getUsername()));
         return PageUtils.toPageByIPage(pageRes);
     }
 
