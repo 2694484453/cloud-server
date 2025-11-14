@@ -8,7 +8,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +38,7 @@ public class AppMarketController extends BaseController {
      * 列表查询
      *
      * @param name   名称
-     * @param status    状态
+     * @param status 状态
      * @return r
      */
     @GetMapping("/list")
@@ -46,18 +48,19 @@ public class AppMarketController extends BaseController {
                            @RequestParam(value = "status", required = false) String status) {
         // 查询
         List<HelmAppMarket> helmAppMarkets = helmAppMarketService.list(new LambdaQueryWrapper<HelmAppMarket>()
-                .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
-                .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
-                .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
-                .eq(HelmAppMarket::getCreateBy, getUsername())
+                        .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
+                        .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
+                        .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
+                //.eq(HelmAppMarket::getCreateBy, getUsername())
         );
         return AjaxResult.success(helmAppMarkets);
     }
 
     /**
      * 分页查询
-     * @param page page
-     * @param name 名称
+     *
+     * @param page   page
+     * @param name   名称
      * @param status 状态
      * @return r
      */
@@ -70,15 +73,30 @@ public class AppMarketController extends BaseController {
         // 获取分页参数
         PageUtils.toIPage(page);
         IPage<HelmAppMarket> pageRes = helmAppMarketService.page(page, new LambdaQueryWrapper<HelmAppMarket>()
-                .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
-                .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
-                .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
-                .eq(HelmAppMarket::getCreateBy, getUsername()));
+                        .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
+                        .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
+                        .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
+                //.eq(HelmAppMarket::getCreateBy, getUsername())
+        );
         return PageUtils.toPageByIPage(pageRes);
     }
 
     /**
+     * 删除
+     *
+     * @param helmAppMarket h
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "删除")
+    public AjaxResult delete(@RequestBody HelmAppMarket helmAppMarket) {
+        boolean del = helmAppMarketService.removeById(helmAppMarket.getId());
+        return del ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
+    }
+
+    /**
      * 同步
+     *
      * @return
      */
     @GetMapping
