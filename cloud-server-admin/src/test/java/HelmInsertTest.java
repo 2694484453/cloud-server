@@ -13,9 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.w3c.dom.stylesheets.LinkStyle;
 import vip.gpg123.CloudServerApplication;
-import vip.gpg123.app.domain.Entry;
 import vip.gpg123.app.domain.HelmAppMarket;
 import vip.gpg123.app.domain.IndexResponse;
 import vip.gpg123.app.service.HelmAppMarketService;
@@ -23,7 +21,6 @@ import vip.gpg123.common.utils.DateUtils;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(classes = {CloudServerApplication.class})
