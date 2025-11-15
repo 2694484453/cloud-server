@@ -36,6 +36,12 @@ public class MineApp implements Serializable {
     private String chartName;
 
     /**
+     *
+     */
+    @TableField(value = "icon")
+    private String icon;
+
+    /**
      * git仓库地址
      */
     @TableField(value = "git_url")
