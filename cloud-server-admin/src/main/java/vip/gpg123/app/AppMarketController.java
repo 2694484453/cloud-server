@@ -1,6 +1,13 @@
 package vip.gpg123.app;
 
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.http.Method;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.app.domain.HelmAppMarket;
+import vip.gpg123.app.domain.IndexResponse;
 import vip.gpg123.app.domain.MineApp;
 import vip.gpg123.app.service.HelmAppMarketService;
 import vip.gpg123.app.service.MineAppService;
@@ -27,8 +35,11 @@ import vip.gpg123.common.utils.DateUtils;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/app/market")
@@ -124,6 +135,55 @@ public class AppMarketController extends BaseController {
     public AjaxResult delete(@RequestBody HelmAppMarket helmAppMarket) {
         boolean del = helmAppMarketService.removeById(helmAppMarket.getId());
         return del ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
+    }
+
+    /**
+     * 同步数据
+     * @return r
+     */
+    @PostMapping("/sync")
+    @ApiOperation(value = "同步")
+    public AjaxResult sync() {
+        String icon = "https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/icon/helm.jpg";
+        HttpResponse response = HttpUtil.createRequest(Method.GET,helmUrl)
+                .header("Content-Type","application/x-www-form-urlencoded")
+                .execute();
+        String body = response.body();
+        //
+        InputStream inputStream = IoUtil.toStream(body, StandardCharsets.UTF_8);
+        Map<String,Object> obj = YamlUtil.load(inputStream,Map.class);
+        JSONObject jsonObject = JSONUtil.parseObj(obj);
+        IndexResponse indexResponse = JSONUtil.toBean(jsonObject, IndexResponse.class);
+        indexResponse.getEntries().forEach((k,v)->{
+            System.out.println("key:"+k);
+            v.forEach(entry->{
+                //
+                HelmAppMarket search = helmAppMarketService.getOne(new LambdaQueryWrapper<HelmAppMarket>()
+                        .eq(StrUtil.isNotBlank(k),HelmAppMarket::getName,k)
+                );
+                if (search == null) {
+                    // 添加
+                    HelmAppMarket helmAppMarket = new HelmAppMarket();
+                    helmAppMarket.setName(k);
+                    helmAppMarket.setCreateBy("admin");
+                    BeanUtils.copyProperties(entry,helmAppMarket);
+                    if (StrUtil.isBlankIfStr(entry.getIcon())) {
+                        helmAppMarket.setIcon(icon);
+                    }
+                    helmAppMarketService.save(helmAppMarket);
+                }else  {
+                    // 更新
+                    search.setUpdateTime(DateUtils.getNowDate());
+                    search.setUpdateBy("admin");
+                    if (StrUtil.isBlankIfStr(search.getIcon())) {
+                        search.setIcon(icon);
+                    }
+                    helmAppMarketService.updateById(search);
+                    System.out.println(search.getName()+"已存在跳过");
+                }
+            });
+        });
+        return AjaxResult.success("同步完成");
     }
 
     /**
