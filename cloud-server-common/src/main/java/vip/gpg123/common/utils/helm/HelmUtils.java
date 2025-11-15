@@ -6,10 +6,19 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import cn.hutool.system.SystemUtil;
 
 import java.util.List;
 
 public class HelmUtils {
+
+    static String kubeConfig;
+
+    // 静态代码块用于初始化静态变量
+    static {
+        // 获取系统下的目录
+        kubeConfig = SystemUtil.getUserInfo().getHomeDir() + "/.kube/config";
+    }
 
     /**
      * helm list
@@ -59,11 +68,21 @@ public class HelmUtils {
      * @param kubeContext kubeContext
      */
     public static void install(String namespace, String repoName, String chartName, String version, String kubeContext) {
-        namespace = StrUtil.isBlank(namespace) ? chartName : namespace;
-        String[] init = new String[]{"helm", "install", chartName, repoName + "/" + chartName, "--namespace", namespace, "--kube-context", kubeContext, "--output", "json"};
+        String[] init = new String[]{"helm", "install"};
+        if (StrUtil.isNotBlank(repoName) && StrUtil.isNotBlank(chartName)) {
+            init = ArrayUtil.append(init, repoName + "/" + chartName);
+        }
+        // 命名空间
+        if (StrUtil.isNotBlank(namespace)) {
+            init = ArrayUtil.append(init, "--namespace", namespace);
+        }
+        if (StrUtil.isNotBlank(kubeContext)) {
+            init = ArrayUtil.append(init, "--kube-context", kubeContext);
+        }
         if (StrUtil.isNotBlank(version)) {
             init = ArrayUtil.append(init, "--version", version);
         }
+        init = ArrayUtil.append(init, "--kube-config", kubeConfig, "--output", "json");
         RuntimeUtil.exec(init);
     }
 
@@ -92,8 +111,9 @@ public class HelmUtils {
 
     /**
      * 新增仓库
+     *
      * @param repoName repo名称
-     * @param repoUrl 地址
+     * @param repoUrl  地址
      */
     public static String repoAdd(String repoName, String repoUrl) {
         return RuntimeUtil.execForStr("helm", "repo", "add", repoName, repoUrl);
@@ -101,6 +121,7 @@ public class HelmUtils {
 
     /**
      * 更新仓库
+     *
      * @param repoName repo
      * @return r
      */
@@ -110,6 +131,7 @@ public class HelmUtils {
 
     /**
      * 删除仓库
+     *
      * @param repoName repo
      * @return r
      */
@@ -124,7 +146,6 @@ public class HelmUtils {
     public static String getChartName(String chartName) {
         return chartName.split("-")[0];
     }
-
 
 
 }

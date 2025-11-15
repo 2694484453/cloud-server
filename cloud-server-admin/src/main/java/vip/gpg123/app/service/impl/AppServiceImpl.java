@@ -3,6 +3,7 @@ package vip.gpg123.app.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                 throw new RuntimeException("保存失败");
             }
             // 安装
-            super.install(namespace, repoName, chartName, version, kubeContext);
+            super.install(namespace, StrUtil.isNotBlank(repoName) ? repoName : "default", chartName, version, kubeContext);
             mineApp.setStatus("installed");
         } catch (Exception e) {
             mineApp.setStatus("installFailed");

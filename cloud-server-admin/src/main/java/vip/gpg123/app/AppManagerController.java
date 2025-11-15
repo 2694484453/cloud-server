@@ -68,7 +68,7 @@ public class AppManagerController extends BaseController {
     @PostMapping("/install")
     @ApiOperation(value = "安装")
     public AjaxResult install(@RequestBody MineApp mineApp) {
-        appService.install(mineApp.getAppName(), repoName, mineApp.getChartName(),"", SecurityUtils.getUsername());
+        appService.install(mineApp.getNameSpace(), repoName, mineApp.getChartName(),"","");
         return AjaxResult.success();
     }
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +21,9 @@ import vip.gpg123.app.service.HelmAppMarketService;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.utils.DateUtils;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 
 import java.util.List;
 
@@ -101,11 +104,20 @@ public class AppMarketController extends BaseController {
 
     /**
      * 安装
-     * @param mineApp app
      * @return r
      */
-    @GetMapping("/deploy")
-    public AjaxResult install(@RequestBody MineApp mineApp) {
+    @PostMapping("/install")
+    @ApiOperation(value = "安装")
+    public AjaxResult install(@RequestBody HelmAppMarket helmAppMarket) {
+        MineApp mineApp = new MineApp();
+        mineApp.setAppName(helmAppMarket.getName());
+        mineApp.setChartName(helmAppMarket.getName());
+        mineApp.setDescription("");
+        mineApp.setCreateBy(SecurityUtils.getUsername());
+        mineApp.setUpdateBy(SecurityUtils.getUsername());
+        mineApp.setCreateTime(DateUtils.getNowDate());
+        mineApp.setNameSpace(SecurityUtils.getUserId().toString());
+
         return appManagerController.install(mineApp);
     }
 }

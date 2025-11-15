@@ -7,7 +7,7 @@ etcd:
   endpoints: http://server.gpg123.vip:12379
 repo:
   helm:
-    name: gpg_dev
+    name: default
     url: https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/helm-charts
   docker:
     - name: aliyun
