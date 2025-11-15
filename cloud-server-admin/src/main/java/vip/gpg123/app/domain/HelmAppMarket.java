@@ -92,6 +92,13 @@ public class HelmAppMarket implements Serializable {
     @TableField(value = "update_by")
     private String updateBy;
 
+    /**
+     *
+     */
+    @TableField(value = "value_template")
+    private String valueTemplate;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
