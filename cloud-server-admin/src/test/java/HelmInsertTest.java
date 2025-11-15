@@ -32,7 +32,8 @@ public class HelmInsertTest {
 
     @Test
     public void insert() {
-        HttpResponse response = HttpUtil.createRequest(Method.GET,"https://helm-repo.gpg123.vip/index.yaml")
+        String icon = "https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/icon/helm.jpg";
+        HttpResponse response = HttpUtil.createRequest(Method.GET,"https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/helm-charts/index.yaml")
                 .header("Content-Type","application/x-www-form-urlencoded")
                 .execute();
         String body = response.body();
@@ -52,12 +53,19 @@ public class HelmInsertTest {
                     // 添加
                     HelmAppMarket helmAppMarket = new HelmAppMarket();
                     helmAppMarket.setName(k);
+                    helmAppMarket.setCreateBy("admin");
                     BeanUtils.copyProperties(entry,helmAppMarket);
+                    if (StrUtil.isBlankIfStr(entry.getIcon())) {
+                        helmAppMarket.setIcon(icon);
+                    }
                     helmAppMarketService.save(helmAppMarket);
                 }else  {
                     // 更新
                     search.setUpdateTime(DateUtils.getNowDate());
                     search.setUpdateBy("admin");
+                    if (StrUtil.isBlankIfStr(search.getIcon())) {
+                        search.setIcon(icon);
+                    }
                     helmAppMarketService.updateById(search);
                     System.out.println(search.getName()+"已存在跳过");
                 }

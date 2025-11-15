@@ -8,7 +8,7 @@ etcd:
 repo:
   helm:
     name: gpg_dev
-    url: https://helm-repo.gpg123.vip
+    url: https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/helm-charts
   docker:
     - name: aliyun
       url:
