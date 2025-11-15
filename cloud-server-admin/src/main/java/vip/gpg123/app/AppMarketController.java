@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.app.domain.HelmAppMarket;
 import vip.gpg123.app.domain.MineApp;
 import vip.gpg123.app.service.HelmAppMarketService;
+import vip.gpg123.app.service.MineAppService;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
@@ -25,6 +27,7 @@ import vip.gpg123.common.utils.DateUtils;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,6 +43,9 @@ public class AppMarketController extends BaseController {
 
     @Autowired
     private AppManagerController appManagerController;
+
+    @Autowired
+    private MineAppService mineAppService;
 
 
     /**
@@ -61,7 +67,15 @@ public class AppMarketController extends BaseController {
                         .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
                 //.eq(HelmAppMarket::getCreateBy, getUsername())
         );
-        return AjaxResult.success(helmAppMarkets);
+        List<HelmAppMarket> res = new ArrayList<>();
+        helmAppMarkets.forEach(helmAppMarket -> {
+            MineApp  mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>().eq(MineApp::getAppName, helmAppMarket.getName()));
+            if (mineApp != null) {
+                helmAppMarket.setStatus("installed");
+            }
+            res.add(helmAppMarket);
+        });
+        return AjaxResult.success(res);
     }
 
     /**
@@ -86,6 +100,16 @@ public class AppMarketController extends BaseController {
                         .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
                 //.eq(HelmAppMarket::getCreateBy, getUsername())
         );
+        List<HelmAppMarket> helmAppMarkets = new ArrayList<>();
+        pageRes.getRecords().forEach(helmAppMarket -> {
+            String appName = helmAppMarket.getName();
+            MineApp mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>().eq(MineApp::getAppName, appName));
+            if (mineApp != null) {
+                helmAppMarket.setStatus("installed");
+            }
+           helmAppMarkets.add(helmAppMarket);
+        });
+        pageRes.setRecords(helmAppMarkets);
         return PageUtils.toPageByIPage(pageRes);
     }
 
