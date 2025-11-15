@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.app.domain.HelmAppMarket;
+import vip.gpg123.app.domain.MineApp;
 import vip.gpg123.app.service.HelmAppMarketService;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -33,6 +34,10 @@ public class AppMarketController extends BaseController {
 
     @Autowired
     private HelmAppMarketService helmAppMarketService;
+
+    @Autowired
+    private AppManagerController appManagerController;
+
 
     /**
      * 列表查询
@@ -99,9 +104,9 @@ public class AppMarketController extends BaseController {
      *
      * @return
      */
-    @GetMapping
-    public TableDataInfo install() {
-
+    @GetMapping("/deploy")
+    public AjaxResult install(@RequestBody MineApp mineApp) {
+        appManagerController.install(mineApp);
         return null;
     }
 }
