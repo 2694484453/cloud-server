@@ -57,6 +57,12 @@ public class HelmAppMarket implements Serializable {
     /**
      *
      */
+    @TableField(value = "home")
+    private String home;
+
+    /**
+     *
+     */
     @TableField(value = "status")
     private String status;
 
