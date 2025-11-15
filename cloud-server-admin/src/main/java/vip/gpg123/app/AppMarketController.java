@@ -100,13 +100,12 @@ public class AppMarketController extends BaseController {
     }
 
     /**
-     * 同步
-     *
-     * @return
+     * 安装
+     * @param mineApp app
+     * @return r
      */
     @GetMapping("/deploy")
     public AjaxResult install(@RequestBody MineApp mineApp) {
-        appManagerController.install(mineApp);
-        return null;
+        return appManagerController.install(mineApp);
     }
 }

@@ -62,7 +62,6 @@ public class AppManagerController extends BaseController {
 
     /**
      * 安装
-     * @param name name
      * @param mineApp app
      * @return r
      */
