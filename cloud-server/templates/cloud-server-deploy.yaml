@@ -6,7 +6,7 @@ metadata:
   labels:
     app: cloud-server
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: cloud-server
@@ -34,29 +34,15 @@ spec:
               cpu: 800m
               memory: 2048Mi
           volumeMounts:
-            - mountPath: /root/.config/helm/repositories.yaml
-              name: helm-config
-            - mountPath: /root/.cache/helm/repository
-              name: helm-cache
             - mountPath: /var/run/docker.sock
               name: docker-sock
-            - mountPath: /usr/bin/docker
-              name: docker
+            - mountPath: /home/prometheus
+              name: prometheus
       restartPolicy: Always
       volumes:
-        - name: helm-config
-          hostPath:
-            path: /root/.config/helm/repositories.yaml
-            type: File
-        - name: helm-cache
-          hostPath:
-            path: /root/.cache/helm/repository
-            type: Directory
-        - name: docker
-          hostPath:
-            path: /usr/bin/docker
-            type: File
         - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
-            type: Socket
+          persistentVolumeClaim:
+            claimName: docker-pv
+        - name: prometheus
+          persistentVolumeClaim:
+            claimName: prometheus-pv
