@@ -36,13 +36,15 @@ spec:
           volumeMounts:
             - mountPath: /var/run/docker.sock
               name: docker-sock
+              readOnly: true
             - mountPath: /home/prometheus
               name: prometheus
+              readOnly: false
       restartPolicy: Always
       volumes:
         - name: docker-sock
           persistentVolumeClaim:
-            claimName: docker-pv
+            claimName: docker-pvc
         - name: prometheus
           persistentVolumeClaim:
-            claimName: prometheus-pv
+            claimName: prometheus-pvc
