@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.prometheus.mapper.PrometheusExporterMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.prometheus.domain.PrometheusExporter">
+            <id property="id" column="id" />
+            <result property="jobName" column="job_name" />
+            <result property="targets" column="targets" />
+            <result property="exporterType" column="exporter_type" />
+            <result property="status" column="status" />
+            <result property="description" column="description" />
+            <result property="createTime" column="create_time" />
+            <result property="createBy" column="create_by" />
+            <result property="updateTime" column="update_time" />
+            <result property="updateBy" column="update_by" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,job_name,targets,exporter_type,status,description,
+        create_time,create_by,update_time,update_by
+    </sql>
+</mapper>
