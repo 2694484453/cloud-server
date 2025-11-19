@@ -77,8 +77,23 @@ public class GitRepoController extends BaseController {
      * @param gitRepo gitRepo
      * @return r
      */
-    @PostMapping("/import")
+    @PostMapping("/add")
     @ApiOperation(value = "【新增】")
+    public AjaxResult addRepo(@RequestBody GitRepo gitRepo) {
+        // 设置信息
+        gitRepo.setCreateBy(getUsername());
+        gitRepo.setCreateTime(DateUtil.date());
+        boolean isSaved = gitRepoService.saveOrUpdate(gitRepo);
+        return isSaved ? success("新增成功") : error("新增失败");
+    }
+
+    /**
+     * 导入
+     * @param gitRepo gitRepo
+     * @return r
+     */
+    @PostMapping("/import")
+    @ApiOperation(value = "【导入】")
     public AjaxResult importRepo(@RequestBody GitRepo gitRepo) {
         // 设置信息
         gitRepo.setCreateBy(getUsername());
@@ -91,9 +106,8 @@ public class GitRepoController extends BaseController {
         if (search != null) {
             return isSaved ? success("更新成功") : error("更新失败");
         }else {
-            return isSaved ? success("新增成功") : error("新增失败");
+            return isSaved ? success("导入成功") : error("导入失败");
         }
-
     }
 
     /**

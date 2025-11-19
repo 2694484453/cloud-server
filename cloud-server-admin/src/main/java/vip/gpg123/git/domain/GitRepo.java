@@ -6,104 +6,67 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
- *
- * @TableName git
+ * 
+ * @TableName git_repo
  */
 @TableName(value ="git_repo")
 @Data
 public class GitRepo implements Serializable {
+    /**
+     * 
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     /**
-     * 主键
+     * 
      */
-    @TableId(type = IdType.INPUT)
-    private String id;
+    @TableField(value = "repo_name")
+    private String repoName;
 
     /**
-     * 名称
+     * 
      */
-    private String name;
+    @TableField(value = "repo_type")
+    private String repoType;
 
     /**
-     * 全名
+     * 
      */
-    private String fullName;
+    @TableField(value = "url")
+    private String url;
 
     /**
-     * 归属
+     * 
      */
-    private String human_name;
-
-    /**
-     * 代号
-     */
-    private String code;
-
-    /**
-     * 类型
-     */
-    private String type;
-
-    /**
-     * 主页
-     */
-    private String homeUrl;
-
-    /**
-     * http地址
-     */
-    private String htmlUrl;
-
-    /**
-     * 仓库地址
-     */
-    private String gitUrl;
-
-    /**
-     * ssh地址
-     */
-    private String sshUrl;
-
-    /**
-     * 语言
-     */
-    private String language;
-
-    /**
-     * 状态
-     */
-    private String status;
-
-    /**
-     * 描述
-     */
+    @TableField(value = "description")
     private String description;
 
     /**
-     * 创建者
+     * 
      */
+    @TableField(value = "create_by")
     private String createBy;
 
     /**
-     * 创建时间
+     * 
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(value = "create_time")
     private Date createTime;
 
     /**
-     * 更新者
+     * 
      */
+    @TableField(value = "update_by")
     private String updateBy;
 
     /**
-     * 更新时间
+     * 
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(value = "update_time")
     private Date updateTime;
 
     @TableField(exist = false)

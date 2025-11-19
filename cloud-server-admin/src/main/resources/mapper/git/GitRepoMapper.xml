@@ -5,27 +5,19 @@
 <mapper namespace="vip.gpg123.git.mapper.GitRepoMapper">
 
     <resultMap id="BaseResultMap" type="vip.gpg123.git.domain.GitRepo">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="code" column="code" jdbcType="VARCHAR"/>
-            <result property="type" column="type" jdbcType="VARCHAR"/>
-            <result property="home" column="home" jdbcType="VARCHAR"/>
-            <result property="httpUrl" column="http_url" jdbcType="VARCHAR"/>
-            <result property="hasJob" column="has_job" jdbcType="TINYINT"/>
-            <result property="language" column="language" jdbcType="VARCHAR"/>
-            <result property="jobTypes" column="job_types" jdbcType="OTHER"/>
-            <result property="jobCount" column="job_count" jdbcType="INTEGER"/>
-            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <id property="id" column="id" />
+            <result property="repoName" column="repo_name" />
+            <result property="repoType" column="repo_type" />
+            <result property="url" column="url" />
+            <result property="description" column="description" />
+            <result property="createBy" column="create_by" />
+            <result property="createTime" column="create_time" />
+            <result property="updateBy" column="update_by" />
+            <result property="updateTime" column="update_time" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,code,
-        type,home,http_url,
-        ssl_url,has_job,language,
-        job_types,job_count,create_by,
+        id,repo_name,repo_type,url,description,create_by,
         create_time,update_by,update_time
     </sql>
 </mapper>

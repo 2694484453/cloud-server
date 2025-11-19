@@ -8,7 +8,6 @@ import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,8 +51,8 @@ public class PrometheusTargetsController extends BaseController {
         list.forEach(target -> {
             JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
             String jobName = object.getStr("job");
-            String healthName = object.getStr("health");
-            if (StrUtil.isNotBlank(jobName)) {
+            String healthName = target.getHealth();
+            if (StrUtil.isNotBlank(job)) {
                 if (jobName.contains(job)) {
                     searchList.add(target);
                 }
@@ -64,7 +63,7 @@ public class PrometheusTargetsController extends BaseController {
                 }
             }
         });
-        return PageUtils.toPage(searchList);
+        return PageUtils.toPage(StrUtil.isNotBlank(job) || StrUtil.isNotBlank(health) ? searchList:list);
     }
 
     /**
