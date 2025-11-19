@@ -6,8 +6,8 @@
 
     <resultMap id="BaseResultMap" type="vip.gpg123.git.domain.GitRepo">
             <id property="id" column="id" />
-            <result property="repoName" column="repo_name" />
-            <result property="repoType" column="repo_type" />
+            <result property="name" column="name" />
+            <result property="type" column="type" />
             <result property="url" column="url" />
             <result property="description" column="description" />
             <result property="createBy" column="create_by" />
@@ -17,7 +17,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,repo_name,repo_type,url,description,create_by,
+        id,name,type,url,description,create_by,
         create_time,update_by,update_time
     </sql>
 </mapper>

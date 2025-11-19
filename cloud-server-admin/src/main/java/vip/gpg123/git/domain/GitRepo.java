@@ -24,14 +24,14 @@ public class GitRepo implements Serializable {
     /**
      * 
      */
-    @TableField(value = "repo_name")
-    private String repoName;
+    @TableField(value = "name")
+    private String name;
 
     /**
      * 
      */
-    @TableField(value = "repo_type")
-    private String repoType;
+    @TableField(value = "type")
+    private String type;
 
     /**
      * 
