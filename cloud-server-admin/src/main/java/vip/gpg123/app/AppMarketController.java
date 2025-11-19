@@ -215,6 +215,7 @@ public class AppMarketController extends BaseController {
     public AjaxResult install(@RequestBody HelmAppMarketVo helmAppMarket) {
         MineApp mineApp = new MineApp();
         mineApp.setAppName(helmAppMarket.getName());
+        mineApp.setReleaseName(helmAppMarket.getName());
         mineApp.setChartName(helmAppMarket.getName());
         mineApp.setDescription(helmAppMarket.getDescription());
         mineApp.setCreateBy(SecurityUtils.getUsername());
@@ -222,6 +223,7 @@ public class AppMarketController extends BaseController {
         mineApp.setNameSpace(SecurityUtils.getUserId().toString());
         mineApp.setIcon(helmAppMarket.getIcon());
         mineApp.setValue(String.valueOf(helmAppMarket.getValues()));
+        mineApp.setChartUrl(helmAppMarket.getUrl());
         return appManagerController.install(mineApp);
     }
 }

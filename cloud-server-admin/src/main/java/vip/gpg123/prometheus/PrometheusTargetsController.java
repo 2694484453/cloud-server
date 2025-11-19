@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +43,9 @@ public class PrometheusTargetsController extends BaseController {
     @Autowired
     private PrometheusApi prometheusApi;
 
+    @Value("${monitor.prometheus.endpoint}")
+    private String endpoint;
+
     /**
      * 分页查询
      *
@@ -65,7 +69,7 @@ public class PrometheusTargetsController extends BaseController {
         if (ObjectUtil.isNotNull(platformServiceInstance)) {
             // 动态设置Prometheus实例地址
             URI dynamicUri = URI.create(platformServiceInstance.getHost());
-            PrometheusTargetResponse response = prometheusApi.targets(dynamicUri,state);
+            PrometheusTargetResponse response = prometheusApi.targets(state);
             List<?> list = targets(response.getData());
             return PageUtils.toPage(list);
         }
@@ -95,7 +99,7 @@ public class PrometheusTargetsController extends BaseController {
         if (ObjectUtil.isNotNull(platformServiceInstance)) {
             // 动态设置Prometheus实例地址
             URI dynamicUri = URI.create(platformServiceInstance.getHost());
-            PrometheusTargetResponse response = prometheusApi.targets(dynamicUri,state);
+            PrometheusTargetResponse response = prometheusApi.targets(state);
             List<?> list = targets(response.getData());
             return AjaxResult.success(list);
         }

@@ -1,14 +1,20 @@
 package vip.gpg123.common.utils.helm;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.yaml.YamlUtil;
 import cn.hutool.system.SystemUtil;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 public class HelmUtils {
 
@@ -18,6 +24,9 @@ public class HelmUtils {
     static {
         // 获取系统下的目录
         kubeConfig = SystemUtil.getUserInfo().getHomeDir() + "/.kube/config";
+        if (!FileUtil.exist(kubeConfig)) {
+            throw new RuntimeException(kubeConfig + "不存在，请检查");
+        }
     }
 
     /**
@@ -63,10 +72,10 @@ public class HelmUtils {
      * helm install
      *
      * @param namespace   命名空间
-     * @param chartUrl url
+     * @param chartUrl    url
      * @param kubeContext kubeContext
      */
-    public static void install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
+    public static String install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
         String[] init = new String[]{"helm", "install"};
         if (StrUtil.isNotBlank(releaseName)) {
             init = ArrayUtil.append(init, releaseName);
@@ -82,10 +91,22 @@ public class HelmUtils {
             init = ArrayUtil.append(init, "--kube-context", kubeContext);
         }
         if (StrUtil.isNotBlank(values)) {
-            init = ArrayUtil.append(init, "--set-json", values);
+            // 生成临时文件
+            File file = FileUtil.createTempFile();
+            // 转换yaml字符串写入
+            try {
+                FileWriter fileWriter = new FileWriter(file);
+                YamlUtil.dump(values, fileWriter);
+                fileWriter.close();
+                init = ArrayUtil.append(init, "-f", file.getAbsolutePath());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                FileUtil.del(file);
+            }
         }
-        init = ArrayUtil.append(init, "--kube-config", kubeConfig, "--output", "json");
-        RuntimeUtil.exec(init);
+        init = ArrayUtil.append(init, "--output", "json");
+        return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
     }
 
     /**
@@ -95,8 +116,8 @@ public class HelmUtils {
      * @param releaseName 发布名称
      * @param kubeContext kubeContext
      */
-    public static void uninstall(String namespace, String releaseName, String kubeContext) {
-        RuntimeUtil.exec("helm", "uninstall", releaseName, "--namespace", namespace, "--kube-context", kubeContext);
+    public static String uninstall(String namespace, String releaseName, String kubeContext) {
+        return RuntimeUtil.execForStr(StandardCharsets.UTF_8,"helm", "uninstall", releaseName, "--namespace", namespace, "--kube-context", kubeContext);
     }
 
     /**
@@ -143,6 +164,7 @@ public class HelmUtils {
 
     /**
      * 渲染参数
+     *
      * @param chartUrl url
      * @return r
      */
@@ -154,13 +176,22 @@ public class HelmUtils {
         return RuntimeUtil.execForStr(init);
     }
 
-    public static String getChartVersion(String chartName) {
-        return chartName.split("-")[1];
+    /**
+     * 获取系统当前context
+     * @return r
+     */
+    public static String getCurrentContext() {
+        return YamlUtil.loadByPath(kubeConfig, Map.class).get("current-context").toString();
     }
 
-    public static String getChartName(String chartName) {
-        return chartName.split("-")[0];
+    /**
+     * 集群信心
+     * @return r
+     */
+    public static List<Object> clusters() {
+        Object o = YamlUtil.loadByPath(kubeConfig, Map.class).get("clusters");
+        JSONArray jsonArray = JSONUtil.parseArray(o);
+        return JSONUtil.toList(jsonArray, Object.class);
     }
-
 
 }

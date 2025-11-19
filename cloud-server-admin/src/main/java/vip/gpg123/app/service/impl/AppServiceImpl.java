@@ -3,7 +3,6 @@ package vip.gpg123.app.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +40,17 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
      * 安装
      *
      * @param namespace   命名空间
-     * @param releaseName   名称
-     * @param chartUrl url
+     * @param releaseName 名称
+     * @param chartUrl    url
      * @param kubeContext kubeContext
+     * @return r
      */
     @Override
-    public void install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
+    public String install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
         // 新增
         MineApp mineApp = new MineApp();
         mineApp.setAppName(releaseName);
-        mineApp.setChartName(chartUrl);
+        mineApp.setChartUrl(chartUrl);
         mineApp.setGitUrl("");
         mineApp.setSource("");
         mineApp.setStatus("installing");
@@ -61,16 +61,17 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
         mineApp.setCreateTime(DateUtil.date());
         mineApp.setNameSpace(namespace);
         mineApp.setReleaseName(releaseName);
-        mineApp.setClusterName(SecurityUtils.getUsername());
-
+        mineApp.setKubeContext(kubeContext);
+        String res;
         try {
             boolean isSaved = mineAppService.save(mineApp);
             if (!isSaved) {
                 throw new RuntimeException("保存失败");
             }
             // 安装
-            super.install(releaseName, namespace, chartUrl, values, kubeContext);
+            res = super.install(releaseName, namespace, chartUrl, values, kubeContext);
             mineApp.setStatus("installed");
+            mineApp.setResult(res);
         } catch (Exception e) {
             mineApp.setStatus("installFailed");
             throw new RuntimeException(e);
@@ -108,6 +109,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                 }
             });
         }
+        return res;
     }
 
 
@@ -119,19 +121,21 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
      * @param kubeContext HelmApp helmApp
      */
     @Override
-    public void uninstall(String namespace, String releaseName, String kubeContext) {
+    public String uninstall(String namespace, String releaseName, String kubeContext) {
         // 查询
         MineApp mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>()
                 .eq(MineApp::getReleaseName, releaseName)
-                .eq(MineApp::getClusterName, SecurityUtils.getUsername())
+                .eq(MineApp::getKubeContext, kubeContext)
                 .eq(MineApp::getCreateBy, SecurityUtils.getUsername())
         );
+        String res = "";
         if (ObjectUtil.isNotNull(mineApp)) {
             try {
                 mineApp.setStatus("uninstalling");
-                super.uninstall(namespace, releaseName, kubeContext);
+                res = super.uninstall(namespace, releaseName, kubeContext);
                 // 删除
                 mineAppService.removeById(mineApp);
+                mineApp.setResult(res);
             } catch (Exception e) {
                 mineApp.setStatus("uninstallFailed");
                 mineAppService.updateById(mineApp);
@@ -170,5 +174,6 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                 });
             }
         }
+        return res;
     }
 }

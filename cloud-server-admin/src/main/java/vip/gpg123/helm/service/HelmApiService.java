@@ -6,11 +6,13 @@ public interface HelmApiService {
 
     /**
      * 安装
-     * @param namespace 命名空间
-     * @param chartUrl url
+     *
+     * @param namespace   命名空间
+     * @param chartUrl    url
      * @param kubeContext kubeContext
+     * @return r
      */
-    void install(String releaseName, String namespace, String chartUrl, String values, String kubeContext);
+    String install(String releaseName, String namespace, String chartUrl, String values, String kubeContext);
 
 
     /**
@@ -18,6 +20,7 @@ public interface HelmApiService {
      * @param namespace 命名空间
      * @param releaseName 卸载名称
      * @param kubeContext HelmApp helmApp
+     * @return r
      */
-    void uninstall(String namespace, String releaseName, String kubeContext);
+    String uninstall(String namespace, String releaseName, String kubeContext);
 }
