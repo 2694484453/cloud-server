@@ -80,7 +80,7 @@ public class AppMarketController extends BaseController {
         );
         List<HelmAppMarket> res = new ArrayList<>();
         helmAppMarkets.forEach(helmAppMarket -> {
-            MineApp  mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>().eq(MineApp::getAppName, helmAppMarket.getName()));
+            MineApp mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>().eq(MineApp::getAppName, helmAppMarket.getName()));
             if (mineApp != null) {
                 helmAppMarket.setStatus("installed");
             }
@@ -111,16 +111,6 @@ public class AppMarketController extends BaseController {
                         .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
                 //.eq(HelmAppMarket::getCreateBy, getUsername())
         );
-        List<HelmAppMarket> helmAppMarkets = new ArrayList<>();
-        pageRes.getRecords().forEach(helmAppMarket -> {
-            String appName = helmAppMarket.getName();
-            MineApp mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>().eq(MineApp::getAppName, appName));
-            if (mineApp != null) {
-                helmAppMarket.setStatus("installed");
-            }
-           helmAppMarkets.add(helmAppMarket);
-        });
-        pageRes.setRecords(helmAppMarkets);
         return PageUtils.toPageByIPage(pageRes);
     }
 
@@ -139,47 +129,50 @@ public class AppMarketController extends BaseController {
 
     /**
      * 同步数据
+     *
      * @return r
      */
     @PostMapping("/sync")
     @ApiOperation(value = "同步")
     public AjaxResult sync() {
         String icon = "https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/icon/helm.jpg";
-        HttpResponse response = HttpUtil.createRequest(Method.GET,helmUrl)
-                .header("Content-Type","application/x-www-form-urlencoded")
+        HttpResponse response = HttpUtil.createRequest(Method.GET, helmUrl)
+                .header("Content-Type", "application/x-www-form-urlencoded")
                 .execute();
         String body = response.body();
         //
         InputStream inputStream = IoUtil.toStream(body, StandardCharsets.UTF_8);
-        Map<String,Object> obj = YamlUtil.load(inputStream,Map.class);
+        Map<String, Object> obj = YamlUtil.load(inputStream, Map.class);
         JSONObject jsonObject = JSONUtil.parseObj(obj);
         IndexResponse indexResponse = JSONUtil.toBean(jsonObject, IndexResponse.class);
-        indexResponse.getEntries().forEach((k,v)->{
-            System.out.println("key:"+k);
-            v.forEach(entry->{
+        indexResponse.getEntries().forEach((k, v) -> {
+            System.out.println("key:" + k);
+            v.forEach(entry -> {
+                HelmAppMarket helmAppMarket = new HelmAppMarket();
                 //
                 HelmAppMarket search = helmAppMarketService.getOne(new LambdaQueryWrapper<HelmAppMarket>()
-                        .eq(StrUtil.isNotBlank(k),HelmAppMarket::getName,k)
+                        .eq(StrUtil.isNotBlank(k), HelmAppMarket::getName, k)
                 );
                 if (search == null) {
                     // 添加
-                    HelmAppMarket helmAppMarket = new HelmAppMarket();
                     helmAppMarket.setName(k);
                     helmAppMarket.setCreateBy("admin");
-                    BeanUtils.copyProperties(entry,helmAppMarket);
+                    BeanUtils.copyProperties(entry, helmAppMarket);
                     if (StrUtil.isBlankIfStr(entry.getIcon())) {
                         helmAppMarket.setIcon(icon);
                     }
+                    helmAppMarket.setUrl(helmUrl + "/" + entry.getUrls().get(0));
                     helmAppMarketService.save(helmAppMarket);
-                }else  {
+                } else {
                     // 更新
-                    search.setUpdateTime(DateUtils.getNowDate());
-                    search.setUpdateBy("admin");
-                    if (StrUtil.isBlankIfStr(search.getIcon())) {
-                        search.setIcon(icon);
+                    helmAppMarket = search;
+                    helmAppMarket.setUpdateTime(DateUtils.getNowDate());
+                    helmAppMarket.setUpdateBy("admin");
+                    if (StrUtil.isBlankIfStr(helmAppMarket.getIcon())) {
+                        helmAppMarket.setIcon(icon);
                     }
-                    helmAppMarketService.updateById(search);
-                    System.out.println(search.getName()+"已存在跳过");
+                    helmAppMarketService.updateById(helmAppMarket);
+                    System.out.println(helmAppMarket.getName() + "已存在跳过");
                 }
             });
         });
@@ -188,6 +181,7 @@ public class AppMarketController extends BaseController {
 
     /**
      * 安装
+     *
      * @return r
      */
     @PostMapping("/install")

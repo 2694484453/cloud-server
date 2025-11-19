@@ -37,6 +37,7 @@ trace:
 #监控
 monitor:
   prometheus:
+    exporterPath: "/home/prometheus"
     endpoint: https://prometheus.gpg123.vip
   alertmanager:
     endpoint: https://alertmanager.gpg123.vip
