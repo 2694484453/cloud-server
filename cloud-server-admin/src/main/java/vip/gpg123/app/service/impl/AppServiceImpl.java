@@ -47,7 +47,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
      * @param kubeContext kubeContext
      */
     @Override
-    public void install(String namespace, String repoName, String chartName, String version, String kubeContext) {
+    public void install(String namespace, String repoName, String chartName, String values, String version, String kubeContext) {
         // 新增
         MineApp mineApp = new MineApp();
         mineApp.setAppName(chartName);
@@ -70,7 +70,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                 throw new RuntimeException("保存失败");
             }
             // 安装
-            super.install(namespace, StrUtil.isNotBlank(repoName) ? repoName : "default", chartName, version, kubeContext);
+            super.install(namespace, StrUtil.isNotBlank(repoName) ? repoName : "default", chartName, values, version, kubeContext);
             mineApp.setStatus("installed");
         } catch (Exception e) {
             mineApp.setStatus("installFailed");

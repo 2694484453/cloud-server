@@ -67,7 +67,7 @@ public class HelmUtils {
      * @param version     v
      * @param kubeContext kubeContext
      */
-    public static void install(String namespace, String repoName, String chartName, String version, String kubeContext) {
+    public static void install(String namespace, String repoName, String chartName, String values, String version, String kubeContext) {
         String[] init = new String[]{"helm", "install"};
         if (StrUtil.isNotBlank(repoName) && StrUtil.isNotBlank(chartName)) {
             init = ArrayUtil.append(init, repoName + "/" + chartName);
@@ -78,6 +78,9 @@ public class HelmUtils {
         }
         if (StrUtil.isNotBlank(kubeContext)) {
             init = ArrayUtil.append(init, "--kube-context", kubeContext);
+        }
+        if (StrUtil.isNotBlank(values)) {
+            init = ArrayUtil.append(init, "--set-json", values);
         }
         if (StrUtil.isNotBlank(version)) {
             init = ArrayUtil.append(init, "--version", version);
@@ -137,6 +140,19 @@ public class HelmUtils {
      */
     public static String repoRemove(String repoName) {
         return RuntimeUtil.execForStr("helm", "repo", "remove", repoName);
+    }
+
+    /**
+     * 渲染参数
+     * @param chartUrl url
+     * @return r
+     */
+    public static String showValues(String chartUrl) {
+        String[] init = new String[]{"helm", "show", "values"};
+        if (StrUtil.isNotBlank(chartUrl)) {
+            init = ArrayUtil.append(init, chartUrl);
+        }
+        return RuntimeUtil.execForStr(init);
     }
 
     public static String getChartVersion(String chartName) {

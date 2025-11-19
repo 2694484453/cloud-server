@@ -23,17 +23,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.Yaml;
 import vip.gpg123.app.domain.HelmAppMarket;
 import vip.gpg123.app.domain.IndexResponse;
 import vip.gpg123.app.domain.MineApp;
 import vip.gpg123.app.service.HelmAppMarketService;
 import vip.gpg123.app.service.MineAppService;
+import vip.gpg123.app.vo.HelmAppMarketVo;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.DateUtils;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.common.utils.helm.HelmUtils;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -179,6 +182,29 @@ public class AppMarketController extends BaseController {
         return AjaxResult.success("同步完成");
     }
 
+
+    /**
+     * values
+     *
+     * @param helmAppMarket mark
+     * @return r
+     */
+    @PostMapping("/values")
+    @ApiOperation(value = "渲染参数")
+    public AjaxResult values(@RequestBody HelmAppMarket helmAppMarket) {
+        String values = HelmUtils.showValues(helmAppMarket.getUrl());
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            InputStream inputStream = IoUtil.toStream(values, StandardCharsets.UTF_8);
+            Map<String,Object> obj = YamlUtil.load(inputStream, Map.class);
+            jsonObject = JSONUtil.parseObj(obj);
+        } catch (Exception e) {
+            throw new RuntimeException("不能转换为yaml格式："+e);
+        }
+        return AjaxResult.success(jsonObject);
+    }
+
     /**
      * 安装
      *
@@ -186,7 +212,7 @@ public class AppMarketController extends BaseController {
      */
     @PostMapping("/install")
     @ApiOperation(value = "安装")
-    public AjaxResult install(@RequestBody HelmAppMarket helmAppMarket) {
+    public AjaxResult install(@RequestBody HelmAppMarketVo helmAppMarket) {
         MineApp mineApp = new MineApp();
         mineApp.setAppName(helmAppMarket.getName());
         mineApp.setChartName(helmAppMarket.getName());
@@ -195,6 +221,7 @@ public class AppMarketController extends BaseController {
         mineApp.setCreateTime(DateUtils.getNowDate());
         mineApp.setNameSpace(SecurityUtils.getUserId().toString());
         mineApp.setIcon(helmAppMarket.getIcon());
+        mineApp.setValue(String.valueOf(helmAppMarket.getValues()));
         return appManagerController.install(mineApp);
     }
 }

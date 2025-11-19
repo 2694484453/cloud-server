@@ -66,6 +66,7 @@ public class HelmInsertTest {
                     if (StrUtil.isBlankIfStr(search.getIcon())) {
                         search.setIcon(icon);
                     }
+                    search.setUrl("https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/helm-charts/" + entry.getUrls().get(0));
                     helmAppMarketService.updateById(search);
                     System.out.println(search.getName()+"已存在跳过");
                 }

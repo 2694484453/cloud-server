@@ -19,8 +19,8 @@ public abstract class HelmApiServiceImpl implements HelmApiService {
      * @param kubeContext kubeContext
      */
     @Override
-    public void install(String namespace, String repoName, String chartName, String version, String kubeContext) {
-        HelmUtils.install(namespace, repoName, chartName, version, kubeContext);
+    public void install(String namespace, String repoName, String chartName, String values, String version, String kubeContext) {
+        HelmUtils.install(namespace, repoName, chartName, values, version, kubeContext);
     }
 
     /**
