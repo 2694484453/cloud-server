@@ -98,8 +98,8 @@ public class MineApp implements Serializable {
     /**
      * 
      */
-    @TableField(value = "cluster_name")
-    private String clusterName;
+    @TableField(value = "kube_Context")
+    private String kubeContext;
 
     /**
      * 

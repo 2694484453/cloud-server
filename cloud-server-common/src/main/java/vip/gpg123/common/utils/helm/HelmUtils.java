@@ -63,14 +63,16 @@ public class HelmUtils {
      * helm install
      *
      * @param namespace   命名空间
-     * @param chartName   chart名称
-     * @param version     v
+     * @param chartUrl url
      * @param kubeContext kubeContext
      */
-    public static void install(String namespace, String repoName, String chartName, String values, String version, String kubeContext) {
+    public static void install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
         String[] init = new String[]{"helm", "install"};
-        if (StrUtil.isNotBlank(repoName) && StrUtil.isNotBlank(chartName)) {
-            init = ArrayUtil.append(init, repoName + "/" + chartName);
+        if (StrUtil.isNotBlank(releaseName)) {
+            init = ArrayUtil.append(init, releaseName);
+        }
+        if (StrUtil.isNotBlank(chartUrl)) {
+            init = ArrayUtil.append(init, chartUrl);
         }
         // 命名空间
         if (StrUtil.isNotBlank(namespace)) {
@@ -81,9 +83,6 @@ public class HelmUtils {
         }
         if (StrUtil.isNotBlank(values)) {
             init = ArrayUtil.append(init, "--set-json", values);
-        }
-        if (StrUtil.isNotBlank(version)) {
-            init = ArrayUtil.append(init, "--version", version);
         }
         init = ArrayUtil.append(init, "--kube-config", kubeConfig, "--output", "json");
         RuntimeUtil.exec(init);

@@ -7,12 +7,10 @@ public interface HelmApiService {
     /**
      * 安装
      * @param namespace 命名空间
-     * @param repoName 仓库名称
-     * @param chartName chart名称
-     * @param version 版本
+     * @param chartUrl url
      * @param kubeContext kubeContext
      */
-    void install(String namespace, String repoName, String chartName, String values, String version, String kubeContext);
+    void install(String releaseName, String namespace, String chartUrl, String values, String kubeContext);
 
 
     /**

@@ -41,27 +41,26 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
      * 安装
      *
      * @param namespace   命名空间
-     * @param repoName    仓库名称
-     * @param chartName   chart名称
-     * @param version     版本
+     * @param releaseName   名称
+     * @param chartUrl url
      * @param kubeContext kubeContext
      */
     @Override
-    public void install(String namespace, String repoName, String chartName, String values, String version, String kubeContext) {
+    public void install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
         // 新增
         MineApp mineApp = new MineApp();
-        mineApp.setAppName(chartName);
-        mineApp.setChartName(chartName);
+        mineApp.setAppName(releaseName);
+        mineApp.setChartName(chartUrl);
         mineApp.setGitUrl("");
         mineApp.setSource("");
         mineApp.setStatus("installing");
-        mineApp.setValue("");
+        mineApp.setValue(values);
         mineApp.setTags("");
         mineApp.setDescription("");
         mineApp.setCreateBy(SecurityUtils.getUsername());
         mineApp.setCreateTime(DateUtil.date());
         mineApp.setNameSpace(namespace);
-        mineApp.setReleaseName(chartName);
+        mineApp.setReleaseName(releaseName);
         mineApp.setClusterName(SecurityUtils.getUsername());
 
         try {
@@ -70,7 +69,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                 throw new RuntimeException("保存失败");
             }
             // 安装
-            super.install(namespace, StrUtil.isNotBlank(repoName) ? repoName : "default", chartName, values, version, kubeContext);
+            super.install(releaseName, namespace, chartUrl, values, kubeContext);
             mineApp.setStatus("installed");
         } catch (Exception e) {
             mineApp.setStatus("installFailed");
@@ -86,7 +85,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                 @Override
                 public void run() {
                     String title = "应用安装通知";
-                    String content = "安装" + chartName + ",结果：" + mineApp.getStatus();
+                    String content = "安装" + chartUrl + ",结果：" + mineApp.getStatus();
                     // 站内消息
                     SysActionNotice sysActionNotice = new SysActionNotice();
                     sysActionNotice.setTitle(title);

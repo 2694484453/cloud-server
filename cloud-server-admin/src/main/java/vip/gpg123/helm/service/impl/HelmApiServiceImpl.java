@@ -13,14 +13,12 @@ public abstract class HelmApiServiceImpl implements HelmApiService {
      * 安装
      *
      * @param namespace   命名空间
-     * @param repoName    仓库名称
-     * @param chartName   chart名称
-     * @param version     版本
+     * @param chartUrl   chartUrl
      * @param kubeContext kubeContext
      */
     @Override
-    public void install(String namespace, String repoName, String chartName, String values, String version, String kubeContext) {
-        HelmUtils.install(namespace, repoName, chartName, values, version, kubeContext);
+    public void install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
+        HelmUtils.install(releaseName, namespace, chartUrl, values, kubeContext);
     }
 
     /**

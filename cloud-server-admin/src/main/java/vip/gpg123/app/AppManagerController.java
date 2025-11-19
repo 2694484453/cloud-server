@@ -39,41 +39,45 @@ public class AppManagerController extends BaseController {
 
     /**
      * 列表查询
+     *
      * @param name name
      * @return r
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam(value = "name",required = false) String name) {
+    public AjaxResult list(@RequestParam(value = "name", required = false) String name) {
         List<HelmApp> list = HelmUtils.list("", SecurityUtils.getUsername());
         return AjaxResult.success(list);
     }
 
     /**
      * 分页查询
+     *
      * @param name name
      * @return r
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "name",required = false) String name) {
+    public TableDataInfo page(@RequestParam(value = "name", required = false) String name) {
         return PageUtils.toPage(ListUtil.toList(HelmUtils.list("", SecurityUtils.getUsername())));
     }
 
     /**
      * 安装
+     *
      * @param mineApp app
      * @return r
      */
     @PostMapping("/install")
     @ApiOperation(value = "安装")
     public AjaxResult install(@RequestBody MineApp mineApp) {
-        appService.install(mineApp.getNameSpace(), repoName, mineApp.getChartName(), mineApp.getValue(),"","");
+        appService.install(mineApp.getReleaseName(), mineApp.getNameSpace(), mineApp.getChartName(), mineApp.getValue(), mineApp.getKubeContext());
         return AjaxResult.success("安装成功");
     }
 
     /**
      * 查询详情
+     *
      * @param name 名称
      * @return r
      */
@@ -91,6 +95,7 @@ public class AppManagerController extends BaseController {
 
     /**
      * 管理
+     *
      * @param name 名称
      * @return r
      */

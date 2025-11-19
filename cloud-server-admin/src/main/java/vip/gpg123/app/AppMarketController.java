@@ -216,7 +216,7 @@ public class AppMarketController extends BaseController {
         MineApp mineApp = new MineApp();
         mineApp.setAppName(helmAppMarket.getName());
         mineApp.setChartName(helmAppMarket.getName());
-        mineApp.setDescription("");
+        mineApp.setDescription(helmAppMarket.getDescription());
         mineApp.setCreateBy(SecurityUtils.getUsername());
         mineApp.setCreateTime(DateUtils.getNowDate());
         mineApp.setNameSpace(SecurityUtils.getUserId().toString());
