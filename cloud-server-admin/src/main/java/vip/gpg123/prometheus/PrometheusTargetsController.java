@@ -1,12 +1,10 @@
 package vip.gpg123.prometheus;
 
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +17,11 @@ import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.platform.domain.PlatformServiceInstance;
-import vip.gpg123.platform.service.PlatformServiceInstanceService;
+import vip.gpg123.platform.domain.ActiveTarget;
+import vip.gpg123.platform.domain.PrometheusTargetData;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.service.PrometheusApi;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +35,7 @@ import java.util.List;
 public class PrometheusTargetsController extends BaseController {
 
     @Autowired
-    private PlatformServiceInstanceService platformServiceInstanceService;
-
-    @Autowired
     private PrometheusApi prometheusApi;
-
-    @Value("${monitor.prometheus.endpoint}")
-    private String endpoint;
 
     /**
      * 分页查询
@@ -53,27 +44,27 @@ public class PrometheusTargetsController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
-                              @RequestParam(value = "state", required = false) String state) {
-        PlatformServiceInstance platformServiceInstance;
-        LambdaQueryWrapper<PlatformServiceInstance> wrapper = new LambdaQueryWrapper<PlatformServiceInstance>()
-                .eq(StrUtil.isNotBlank(name), PlatformServiceInstance::getName, name)
-                .eq(PlatformServiceInstance::getCreateBy, getUsername())
-                .eq(PlatformServiceInstance::getType, "prometheus");
-        if (StrUtil.isNotBlank(name)) {
-            // 查询对应的实例设置url
-            platformServiceInstance = platformServiceInstanceService.getOne(wrapper);
-        }else {
-            platformServiceInstance = platformServiceInstanceService.list(wrapper).get(0);
-        }
-        if (ObjectUtil.isNotNull(platformServiceInstance)) {
-            // 动态设置Prometheus实例地址
-            URI dynamicUri = URI.create(platformServiceInstance.getHost());
-            PrometheusTargetResponse response = prometheusApi.targets(state);
-            List<?> list = targets(response.getData());
-            return PageUtils.toPage(list);
-        }
-        return PageUtils.toPage(new ArrayList<>());
+    public TableDataInfo page(@RequestParam(value = "job", required = false) String job,
+                              @RequestParam(value = "health", required = false) String health) {
+        PrometheusTargetResponse response = prometheusApi.targets("");
+        List<ActiveTarget> searchList = new ArrayList<>();
+        List<ActiveTarget> list = targets(response.getData());
+        list.forEach(target -> {
+            JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
+            String jobName = object.getStr("job");
+            String healthName = object.getStr("health");
+            if (StrUtil.isNotBlank(jobName)) {
+                if (jobName.contains(job)) {
+                    searchList.add(target);
+                }
+            }
+            if (StrUtil.isNotBlank(health)) {
+                if (healthName.contains(health)) {
+                    searchList.add(target);
+                }
+            }
+        });
+        return PageUtils.toPage(searchList);
     }
 
     /**
@@ -85,25 +76,9 @@ public class PrometheusTargetsController extends BaseController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "state", required = false) String state) {
-        // 查询对应的实例设置url
-        PlatformServiceInstance platformServiceInstance;
-        LambdaQueryWrapper<PlatformServiceInstance> wrapper = new LambdaQueryWrapper<PlatformServiceInstance>()
-                .eq(StrUtil.isNotBlank(name), PlatformServiceInstance::getName, name)
-                .eq(PlatformServiceInstance::getCreateBy, getUsername())
-                .eq(PlatformServiceInstance::getType, "prometheus");
-        if (StrUtil.isNotBlank(name)) {
-            platformServiceInstance = platformServiceInstanceService.getOne(wrapper);
-        } else {
-            platformServiceInstance = platformServiceInstanceService.list(wrapper).get(0);
-        }
-        if (ObjectUtil.isNotNull(platformServiceInstance)) {
-            // 动态设置Prometheus实例地址
-            URI dynamicUri = URI.create(platformServiceInstance.getHost());
-            PrometheusTargetResponse response = prometheusApi.targets(state);
-            List<?> list = targets(response.getData());
-            return AjaxResult.success(list);
-        }
-        return AjaxResult.success(new ArrayList<>());
+        PrometheusTargetResponse response = prometheusApi.targets("");
+        List<ActiveTarget> list = targets(response.getData());
+        return AjaxResult.success(list);
     }
 
     /**
@@ -111,8 +86,8 @@ public class PrometheusTargetsController extends BaseController {
      *
      * @return r
      */
-    private List<?> targets(JSONObject jsonObject) {
-        JSONArray activeTargets = JSONUtil.parseArray(jsonObject.get("activeTargets"));
-        return Convert.toList(activeTargets);
+    private List<ActiveTarget> targets(PrometheusTargetData data) {
+        JSONArray activeTargets = JSONUtil.parseArray(data.getActiveTargets());
+        return Convert.toList(ActiveTarget.class, activeTargets);
     }
 }

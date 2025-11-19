@@ -1,7 +1,7 @@
 package vip.gpg123.prometheus.domain;
 
-import cn.hutool.json.JSONObject;
 import lombok.Data;
+import vip.gpg123.platform.domain.PrometheusTargetData;
 
 import java.io.Serializable;
 
@@ -10,5 +10,5 @@ public class PrometheusTargetResponse implements Serializable {
 
     private String status;
 
-    private JSONObject data;
+    private PrometheusTargetData data;
 }

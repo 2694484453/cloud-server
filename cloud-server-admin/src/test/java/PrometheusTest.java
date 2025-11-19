@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import vip.gpg123.CloudServerApplication;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
+import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
 
 import java.io.File;
@@ -24,6 +26,9 @@ public class PrometheusTest {
 
     @Autowired
     private PrometheusExporterService prometheusExporterService;
+
+    @Autowired
+    private PrometheusApi  prometheusApi;
 
     @Test
     public void insert() {
@@ -85,5 +90,11 @@ public class PrometheusTest {
 
             }
         }
+    }
+
+    @Test
+    public void export() {
+        PrometheusTargetResponse response = prometheusApi.targets("");
+        System.out.println(response.getData());
     }
 }
