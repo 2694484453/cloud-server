@@ -2,13 +2,20 @@ package vip.gpg123.kubernetes;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.fabric8.kubernetes.api.model.NamedContext;
 import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
+import io.fabric8.openshift.api.model.machineconfig.v1.KubeletConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import netscape.javascript.JSObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +26,23 @@ import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.kubernetes.domain.KubernetesCluster;
+import vip.gpg123.kubernetes.domain.KubernetesClusterConfig;
+import vip.gpg123.kubernetes.domain.KubernetesContext;
+import vip.gpg123.kubernetes.domain.KubernetesFileConfig;
+import vip.gpg123.kubernetes.domain.KubernetesUser;
 import vip.gpg123.kubernetes.service.KubernetesClusterService;
 import vip.gpg123.kubernetes.vo.KubernetesClusterVo;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/kubernetesCluster")
+@RequestMapping("/kubernetes/cluster")
 @Api(tags = "集群服务管理")
 public class KubernetesClusterController extends BaseController {
 
@@ -76,6 +92,7 @@ public class KubernetesClusterController extends BaseController {
 
     /**
      * 添加集群
+     *
      * @param kubernetesClusterVo vo
      * @return r
      */
@@ -95,16 +112,67 @@ public class KubernetesClusterController extends BaseController {
             return AjaxResult.error(e.getMessage());
         } finally {
             // 转换完成后
-           if (config != null) {
-               KubernetesCluster kubernetesCluster = new KubernetesCluster();
-               BeanUtils.copyProperties(kubernetesClusterVo, kubernetesCluster);
-               // 进行保存
-               kubernetesCluster.setCreateBy(getUsername());
-               kubernetesCluster.setCreateTime(DateUtil.date());
-               kubernetesCluster.setConfig(FileUtil.readString(kubernetesClusterVo.getFile(), StandardCharsets.UTF_8));
-               kubernetesClusterService.save(kubernetesCluster);
-           }
+            if (config != null) {
+                KubernetesCluster kubernetesCluster = new KubernetesCluster();
+                BeanUtils.copyProperties(kubernetesClusterVo, kubernetesCluster);
+                // 进行保存
+                kubernetesCluster.setCreateBy(getUsername());
+                kubernetesCluster.setCreateTime(DateUtil.date());
+                kubernetesCluster.setConfig(FileUtil.readString(kubernetesClusterVo.getFile(), StandardCharsets.UTF_8));
+                kubernetesClusterService.save(kubernetesCluster);
+            }
         }
         return AjaxResult.error("未知原因");
+    }
+
+    /**
+     * 导出
+     * @param kubernetesClusterVo vo
+     */
+    @PostMapping("/exporter")
+    @ApiOperation(value = "【导出】")
+    public void exporter(KubernetesClusterVo kubernetesClusterVo, HttpServletResponse response) {
+        // 当前用户
+        List<KubernetesCluster> list = kubernetesClusterService.list(new LambdaQueryWrapper<KubernetesCluster>()
+                .eq(KubernetesCluster::getCreateBy, getUsername())
+        );
+        KubernetesFileConfig config = new KubernetesFileConfig();
+
+        List<KubernetesClusterConfig> clusters = new ArrayList<>();
+
+        List<KubernetesUser> users = new ArrayList<>();
+
+        List<KubernetesContext> contexts = new ArrayList<>();
+
+        // 组装
+        list.forEach(kubernetesCluster -> {
+            String clusterName = kubernetesCluster.getClusterName();
+            String configStr = kubernetesCluster.getConfig();
+            KubernetesFileConfig kubernetesFileConfig = YamlUtil.load(IoUtil.toStream(configStr, StandardCharsets.UTF_8), KubernetesFileConfig.class);
+            clusters.addAll(kubernetesFileConfig.getClusters());
+            users.addAll(kubernetesFileConfig.getUsers());
+            contexts.addAll(kubernetesFileConfig.getContexts());
+        });
+        config.setApiVersion("v1");
+        config.setKind("Config");
+        config.setPreferences(new Object());
+        config.setClusters(clusters);
+        config.setUsers(users);
+        config.setContexts(contexts);
+
+        try {
+            File file = FileUtil.createTempFile();
+            FileWriter fw = new FileWriter(file);
+            YamlUtil.dump(config,fw);
+            // 设置响应
+            response.setContentType("application/x-yaml");
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=\"config\"");
+            response.setCharacterEncoding("UTF-8");
+
+            response.getWriter().write(FileUtil.readString(file, StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

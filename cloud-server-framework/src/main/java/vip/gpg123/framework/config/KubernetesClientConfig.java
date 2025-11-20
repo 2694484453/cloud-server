@@ -31,31 +31,23 @@ public class KubernetesClientConfig {
     /**
      * 配置文件地址
      */
-    private static String configFile = "";
+    private static final String kubeConfig;
 
     /**
      * 默认context
      */
-    private static String defaultContext = "ark.gpg123.vip";
+    private static final String defaultContext = "ark.gpg123.vip";
 
 
-    /**
-     * 默认构造器
-     */
-    public KubernetesClientConfig() {
-        String osName = SystemUtil.getOsInfo().getName();
-        switch (osName) {
-            case "Windows":
-                 configFile = "C:/Users/" + SystemUtil.getUserInfo().getName() + "/.kube/config";
-                break;
-            case "Linux":
-                configFile =  "/root/.kube/config";
-                break;
-            case "Mac OS X":
-                configFile = "/Users/"+SystemUtil.getUserInfo().getName() + "/.kube/config";
-                break;
+    // 静态代码块用于初始化静态变量
+    static {
+        // 获取系统下的目录
+        kubeConfig = SystemUtil.getUserInfo().getHomeDir() + "/.kube/config";
+        if (!FileUtil.exist(kubeConfig)) {
+            throw new RuntimeException(kubeConfig + "不存在，请检查");
         }
     }
+
 
 
     // 根据当前用户获取客户端
@@ -73,7 +65,7 @@ public class KubernetesClientConfig {
     public KubernetesClient kubernetesClient() {
         try {
             // 读取配置文件
-            String content = FileUtil.readString(configFile, StandardCharsets.UTF_8);
+            String content = FileUtil.readString(kubeConfig, StandardCharsets.UTF_8);
             Config config = Config.fromKubeconfig(content);
             // 设置一个context
             NamedContext namedContext = new NamedContext();
@@ -103,6 +95,6 @@ public class KubernetesClientConfig {
      * @return r
      */
     public static String defaultConfigPath() {
-        return configFile;
+        return kubeConfig;
     }
 }
