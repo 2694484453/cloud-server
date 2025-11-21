@@ -1,5 +1,9 @@
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.yaml.YamlUtil;
 import io.fabric8.kubernetes.api.model.Config;
 import org.junit.jupiter.api.Test;
@@ -19,9 +23,13 @@ public class K8sConfigTest {
     @Test
     public void test() {
         try {
-            File configFile = FileUtil.file(configFilePath);
-            Map<String, Object> map = YamlUtil.load(FileUtil.getReader(configFile, StandardCharsets.UTF_8), Map.class);
-            KubernetesFileConfig fileConfig = YamlUtil.load(FileUtil.getReader(configFile, StandardCharsets.UTF_8), KubernetesFileConfig.class);
+            String str = FileUtil.readUtf8String(configFilePath);
+            JSONObject jsonObject = YamlUtil.load(IoUtil.toStream(str,StandardCharsets.UTF_8), JSONObject.class);
+
+            KubernetesFileConfig fileConfig = BeanUtil.toBean(jsonObject, KubernetesFileConfig.class);
+                    //JSONUtil.toBean(jsonObject, KubernetesFileConfig.class);
+                    //YamlUtil.load(IoUtil.toStream(str, StandardCharsets.UTF_8), KubernetesFileConfig.class);
+
             System.out.println(fileConfig);
         } catch (IORuntimeException e) {
             throw new RuntimeException(e);

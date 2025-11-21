@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class KubernetesUser implements Serializable {
+public class KubernetesUser{
 
     private String name;
 
@@ -14,7 +14,8 @@ public class KubernetesUser implements Serializable {
 
 
     @Data
-    public static class User implements Serializable {
+    static
+    class User {
 
         @JsonProperty("client-certificate-data")
         private String clientCertificateData;

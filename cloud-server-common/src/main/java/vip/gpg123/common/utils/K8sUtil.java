@@ -19,8 +19,11 @@ public class K8sUtil {
     /**
      * 配置文件地址
      */
-    private static final String configFile = SystemUtil.getOsInfo().isWindows() ? "C:/Users/" + SystemUtil.getUserInfo().getName() + "/.kube/config" : "/root/.kube/config";
-            //"D:\\project\\cloud-server\\k8s\\config";
+    private static final String configFile;
+
+    static {
+        configFile = SystemUtil.getUserInfo().getHomeDir() + "/.kube/config";
+    }
 
     /**
      * 获取配置对象

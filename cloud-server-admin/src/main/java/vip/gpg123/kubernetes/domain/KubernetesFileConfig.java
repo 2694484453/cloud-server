@@ -1,5 +1,6 @@
 package vip.gpg123.kubernetes.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ public class KubernetesFileConfig implements Serializable {
 
     private List<KubernetesContext> contexts;
 
-    @com.fasterxml.jackson.annotation.JsonProperty("current-context")
+    @JsonProperty("current-context")
     private String currentContext;
 
     private String kind;

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -148,7 +149,9 @@ public class KubernetesClusterController extends BaseController {
         list.forEach(kubernetesCluster -> {
             String clusterName = kubernetesCluster.getClusterName();
             String configStr = kubernetesCluster.getConfig();
-            KubernetesFileConfig kubernetesFileConfig = YamlUtil.load(IoUtil.toStream(configStr, StandardCharsets.UTF_8), KubernetesFileConfig.class);
+            JSONObject jsonObject = YamlUtil.load(IoUtil.toStream(configStr,StandardCharsets.UTF_8), JSONObject.class);
+            KubernetesFileConfig kubernetesFileConfig = JSONUtil.toBean(jsonObject, KubernetesFileConfig.class);
+                    //YamlUtil.load(IoUtil.toStream(configStr, StandardCharsets.UTF_8), KubernetesFileConfig.class);
             clusters.addAll(kubernetesFileConfig.getClusters());
             users.addAll(kubernetesFileConfig.getUsers());
             contexts.addAll(kubernetesFileConfig.getContexts());
