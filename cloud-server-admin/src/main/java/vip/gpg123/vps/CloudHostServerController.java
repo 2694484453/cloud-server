@@ -88,7 +88,7 @@ public class CloudHostServerController extends BaseController {
      * @param cloudHostServer cloudHostServer
      * @return r
      */
-    @GetMapping("/add")
+    @PostMapping("/add")
     @ApiOperation(value = "新增")
     public AjaxResult add(@RequestBody CloudHostServer cloudHostServer) {
         cloudHostServer.setCreateBy(getUsername());
