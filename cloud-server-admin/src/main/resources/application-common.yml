@@ -53,9 +53,10 @@ remote:
 #frp
 frp:
   server:
-    protocol: http
-    host: hcs.gpg123.vip
-    port: 7500
+    url: http://hongkong.gpg123.vip:7500
+    ip: hongkong.gpg123.vip
+    port: 7000
+    token: ADt8zh5VFdJKcccVWh2jkv1l6Z0IblSvm0H7M2yclJpYkWV0KPEadr9gZWdd77HM
     userName: gaopuguang
     passWord: 1999y4m30d
 #cloud

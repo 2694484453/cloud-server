@@ -1,6 +1,7 @@
 package vip.gpg123.nas;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,12 @@ import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -42,6 +50,15 @@ public class NasFrpClientController extends BaseController {
 
     @Autowired
     private FrpServerApiService frpServerApiService;
+
+    @Value("${frp.server.ip}")
+    private String host;
+
+    @Value("${frp.server.port}")
+    private String port;
+
+    @Value("${frp.server.token}")
+    private String token;
 
     /**
      * 列表查询
@@ -225,5 +242,64 @@ public class NasFrpClientController extends BaseController {
         }
         boolean isSuccess = nasFrpClientService.removeById(id);
         return isSuccess ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    /**
+     * 导出配置文件
+     *
+     * @param serverName 服务
+     */
+    @PostMapping("/export")
+    @ApiOperation(value = "【导出配置文件】")
+    public void export(@RequestParam(value = "serverName", required = false, defaultValue = "hcs.gpg123.vip") String serverName,
+                       HttpServletRequest request,
+                       HttpServletResponse response) throws IOException {
+        // 查询全部客户端
+        List<NasFrpClient> list = nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getFrpServer, serverName)
+                .eq(NasFrpClient::getCreateBy, getUsername())
+                .orderByDesc(NasFrpClient::getCreateTime)
+        );
+
+        StringBuilder sb = new StringBuilder();
+        // 配置服务端
+        sb.append("#服务端配置(不可修改)").append("\n");
+        sb.append("serverAddr = ").append("\"").append(host).append("\"").append("\n");
+        sb.append("auth.token = ").append("\"").append(token).append("\"").append("\n");
+        sb.append("#本地admin-ui(可修改)").append("\n");
+        // 配置客户端
+        sb.append("webServer.addr = ").append("\"").append("127.0.0.1").append("\"").append("\n");
+        sb.append("webServer.port = ").append("\"").append("7500").append("\"").append("\n");
+        sb.append("webServer.user = ").append("\"").append("admin").append("\"").append("\n");
+        sb.append("webServer.password = ").append("\"").append("admin").append("\"").append("\n");
+        // 配置代理
+        sb.append("#代理配置(不可修改)").append("\n");
+        list.forEach(nasFrpClient -> {
+            sb.append("#").append(nasFrpClient.getName()).append(",备注：").append(nasFrpClient.getDescription()).append("\n");
+            sb.append("[[proxies]]").append("\n");
+            sb.append("name = ").append("\"").append(nasFrpClient.getName()).append("\"").append("\n");
+            sb.append("type = ").append("\"").append(nasFrpClient.getType()).append("\"").append("\n");
+            sb.append("localIP = ").append("\"").append(nasFrpClient.getLocalIp()).append("\"").append("\n");
+            sb.append("localPort = ").append("\"").append(nasFrpClient.getLocalPort()).append("\"").append("\n");
+            sb.append("customDomains = ").append("[\"").append(nasFrpClient.getCustomDomains()).append("\"]").append("\n");
+        });
+        // 额外
+        sb.append("#其他(可修改)").append("\n");
+        sb.append("healthCheck.type = ").append("\"").append("http").append("\"").append("\n");
+        sb.append("healthCheck.path = ").append("\"").append("/status").append("\"").append("\n");
+        sb.append("healthCheck.timeoutSeconds = ").append(3).append("\n");
+        sb.append("healthCheck.maxFailed = ").append(3).append("\n");
+        sb.append("healthCheck.intervalSeconds = ").append(10).append("\n");
+        sb.append("#注意：如果要使用域名访问请设置您的域名为cName类型并解析到frp.gpg123.vip").append("\n");
+        try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
+            // 1. 设置响应头
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("frpc.toml", "UTF-8"));
+            // 2. 带缓冲的流复制
+            IoUtil.copy(IoUtil.toUtf8Stream(sb.toString()), out);
+        } catch (Exception e) {
+            logger.error("文件导出失败：{}", e.getMessage());
+            response.sendError(500, "文件导出失败：" + e.getMessage());
+        }
     }
 }

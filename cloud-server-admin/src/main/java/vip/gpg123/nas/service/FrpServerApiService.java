@@ -7,7 +7,7 @@ import vip.gpg123.framework.interceptor.impl.FrpServerBasicAuthRequestIntercepto
 import vip.gpg123.nas.domain.FrpServerHttpResponse;
 import vip.gpg123.nas.domain.FrpServerInfo;
 
-@FeignClient(name = "nas-frp-server", url = "${frp.server.protocol}://${frp.server.host}:${frp.server.port}", configuration = FrpServerBasicAuthRequestInterceptor.class)
+@FeignClient(name = "nas-frp-server", url = "${frp.server.url}", configuration = FrpServerBasicAuthRequestInterceptor.class)
 @Service
 public interface FrpServerApiService {
 
