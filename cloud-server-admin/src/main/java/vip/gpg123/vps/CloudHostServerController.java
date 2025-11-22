@@ -77,6 +77,7 @@ public class CloudHostServerController extends BaseController {
         CloudHostServer search = new CloudHostServer();
         search.setHostName(hostName);
         search.setHostType(type);
+        search.setCreateBy(String.valueOf(getUserId()));
         List<CloudHostServer> list = cloudHostServerMapper.page(pageDomain, search);
         page.setRecords(list);
         return PageUtils.toPageByIPage(page);

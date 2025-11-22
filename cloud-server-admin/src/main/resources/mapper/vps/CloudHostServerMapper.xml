@@ -39,6 +39,12 @@
             <if test="qw.hostType != null and qw.hostType !=''">
                 and host_time = #{qw.hostType}
             </if>
+            <if test="qw.createBy != null">
+                and a.create_by = #{qw.createBy}
+            </if>
+            <if test="qw.updateBy != null">
+                and a.update_by = #{qw.updateBy}
+            </if>
         </where>
         <!-- 排序放在where外面 -->
         <choose>
@@ -70,6 +76,6 @@
     <select id="page" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
-        limit #{page.pageNum},#{page.pageSize}
+        limit #{page.begin},#{page.end}
     </select>
 </mapper>

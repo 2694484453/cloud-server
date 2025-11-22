@@ -1,5 +1,6 @@
 package vip.gpg123.common.core.page;
 
+import lombok.Data;
 import vip.gpg123.common.utils.StringUtils;
 
 /**
@@ -7,6 +8,7 @@ import vip.gpg123.common.utils.StringUtils;
  *
  * @author gpg123
  */
+@Data
 public class PageDomain
 {
     /** 当前记录起始索引 */
@@ -23,6 +25,10 @@ public class PageDomain
 
     /** 分页参数合理化 */
     private Boolean reasonable = true;
+
+    private Integer begin = 0;
+
+    private Integer end = 9;
 
     public String getOrderBy()
     {
