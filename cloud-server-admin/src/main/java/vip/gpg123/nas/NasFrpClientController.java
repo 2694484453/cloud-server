@@ -332,21 +332,29 @@ public class NasFrpClientController extends BaseController {
                 case "http":
                     if (httpMap.containsKey(item.getName())) {
                         item.setStatus(httpMap.get(item.getName()).getStatus());
+                    } else {
+                        item.setStatus("noExist");
                     }
                     break;
                 case "https":
                     if (httpsMap.containsKey(item.getName())) {
                         item.setStatus(httpsMap.get(item.getName()).getStatus());
+                    }else {
+                        item.setStatus("noExist");
                     }
                     break;
                 case "tcp":
                     if (tcpMap.containsKey(item.getName())) {
                         item.setStatus(tcpMap.get(item.getName()).getStatus());
+                    }else {
+                        item.setStatus("noExist");
                     }
                     break;
                 case "udp":
                     if (udpMap.containsKey(item.getName())) {
                         item.setStatus(udpMap.get(item.getName()).getStatus());
+                    }else {
+                        item.setStatus("noExist");
                     }
                     break;
                 default:

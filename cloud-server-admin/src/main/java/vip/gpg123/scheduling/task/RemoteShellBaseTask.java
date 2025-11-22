@@ -38,6 +38,11 @@ public class RemoteShellBaseTask extends BaseTask {
     public RemoteShellBaseTask() {
     }
 
+    public void ryParams(String params)
+    {
+        System.out.println("执行有参方法：" + params);
+    }
+
     /**
      * 执行方法，由子类重载
      *
@@ -58,10 +63,8 @@ public class RemoteShellBaseTask extends BaseTask {
                     session.connect();
                     String res = JschUtil.exec(session, cmd, StandardCharsets.UTF_8);
                     sysJob.setRunResult(res);
-                    sysJob.setStatus("success");
                 } catch (Exception e) {
                     sysJob.setRunResult(e.getMessage());
-                    sysJob.setStatus("fail");
                 } finally {
                     super.updateJob(sysJob);
                     super.saveJobLogs(new SysJobLog());

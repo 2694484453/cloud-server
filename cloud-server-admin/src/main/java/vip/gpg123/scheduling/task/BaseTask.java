@@ -91,6 +91,7 @@ public abstract class BaseTask implements Job {
         Date startTime = threadLocal.get();
         threadLocal.remove();
         sysJob = sysJobService.selectJobById(sysJob.getJobId());
+        sysJob.setStatus("done");
         final SysJobLog sysJobLog = new SysJobLog();
         sysJobLog.setJobName(sysJob.getJobName());
         sysJobLog.setJobGroup(sysJob.getJobGroup());
@@ -107,7 +108,7 @@ public abstract class BaseTask implements Job {
         } else {
             sysJobLog.setStatus(Constants.SUCCESS_TAG);
         }
-
+        sysJobService.updateJob(sysJob);
         // 结果日志写入数据库当中
         SpringUtils.getBean(ISysJobLogService.class).addJobLog(sysJobLog);
         TaskContext.clear();
