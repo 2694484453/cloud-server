@@ -135,7 +135,7 @@ public class SysSchedulingJobController extends BaseController
         {
             return error("新增任务'" + job.getJobName() + "'失败，目标字符串不在白名单内");
         }
-        job.setCreateBy(getUsername());
+        job.setCreateBy(String.valueOf(getUserId()));
         return toAjax(jobService.insertJob(job));
     }
 

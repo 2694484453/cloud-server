@@ -32,6 +32,10 @@ public class SysSchedulingCommonController extends BaseController {
             put("value","RemoteShell");
             put("label","执行远程主机命令");
         }});
+        types.add(new HashMap<String,String>(){{
+            put("value","api");
+            put("label","接口请求");
+        }});
         return AjaxResult.success(types);
     }
 
