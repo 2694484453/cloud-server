@@ -10,18 +10,15 @@ import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.fabric8.kubernetes.api.model.NamedContext;
 import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
-import io.fabric8.openshift.api.model.machineconfig.v1.KubeletConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import netscape.javascript.JSObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.K8sUtil;
@@ -31,8 +28,10 @@ import vip.gpg123.kubernetes.domain.KubernetesClusterConfig;
 import vip.gpg123.kubernetes.domain.KubernetesContext;
 import vip.gpg123.kubernetes.domain.KubernetesFileConfig;
 import vip.gpg123.kubernetes.domain.KubernetesUser;
+import vip.gpg123.kubernetes.mapper.KubernetesClusterMapper;
 import vip.gpg123.kubernetes.service.KubernetesClusterService;
 import vip.gpg123.kubernetes.vo.KubernetesClusterVo;
+import vip.gpg123.vps.domain.CloudHostServer;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -40,7 +39,6 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/kubernetes/cluster")
@@ -49,6 +47,9 @@ public class KubernetesClusterController extends BaseController {
 
     @Autowired
     private KubernetesClusterService kubernetesClusterService;
+
+    @Autowired
+    private KubernetesClusterMapper kubernetesClusterMapper;
 
     /**
      * 列表查询
@@ -64,7 +65,7 @@ public class KubernetesClusterController extends BaseController {
         List<KubernetesCluster> list = kubernetesClusterService.list(new LambdaQueryWrapper<KubernetesCluster>()
                 .like(StrUtil.isNotBlank(clusterName), KubernetesCluster::getClusterName, clusterName)
                 .eq(StrUtil.isNotBlank(status), KubernetesCluster::getStatus, status)
-                .eq(KubernetesCluster::getCreateBy, getUsername())
+                .eq(KubernetesCluster::getCreateBy, getUserId())
                 .orderByDesc(KubernetesCluster::getCreateTime)
         );
         return AjaxResult.success(list);
@@ -81,13 +82,18 @@ public class KubernetesClusterController extends BaseController {
     @ApiOperation(value = "【分页查询】")
     public TableDataInfo page(@RequestParam(value = "clusterName", required = false) String clusterName,
                               @RequestParam(value = "status", required = false) String status) {
-        IPage<KubernetesCluster> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
-        page = kubernetesClusterService.page(page, new LambdaQueryWrapper<KubernetesCluster>()
-                .like(StrUtil.isNotBlank(clusterName), KubernetesCluster::getClusterName, clusterName)
-                .eq(StrUtil.isNotBlank(status), KubernetesCluster::getStatus, status)
-                .eq(KubernetesCluster::getCreateBy, getUsername())
-                .orderByDesc(KubernetesCluster::getCreateTime)
-        );
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<KubernetesCluster> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        KubernetesCluster kubernetesCluster = new KubernetesCluster();
+        kubernetesCluster.setClusterName(clusterName);
+        kubernetesCluster.setStatus(status);
+        kubernetesCluster.setCreateBy(String.valueOf(getUserId()));
+        List<KubernetesCluster> list = kubernetesClusterMapper.page(pageDomain, kubernetesCluster);
+        page.setTotal(kubernetesClusterMapper.list(kubernetesCluster).size());
+        page.setRecords(list);
         return PageUtils.toPageByIPage(page);
     }
 
@@ -117,7 +123,7 @@ public class KubernetesClusterController extends BaseController {
                 KubernetesCluster kubernetesCluster = new KubernetesCluster();
                 BeanUtils.copyProperties(kubernetesClusterVo, kubernetesCluster);
                 // 进行保存
-                kubernetesCluster.setCreateBy(getUsername());
+                kubernetesCluster.setCreateBy(String.valueOf(getUserId()));
                 kubernetesCluster.setCreateTime(DateUtil.date());
                 kubernetesCluster.setConfig(FileUtil.readString(kubernetesClusterVo.getFile(), StandardCharsets.UTF_8));
                 kubernetesClusterService.save(kubernetesCluster);

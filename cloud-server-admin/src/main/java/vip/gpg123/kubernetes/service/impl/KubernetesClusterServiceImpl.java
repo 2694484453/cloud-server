@@ -3,7 +3,7 @@ package vip.gpg123.kubernetes.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import vip.gpg123.kubernetes.domain.KubernetesCluster;
 import vip.gpg123.kubernetes.service.KubernetesClusterService;
-import vip.gpg123.kubernetes.mapper.KubernetesServerMapper;
+import vip.gpg123.kubernetes.mapper.KubernetesClusterMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-05-10 16:41:24
 */
 @Service
-public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesServerMapper, KubernetesCluster>
+public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesClusterMapper, KubernetesCluster>
     implements KubernetesClusterService {
 
 }

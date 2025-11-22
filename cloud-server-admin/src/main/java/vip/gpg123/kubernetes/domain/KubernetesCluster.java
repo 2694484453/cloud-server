@@ -8,6 +8,8 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -16,9 +18,10 @@ import javax.validation.constraints.NotBlank;
  * k8s服务主机信息表
  * @TableName kubernetes_server
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="kubernetes_cluster")
 @Data
-public class KubernetesCluster {
+public class KubernetesCluster extends BaseEntity {
     /**
      * 主键
      */
