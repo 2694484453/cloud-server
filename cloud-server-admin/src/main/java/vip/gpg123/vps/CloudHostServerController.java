@@ -42,11 +42,11 @@ public class CloudHostServerController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam(value = "name",required = false) String name,
+    public AjaxResult list(@RequestParam(value = "hostName",required = false) String hostName,
                            @RequestParam(value = "type",required = false) String type) {
         List<CloudHostServer> serversList = cloudHostServerService.list(new LambdaQueryWrapper<CloudHostServer>()
                 .eq(CloudHostServer::getCreateBy,  getUsername())
-                .like(StrUtil.isNotBlank(name), CloudHostServer::getHostName, name)
+                .like(StrUtil.isNotBlank(hostName), CloudHostServer::getHostName, hostName)
                 .eq(StrUtil.isNotBlank(type), CloudHostServer::getHostType, type)
                 .orderByDesc(CloudHostServer::getCreateTime)
         );
@@ -60,11 +60,11 @@ public class CloudHostServerController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "name",required = false) String name,
+    public TableDataInfo page(@RequestParam(value = "hostName",required = false) String hostName,
                               @RequestParam(value = "type",required = false) String type) {
         IPage<CloudHostServer> page = cloudHostServerService.page(new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()), new LambdaQueryWrapper<CloudHostServer>()
                 .eq(CloudHostServer::getCreateBy,  getUsername())
-                .like(StrUtil.isNotBlank(name), CloudHostServer::getHostName, name)
+                .like(StrUtil.isNotBlank(hostName), CloudHostServer::getHostName, hostName)
                 .eq(StrUtil.isNotBlank(type), CloudHostServer::getHostType, type)
                 .orderByDesc(CloudHostServer::getCreateTime)
         );
