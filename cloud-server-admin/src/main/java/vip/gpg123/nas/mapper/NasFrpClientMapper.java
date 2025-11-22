@@ -21,13 +21,13 @@ public interface NasFrpClientMapper extends BaseMapper<NasFrpClient> {
      * 根据 entity 条件，查询一条记录
      *
      */
-    NasFrpClient selectOne(@Param("qw") NasFrpClient nasFrpClient);
+    NasFrpClient one(@Param("qw") NasFrpClient nasFrpClient);
 
     /**
      * 根据 entity 条件，查询全部记录
      *
      */
-    List<NasFrpClient> selectList(@Param("qw") NasFrpClient nasFrpClient);
+    List<NasFrpClient> list(@Param("qw") NasFrpClient nasFrpClient);
 
     /**
      * 根据 entity 条件，查询全部记录（并翻页）

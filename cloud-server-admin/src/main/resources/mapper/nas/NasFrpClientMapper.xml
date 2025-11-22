@@ -65,13 +65,13 @@
                  left join sys_user b on a.update_by = b.user_id
     </sql>
 
-    <select id="selectList" resultMap="BaseResultMap">
+    <select id="list" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
     </select>
 
     <!--单个查询-->
-    <select id="selectOne" resultMap="BaseResultMap">
+    <select id="one" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
     </select>

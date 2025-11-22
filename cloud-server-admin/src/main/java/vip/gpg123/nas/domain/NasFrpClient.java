@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,7 +20,7 @@ import vip.gpg123.common.core.domain.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value ="nas_frp_client")
 @Data
-public class NasFrpClient extends BaseEntity {
+public class NasFrpClient extends BaseEntity implements Serializable {
     /**
      * 主键
      */

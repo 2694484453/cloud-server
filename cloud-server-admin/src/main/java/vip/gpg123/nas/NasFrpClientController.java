@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +26,6 @@ import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.mapper.NasFrpClientMapper;
-import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +34,10 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/nas/frpc")
@@ -115,7 +116,7 @@ public class NasFrpClientController extends BaseController {
         search.setCreateBy(String.valueOf(getUserId()));
         List<NasFrpClient> list = nasFrpClientMapper.page(pageDomain,search);
         page.setRecords(list);
-        page.setTotal(nasFrpClientMapper.selectList(search).size());
+        page.setTotal(nasFrpClientMapper.list(search).size());
         return PageUtils.toPageByIPage(page);
     }
 
@@ -140,8 +141,8 @@ public class NasFrpClientController extends BaseController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
-    private AjaxResult add(@RequestBody NasFrpClient nasFrpClient) {
-        if (StrUtil.isBlank(nasFrpClient.getName())) {
+    private AjaxResult add(NasFrpClient nasFrpClient) {
+        if (StrUtil.isBlankIfStr(nasFrpClient.getName())) {
             return AjaxResult.error("名称不能为空");
         }
         long count = nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
@@ -150,7 +151,7 @@ public class NasFrpClientController extends BaseController {
         if (count > 0) {
             return AjaxResult.error("名称已经存在，请更换");
         }
-        nasFrpClient.setCreateBy(getUsername());
+        nasFrpClient.setCreateBy(String.valueOf(getUserId()));
         nasFrpClient.setCreateTime(DateUtil.date());
         boolean isSuccess = nasFrpClientService.save(nasFrpClient);
         return isSuccess ? AjaxResult.success() : AjaxResult.error();
@@ -164,7 +165,7 @@ public class NasFrpClientController extends BaseController {
      */
     @PutMapping("/edit")
     @ApiOperation(value = "【修改】")
-    private AjaxResult edit(@RequestBody NasFrpClient nasFrpClient) {
+    private AjaxResult edit(NasFrpClient nasFrpClient) {
         if (StrUtil.isBlank(nasFrpClient.getId())) {
             return AjaxResult.error("id不能为空");
         }
@@ -180,7 +181,7 @@ public class NasFrpClientController extends BaseController {
                 return AjaxResult.error("名称已被占用，请更换");
             }
         }
-        nasFrpClient.setUpdateBy(getUsername());
+        nasFrpClient.setUpdateBy(String.valueOf(getUserId()));
         nasFrpClient.setUpdateTime(DateUtil.date());
         boolean isSuccess = nasFrpClientService.updateById(nasFrpClient);
         return isSuccess ? AjaxResult.success() : AjaxResult.error();
@@ -206,13 +207,10 @@ public class NasFrpClientController extends BaseController {
 
     /**
      * 导出配置文件
-     *
-     * @param serverName 服务
      */
     @PostMapping("/export")
     @ApiOperation(value = "【导出配置文件】")
-    public void export(@RequestParam(value = "serverName", required = false, defaultValue = "hcs.gpg123.vip") String serverName,
-                       HttpServletRequest request,
+    public void export(HttpServletRequest request,
                        HttpServletResponse response) throws IOException {
         // 查询全部客户端
         List<NasFrpClient> list = nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
@@ -261,5 +259,40 @@ public class NasFrpClientController extends BaseController {
             logger.error("文件导出失败：{}", e.getMessage());
             response.sendError(500, "文件导出失败：" + e.getMessage());
         }
+    }
+
+    /**
+     * 概览
+     * @return r
+     */
+    @GetMapping("/overView")
+    @ApiOperation(value = "【概览】")
+    public AjaxResult overview() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String,Object> clientCount = new LinkedHashMap<>();
+        // 我的frpc配置总数
+        clientCount.put("title","我的frpc配置总数");
+        clientCount.put("count",nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getCreateBy, getUserId())
+        ));
+        // 我的frpc配置在线数
+        Map<String,Object> healthClientCount = new LinkedHashMap<>();
+        healthClientCount.put("title","我的frpc配置在线数");
+        healthClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getStatus, "ok")
+                .eq(NasFrpClient::getCreateBy, getUserId())
+        ));
+
+        // 我的frpc配置离线数
+        Map<String,Object> downClientCount = new LinkedHashMap<>();
+        downClientCount.put("title","我的frpc配置离线数");
+        downClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getCreateBy, getUserId())
+                .eq(NasFrpClient::getStatus, "error")
+        ));
+        list.add(clientCount);
+        list.add(healthClientCount);
+        list.add(downClientCount);
+        return AjaxResult.success(list);
     }
 }
