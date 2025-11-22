@@ -31,7 +31,6 @@ import vip.gpg123.kubernetes.domain.KubernetesUser;
 import vip.gpg123.kubernetes.mapper.KubernetesClusterMapper;
 import vip.gpg123.kubernetes.service.KubernetesClusterService;
 import vip.gpg123.kubernetes.vo.KubernetesClusterVo;
-import vip.gpg123.vps.domain.CloudHostServer;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
