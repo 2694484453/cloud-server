@@ -130,7 +130,7 @@ public class CloudHostServerController extends BaseController {
      * @param id id
      * @return r
      */
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     @ApiOperation(value = "删除")
     public AjaxResult delete(@RequestParam(value = "id",required = false) String id) {
         boolean remove = cloudHostServerService.removeById(id);
