@@ -37,7 +37,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/kubernetes/cluster")
@@ -182,5 +184,39 @@ public class KubernetesClusterController extends BaseController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 概览
+     * @return r
+     */
+    @GetMapping("/overView")
+    @ApiOperation(value = "概览")
+    public AjaxResult overView() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> total = new HashMap<>();
+        // 总数
+        total.put("title","集群总数");
+        total.put("count",kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
+                .eq(KubernetesCluster::getCreateBy, getUserId())
+        ));
+        // 正常集群
+        Map<String, Object> health = new HashMap<>();
+        health.put("title","正常集群数");
+        health.put("count", kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
+                .eq(KubernetesCluster::getCreateBy, getUserId())
+                .eq(KubernetesCluster::getStatus, "ok")
+        ));
+        // 异常集群
+        Map<String, Object> unHealth = new HashMap<>();
+        unHealth.put("title","异常集群数");
+        unHealth.put("count", kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
+                .eq(KubernetesCluster::getCreateBy, getUsername())
+                .eq(KubernetesCluster::getStatus, "error")
+        ));
+        list.add(total);
+        list.add(health);
+        list.add(unHealth);
+        return AjaxResult.success(list);
     }
 }

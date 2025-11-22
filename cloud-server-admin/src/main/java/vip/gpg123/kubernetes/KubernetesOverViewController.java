@@ -23,28 +23,5 @@ public class KubernetesOverViewController extends BaseController {
     @Autowired
     private KubernetesClusterService kubernetesClusterService;
 
-    /**
-     * 概览
-     * @return r
-     */
-    @GetMapping("/overView")
-    @ApiOperation(value = "概览")
-    public AjaxResult overView() {
-        Map<String, Object> data = new HashMap<>();
-        // 总数
-        data.put("clusterTotalCount",kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
-                .eq(KubernetesCluster::getCreateBy, getUsername())
-        ));
-        // 正常集群
-        data.put("clusterOkCount", kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
-                .eq(KubernetesCluster::getCreateBy, getUsername())
-                .eq(KubernetesCluster::getStatus, "ok")
-        ));
-        // 异常集群
-        data.put("clusterErrorCount", kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
-                .eq(KubernetesCluster::getCreateBy, getUsername())
-                .eq(KubernetesCluster::getStatus, "error")
-        ));
-        return AjaxResult.success(data);
-    }
+
 }
