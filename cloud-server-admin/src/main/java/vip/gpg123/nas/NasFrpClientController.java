@@ -81,7 +81,6 @@ public class NasFrpClientController extends BaseController {
                 .eq(StrUtil.isNotBlank(type), NasFrpClient::getType, type)
                 .like(StrUtil.isNotBlank(ip), NasFrpClient::getLocalIp, ip)
                 .like(ObjectUtil.isNotEmpty(port), NasFrpClient::getLocalPort, port)
-                .eq(StrUtil.isNotBlank(server), NasFrpClient::getFrpServer, server)
                 .eq(StrUtil.isNotBlank(getUsername()), NasFrpClient::getCreateBy, getUsername())
                 .orderByDesc(NasFrpClient::getCreateTime)
         );
@@ -111,7 +110,6 @@ public class NasFrpClientController extends BaseController {
                 .eq(StrUtil.isNotBlank(type), NasFrpClient::getType, type)
                 .like(StrUtil.isNotBlank(ip), NasFrpClient::getLocalIp, ip)
                 .like(ObjectUtil.isNotEmpty(port), NasFrpClient::getLocalPort, port)
-                .eq(StrUtil.isNotBlank(server), NasFrpClient::getFrpServer, server)
                 .eq(StrUtil.isNotBlank(getUsername()), NasFrpClient::getCreateBy, getUsername())
                 .orderByDesc(NasFrpClient::getCreateTime));
         // 查询http代理
@@ -256,7 +254,6 @@ public class NasFrpClientController extends BaseController {
                        HttpServletResponse response) throws IOException {
         // 查询全部客户端
         List<NasFrpClient> list = nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
-                .eq(NasFrpClient::getFrpServer, serverName)
                 .eq(NasFrpClient::getCreateBy, getUsername())
                 .orderByDesc(NasFrpClient::getCreateTime)
         );

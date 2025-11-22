@@ -29,12 +29,6 @@ public class NasFrpClient {
     private String name;
 
     /**
-     * 服务
-     */
-    @TableField(value = "frp_server")
-    private String frpServer;
-
-    /**
      * 协议类型
      */
     @TableField(value = "type")
