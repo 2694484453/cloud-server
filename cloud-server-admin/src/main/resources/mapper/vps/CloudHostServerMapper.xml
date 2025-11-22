@@ -5,24 +5,71 @@
 <mapper namespace="vip.gpg123.vps.mapper.CloudHostServerMapper">
 
     <resultMap id="BaseResultMap" type="vip.gpg123.vps.domain.CloudHostServer">
-            <id property="id" column="id" />
-            <result property="hostName" column="host_name" />
-            <result property="hostType" column="host_type" />
-            <result property="hostStatus" column="host_status" />
-            <result property="hostIp" column="host_ip" />
-            <result property="port" column="port" />
-            <result property="userName" column="user_name" />
-            <result property="passWord" column="pass_word" />
-            <result property="description" column="description" />
-            <result property="createBy" column="create_by" />
-            <result property="createTime" column="create_time" />
-            <result property="updateBy" column="update_by" />
-            <result property="updateTime" column="update_time" />
+        <id property="id" column="id"/>
+        <result property="hostName" column="host_name"/>
+        <result property="hostType" column="host_type"/>
+        <result property="hostStatus" column="host_status"/>
+        <result property="hostIp" column="host_ip"/>
+        <result property="port" column="port"/>
+        <result property="userName" column="user_name"/>
+        <result property="passWord" column="pass_word"/>
+        <result property="description" column="description"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,host_name,host_type,host_status,host_ip,port,
+        id
+        ,host_name,host_type,host_status,host_ip,port,
         user_name,pass_word,description,create_by,create_time,
         update_by,update_time
     </sql>
+
+    <!--条件语句-->
+    <sql id="queryWrapper">
+        <where>1=1
+            <if test="qw.id != null">
+                and id = #{qw.id}
+            </if>
+            <if test="qw.hostName != null and qw.hostName !=''">
+                and host_name like concat('%',#{qw.hostName},'%')
+            </if>
+            <if test="qw.hostType != null and qw.hostType !=''">
+                and host_time = #{qw.hostType}
+            </if>
+        </where>
+        <!-- 排序放在where外面 -->
+        <choose>
+            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
+                order by ${page.orderByColumn} ${page.isAsc}
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+
+    <!--基础查询-->
+    <sql id="baseSelect">
+        select a.*, b.user_name as 'updateByUserName'
+        from (select s.*, u.user_name as 'createByUserName'
+              from cloud_host_server s
+                       left join sys_user u on u.user_id = s.create_by) a
+                 left join sys_user b on a.update_by = b.user_id
+    </sql>
+
+    <!--单个查询-->
+    <select id="selectOne" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--分页查询-->
+    <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+        limit #{page.pageNum},#{page.pageSize}
+    </select>
 </mapper>

@@ -9,12 +9,14 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 云主机信息表
  * @TableName cloud_host_server
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="cloud_host_server")
 @Data
 public class CloudHostServer extends BaseEntity implements Serializable {

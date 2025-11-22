@@ -29,12 +29,16 @@ public class BaseEntity implements Serializable
     /** 创建者 */
     private String createBy;
 
+    private String createByUserName;
+
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /** 更新者 */
     private String updateBy;
+
+    private String updateByUserName;
 
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -8,6 +8,7 @@ import cn.hutool.extra.ssh.JschUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 import com.jcraft.jsch.Session;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.vps.domain.CloudHostServer;
+import vip.gpg123.vps.mapper.CloudHostServerMapper;
 import vip.gpg123.vps.service.CloudHostServerService;
 
 import java.util.List;
@@ -34,6 +37,9 @@ public class CloudHostServerController extends BaseController {
 
     @Autowired
     private CloudHostServerService cloudHostServerService;
+
+    @Autowired
+    private CloudHostServerMapper cloudHostServerMapper;
 
     /**
      * 列表查询
@@ -62,12 +68,17 @@ public class CloudHostServerController extends BaseController {
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(@RequestParam(value = "hostName",required = false) String hostName,
                               @RequestParam(value = "type",required = false) String type) {
-        IPage<CloudHostServer> page = cloudHostServerService.page(new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()), new LambdaQueryWrapper<CloudHostServer>()
-                .eq(CloudHostServer::getCreateBy,  getUsername())
-                .like(StrUtil.isNotBlank(hostName), CloudHostServer::getHostName, hostName)
-                .eq(StrUtil.isNotBlank(type), CloudHostServer::getHostType, type)
-                .orderByDesc(CloudHostServer::getCreateTime)
-        );
+
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<CloudHostServer> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        CloudHostServer search = new CloudHostServer();
+        search.setHostName(hostName);
+        search.setHostType(type);
+        List<CloudHostServer> list = cloudHostServerMapper.page(pageDomain, search);
+        page.setRecords(list);
         return PageUtils.toPageByIPage(page);
     }
 
