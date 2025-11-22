@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import vip.gpg123.common.core.page.PageDomain;
+import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.domain.SysJobLog;
 
 /**
@@ -65,4 +68,21 @@ public interface SysJobLogMapper extends BaseMapper<SysJobLog>
      * 清空任务日志
      */
     public void cleanJobLog();
+
+    /**
+     * 根据 entity 条件，查询一条记录
+     *
+     */
+    SysJobLog one(@Param("qw") SysJobLog jobLog);
+
+    /**
+     * 根据 entity 条件，查询全部记录
+     *
+     */
+    List<SysJobLog> list(@Param("qw") SysJobLog jobLog);
+
+    /**
+     * 根据 entity 条件，查询全部记录（并翻页）
+     */
+    List<SysJobLog> page(@Param("page") PageDomain page, @Param("qw") SysJobLog sysJobLog);
 }
