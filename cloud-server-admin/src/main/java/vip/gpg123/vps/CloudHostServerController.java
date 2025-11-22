@@ -24,6 +24,7 @@ import vip.gpg123.vps.domain.CloudHostServer;
 import vip.gpg123.vps.mapper.CloudHostServerMapper;
 import vip.gpg123.vps.service.CloudHostServerService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -170,11 +171,38 @@ public class CloudHostServerController extends BaseController {
     @GetMapping("/overView")
     @ApiOperation(value = "概览")
     public AjaxResult overView() {
-        Map<String, Object> map = new HashMap<>();
+        List<Map<String,Object>> list = new ArrayList<>();
+        //
+        Map<String, Object> total = new HashMap<>();
         long hostCount = cloudHostServerService.count(new LambdaQueryWrapper<CloudHostServer>()
                 .eq(CloudHostServer::getCreateBy,getUserId())
         );
-        map.put("hostCount", hostCount);
-        return AjaxResult.success(map);
+        total.put("title", "主机总数量");
+        total.put("count", hostCount);
+        total.put("description", "<UNK>");
+        //
+        Map<String,Object> health = new HashMap<>();
+        long healthHostCount = cloudHostServerService.count(new LambdaQueryWrapper<CloudHostServer>()
+                .eq(CloudHostServer::getCreateBy,getUserId())
+                .eq(CloudHostServer::getHostStatus,"ok")
+        );
+        health.put("title", "健康数量");
+        health.put("count", healthHostCount);
+        health.put("description", "");
+
+        //
+        Map<String,Object> unHealth = new HashMap<>();
+        long unHealthHostCount = cloudHostServerService.count(new LambdaQueryWrapper<CloudHostServer>()
+                .eq(CloudHostServer::getCreateBy,getUserId())
+                .eq(CloudHostServer::getHostStatus,"error")
+        );
+        unHealth.put("title", "异常数量");
+        unHealth.put("count", unHealthHostCount);
+        unHealth.put("description", "");
+        //
+        list.add(total);
+        list.add(health);
+        list.add(unHealth);
+        return AjaxResult.success(list);
     }
 }
