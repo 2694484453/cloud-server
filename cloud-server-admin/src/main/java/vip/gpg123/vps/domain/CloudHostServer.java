@@ -9,6 +9,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 云主机信息表
@@ -16,7 +17,7 @@ import lombok.Data;
  */
 @TableName(value ="cloud_host_server")
 @Data
-public class CloudHostServer implements Serializable {
+public class CloudHostServer extends BaseEntity implements Serializable {
     /**
      * 主键
      */
