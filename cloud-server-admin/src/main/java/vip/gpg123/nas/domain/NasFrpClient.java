@@ -8,14 +8,17 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * frp客户端配置信息表
  * @TableName nas_frp_client
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="nas_frp_client")
 @Data
-public class NasFrpClient {
+public class NasFrpClient extends BaseEntity {
     /**
      * 主键
      */

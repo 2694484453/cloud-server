@@ -21,11 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.nas.domain.FrpServerHttp;
 import vip.gpg123.nas.domain.NasFrpClient;
+import vip.gpg123.nas.mapper.NasFrpClientMapper;
 import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 
@@ -36,9 +37,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/nas/frpc")
@@ -49,7 +47,7 @@ public class NasFrpClientController extends BaseController {
     private NasFrpClientService nasFrpClientService;
 
     @Autowired
-    private FrpServerApiService frpServerApiService;
+    private NasFrpClientMapper nasFrpClientMapper;
 
     @Value("${frp.server.ip}")
     private String host;
@@ -104,56 +102,20 @@ public class NasFrpClientController extends BaseController {
                                @RequestParam(value = "ip", required = false) String ip,
                                @RequestParam(value = "port", required = false) Integer port,
                                @RequestParam(value = "server", required = false) String server) {
-        IPage<NasFrpClient> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
-        page = nasFrpClientService.page(page, new LambdaQueryWrapper<NasFrpClient>()
-                .like(StrUtil.isNotBlank(name), NasFrpClient::getName, name)
-                .eq(StrUtil.isNotBlank(type), NasFrpClient::getType, type)
-                .like(StrUtil.isNotBlank(ip), NasFrpClient::getLocalIp, ip)
-                .like(ObjectUtil.isNotEmpty(port), NasFrpClient::getLocalPort, port)
-                .eq(StrUtil.isNotBlank(getUsername()), NasFrpClient::getCreateBy, getUsername())
-                .orderByDesc(NasFrpClient::getCreateTime));
-        // 查询http代理
-        String o = frpServerApiService.test();
-        List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
-        Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 查询https代理
-        List<FrpServerHttp> httpsList = frpServerApiService.httpsList().getProxies();
-        Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 查询tcp代理
-        List<FrpServerHttp> tcpList = frpServerApiService.tcpList().getProxies();
-        Map<String, FrpServerHttp> tcpMap = tcpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 查询udp代理
-        List<FrpServerHttp> udpList = frpServerApiService.udpList().getProxies();
-        Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 获取list
-        List<NasFrpClient> list = page.getRecords();
-        list.forEach(item -> {
-            switch (item.getType()) {
-                case "http":
-                    if (httpMap.containsKey(item.getName())) {
-                        item.setStatus(httpMap.get(item.getName()).getStatus());
-                    }
-                    break;
-                case "https":
-                    if (httpsMap.containsKey(item.getName())) {
-                        item.setStatus(httpsMap.get(item.getName()).getStatus());
-                    }
-                    break;
-                case "tcp":
-                    if (tcpMap.containsKey(item.getName())) {
-                        item.setStatus(tcpMap.get(item.getName()).getStatus());
-                    }
-                    break;
-                case "udp":
-                    if (udpMap.containsKey(item.getName())) {
-                        item.setStatus(udpMap.get(item.getName()).getStatus());
-                    }
-                    break;
-                default:
-                    break;
-            }
-        });
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<NasFrpClient> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        //
+        NasFrpClient search = new NasFrpClient();
+        search.setName(name);
+        search.setType(type);
+        search.setLocalIp(ip);
+        search.setCreateBy(String.valueOf(getUserId()));
+        List<NasFrpClient> list = nasFrpClientMapper.page(pageDomain,search);
         page.setRecords(list);
+        page.setTotal(nasFrpClientMapper.selectList(search).size());
         return PageUtils.toPageByIPage(page);
     }
 
@@ -185,7 +147,7 @@ public class NasFrpClientController extends BaseController {
         long count = nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getName, nasFrpClient.getName())
         );
-        if (count > 1) {
+        if (count > 0) {
             return AjaxResult.error("名称已经存在，请更换");
         }
         nasFrpClient.setCreateBy(getUsername());
