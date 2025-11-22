@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +25,10 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.nas.domain.FrpServerHttp;
 import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.mapper.NasFrpClientMapper;
+import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +41,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/nas/frpc")
@@ -49,6 +54,9 @@ public class NasFrpClientController extends BaseController {
 
     @Autowired
     private NasFrpClientMapper nasFrpClientMapper;
+
+    @Autowired
+    private FrpServerApiService frpServerApiService;
 
     @Value("${frp.server.ip}")
     private String host;
@@ -141,7 +149,7 @@ public class NasFrpClientController extends BaseController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
-    private AjaxResult add(NasFrpClient nasFrpClient) {
+    private AjaxResult add(@RequestBody NasFrpClient nasFrpClient) {
         if (StrUtil.isBlankIfStr(nasFrpClient.getName())) {
             return AjaxResult.error("名称不能为空");
         }
@@ -165,7 +173,7 @@ public class NasFrpClientController extends BaseController {
      */
     @PutMapping("/edit")
     @ApiOperation(value = "【修改】")
-    private AjaxResult edit(NasFrpClient nasFrpClient) {
+    private AjaxResult edit(@RequestBody NasFrpClient nasFrpClient) {
         if (StrUtil.isBlank(nasFrpClient.getId())) {
             return AjaxResult.error("id不能为空");
         }
@@ -214,7 +222,7 @@ public class NasFrpClientController extends BaseController {
                        HttpServletResponse response) throws IOException {
         // 查询全部客户端
         List<NasFrpClient> list = nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
-                .eq(NasFrpClient::getCreateBy, getUsername())
+                .eq(NasFrpClient::getCreateBy, getUserId())
                 .orderByDesc(NasFrpClient::getCreateTime)
         );
 
@@ -294,5 +302,58 @@ public class NasFrpClientController extends BaseController {
         list.add(healthClientCount);
         list.add(downClientCount);
         return AjaxResult.success(list);
+    }
+
+    /**
+     * 同步状态
+     * @return r
+     */
+    @GetMapping("/sync")
+    public AjaxResult sync() {
+        // 查询http代理
+        String o = frpServerApiService.test();
+        List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
+        Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 更新
+
+        // 查询https代理
+        List<FrpServerHttp> httpsList = frpServerApiService.httpsList().getProxies();
+        Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询tcp代理
+        List<FrpServerHttp> tcpList = frpServerApiService.tcpList().getProxies();
+        Map<String, FrpServerHttp> tcpMap = tcpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 查询udp代理
+        List<FrpServerHttp> udpList = frpServerApiService.udpList().getProxies();
+        Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
+        // 获取list
+        List<NasFrpClient> list = nasFrpClientService.list();
+        list.forEach(item -> {
+            switch (item.getType()) {
+                case "http":
+                    if (httpMap.containsKey(item.getName())) {
+                        item.setStatus(httpMap.get(item.getName()).getStatus());
+                    }
+                    break;
+                case "https":
+                    if (httpsMap.containsKey(item.getName())) {
+                        item.setStatus(httpsMap.get(item.getName()).getStatus());
+                    }
+                    break;
+                case "tcp":
+                    if (tcpMap.containsKey(item.getName())) {
+                        item.setStatus(tcpMap.get(item.getName()).getStatus());
+                    }
+                    break;
+                case "udp":
+                    if (udpMap.containsKey(item.getName())) {
+                        item.setStatus(udpMap.get(item.getName()).getStatus());
+                    }
+                    break;
+                default:
+                    break;
+            }
+            nasFrpClientService.updateById(item);
+        });
+        return AjaxResult.success();
     }
 }
