@@ -45,12 +45,12 @@ public class NasFrpCommonController extends BaseController {
     public AjaxResult types() {
         List<String> types = new ArrayList<>();
         types.add("http");
-        types.add("https");
-        types.add("tcp");
-        types.add("udp");
-        types.add("stcp");
-        types.add("sudp");
-        types.add("tcpmux");
+//        types.add("https");
+//        types.add("tcp");
+//        types.add("udp");
+//        types.add("stcp");
+//        types.add("sudp");
+//        types.add("tcpmux");
         return AjaxResult.success(types);
     }
 
