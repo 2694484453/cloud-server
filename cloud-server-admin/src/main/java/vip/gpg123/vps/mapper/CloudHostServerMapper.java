@@ -21,18 +21,14 @@ public interface CloudHostServerMapper extends BaseMapper<CloudHostServer> {
     /**
      * 根据 entity 条件，查询一条记录
      *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
-    @Override
-    CloudHostServer selectOne(Wrapper<CloudHostServer> queryWrapper);
+    CloudHostServer selectOne(@Param("qw") CloudHostServer cloudHostServer);
 
     /**
      * 根据 entity 条件，查询全部记录
      *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
-    @Override
-    List<CloudHostServer> selectList(Wrapper<CloudHostServer> queryWrapper);
+    List<CloudHostServer> selectList(@Param("qw") CloudHostServer cloudHostServer);
 
     /**
      * 根据 entity 条件，查询全部记录（并翻页）

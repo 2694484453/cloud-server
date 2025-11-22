@@ -46,6 +46,10 @@
                 and a.update_by = #{qw.updateBy}
             </if>
         </where>
+    </sql>
+
+    <!--分页-->
+    <sql id="order">
         <!-- 排序放在where外面 -->
         <choose>
             <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
@@ -66,6 +70,11 @@
                  left join sys_user b on a.update_by = b.user_id
     </sql>
 
+    <select id="selectList" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
     <!--单个查询-->
     <select id="selectOne" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
@@ -76,6 +85,7 @@
     <select id="page" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
+        <include refid="order"/>
         limit #{page.begin},#{page.end}
     </select>
 </mapper>
