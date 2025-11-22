@@ -224,6 +224,7 @@ public class NasFrpClientController extends BaseController {
         // 配置服务端
         sb.append("#服务端配置(不可修改)").append("\n");
         sb.append("serverAddr = ").append("\"").append(host).append("\"").append("\n");
+        sb.append("serverPort = ").append("\"").append(port).append("\"").append("\n");
         sb.append("auth.token = ").append("\"").append(token).append("\"").append("\n");
         sb.append("#本地admin-ui(可修改)").append("\n");
         // 配置客户端
