@@ -29,6 +29,7 @@ public class BaseEntity implements Serializable
     /** 创建者 */
     private String createBy;
 
+    @TableField(exist = false)
     private String createByUserName;
 
     /** 创建时间 */
@@ -38,6 +39,7 @@ public class BaseEntity implements Serializable
     /** 更新者 */
     private String updateBy;
 
+    @TableField(exist = false)
     private String updateByUserName;
 
     /** 更新时间 */

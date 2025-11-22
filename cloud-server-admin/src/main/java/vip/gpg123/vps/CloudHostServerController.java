@@ -104,7 +104,7 @@ public class CloudHostServerController extends BaseController {
     @PostMapping("/add")
     @ApiOperation(value = "新增")
     public AjaxResult add(@RequestBody CloudHostServer cloudHostServer) {
-        cloudHostServer.setCreateBy(getUsername());
+        cloudHostServer.setCreateBy(String.valueOf(getUserId()));
         cloudHostServer.setCreateTime(DateUtil.date());
         // 对密码特殊处理
         boolean save = cloudHostServerService.save(cloudHostServer);
@@ -119,7 +119,7 @@ public class CloudHostServerController extends BaseController {
     @PutMapping("/edit")
     @ApiOperation(value = "修改")
     public AjaxResult edit(@RequestBody CloudHostServer cloudHostServer) {
-        cloudHostServer.setUpdateBy(getUsername());
+        cloudHostServer.setUpdateBy(String.valueOf(getUserId()));
         cloudHostServer.setUpdateTime(DateUtil.date());
         boolean update = cloudHostServerService.updateById(cloudHostServer);
         return update ? AjaxResult.success() : AjaxResult.error();
