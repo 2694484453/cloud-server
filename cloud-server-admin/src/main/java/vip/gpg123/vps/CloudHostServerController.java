@@ -24,7 +24,9 @@ import vip.gpg123.vps.domain.CloudHostServer;
 import vip.gpg123.vps.mapper.CloudHostServerMapper;
 import vip.gpg123.vps.service.CloudHostServerService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author gaopuguang
@@ -159,5 +161,20 @@ public class CloudHostServerController extends BaseController {
         } catch (Exception e) {
             return AjaxResult.error("连接失败");
         }
+    }
+
+    /**
+     * 概览
+     * @return r
+     */
+    @GetMapping("/overView")
+    @ApiOperation(value = "概览")
+    public AjaxResult overView() {
+        Map<String, Object> map = new HashMap<>();
+        long hostCount = cloudHostServerService.count(new LambdaQueryWrapper<CloudHostServer>()
+                .eq(CloudHostServer::getCreateBy,getUserId())
+        );
+        map.put("hostCount", hostCount);
+        return AjaxResult.success(map);
     }
 }
