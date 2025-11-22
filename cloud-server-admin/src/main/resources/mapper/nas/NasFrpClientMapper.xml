@@ -31,6 +31,15 @@
             <if test="qw.id != null">
                 and id = #{qw.id}
             </if>
+            <if test="qw.name != null">
+                and name like concat ('%',#{qw.name},'%')
+            </if>
+            <if test="qw.createBy != null">
+                and a.create_by = #{qw.createBy}
+            </if>
+            <if test="qw.updateBy != null">
+                and a.update_by = #{qw.updateBy}
+            </if>
         </where>
     </sql>
 
