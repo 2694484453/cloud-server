@@ -30,7 +30,7 @@ public class SystemNoticeController extends BaseController {
     @GetMapping("/page")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
                               @RequestParam(value = "type", required = false) String type){
-        SysNotice  sysNotice = new SysNotice();
+        SysNotice sysNotice = new SysNotice();
         sysNotice.setNoticeTitle(name);
         sysNotice.setNoticeType(type);
         List<SysNotice> list = sysNoticeMapper.selectNoticeList(sysNotice);
