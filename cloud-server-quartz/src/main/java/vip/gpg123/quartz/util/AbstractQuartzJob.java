@@ -119,9 +119,9 @@ public abstract class AbstractQuartzJob implements Job {
             sysJob.setRunResult(null);
         }
         sysJob.setStatus("");
-        sysJobLog.setStatus(sysJob.getRunStatus());
         // 更新状态
         SpringUtils.getBean(ISysJobService.class).updateById(sysJob);
+        sysJobLog.setStatus(sysJob.getRunStatus());
         // 结果日志写入数据库当中
         SpringUtils.getBean(ISysJobLogService.class).save(sysJobLog);
     }
