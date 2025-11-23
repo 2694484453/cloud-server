@@ -36,6 +36,12 @@ public class PrometheusExporter implements Serializable {
     private String targets;
 
     /**
+     * url
+     */
+    @TableField(value = "global_url")
+    private String globalUrl;
+
+    /**
      * exporter类型
      */
     @TableField(value = "exporter_type")
