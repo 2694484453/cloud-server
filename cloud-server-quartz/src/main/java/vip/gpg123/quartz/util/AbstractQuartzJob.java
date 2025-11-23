@@ -51,16 +51,18 @@ public abstract class AbstractQuartzJob implements Job {
             Object params = sysJob.getJobParams();
             Object bean = SpringUtils.getBean(beanName);
             Method method = bean.getClass().getMethod(methodName);
+            Object res;
             // 判断是否有参方法
             if (ObjectUtil.isNotEmpty(params)) {
                 logger.info("调用有参方法:{}", params);
                 // 有参数调用
-                method.invoke(bean, params);
+                res = method.invoke(bean, params);
             } else {
                 logger.info("调用无参方法:{}", params);
                 //无参数调用
-                method.invoke(bean);
+                res = method.invoke(bean);
             }
+            sysJob.setRunResult(res.toString());
 //            doExecute(context, sysJob);
             // 之后
             after(context, sysJob, null);
