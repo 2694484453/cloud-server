@@ -9,14 +9,17 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 
  * @TableName prometheus_exporter
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="prometheus_exporter")
 @Data
-public class PrometheusExporter implements Serializable {
+public class PrometheusExporter extends BaseEntity implements Serializable {
     /**
      * 
      */
