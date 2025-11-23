@@ -14,6 +14,7 @@ import vip.gpg123.common.annotation.Log;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.enums.BusinessType;
@@ -25,6 +26,7 @@ import vip.gpg123.quartz.domain.SysJob;
 import vip.gpg123.quartz.service.ISysJobService;
 import vip.gpg123.quartz.util.CronUtils;
 import vip.gpg123.quartz.util.ScheduleUtils;
+import vip.gpg123.scheduling.mapper.SysSchedulingJobMapper;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -37,10 +39,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/scheduling/job")
 @Api(tags = "调度任务信息")
-public class SysSchedulingJobController extends BaseController
-{
+public class SysSchedulingJobController extends BaseController {
+
     @Autowired
     private ISysJobService jobService;
+
+    @Autowired
+    private SysSchedulingJobMapper schedulingJobMapper;
 
     /**
      * 查询定时任务列表
@@ -68,15 +73,19 @@ public class SysSchedulingJobController extends BaseController
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(SysJob sysJob) {
-        IPage<SysJob> page = jobService.page(new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()), new LambdaQueryWrapper<SysJob>()
-                .eq(SysJob::getCreateBy, getUsername())
-                .like(StrUtil.isNotBlank(sysJob.getJobName()), SysJob::getJobName, sysJob.getJobName())
-                .like(StrUtil.isNotBlank(sysJob.getJobGroup()), SysJob::getJobGroup, sysJob.getJobGroup())
-                .like(StrUtil.isNotBlank(sysJob.getStatus()), SysJob::getStatus, sysJob.getStatus())
-                .like(StrUtil.isNotBlank(sysJob.getConcurrent()), SysJob::getConcurrent, sysJob.getConcurrent())
-                .like(StrUtil.isNotBlank(sysJob.getStatus()), SysJob::getStatus, sysJob.getStatus())
-                .orderByDesc(SysJob::getCreateTime)
-        );
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<SysJob> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        SysJob search = new SysJob();
+        search.setJobName(sysJob.getJobName());
+        search.setJobGroup(sysJob.getJobGroup());
+        search.setStatus(sysJob.getStatus());
+        search.setCreateBy(String.valueOf(getUserId()));
+        List<SysJob> list = schedulingJobMapper.page(pageDomain, search);
+        page.setRecords(list);
+        page.setTotal(schedulingJobMapper.list(search).size());
         return PageUtils.toPageByIPage(page);
     }
 
@@ -171,7 +180,7 @@ public class SysSchedulingJobController extends BaseController
         {
             return error("修改任务'" + job.getJobName() + "'失败，目标字符串不在白名单内");
         }
-        job.setUpdateBy(getUsername());
+        job.setUpdateBy(String.valueOf(getUserId()));
         return toAjax(jobService.updateJob(job));
     }
 

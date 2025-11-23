@@ -27,9 +27,10 @@ import vip.gpg123.quartz.util.CronUtils;
  *
  * @author gpg123
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_job")
-public class SysJob implements Serializable {
+public class SysJob extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 任务ID */
@@ -73,27 +74,6 @@ public class SysJob implements Serializable {
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
     private String status;
 
-    /**
-     *
-     */
-    private String createBy;
-
-    /**
-     *
-     */
-    private String updateBy;
-
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createTime;
-
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updateTime;
 
     private String remark;
 

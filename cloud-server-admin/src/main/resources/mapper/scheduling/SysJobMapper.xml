@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.scheduling.mapper.SysSchedulingJobMapper">
+
+	<resultMap type="SysJob" id="BaseResultMap">
+		<id     property="jobId"          column="job_id"          />
+		<result property="jobName"        column="job_name"        />
+		<result property="jobGroup"       column="job_group"       />
+		<result property="invokeTarget"   column="invoke_target"   />
+		<result property="cronExpression" column="cron_expression" />
+		<result property="misfirePolicy"  column="misfire_policy"  />
+		<result property="concurrent"     column="concurrent"      />
+		<result property="status"         column="status"          />
+		<result property="createBy"       column="create_by"       />
+		<result property="createTime"     column="create_time"     />
+		<result property="updateBy"       column="update_by"       />
+		<result property="updateTime"     column="update_time"     />
+		<result property="remark"         column="remark"          />
+	</resultMap>
+
+	<sql id="selectJobVo">
+        select job_id, job_name, job_group, invoke_target, cron_expression, misfire_policy, concurrent, status, create_by, create_time, remark
+		from sys_job
+    </sql>
+
+	<!--条件语句-->
+	<sql id="queryWrapper">
+		<where>1=1
+			<if test="qw.jobId != null">
+				and job_id = #{qw.jobId}
+			</if>
+			<if test="qw.jobName != null and qw.jobName !=''">
+				and job_name like concat('%',#{qw.jobName},'%')
+			</if>
+			<if test="qw.jobGroup != null and qw.jobGroup !=''">
+				and job_group = #{qw.jobGroup}
+			</if>
+			<if test="qw.status != null and qw.status != ''">
+				AND status = #{qw.status}
+			</if>
+			<if test="qw.createBy != null">
+				and a.create_by = #{qw.createBy}
+			</if>
+			<if test="qw.updateBy != null">
+				and a.update_by = #{qw.updateBy}
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectJobAll" resultMap="BaseResultMap">
+		<include refid="selectJobVo"/>
+	</select>
+
+	<select id="selectJobById" parameterType="Long" resultMap="BaseResultMap">
+		<include refid="selectJobVo"/>
+		where job_id = #{jobId}
+	</select>
+
+	<delete id="deleteJobById" parameterType="Long">
+ 		delete from sys_job where job_id = #{jobId}
+ 	</delete>
+
+	<!--分页-->
+	<sql id="order">
+		<!-- 排序放在where外面 -->
+		<choose>
+			<when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
+				order by ${page.orderByColumn} ${page.isAsc}
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+	</sql>
+
+	<!--基础查询-->
+	<sql id="baseSelect">
+		select a.*, b.user_name as 'updateByUserName'
+		from (select s.*, u.user_name as 'createByUserName'
+			  from sys_job s
+					   left join sys_user u on u.user_id = s.create_by) a
+				 left join sys_user b on a.update_by = b.user_id
+	</sql>
+
+	<select id="list" resultMap="BaseResultMap">
+		<include refid="baseSelect"/>
+		<include refid="queryWrapper"/>
+	</select>
+
+	<!--单个查询-->
+	<select id="one" resultMap="BaseResultMap">
+		<include refid="baseSelect"/>
+		<include refid="queryWrapper"/>
+	</select>
+
+	<!--分页查询-->
+	<select id="page" resultMap="BaseResultMap">
+		<include refid="baseSelect"/>
+		<include refid="queryWrapper"/>
+		<include refid="order"/>
+		limit #{page.begin},#{page.end}
+	</select>
+</mapper>
