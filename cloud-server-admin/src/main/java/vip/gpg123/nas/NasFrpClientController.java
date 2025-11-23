@@ -300,8 +300,8 @@ public class NasFrpClientController extends BaseController {
         ));
         // 我的frpc配置不存在数
         Map<String,Object> noExistClientCount = new LinkedHashMap<>();
-        downClientCount.put("title","不存在数");
-        downClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+        noExistClientCount.put("title","不存在数");
+        noExistClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getCreateBy, getUserId())
                 .eq(NasFrpClient::getStatus, "noExist")
         ));
