@@ -84,6 +84,7 @@ public abstract class AbstractQuartzJob implements Job {
         threadLocal.set(new Date());
         // 设置任务为执行状态
         sysJob.setStatus("running");
+        sysJob.setRunResult("waiting");
         // 更新
         SpringUtils.getBean(ISysJobService.class).updateJob(sysJob);
     }
@@ -118,9 +119,9 @@ public abstract class AbstractQuartzJob implements Job {
         sysJob.setStatus("");
         sysJobLog.setStatus(sysJob.getRunStatus());
         // 更新状态
-        SpringUtils.getBean(ISysJobService.class).updateJob(sysJob);
+        SpringUtils.getBean(ISysJobService.class).updateById(sysJob);
         // 结果日志写入数据库当中
-        SpringUtils.getBean(ISysJobLogService.class).addJobLog(sysJobLog);
+        SpringUtils.getBean(ISysJobLogService.class).save(sysJobLog);
     }
 
     /**
