@@ -1,0 +1,28 @@
+package vip.gpg123.scheduling.task;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import vip.gpg123.common.utils.spring.SpringUtils;
+import vip.gpg123.nas.NasFrpClientController;
+
+import java.util.Map;
+
+@Component("frpSyncStatusTask")
+@Slf4j
+public class FrpSyncStatusTask {
+
+    /**
+     * 刷新frpc状态-无参数
+     */
+    public void syncNasFrpClientStatus() {
+        SpringUtils.getBean(NasFrpClientController.class).sync();
+    }
+
+    /**
+     * 刷新frpc状态-有参数
+     */
+    public void syncNasFrpClientStatus(Map<String,Object> map) {
+        log.info("执行参数：{}", map.toString());
+        SpringUtils.getBean(NasFrpClientController.class).sync();
+    }
+}
