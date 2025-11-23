@@ -16,15 +16,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.platform.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
+import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
+import vip.gpg123.vps.domain.CloudHostServer;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -34,13 +39,16 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/prometheus/exporter")
-public class PrometheusExporterController {
+public class PrometheusExporterController extends BaseController {
 
     @Value("${monitor.prometheus.exporterPath}")
     private String path;
 
     @Autowired
     private PrometheusExporterService prometheusExporterService;
+
+    @Autowired
+    private PrometheusExporterMapper prometheusExporterMapper;
 
     @Autowired
     private PrometheusApi prometheusApi;
@@ -63,22 +71,25 @@ public class PrometheusExporterController {
 
     /**
      * page
-     * @param page p
      * @param jobName j
      * @return r
      */
     @GetMapping("/page")
-    public TableDataInfo page(Page<PrometheusExporter> page,
-                              @RequestParam(name = "jobName", required = false) String jobName,
+    public TableDataInfo page(@RequestParam(name = "jobName", required = false) String jobName,
                               @RequestParam(name = "exporterType",required = false) String exporterType) {
-        // 获取分页参数
-        PageUtils.toIPage(page);
-        IPage<PrometheusExporter> pageRes = prometheusExporterService.page(page, new LambdaQueryWrapper<PrometheusExporter>()
-                .like(StrUtil.isNotBlank(jobName), PrometheusExporter::getJobName, jobName)
-                .eq(StrUtil.isNotBlank(exporterType), PrometheusExporter::getExporterType, exporterType)
-                .orderByDesc(PrometheusExporter::getCreateTime)
-        );
-        return PageUtils.toPageByIPage(pageRes);
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<PrometheusExporter> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        PrometheusExporter exporter = new PrometheusExporter();
+        exporter.setJobName(jobName);
+        exporter.setExporterType(exporterType);
+        exporter.setCreateBy(String.valueOf(getUserId()));
+        List<PrometheusExporter> list = prometheusExporterMapper.page(pageDomain, exporter);
+        page.setRecords(list);
+        page.setTotal(prometheusExporterMapper.list(exporter).size());
+        return PageUtils.toPageByIPage(page);
     }
 
     /**
