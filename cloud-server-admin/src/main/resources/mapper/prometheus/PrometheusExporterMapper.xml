@@ -10,6 +10,7 @@
             <result property="targets" column="targets" />
             <result property="exporterType" column="exporter_type" />
             <result property="status" column="status" />
+            <result property="globalUrl" column="global_url"/>
             <result property="description" column="description" />
             <result property="createTime" column="create_time" />
             <result property="createBy" column="create_by" />

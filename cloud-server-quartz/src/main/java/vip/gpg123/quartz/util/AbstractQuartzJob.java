@@ -62,7 +62,6 @@ public abstract class AbstractQuartzJob implements Job {
                 //无参数调用
                 res = method.invoke(bean);
             }
-            sysJob.setRunResult(res.toString());
 //            doExecute(context, sysJob);
             // 之后
             after(context, sysJob, null);
