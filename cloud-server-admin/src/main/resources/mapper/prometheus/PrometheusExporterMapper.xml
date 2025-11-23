@@ -22,4 +22,67 @@
         id,job_name,targets,exporter_type,status,description,
         create_time,create_by,update_time,update_by
     </sql>
+
+
+    <!--条件语句-->
+    <sql id="queryWrapper">
+        <where>1=1
+            <if test="qw.id != null">
+                and id = #{qw.id}
+            </if>
+            <if test="qw.jobName != null and qw.jobName !=''">
+                and job_name like concat('%',#{qw.jobName},'%')
+            </if>
+            <if test="qw.exporterType != null and qw.exporterType !=''">
+                and exporter_type = #{qw.exporterType}
+            </if>
+            <if test="qw.createBy != null">
+                and a.create_by = #{qw.createBy}
+            </if>
+            <if test="qw.updateBy != null">
+                and a.update_by = #{qw.updateBy}
+            </if>
+        </where>
+    </sql>
+
+    <!--分页-->
+    <sql id="order">
+        <!-- 排序放在where外面 -->
+        <choose>
+            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
+                order by ${page.orderByColumn} ${page.isAsc}
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+
+    <!--基础查询-->
+    <sql id="baseSelect">
+        select a.*, b.user_name as 'updateByUserName'
+        from (select s.*, u.user_name as 'createByUserName'
+              from prometheus_exporter s
+                       left join sys_user u on u.user_id = s.create_by) a
+                 left join sys_user b on a.update_by = b.user_id
+    </sql>
+
+    <select id="list" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--单个查询-->
+    <select id="one" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--分页查询-->
+    <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+        <include refid="order"/>
+        limit #{page.begin},#{page.end}
+    </select>
 </mapper>
