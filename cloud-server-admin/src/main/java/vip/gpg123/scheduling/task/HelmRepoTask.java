@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import vip.gpg123.quartz.domain.SysJob;
 
 @Component("localShellTask")
-public class HelmRepoTask extends BaseTask {
+public class HelmRepoTask {
 
     /**
      * 本地执行helm仓库更新
@@ -16,15 +16,4 @@ public class HelmRepoTask extends BaseTask {
     }
 
 
-    /**
-     * 执行方法，由子类重载
-     *
-     * @param context 工作执行上下文对象
-     * @param sysJob  系统计划任务
-     * @throws Exception 执行过程中的异常
-     */
-    @Override
-    protected void doExecute(JobExecutionContext context, SysJob sysJob) throws Exception {
-
-    }
 }

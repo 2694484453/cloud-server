@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
-public abstract class ShellBaseTask extends BaseTask {
+public class ShellBaseTask {
 
     @Autowired
     private CloudHostServerService cloudHostServerService;

@@ -1,15 +1,11 @@
 package vip.gpg123.scheduling.task;
 
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;
 
 @Component("remoteShellTask")
 @Slf4j
-public class ALiYunPanTask implements Job {
+public class ALiYunPanTask {
 
     /**
      * 执行阿里云备份脚本
@@ -21,15 +17,4 @@ public class ALiYunPanTask implements Job {
         System.out.println(11);
     }
 
-    /**
-     * @param context c
-     * @throws JobExecutionException if there is an exception while executing the job.
-     */
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        // 获取任务参数
-        JobDataMap dataMap = context.getMergedJobDataMap();
-        String hostIp = dataMap.getString("hostIp");
-        String cmd = dataMap.getString("cmd");
-    }
 }

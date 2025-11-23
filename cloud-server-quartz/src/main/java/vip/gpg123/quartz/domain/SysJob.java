@@ -2,6 +2,7 @@ package vip.gpg123.quartz.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -20,6 +21,7 @@ import vip.gpg123.common.annotation.Excel.ColumnType;
 import vip.gpg123.common.constant.ScheduleConstants;
 import vip.gpg123.common.core.domain.BaseEntity;
 import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.framework.handler.JsonTypeHandler;
 import vip.gpg123.quartz.util.CronUtils;
 
 /**
@@ -48,13 +50,30 @@ public class SysJob extends BaseEntity implements Serializable {
     @Excel(name = "任务组名")
     private String jobGroup;
 
+    /**
+     * 任务类型
+     */
+    @TableField(value = "job_type")
     private String jobType;
 
     /** 调用目标字符串 */
     @Excel(name = "调用目标字符串")
     @NotBlank(message = "调用目标字符串不能为空")
     @Size(min = 0, max = 500, message = "调用目标字符串长度不能超过500个字符")
-    private String invokeTarget;
+    @TableField(value = "job_class")
+    private String jobClass;
+
+    /**
+     * 任务方法
+     */
+    @TableField(value = "job_method")
+    private String jobMethod;
+
+    /**
+     * 参数
+     */
+    @TableField(value = "job_params", typeHandler = JsonTypeHandler.class)
+    private Object jobParams;
 
     /** cron执行表达式 */
     @Excel(name = "执行表达式 ")
@@ -74,11 +93,16 @@ public class SysJob extends BaseEntity implements Serializable {
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
     private String status;
 
-
+    @TableField(value = "remark")
     private String remark;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(value = "run_time")
     private Date runTime;
 
+    @TableField(value = "run_result")
     private String runResult;
+
+    @TableField(value = "run_status")
+    private String runStatus;
 }
