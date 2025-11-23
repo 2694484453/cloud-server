@@ -287,7 +287,7 @@ public class NasFrpClientController extends BaseController {
         Map<String,Object> healthClientCount = new LinkedHashMap<>();
         healthClientCount.put("title","我的frpc配置在线数");
         healthClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
-                .eq(NasFrpClient::getStatus, "ok")
+                .eq(NasFrpClient::getStatus, "online")
                 .eq(NasFrpClient::getCreateBy, getUserId())
         ));
 
