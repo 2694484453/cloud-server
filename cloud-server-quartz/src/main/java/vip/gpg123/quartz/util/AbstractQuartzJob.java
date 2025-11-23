@@ -115,6 +115,7 @@ public abstract class AbstractQuartzJob implements Job {
             sysJob.setRunStatus("error");
             sysJob.setRunResult(errorMsg);
         } else {
+            sysJob.setRunResult("");
             sysJob.setRunStatus("done");
             sysJob.setRunResult(null);
         }
