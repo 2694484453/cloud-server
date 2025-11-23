@@ -1,62 +1,56 @@
 package vip.gpg123.prometheus;
 
-import cn.hutool.core.convert.Convert;
-import io.fabric8.kubernetes.client.KubernetesClient;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.utils.PageUtils;
-import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRule;
-import io.fabric8.openshift.api.model.monitoring.v1.PrometheusRuleList;
-import io.fabric8.openshift.client.OpenShiftClient;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.controller.BaseController;
+import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.prometheus.service.PrometheusExporterService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * @author gaopuguang
- * @date 2024/10/15 0:58
- **/
 @RestController
-@RequestMapping("/prometheus/server")
-@Api(tags = "监控中心云原生版")
-public class PrometheusController {
+@RequestMapping("/prometheus")
+public class PrometheusController extends BaseController {
 
-    @Qualifier("OpenShiftClient")
     @Autowired
-    private OpenShiftClient openShiftClient;
+    private PrometheusExporterService prometheusExporterService;
 
     /**
-     * 列表查询
+     * 概览
      * @return r
      */
-    @GetMapping("/list")
-    @ApiOperation(value = "列表查询")
-    public AjaxResult list() {
-        List<PrometheusRule> prometheusRules;
-        try {
-            PrometheusRuleList prometheusRuleList = openShiftClient.monitoring().prometheusRules().inAnyNamespace().list();
-            prometheusRules = prometheusRuleList.getItems();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return AjaxResult.success(prometheusRules);
-    }
-
-    /**
-     * 分页查询
-     * @return r
-     */
-    @GetMapping("/page")
-    @ApiOperation(value = "分页查询")
-    public TableDataInfo page() {
-        AjaxResult ajaxResult = list();
-        List<?> prometheusRules = Convert.toList(ajaxResult.get("data"));
-        return PageUtils.toPage(prometheusRules);
+    @GetMapping("/overView")
+    public AjaxResult overView() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", "我的接入端点总数");
+        map.put("count", prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
+                .eq(PrometheusExporter::getCreateBy, getUserId())
+        ));
+        list.add(map);
+        //
+        Map<String, Object> health = new HashMap<>();
+        health.put("title", "健康数量");
+        health.put("count", prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
+                .eq(PrometheusExporter::getCreateBy, getUserId())
+                .eq(PrometheusExporter::getStatus, "up")
+        ));
+        list.add(health);
+        //
+        Map<String, Object> down = new HashMap<>();
+        down.put("title", "异常数量");
+        down.put("count", prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
+                .eq(PrometheusExporter::getCreateBy, getUserId())
+                .eq(PrometheusExporter::getStatus, "down")
+        ));
+        list.add(down);
+        return AjaxResult.success(list);
     }
 }
