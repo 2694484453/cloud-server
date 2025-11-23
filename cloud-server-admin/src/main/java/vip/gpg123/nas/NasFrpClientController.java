@@ -285,7 +285,7 @@ public class NasFrpClientController extends BaseController {
         ));
         // 我的frpc配置在线数
         Map<String,Object> healthClientCount = new LinkedHashMap<>();
-        healthClientCount.put("title","我的frpc配置在线数");
+        healthClientCount.put("title","在线数");
         healthClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getStatus, "online")
                 .eq(NasFrpClient::getCreateBy, getUserId())
@@ -293,14 +293,22 @@ public class NasFrpClientController extends BaseController {
 
         // 我的frpc配置离线数
         Map<String,Object> downClientCount = new LinkedHashMap<>();
-        downClientCount.put("title","我的frpc配置离线数");
+        downClientCount.put("title","离线数");
         downClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getCreateBy, getUserId())
-                .eq(NasFrpClient::getStatus, "error")
+                .eq(NasFrpClient::getStatus, "down")
+        ));
+        // 我的frpc配置不存在数
+        Map<String,Object> noExistClientCount = new LinkedHashMap<>();
+        downClientCount.put("title","不存在数");
+        downClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+                .eq(NasFrpClient::getCreateBy, getUserId())
+                .eq(NasFrpClient::getStatus, "noExist")
         ));
         list.add(clientCount);
         list.add(healthClientCount);
         list.add(downClientCount);
+        list.add(noExistClientCount);
         return AjaxResult.success(list);
     }
 
