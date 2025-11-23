@@ -158,10 +158,12 @@ public class PrometheusExporterController {
         list.forEach(target -> {
             JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
             String jobName = object.getStr("job");
+            String url = object.getStr("globalUrl");
             String status = target.getHealth();
             if (map.containsKey(jobName)) {
                 PrometheusExporter exporter = map.get(jobName);
                 exporter.setStatus(status);
+                exporter.setGlobalUrl(url);
                 prometheusExporterService.updateById(exporter);
             }
         });
