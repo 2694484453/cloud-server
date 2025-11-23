@@ -1,5 +1,6 @@
 package vip.gpg123.prometheus;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
@@ -19,12 +20,18 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.platform.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
+import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/prometheus/exporter")
@@ -35,6 +42,9 @@ public class PrometheusExporterController {
 
     @Autowired
     private PrometheusExporterService prometheusExporterService;
+
+    @Autowired
+    private PrometheusApi prometheusApi;
 
     /**
      * list
@@ -76,7 +86,7 @@ public class PrometheusExporterController {
      * 同步数据
      * @return r
      */
-    @GetMapping("/sync")
+    @GetMapping("/syncFile")
     public AjaxResult sync() {
         File[] files1 = FileUtil.ls(path);
         for (File file : files1) {
@@ -131,5 +141,30 @@ public class PrometheusExporterController {
             }
         }
         return null;
+    }
+
+    /**
+     * 同步状态
+     */
+    @GetMapping("/syncStatus")
+    public AjaxResult syncStatus() {
+        // 查询数据库中
+        List<PrometheusExporter> prometheusExporterList = prometheusExporterService.list();
+        Map<String, PrometheusExporter> map = prometheusExporterList.stream().collect(Collectors.toMap(PrometheusExporter::getJobName, item -> item));
+        // 查询状态prometheus
+        PrometheusTargetResponse response = prometheusApi.targets("");
+        List<ActiveTarget> list = Convert.toList(ActiveTarget.class, JSONUtil.parseArray(response.getData().getActiveTargets()));
+        // 循环
+        list.forEach(target -> {
+            JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
+            String jobName = object.getStr("job");
+            String status = target.getHealth();
+            if (map.containsKey(jobName)) {
+                PrometheusExporter exporter = map.get(jobName);
+                exporter.setStatus(status);
+                prometheusExporterService.updateById(exporter);
+            }
+        });
+        return AjaxResult.success();
     }
 }
