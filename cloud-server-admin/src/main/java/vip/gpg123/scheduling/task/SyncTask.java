@@ -8,9 +8,9 @@ import vip.gpg123.prometheus.PrometheusExporterController;
 
 import java.util.Map;
 
-@Component("syncStatusTask")
+@Component("syncTask")
 @Slf4j
-public class SyncStatusTask {
+public class SyncTask {
 
     /**
      * 刷新frpc状态-无参数
