@@ -29,7 +29,10 @@ import vip.gpg123.quartz.util.ScheduleUtils;
 import vip.gpg123.scheduling.mapper.SysSchedulingJobMapper;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 调度任务信息操作处理
@@ -219,5 +222,38 @@ public class SysSchedulingJobController extends BaseController {
     {
         jobService.deleteJobByIds(jobIds);
         return success();
+    }
+
+    /**
+     * 概览
+     * @return r
+     */
+    @GetMapping("/overView")
+    public AjaxResult overView() {
+        List<Map<String,Object>> list = new ArrayList<>();
+        Map<String,Object> jobTotal = new HashMap<>();
+        jobTotal.put("title","我的任务总数");
+        jobTotal.put("count",jobService.count(new LambdaQueryWrapper<SysJob>()
+                .eq(SysJob::getCreateBy, getUserId())
+        ));
+
+        Map<String,Object> jobRunning = new HashMap<>();
+        jobRunning.put("title","运行中");
+        jobRunning.put("count",jobService.count(new LambdaQueryWrapper<SysJob>()
+                .eq(SysJob::getCreateBy, getUserId())
+                .eq(SysJob::getStatus, "running")
+        ));
+
+        Map<String,Object> jobPause = new HashMap<>();
+        jobPause.put("title","未运行");
+        jobPause.put("count",jobService.count(new LambdaQueryWrapper<SysJob>()
+                .eq(SysJob::getCreateBy, getUserId())
+                .ne(SysJob::getStatus, "running")
+        ));
+
+        list.add(jobTotal);
+        list.add(jobRunning);
+        list.add(jobPause);
+        return AjaxResult.success(list);
     }
 }
