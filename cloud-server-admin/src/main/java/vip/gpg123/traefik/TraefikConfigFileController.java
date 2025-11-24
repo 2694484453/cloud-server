@@ -33,7 +33,7 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/traefik")
-public class TraefikController {
+public class TraefikConfigFileController {
 
     @Value("${traefik.path}")
     private String path;
