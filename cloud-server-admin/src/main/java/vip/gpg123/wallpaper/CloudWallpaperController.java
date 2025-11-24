@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.aliyun.oss.OSS;
@@ -102,7 +103,7 @@ public class CloudWallpaperController extends BaseController {
             // 看来源
             search.setSource(source);
         }
-        if (!users.isEmpty()) {
+        if (ObjectUtil.isNotEmpty(users)) {
             // 只看自己
             search.setCreateBys(users);
         }

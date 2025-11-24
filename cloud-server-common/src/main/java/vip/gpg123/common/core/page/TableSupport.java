@@ -45,8 +45,8 @@ public class TableSupport
         PageDomain pageDomain = new PageDomain();
         pageDomain.setPageNum(Convert.toInt(ServletUtils.getParameter(PAGE_NUM), 1));
         pageDomain.setPageSize(Convert.toInt(ServletUtils.getParameter(PAGE_SIZE), 10));
-        pageDomain.setBegin((pageDomain.getPageNum() - 1) * pageDomain.getPageSize());
-        pageDomain.setEnd(pageDomain.getPageSize() * pageDomain.getPageNum() - 1);
+        pageDomain.setLimit(pageDomain.getPageSize());
+        pageDomain.setOffset(pageDomain.getPageSize() * (pageDomain.getPageNum() - 1));
         pageDomain.setPageNum(Convert.toInt(ServletUtils.getParameter(PAGE_NUM), 1));
         pageDomain.setPageSize(Convert.toInt(ServletUtils.getParameter(PAGE_SIZE), 10));
         pageDomain.setOrderByColumn(ServletUtils.getParameter(ORDER_BY_COLUMN));

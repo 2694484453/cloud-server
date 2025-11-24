@@ -30,6 +30,7 @@ public class BaseEntity implements Serializable
     /** 创建者 */
     private String createBy;
 
+    @TableField(exist = false)
     private List<String> createBys;
 
     @TableField(exist = false)
@@ -42,6 +43,7 @@ public class BaseEntity implements Serializable
     /** 更新者 */
     private String updateBy;
 
+    @TableField(exist = false)
     private List<String> updateBys;
 
     @TableField(exist = false)
