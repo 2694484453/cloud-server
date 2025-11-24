@@ -29,8 +29,8 @@
             <if test="qw.name != null and qw.name !=''">
                 and name like concat('%',#{qw.name},'%')
             </if>
-            <if test="qw.hostType != null and qw.hostType !=''">
-                and host_time = #{qw.hostType}
+            <if test="qw.type != null and qw.type !=''">
+                and type = #{qw.type}
             </if>
             <if test="qw.createBy != null">
                 and a.create_by = #{qw.createBy}
