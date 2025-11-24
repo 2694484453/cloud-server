@@ -42,6 +42,9 @@ public class TraefikProxy extends BaseEntity implements Serializable {
     @TableField(value = "type")
     private String type;
 
+    @TableField(value = "observability")
+    private Object observability;
+
     /**
      * 域名
      */
@@ -59,6 +62,9 @@ public class TraefikProxy extends BaseEntity implements Serializable {
      */
     @TableField(value = "status")
     private String status;
+
+    @TableField(value = "provider")
+    private String provider;
 
     /**
      * 标签

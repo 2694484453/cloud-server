@@ -83,6 +83,6 @@
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
         <include refid="order"/>
-        limit #{page.begin},#{page.end}
+        limit #{page.limit} offset #{page.offset}
     </select>
 </mapper>

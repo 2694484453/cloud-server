@@ -32,7 +32,7 @@ import java.util.Map;
  * @date 2024/8/31 0:55
  **/
 @RestController
-@RequestMapping("/traefik")
+@RequestMapping("/traefikFile")
 public class TraefikConfigFileController {
 
     @Value("${traefik.path}")

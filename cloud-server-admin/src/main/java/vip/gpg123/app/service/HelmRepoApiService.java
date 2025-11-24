@@ -7,7 +7,7 @@ import vip.gpg123.app.domain.IndexResponse;
 
 @Service
 @FeignClient(name = "helm-repo-api",url = "${repo.helm.url}")
-public interface HelmRepoApi {
+public interface HelmRepoApiService {
 
     /**
      * 查询index

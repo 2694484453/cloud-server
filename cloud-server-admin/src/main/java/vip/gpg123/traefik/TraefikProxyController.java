@@ -28,7 +28,7 @@ import vip.gpg123.traefik.service.TraefikProxyService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/traefikProxy")
+@RequestMapping("/traefik")
 public class TraefikProxyController extends BaseController {
 
     @Autowired
