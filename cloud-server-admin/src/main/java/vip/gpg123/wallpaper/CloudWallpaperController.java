@@ -36,7 +36,9 @@ import vip.gpg123.wallpaper.service.CloudWallpaperService;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/wallpaper")
@@ -168,6 +170,26 @@ public class CloudWallpaperController extends BaseController {
         }
         return AjaxResult.error();
     }
+
+    @GetMapping("/overView")
+    public AjaxResult overView() {
+        List<Map<String,Object>> list = new ArrayList<>();
+        Map<String,Object> map = new HashMap<>();
+        map.put("title","系统壁纸总数");
+        map.put("count",cloudWallpaperMapper.selectCount(new LambdaQueryWrapper<CloudWallpaper>()
+                .eq(CloudWallpaper::getSource,"system")
+        ));
+        list.add(map);
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("title","我的上传壁纸数");
+        map1.put("count",cloudWallpaperMapper.selectCount(new LambdaQueryWrapper<CloudWallpaper>()
+                .eq(CloudWallpaper::getSource,"upload")
+                .eq(CloudWallpaper::getCreateBy,getUserId())
+        ));
+        list.add(map1);
+        return AjaxResult.success(list);
+    }
+
 
     @GetMapping("/sync")
     public AjaxResult sync() {
