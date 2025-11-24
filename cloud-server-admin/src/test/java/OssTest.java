@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import vip.gpg123.CloudServerApplication;
+import vip.gpg123.wallpaper.WallPaperController;
 import vip.gpg123.wallpaper.domain.CloudWallpaper;
 import vip.gpg123.wallpaper.service.CloudWallpaperService;
 
@@ -102,6 +103,17 @@ public class OssTest {
                 }
                 System.out.println(cloudWallpaper);
             }
+    }
+
+
+    @Test
+    public void update() {
+        List<CloudWallpaper> list = cloudWallpaperService.list();
+        list.forEach(cloudWallpaper -> {
+            String url = StrUtil.replace(cloudWallpaper.getUrl(), "/cloud-wallpaper/","/cloud-wallpaper/wallpaper/");
+            cloudWallpaper.setUrl(url);
+            cloudWallpaperService.updateById(cloudWallpaper);
+        });
     }
 
     @Test

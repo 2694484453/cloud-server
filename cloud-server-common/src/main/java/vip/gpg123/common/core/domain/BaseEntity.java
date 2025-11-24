@@ -3,6 +3,7 @@ package vip.gpg123.common.core.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -29,6 +30,8 @@ public class BaseEntity implements Serializable
     /** 创建者 */
     private String createBy;
 
+    private List<String> createBys;
+
     @TableField(exist = false)
     private String createByUserName;
 
@@ -38,6 +41,8 @@ public class BaseEntity implements Serializable
 
     /** 更新者 */
     private String updateBy;
+
+    private List<String> updateBys;
 
     @TableField(exist = false)
     private String updateByUserName;

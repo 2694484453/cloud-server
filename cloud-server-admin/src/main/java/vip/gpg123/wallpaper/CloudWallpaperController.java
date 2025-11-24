@@ -83,7 +83,7 @@ public class CloudWallpaperController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "hostName",required = false) String hostName,
+    public TableDataInfo page(@RequestParam(value = "name",required = false) String name,
                               @RequestParam(value = "type",required = false) String type) {
 
         // 转换参数
@@ -92,7 +92,7 @@ public class CloudWallpaperController extends BaseController {
         IPage<CloudWallpaper> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
 
         CloudWallpaper search = new CloudWallpaper();
-        search.setName(hostName);
+        search.setName(name);
         search.setType(type);
         search.setCreateBy(String.valueOf(getUserId()));
         List<CloudWallpaper> list = cloudWallpaperMapper.page(pageDomain, search);

@@ -35,8 +35,20 @@
             <if test="qw.createBy != null">
                 and a.create_by = #{qw.createBy}
             </if>
-            <if test="qw.updateBy != null">
+            <if test="qw.createBys != null and createBys.size() > 0">
+                and a.create_by in
+                <foreach item="item" collection="createBys" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="qw.updateBy != null and updateBys.size() > 0">
                 and a.update_by = #{qw.updateBy}
+            </if>
+            <if test="qw.updateBys != null and updateBys.size() > 0">
+                and a.update_by in
+                <foreach item="item" collection="updateBys" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
             </if>
         </where>
     </sql>
