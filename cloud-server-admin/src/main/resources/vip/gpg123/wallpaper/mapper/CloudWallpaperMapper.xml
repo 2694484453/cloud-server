@@ -32,6 +32,9 @@
             <if test="qw.type != null and qw.type !=''">
                 and type = #{qw.type}
             </if>
+            <if test="qw.source != null and qw.source !=''">
+                and source = #{qw.source}
+            </if>
             <if test="qw.createBy != null">
                 and a.create_by = #{qw.createBy}
             </if>

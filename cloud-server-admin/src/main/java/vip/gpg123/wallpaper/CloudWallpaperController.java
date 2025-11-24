@@ -10,6 +10,7 @@ import com.aliyun.oss.OSS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import vip.gpg123.wallpaper.mapper.CloudWallpaperMapper;
 import vip.gpg123.wallpaper.service.CloudWallpaperService;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -84,7 +86,9 @@ public class CloudWallpaperController extends BaseController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(@RequestParam(value = "name",required = false) String name,
-                              @RequestParam(value = "type",required = false) String type) {
+                              @RequestParam(value = "type",required = false) String type,
+                              @RequestParam(value = "source",required = false) String source,
+                              @RequestParam(value = "users", required = false) List<String> users) {
 
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
@@ -94,7 +98,14 @@ public class CloudWallpaperController extends BaseController {
         CloudWallpaper search = new CloudWallpaper();
         search.setName(name);
         search.setType(type);
-        search.setCreateBy(String.valueOf(getUserId()));
+        if (StrUtil.isNotBlank(source)) {
+            // 看来源
+            search.setSource(source);
+        }
+        if (!users.isEmpty()) {
+            // 只看自己
+            search.setCreateBys(users);
+        }
         List<CloudWallpaper> list = cloudWallpaperMapper.page(pageDomain, search);
         page.setRecords(list);
         page.setTotal(cloudWallpaperMapper.list(search).size());
