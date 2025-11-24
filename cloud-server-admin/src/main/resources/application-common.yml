@@ -65,4 +65,5 @@ cloud:
     accessKeyId: LTAI5tQU6m9mYnspgpVq8Rxu
     accessKeySecret: hWWHQ5rLmblqskgowIoHdxBhxiD7Nc
     endpoint: https://oss-cn-hangzhou.aliyuncs.com
-    ossDomain: https://oss.gpg123.vip
+    ossDomain: https://dev-gpg.oss-cn-hangzhou.aliyuncs.com
+    bucketName: dev-gpg

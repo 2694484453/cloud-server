@@ -2,29 +2,22 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vip.gpg123.vps.mapper.CloudHostServerMapper">
+<mapper namespace="vip.gpg123.wallpaper.mapper.CloudWallpaperMapper">
 
-    <resultMap id="BaseResultMap" type="vip.gpg123.vps.domain.CloudHostServer">
-        <id property="id" column="id"/>
-        <result property="hostName" column="host_name"/>
-        <result property="hostType" column="host_type"/>
-        <result property="hostStatus" column="host_status"/>
-        <result property="hostIp" column="host_ip"/>
-        <result property="port" column="port"/>
-        <result property="userName" column="user_name"/>
-        <result property="passWord" column="pass_word"/>
-        <result property="description" column="description"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
+    <resultMap id="BaseResultMap" type="vip.gpg123.wallpaper.domain.CloudWallpaper">
+            <id property="id" column="id" />
+            <result property="name" column="name" />
+            <result property="tags" column="tags" />
+            <result property="size" column="size" />
+            <result property="createTime" column="create_time" />
+            <result property="createBy" column="create_by" />
+            <result property="updateTime" column="update_time" />
+            <result property="updateBy" column="update_by" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id
-        ,host_name,host_type,host_status,host_ip,port,
-        user_name,pass_word,description,create_by,create_time,
-        update_by,update_time
+        id,name,tags,size,create_time,create_by,
+        update_time,update_by
     </sql>
 
     <!--条件语句-->
@@ -33,8 +26,8 @@
             <if test="qw.id != null">
                 and id = #{qw.id}
             </if>
-            <if test="qw.hostName != null and qw.hostName !=''">
-                and host_name like concat('%',#{qw.hostName},'%')
+            <if test="qw.name != null and qw.name !=''">
+                and name like concat('%',#{qw.name},'%')
             </if>
             <if test="qw.hostType != null and qw.hostType !=''">
                 and host_time = #{qw.hostType}
@@ -65,7 +58,7 @@
     <sql id="baseSelect">
         select a.*, b.user_name as 'updateByUserName'
         from (select s.*, u.user_name as 'createByUserName'
-              from cloud_host_server s
+              from cloud_wallpaper s
                        left join sys_user u on u.user_id = s.create_by) a
                  left join sys_user b on a.update_by = b.user_id
     </sql>

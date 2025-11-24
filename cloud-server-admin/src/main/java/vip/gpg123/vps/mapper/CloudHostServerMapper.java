@@ -21,13 +21,13 @@ public interface CloudHostServerMapper extends BaseMapper<CloudHostServer> {
      * 根据 entity 条件，查询一条记录
      *
      */
-    CloudHostServer selectOne(@Param("qw") CloudHostServer cloudHostServer);
+    CloudHostServer one(@Param("qw") CloudHostServer cloudHostServer);
 
     /**
      * 根据 entity 条件，查询全部记录
      *
      */
-    List<CloudHostServer> selectList(@Param("qw") CloudHostServer cloudHostServer);
+    List<CloudHostServer> list(@Param("qw") CloudHostServer cloudHostServer);
 
     /**
      * 根据 entity 条件，查询全部记录（并翻页）

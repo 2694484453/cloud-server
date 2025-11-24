@@ -21,6 +21,9 @@ public class AliYunConfig {
     @Value("${cloud.aliyun.endpoint}")
     private String endpoint;
 
+    @Value("${cloud.aliyun.bucketName}")
+    private String bucketName;
+
     @Bean
     public StaticCredentialProvider staticCredentialsProvider() {
         return StaticCredentialProvider.create(Credential.builder()

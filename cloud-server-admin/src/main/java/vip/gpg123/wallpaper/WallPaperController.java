@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/wallpaper")
-public class WallPaperController {
+@RequestMapping("/wallpaper/oss")
+public class WallPaperController extends BaseController {
 
     @Autowired
     private OSS ossClient;

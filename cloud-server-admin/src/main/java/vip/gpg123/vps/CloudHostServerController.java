@@ -83,7 +83,7 @@ public class CloudHostServerController extends BaseController {
         search.setCreateBy(String.valueOf(getUserId()));
         List<CloudHostServer> list = cloudHostServerMapper.page(pageDomain, search);
         page.setRecords(list);
-        page.setTotal(cloudHostServerMapper.selectList(search).size());
+        page.setTotal(cloudHostServerMapper.list(search).size());
         return PageUtils.toPageByIPage(page);
     }
 
