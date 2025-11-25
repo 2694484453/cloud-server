@@ -15,7 +15,7 @@ repo:
       url:
 basePath: /home
 docker:
-  address: hongkong.gpg123.vip:2345
+  address: tcp://hongkong.gpg123.vip:2345
   tls:
     enabled: false
     certPath: ""

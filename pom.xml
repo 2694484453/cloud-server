@@ -51,6 +51,8 @@
         <jsqlparser.version>4.9</jsqlparser.version>
         <!--docker-->
         <docker-java.version>3.3.4</docker-java.version>
+        <http5.version>3.3.4</http5.version>
+        <guava.version>31.1-jre</guava.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -259,7 +261,26 @@
                 <groupId>com.github.docker-java</groupId>
                 <artifactId>docker-java</artifactId>
                 <version>${docker-java.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+
+            <dependency>
+                <groupId>com.github.docker-java</groupId>
+                <artifactId>docker-java-transport-httpclient5</artifactId>
+                <version>${http5.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
