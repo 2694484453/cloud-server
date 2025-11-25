@@ -1,3 +1,4 @@
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.ssh.JschUtil;
@@ -31,8 +32,8 @@ public class CmdTest {
             String path = "/home";
             init = ArrayUtil.append(init, "-P", path, url);
             String cmd = StrUtil.join(" ", (Object) init);
-            String res = JschUtil.exec(session, cmd, StandardCharsets.UTF_8);
-            System.out.println(res);
+            //String res = JschUtil.exec(session, cmd, StandardCharsets.UTF_8);
+            System.out.println(FileUtil.getName(url));
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

@@ -1,7 +1,10 @@
 package vip.gpg123.tools;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.ssh.JschUtil;
 import com.jcraft.jsch.Session;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +19,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/file")
 public class FileDownloadController {
+
+    private static final String domain = "https://file-share.gpg123.vip";
 
     private static final String host = "hongkong.gpg123.vip";
 
@@ -38,6 +43,7 @@ public class FileDownloadController {
     @PostMapping("/download")
     public AjaxResult download(@RequestBody Map<String, Object> params) {
         String url = params.containsKey("url") ? (String) params.get("url") : "";
+        String fileName = FileUtil.getName(url);
         String res = "";
         if (StrUtil.isNotBlank(url)) {
             Session session = session();
