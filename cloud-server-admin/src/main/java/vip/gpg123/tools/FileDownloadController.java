@@ -1,10 +1,8 @@
 package vip.gpg123.tools;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.ssh.JschUtil;
 import com.jcraft.jsch.Session;
 import org.springframework.web.bind.annotation.PostMapping;
