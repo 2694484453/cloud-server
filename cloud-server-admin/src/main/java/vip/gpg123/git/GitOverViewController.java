@@ -7,11 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.git.domain.GitAccess;
+import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.service.GitAccessService;
+import vip.gpg123.git.service.GitRepoService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static vip.gpg123.common.utils.SecurityUtils.getUsername;
@@ -25,10 +30,13 @@ import static vip.gpg123.common.utils.SecurityUtils.getUsername;
 @RestController
 @RequestMapping("/git")
 @Api(tags = "【git】概览")
-public class GitOverViewController {
+public class GitOverViewController extends BaseController {
 
     @Autowired
     private GitAccessService gitAccessService;
+
+    @Autowired
+    private GitRepoService gitRepoService;
 
     /**
      * 概览
@@ -37,32 +45,42 @@ public class GitOverViewController {
     @GetMapping("/overView")
     @ApiOperation(value = "概览")
     public AjaxResult overview() {
+        List<Map<String, Object>> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         // 总配置数量
-        map.put("totalAccessCount", gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getCreateBy, getUsername())
+        map.put("title", "我的token配置总数量");
+        map.put("count", gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
+                .eq(GitAccess::getCreateBy, getUserId())
         ).size());
-        // gitee  数量
-        map.put("giteeAccessCount", gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getCreateBy, getUsername())
-                .eq(GitAccess::getType, "gitee")
-        ).size());
+        list.add(map);
+
+        // gitee 数量
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("title", "我的仓库总数量");
+        map2.put("count", gitRepoService.count(new LambdaQueryWrapper<GitRepo>()
+                .eq(GitRepo::getCreateBy, getUserId())
+        ));
+        list.add(map2);
+
         // github  数量
-        map.put("githubAccessCount", gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getCreateBy, getUsername())
-                .eq(GitAccess::getType, "github")
-        ).size());
+        Map<String, Object> map3 = new HashMap<>();
+        map3.put("title", "github仓库数量");
+        map3.put("count", gitRepoService.count(new LambdaQueryWrapper<GitRepo>()
+                .eq(GitRepo::getCreateBy, getUserId())
+                .eq(GitRepo::getType, "github")
+        ));
+        list.add(map3);
+
         // gitlab  数量
-        map.put("gitlabAccessCount", gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getCreateBy, getUsername())
-                .eq(GitAccess::getType, "gitlab")
-        ).size());
-        // gitCode  数量
-        map.put("gitCodeAccessCount", gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getCreateBy, getUsername())
-                .eq(GitAccess::getType, "gitCode")
-        ).size());
-        return AjaxResult.success(map);
+        Map<String, Object> map4 = new HashMap<>();
+        map4.put("title", "gitlab仓库数量");
+        map4.put("count", gitRepoService.count(new LambdaQueryWrapper<GitRepo>()
+                .eq(GitRepo::getCreateBy, getUserId())
+                .eq(GitRepo::getType, "gitlab")
+        ));
+        list.add(map4);
+
+        return AjaxResult.success(list);
     }
 
 }

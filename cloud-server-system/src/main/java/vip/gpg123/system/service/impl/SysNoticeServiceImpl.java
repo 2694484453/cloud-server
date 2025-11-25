@@ -1,6 +1,9 @@
 package vip.gpg123.system.service.impl;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vip.gpg123.system.domain.SysNotice;
@@ -13,8 +16,7 @@ import vip.gpg123.system.service.ISysNoticeService;
  * @author ruoyi
  */
 @Service
-public class SysNoticeServiceImpl implements ISysNoticeService
-{
+public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice> implements ISysNoticeService {
     @Autowired
     private SysNoticeMapper noticeMapper;
 

@@ -1,6 +1,8 @@
 package vip.gpg123.system.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import vip.gpg123.system.domain.SysNotice;
 
 /**
@@ -8,7 +10,7 @@ import vip.gpg123.system.domain.SysNotice;
  *
  * @author ruoyi
  */
-public interface ISysNoticeService
+public interface ISysNoticeService extends IService<SysNotice>
 {
     /**
      * 查询公告信息

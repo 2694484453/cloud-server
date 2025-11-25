@@ -1,6 +1,9 @@
 package vip.gpg123.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import vip.gpg123.system.domain.SysNotice;
 
 /**
@@ -8,8 +11,8 @@ import vip.gpg123.system.domain.SysNotice;
  *
  * @author ruoyi
  */
-public interface SysNoticeMapper
-{
+@Mapper
+public interface SysNoticeMapper extends BaseMapper<SysNotice> {
     /**
      * 查询公告信息
      *
