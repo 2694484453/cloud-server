@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static vip.gpg123.common.utils.SecurityUtils.getUsername;
-
 /**
  * @author gaopuguang_zz
  * @version 1.0
