@@ -10,7 +10,7 @@ import vip.gpg123.traefik.domain.TraefikService;
 
 import java.util.List;
 
-@FeignClient(name = "traefik-api", url = "${traefik.api.url:https://traefik.ecs.gpg123.vip/api}")
+@FeignClient(name = "traefik-api", url = "${traefik.api:https://traefik.ecs.gpg123.vip/api}")
 @Service
 public interface TraefikApiService {
 

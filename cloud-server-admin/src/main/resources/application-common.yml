@@ -1,5 +1,6 @@
 traefik:
   path: /home/my-traefik/config
+  api: https://traefik.ecs.gpg123.vip/api
 build:
   image: /home/devops/image
   helm: /home/helm-repo
