@@ -66,36 +66,29 @@ public class DevopsJobController extends BaseController {
     @GetMapping("/overView")
     @ApiOperation(value = "概览")
     public AjaxResult overView() {
-        JobList jobList = client.batch().v1().jobs().inAnyNamespace().list();
-        List<Job> jobs = jobList.getItems();
-        AtomicReference<Integer> actives = new AtomicReference<>(0);
-        AtomicReference<Integer> fails = new AtomicReference<>(0);
-        AtomicReference<Integer> successes = new AtomicReference<>(0);
-        // 今日新增
-        jobs.forEach(job -> {
-            // 激活次数
-            if (ObjectUtil.isNull(job.getStatus().getActive()) || (ObjectUtil.isNotNull(job.getStatus().getActive()) && job.getStatus().getActive() == 1)) {
-                actives.getAndSet(actives.get() + 1);
-            }
-            // 失败次数
-            if (ObjectUtil.isNull(job.getStatus().getFailed()) || (ObjectUtil.isNotNull(job.getStatus().getFailed()) && job.getStatus().getFailed() == 1)) {
-                actives.getAndSet(fails.get() + 1);
-            }
-            // 成功次数
-            if (ObjectUtil.isNull(job.getStatus().getSucceeded()) || (ObjectUtil.isNotNull(job.getStatus().getSucceeded()) && job.getStatus().getSucceeded() == 1)) {
-                successes.getAndSet(successes.get() + 1);
-            }
-        });
-        Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        Map<String, Object> actives = new HashMap<>();
+        actives.put("title", "当前运行中");
+        actives.put("count", devopsJobService.count(new LambdaQueryWrapper<DevopsJob>()
+                .eq(DevopsJob::getCreateBy, getUserId())
+                .eq(DevopsJob::getStatus, "running")));
+        list.add(actives);
+
+        Map<String, Object> noActive = new HashMap<>();
+        noActive.put("title", "未运行");
+        noActive.put("count", devopsJobService.count(new LambdaQueryWrapper<DevopsJob>()
+                .eq(DevopsJob::getCreateBy, getUserId())
+                .eq(DevopsJob::getStatus, "")));
+        list.add(noActive);
+
         // job总数
-        map.put("jobs", jobList.getItems().size());
-        // 激活数
-        map.put("actives", actives);
-        // 失败数
-        map.put("fails", fails);
-        // 成功数
-        map.put("successes", successes);
-        return AjaxResult.success(map);
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", "我的job总数");
+        map.put("count", devopsJobService.count(new LambdaQueryWrapper<DevopsJob>()
+                .eq(DevopsJob::getCreateBy, getUserId())));
+        list.add(map);
+        return AjaxResult.success(list);
     }
 
     /**
@@ -106,7 +99,7 @@ public class DevopsJobController extends BaseController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name,
-                           @RequestParam(value = "nameSpace",required = false) String nameSpace) {
+                           @RequestParam(value = "nameSpace", required = false) String nameSpace) {
         List<?> jobs = devopsJobService.list(new LambdaQueryWrapper<DevopsJob>()
                 .eq(DevopsJob::getCreateBy, getUsername())
                 .like(StrUtil.isNotBlank(name), DevopsJob::getJobName, name)
@@ -124,12 +117,12 @@ public class DevopsJobController extends BaseController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
-                              @RequestParam(value = "nameSpace",required = false) String nameSpace) {
-        IPage<DevopsJob> page = new Page<>(TableSupport.buildPageRequest().getPageNum(),TableSupport.buildPageRequest().getPageSize());
+                              @RequestParam(value = "nameSpace", required = false) String nameSpace) {
+        IPage<DevopsJob> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
         page = devopsJobService.page(page, new LambdaQueryWrapper<DevopsJob>()
-                        .like(StrUtil.isNotBlank(name), DevopsJob::getJobName, name)
-                        .like(StrUtil.isNotBlank(nameSpace), DevopsJob::getNameSpace, nameSpace)
-                        .orderByDesc(DevopsJob::getCreateTime));
+                .like(StrUtil.isNotBlank(name), DevopsJob::getJobName, name)
+                .like(StrUtil.isNotBlank(nameSpace), DevopsJob::getNameSpace, nameSpace)
+                .orderByDesc(DevopsJob::getCreateTime));
         return PageUtils.toPageByIPage(page);
     }
 
@@ -155,7 +148,7 @@ public class DevopsJobController extends BaseController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "新增")
-    public AjaxResult add(@RequestParam(value = "jobName",required = false) String jobName,
+    public AjaxResult add(@RequestParam(value = "jobName", required = false) String jobName,
                           @RequestParam(value = "nameSpace", required = false) String nameSpace,
                           @RequestBody DevopsVo devopsVo) {
         boolean isGitSaved = false;
