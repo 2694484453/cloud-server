@@ -49,6 +49,8 @@
         <fabric8.kubernetes-client.version>6.5.1</fabric8.kubernetes-client.version>
         <!-- 确保 JSqlParser 版本兼容 -->
         <jsqlparser.version>4.9</jsqlparser.version>
+        <!--docker-->
+        <docker-java.version>3.3.4</docker-java.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -250,6 +252,13 @@
                 <version>2.12.0</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!--docker-java-->
+            <dependency>
+                <groupId>com.github.docker-java</groupId>
+                <artifactId>docker-java</artifactId>
+                <version>${docker-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
