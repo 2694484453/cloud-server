@@ -131,6 +131,14 @@ spring:
     properties:
       org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
       org.quartz.scheduler.makeSchedulerThreadDaemon: true
+  mail:
+    host: smtpdm.aliyun.com
+    port: 465
+    username: admin@gpg123.vip
+    password: Gaopuguang2025Y
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 #    stream:
 #      rocketmq:
 #        binder:

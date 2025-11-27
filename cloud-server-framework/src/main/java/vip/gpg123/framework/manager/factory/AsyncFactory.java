@@ -1,9 +1,12 @@
 package vip.gpg123.framework.manager.factory;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.extra.mail.MailUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.LogUtils;
@@ -12,9 +15,9 @@ import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.common.utils.ip.AddressUtils;
 import vip.gpg123.common.utils.ip.IpUtils;
 import vip.gpg123.common.utils.spring.SpringUtils;
-import vip.gpg123.framework.config.EmailConfig;
 import vip.gpg123.system.domain.SysLogininfor;
 import vip.gpg123.system.domain.SysOperLog;
+import vip.gpg123.system.service.EmailService;
 import vip.gpg123.system.service.ISysLogininforService;
 import vip.gpg123.system.service.ISysOperLogService;
 
@@ -28,7 +31,6 @@ import java.util.TimerTask;
 public class AsyncFactory {
 
     private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
-
 
     /**
      * 记录登录信息
@@ -107,7 +109,7 @@ public class AsyncFactory {
         return new TimerTask() {
             @Override
             public void run() {
-                MailUtil.send(EmailConfig.createMailAccount(), sysUser.getEmail(), "新用户注册通知邮件", "尊敬的" + sysUser.getEmail() + "用户：感谢注册cloud-server平台！", false);
+                SpringUtil.getBean(EmailService.class).sendSimpleMail(sysUser.getEmail(),"新用户注册通知邮件", "尊敬的" + sysUser.getUserName() + "用户：感谢注册cloud-server平台！",sysUser.getEmail());
             }
         };
     }
