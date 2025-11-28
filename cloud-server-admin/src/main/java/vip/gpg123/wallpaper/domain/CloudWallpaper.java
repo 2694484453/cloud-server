@@ -21,7 +21,7 @@ public class CloudWallpaper extends BaseEntity implements Serializable {
     /**
      * 
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id")
     private Integer id;
 
     /**
@@ -29,6 +29,12 @@ public class CloudWallpaper extends BaseEntity implements Serializable {
      */
     @TableField(value = "name")
     private String name;
+
+    /**
+     *
+     */
+    @TableField(value = "file_path")
+    private String filePath;
 
     /**
      * 

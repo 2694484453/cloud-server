@@ -1,4 +1,7 @@
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +16,7 @@ import vip.gpg123.nas.service.NasFrpClientService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,5 +97,20 @@ public class Test {
                 nasFrpClientService.save(nasFrpClient);
             }
         });
+    }
+
+    @org.junit.Test
+    public void t1() {
+        HttpRequest request = HttpUtil.createRequest(cn.hutool.http.Method.GET, "https://gpg123.vip/apis/api.console.halo.run/v1alpha1/posts?page=1&size=100");
+        request.charset(StandardCharsets.UTF_8);
+        //request.basicAuth(username, password);
+        // 设置关键的请求头，模拟浏览器行为
+        request.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+        request.header("Accept", "application/json, text/plain, */*");
+        request.header("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8");
+        // 确保Content-Type设置正确
+        request.header("Content-Type", "application/json");
+        HttpResponse response = request.execute();
+        System.out.println(response.body());
     }
 }

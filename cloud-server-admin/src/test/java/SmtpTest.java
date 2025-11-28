@@ -1,13 +1,10 @@
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
-import com.mchange.net.SmtpUtils;
 import org.junit.Test;
 
 import javax.mail.Session;
 import java.io.File;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 
 /**
  * @author gaopuguang
