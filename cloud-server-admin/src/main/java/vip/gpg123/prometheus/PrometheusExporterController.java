@@ -13,6 +13,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +35,7 @@ import vip.gpg123.vps.domain.CloudHostServer;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,14 +56,27 @@ public class PrometheusExporterController extends BaseController {
     @Autowired
     private PrometheusApi prometheusApi;
 
+    @GetMapping("/types")
+    public AjaxResult types() {
+        List<String> list = new ArrayList<>();
+        list.add("caddy-exporter");
+        list.add("traefik-exporter");
+        list.add("node-exporter");
+        list.add("nginx-exporter");
+        return AjaxResult.success(list);
+    }
+
+    ;
+
     /**
      * list
+     *
      * @param jobName job
      * @return r
      */
     @GetMapping("/list")
     public AjaxResult list(@RequestParam(name = "jobName", required = false) String jobName,
-                           @RequestParam(name = "exporterType",required = false) String exporterType) {
+                           @RequestParam(name = "exporterType", required = false) String exporterType) {
         List<PrometheusExporter> list = prometheusExporterService.list(new LambdaQueryWrapper<PrometheusExporter>()
                 .like(StrUtil.isNotBlank(jobName), PrometheusExporter::getJobName, jobName)
                 .eq(StrUtil.isNotBlank(exporterType), PrometheusExporter::getExporterType, exporterType)
@@ -71,12 +87,13 @@ public class PrometheusExporterController extends BaseController {
 
     /**
      * page
+     *
      * @param jobName j
      * @return r
      */
     @GetMapping("/page")
     public TableDataInfo page(@RequestParam(name = "jobName", required = false) String jobName,
-                              @RequestParam(name = "exporterType",required = false) String exporterType) {
+                              @RequestParam(name = "exporterType", required = false) String exporterType) {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
@@ -93,7 +110,22 @@ public class PrometheusExporterController extends BaseController {
     }
 
     /**
+     * 新增
+     *
+     * @param exporter ex
+     * @return r
+     */
+    @PostMapping("/add")
+    public AjaxResult add(@RequestBody PrometheusExporter exporter) {
+        exporter.setCreateBy(String.valueOf(getUserId()));
+        exporter.setCreateTime(DateUtil.date());
+        boolean isSaved = prometheusExporterService.save(exporter);
+        return isSaved ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
+    }
+
+    /**
      * 同步数据
+     *
      * @return r
      */
     @GetMapping("/syncFile")
@@ -122,7 +154,7 @@ public class PrometheusExporterController extends BaseController {
                                         String targetsStr = StrUtil.join(",", targets);
                                         //
                                         PrometheusExporter search = prometheusExporterService.getOne(new LambdaQueryWrapper<PrometheusExporter>()
-                                                .eq(StrUtil.isNotBlank(jobName),PrometheusExporter::getJobName, jobName)
+                                                .eq(StrUtil.isNotBlank(jobName), PrometheusExporter::getJobName, jobName)
                                         );
                                         if (search != null) {
                                             // 更新
@@ -142,7 +174,7 @@ public class PrometheusExporterController extends BaseController {
                                     });
                                 }
                             } catch (Exception e) {
-                                System.out.println(file2.getName()+ "解析失败：" + e.getMessage());
+                                System.out.println(file2.getName() + "解析失败：" + e.getMessage());
                             }
                         }
                     }

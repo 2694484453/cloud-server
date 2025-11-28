@@ -54,7 +54,7 @@ public class CloudHostServerController extends BaseController {
     public AjaxResult list(@RequestParam(value = "hostName",required = false) String hostName,
                            @RequestParam(value = "type",required = false) String type) {
         List<CloudHostServer> serversList = cloudHostServerService.list(new LambdaQueryWrapper<CloudHostServer>()
-                .eq(CloudHostServer::getCreateBy,  getUsername())
+                .eq(CloudHostServer::getCreateBy,  getUserId())
                 .like(StrUtil.isNotBlank(hostName), CloudHostServer::getHostName, hostName)
                 .eq(StrUtil.isNotBlank(type), CloudHostServer::getHostType, type)
                 .orderByDesc(CloudHostServer::getCreateTime)
