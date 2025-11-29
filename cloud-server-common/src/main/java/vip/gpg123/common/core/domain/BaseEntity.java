@@ -57,6 +57,9 @@ public class BaseEntity implements Serializable
     @TableField(exist = false)
     private String remark;
 
+    @TableField(exist = false)
+    private String exist;
+
     /** 请求参数 */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @TableField(exist = false)

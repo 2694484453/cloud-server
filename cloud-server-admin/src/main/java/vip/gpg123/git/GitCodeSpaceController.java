@@ -23,7 +23,9 @@ import vip.gpg123.git.domain.GitCodeSpace;
 import vip.gpg123.git.mapper.GitCodeSpaceMapper;
 import vip.gpg123.git.service.GitCodeSpaceService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/git/codeSpace")
@@ -81,6 +83,7 @@ public class GitCodeSpaceController extends BaseController {
 
     /**
      * 新增
+     *
      * @param gitCodeSpace git
      * @return r
      */
@@ -90,7 +93,7 @@ public class GitCodeSpaceController extends BaseController {
         gitCodeSpace.setCreateBy(String.valueOf(getUserId()));
         gitCodeSpace.setCreateTime(DateUtil.date());
         boolean save = gitCodeSpaceService.save(gitCodeSpace);
-        return save ? AjaxResult.success("操作成功") : AjaxResult.error("操作失败");
+        return save ? AjaxResult.success("操作成功", gitCodeSpace) : AjaxResult.error("操作失败", false);
     }
 
     /**
@@ -119,10 +122,12 @@ public class GitCodeSpaceController extends BaseController {
                 .eq(GitCodeSpace::getRepoId, repoId)
         );
         if (list.isEmpty()) {
-            return AjaxResult.success("不存在", false);
+            return AjaxResult.success("不存在！", null);
+        } else if (list.size() == 1) {
+            GitCodeSpace gitCodeSpace = list.get(0);
+            return AjaxResult.success("仓库关联的gitCodeSpace已存在，正在跳转中...", gitCodeSpace);
         } else {
-            return AjaxResult.success("仓库关联的gitCodeSpace已存在，无法创建", true);
+            return AjaxResult.error("未知错误");
         }
     }
-
 }

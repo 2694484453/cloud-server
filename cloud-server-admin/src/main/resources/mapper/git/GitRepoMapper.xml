@@ -71,7 +71,7 @@
     <sql id="baseSelect">
         select a.*, b.user_name as 'updateByUserName'
         from (select s.*, u.user_name as 'createByUserName'
-              from git_repo s
+              from (select gr.*,gcs.id as 'exist' from git_repo gr left join git_code_space gcs on gr.id = gcs.repo_id) s
                        left join sys_user u on u.user_id = s.create_by) a
                  left join sys_user b on a.update_by = b.user_id
     </sql>

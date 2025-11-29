@@ -97,6 +97,7 @@ public class GitCodeSpace extends BaseEntity implements Serializable {
     @TableField(value = "update_time")
     private Date updateTime;
 
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
