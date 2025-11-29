@@ -105,13 +105,13 @@ spring:
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
-#  sleuth:
-#    otel:
-#      config:
-#        trace-id-ratio-based: 1.0
-#      exporter:
-#        otlp:
-#          endpoint: http://124.221.2.29:4317
+  #  sleuth:
+  #    otel:
+  #      config:
+  #        trace-id-ratio-based: 1.0
+  #      exporter:
+  #        otlp:
+  #          endpoint: http://124.221.2.29:4317
   # spring-cloud
   cloud:
     nacos:
@@ -137,8 +137,14 @@ spring:
     username: admin@gpg123.vip
     password: Gaopuguang2025Y
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+    default-encoding: utf-8
 #    stream:
 #      rocketmq:
 #        binder:
@@ -174,7 +180,7 @@ mybatis-plus:
   #  #MyBaits 别名包扫描路径，通过该属性可以给包中的类注册别名 实体扫描，多个package用逗号或者分号分隔
   type-aliases-package: vip.gpg123.**.domain
   config-location: classpath:mybatis/mybatis-config.xml
-  checkConfigLocation : true
+  checkConfigLocation: true
   global-config:
     db-config:
       logic-delete-field: deleted
