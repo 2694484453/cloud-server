@@ -17,6 +17,7 @@ import vip.gpg123.common.core.domain.BaseEntity;
 @TableName(value ="git_code_space")
 @Data
 public class GitCodeSpace extends BaseEntity implements Serializable {
+
     /**
      * 
      */
