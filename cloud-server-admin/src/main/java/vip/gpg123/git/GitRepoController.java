@@ -94,9 +94,13 @@ public class GitRepoController extends BaseController {
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
     public AjaxResult addRepo(@RequestBody GitRepo gitRepo) {
+        if (StrUtil.isBlank(gitRepo.getUrl())) {
+            return AjaxResult.error("url地址不能为空");
+        }
         // 设置信息
         gitRepo.setCreateBy(getUsername());
         gitRepo.setCreateTime(DateUtil.date());
+        gitRepo.setName(gitRepo.getUrl().substring(gitRepo.getUrl().lastIndexOf("/") + 1));
         boolean isSaved = gitRepoService.saveOrUpdate(gitRepo);
         return isSaved ? success("新增成功") : error("新增失败");
     }
