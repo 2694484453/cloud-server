@@ -7,12 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 
  * @TableName git_repo
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="git_repo")
 @Data
 public class GitRepo extends BaseEntity implements Serializable {
