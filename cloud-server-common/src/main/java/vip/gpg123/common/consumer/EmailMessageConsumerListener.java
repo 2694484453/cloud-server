@@ -1,4 +1,4 @@
-package vip.gpg123.consumer;
+package vip.gpg123.common.consumer;
 
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ArrayUtil;
@@ -25,7 +25,7 @@ import vip.gpg123.domain.Email;
 public class EmailMessageConsumerListener {
 
     @Autowired
-    private MailAccount mailAccount;
+    private e
 
     /**
      * 当消费者从队列取出消息时的回调方法
