@@ -49,14 +49,6 @@
             <artifactId>cloud-server-quartz</artifactId>
         </dependency>
 
-        <!--消息-->
-        <dependency>
-            <groupId>vip.gpg123</groupId>
-            <artifactId>cloud-server-message</artifactId>
-            <version>3.8.7</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!--test-->
         <dependency>
             <groupId>junit</groupId>

@@ -1,4 +1,4 @@
-package vip.gpg123.system.service;
+package vip.gpg123.common.service;
 
 public interface EmailService {
 

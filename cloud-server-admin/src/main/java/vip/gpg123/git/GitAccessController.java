@@ -16,7 +16,6 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.git.domain.GitAccess;
 import vip.gpg123.git.service.GitAccessService;

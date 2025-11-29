@@ -1,4 +1,4 @@
-package vip.gpg123.system.service.impl;
+package vip.gpg123.common.service.impl;
 import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.system.service.EmailService;
+import vip.gpg123.common.service.EmailService;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;

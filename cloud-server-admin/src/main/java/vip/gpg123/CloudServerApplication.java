@@ -1,5 +1,6 @@
 package vip.gpg123;
 
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableDiscoveryClient
 @EnableFeignClients
+@EnableRabbit
 public class CloudServerApplication {
     public static void main(String[] args) {
         System.setProperty("spring.devtools.restart.enabled", "false");
