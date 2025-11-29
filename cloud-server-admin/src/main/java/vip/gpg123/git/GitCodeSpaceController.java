@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +42,8 @@ public class GitCodeSpaceController extends BaseController {
     @Autowired
     private GitCodeSpaceService gitCodeSpaceService;
 
-    private static final String basePath = "/home/ide";
+    @Value("${ide.path}")
+    private String basePath;
 
     /**
      * 列表查询
