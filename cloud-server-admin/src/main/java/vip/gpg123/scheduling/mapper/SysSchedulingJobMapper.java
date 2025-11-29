@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.common.core.page.PageDomain;
-import vip.gpg123.quartz.domain.SysJob;
+import vip.gpg123.system.domain.SysJob;
 
 import java.util.List;
 
