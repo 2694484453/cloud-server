@@ -30,7 +30,6 @@ import vip.gpg123.devops.service.DevopsJobService;
 import vip.gpg123.devops.service.DevopsTaskBuildService;
 import vip.gpg123.devops.service.DevopsTaskGitService;
 import vip.gpg123.devops.vo.DevopsVo;
-import vip.gpg123.git.domain.GitCodeSpace;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -105,7 +104,7 @@ public class DevopsJobController extends BaseController {
     public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "nameSpace", required = false) String nameSpace) {
         List<?> jobs = devopsJobService.list(new LambdaQueryWrapper<DevopsJob>()
-                .eq(DevopsJob::getCreateBy, getUsername())
+                .eq(DevopsJob::getCreateBy, getUserId())
                 .like(StrUtil.isNotBlank(name), DevopsJob::getJobName, name)
                 .like(StrUtil.isNotBlank(nameSpace), DevopsJob::getNameSpace, nameSpace)
                 .orderByDesc(DevopsJob::getCreateTime)
@@ -175,7 +174,7 @@ public class DevopsJobController extends BaseController {
         }
         DevopsJob devopsJob = new DevopsJob();
         BeanUtils.copyProperties(devopsVo, devopsJob);
-        devopsJob.setCreateBy(getUsername());
+        devopsJob.setCreateBy(String.valueOf(getUserId()));
         devopsJob.setCreateTime(DateUtil.date());
         boolean save = devopsJobService.save(devopsJob);
         // 执行创建
