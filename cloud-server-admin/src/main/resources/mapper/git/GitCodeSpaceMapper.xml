@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.git.mapper.GitCodeSpaceMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.git.domain.GitCodeSpace">
+            <id property="id" column="id" />
+            <result property="spaceName" column="space_name" />
+            <result property="spaceSize" column="space_size" />
+            <result property="spaceStatus" column="space_status" />
+            <result property="repoId" column="repo_id" />
+            <result property="type" column="type" />
+            <result property="description" column="description" />
+            <result property="createBy" column="create_by" />
+            <result property="createTime" column="create_time" />
+            <result property="updateBy" column="update_by" />
+            <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,space_name,space_size,space_status,repo_id,type,
+        description,create_by,create_time,update_by,update_time
+    </sql>
+
+    <!--条件语句-->
+    <sql id="queryWrapper">
+        <where>1=1
+            <if test="qw.id != null">
+                and id = #{qw.id}
+            </if>
+            <if test="qw.spaceName != null and qw.spaceName !=''">
+                and space_name like concat('%',#{qw.spaceName},'%')
+            </if>
+            <if test="qw.type != null and qw.type !=''">
+                and type = #{qw.type}
+            </if>
+            <if test="qw.createBy != null">
+                and a.create_by = #{qw.createBy}
+            </if>
+            <if test="qw.createBys != null and createBys.size() > 0">
+                and a.create_by in
+                <foreach item="item" collection="createBys" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="qw.updateBy != null and updateBys.size() > 0">
+                and a.update_by = #{qw.updateBy}
+            </if>
+            <if test="qw.updateBys != null and updateBys.size() > 0">
+                and a.update_by in
+                <foreach item="item" collection="updateBys" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <!--分页-->
+    <sql id="order">
+        <!-- 排序放在where外面 -->
+        <choose>
+            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
+                order by ${page.orderByColumn} ${page.isAsc}
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+
+    <!--基础查询-->
+    <sql id="baseSelect">
+        select a.*, b.user_name as 'updateByUserName'
+        from (select s.*, u.user_name as 'createByUserName'
+              from git_code_space s
+                       left join sys_user u on u.user_id = s.create_by) a
+                 left join sys_user b on a.update_by = b.user_id
+    </sql>
+
+    <select id="list" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--单个查询-->
+    <select id="one" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--分页查询-->
+    <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+        <include refid="order"/>
+        limit #{page.limit} offset #{page.offset}
+    </select>
+</mapper>
