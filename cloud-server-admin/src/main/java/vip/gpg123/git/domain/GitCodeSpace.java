@@ -62,6 +62,12 @@ public class GitCodeSpace extends BaseEntity implements Serializable {
     private Integer repoId;
 
     /**
+     *
+     */
+    @TableField(value = "repo_url")
+    private String repoUrl;
+
+    /**
      * 
      */
     @TableField(value = "type")

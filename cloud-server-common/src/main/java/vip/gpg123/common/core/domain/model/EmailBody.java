@@ -2,15 +2,18 @@ package vip.gpg123.common.core.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import vip.gpg123.common.core.domain.BaseBody;
 
 import javax.mail.Multipart;
 import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class EmailBody implements Serializable {
+public class EmailBody extends BaseBody implements Serializable {
 
     /**
      * 收件人列表

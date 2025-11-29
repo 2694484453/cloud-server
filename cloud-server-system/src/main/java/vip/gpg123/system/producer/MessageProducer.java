@@ -1,6 +1,7 @@
 package vip.gpg123.system.producer;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vip.gpg123.common.core.domain.model.NoticeBody;
@@ -30,9 +31,14 @@ public class MessageProducer {
     /**
      * 发送邮件
      */
-    public void sendEmail(String emailBody) {
+    public void sendEmail(EmailBody emailBody, Boolean sendNotice) {
         // 发送消息到交换机，并指定路由键
         rabbitTemplate.convertAndSend(emailRoutingKey, emailBody);
+        if (sendNotice) {
+            NoticeBody noticeBody = new NoticeBody();
+            BeanUtils.copyProperties(emailBody, noticeBody);
+            this.sendActionNotice(noticeBody);
+        }
         System.out.println("发送邮件: " + emailBody);
     }
 

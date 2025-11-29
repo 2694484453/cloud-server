@@ -1,6 +1,7 @@
 package vip.gpg123.git;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -20,22 +21,27 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.git.domain.GitCodeSpace;
+import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.mapper.GitCodeSpaceMapper;
 import vip.gpg123.git.service.GitCodeSpaceService;
+import vip.gpg123.git.service.GitRepoService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/git/codeSpace")
 public class GitCodeSpaceController extends BaseController {
 
     @Autowired
+    private GitRepoService gitRepoService;
+
+    @Autowired
     private GitCodeSpaceMapper gitCodeSpaceMapper;
 
     @Autowired
     private GitCodeSpaceService gitCodeSpaceService;
+
+    private static final String basePath = "/home/ide";
 
     /**
      * 列表查询
@@ -90,8 +96,16 @@ public class GitCodeSpaceController extends BaseController {
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
     public AjaxResult add(@RequestBody GitCodeSpace gitCodeSpace) {
+        //
+        GitRepo gitRepo = gitRepoService.getById(gitCodeSpace.getRepoId());
+        if (ObjectUtil.isNull(gitRepo)) {
+            return AjaxResult.error("repoId错误");
+        }
+        gitCodeSpace.setRepoUrl(gitRepo.getUrl());
         gitCodeSpace.setCreateBy(String.valueOf(getUserId()));
         gitCodeSpace.setCreateTime(DateUtil.date());
+        gitCodeSpace.setSpaceUrl(gitCodeSpace.getSpaceUrl());
+        gitCodeSpace.setSpacePath(basePath + "/" + getUserId() + "/" + gitCodeSpace.getSpaceName());
         boolean save = gitCodeSpaceService.save(gitCodeSpace);
         return save ? AjaxResult.success("操作成功", gitCodeSpace) : AjaxResult.error("操作失败", false);
     }

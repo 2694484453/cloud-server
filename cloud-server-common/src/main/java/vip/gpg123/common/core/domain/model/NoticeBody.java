@@ -2,37 +2,16 @@ package vip.gpg123.common.core.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import vip.gpg123.common.core.domain.BaseBody;
 
 import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoticeBody implements Serializable {
+public class NoticeBody extends BaseBody implements Serializable {
 
-    /**
-     * 名称
-     */
-    private String title;
-
-    /**
-     * 内容
-     */
-    private String content;
-
-    /**
-     * 通知类型
-     */
-    private String type;
-
-    /**
-     * 发送对象
-     */
-    private String toUser;
-
-    /**
-     * 发送地址
-     */
-    private String toAddress;
 }
