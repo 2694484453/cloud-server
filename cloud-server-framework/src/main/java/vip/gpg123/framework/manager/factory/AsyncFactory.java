@@ -1,9 +1,12 @@
 package vip.gpg123.framework.manager.factory;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.extra.mail.MailUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.LogUtils;
@@ -14,7 +17,7 @@ import vip.gpg123.common.utils.ip.IpUtils;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.system.domain.SysLogininfor;
 import vip.gpg123.system.domain.SysOperLog;
-import vip.gpg123.common.service.EmailService;
+import vip.gpg123.system.service.EmailService;
 import vip.gpg123.system.service.ISysLogininforService;
 import vip.gpg123.system.service.ISysOperLogService;
 

@@ -14,7 +14,7 @@ import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
 import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.common.service.EmailService;
+import vip.gpg123.system.service.EmailService;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
