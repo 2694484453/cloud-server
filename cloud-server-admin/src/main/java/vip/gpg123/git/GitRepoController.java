@@ -54,7 +54,7 @@ public class GitRepoController extends BaseController {
         return AjaxResult.success(gitRepoService.list(new LambdaQueryWrapper<GitRepo>()
                 .eq(StrUtil.isNotBlank(type), GitRepo::getType, type)
                 .like(StrUtil.isNotBlank(name), GitRepo::getName, name)
-                .eq(GitRepo::getCreateBy, getUsername())
+                .eq(GitRepo::getCreateBy, getUserId())
         ));
     }
 
