@@ -1,8 +1,13 @@
 package vip.gpg123.devops.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.devops.domain.DevopsCronJob;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import vip.gpg123.devops.domain.DevopsJob;
+
+import java.util.List;
 
 /**
 * @author gaopuguang
@@ -12,6 +17,21 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 @Mapper
 public interface DevopsCronJobMapper extends BaseMapper<DevopsCronJob> {
+
+    /**
+     * 根据 entity 条件，查询一条记录
+     */
+    DevopsCronJob one(@Param("qw") DevopsCronJob devopsCronJob);
+
+    /**
+     * 根据 entity 条件，查询全部记录
+     */
+    List<DevopsCronJob> list(@Param("qw") DevopsCronJob devopsCronJob);
+
+    /**
+     * 根据 entity 条件，查询全部记录（并翻页）
+     */
+    List<DevopsCronJob> page(@Param("page") PageDomain page, @Param("qw") DevopsCronJob devopsCronJob);
 
 }
 

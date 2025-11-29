@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
-import io.fabric8.kubernetes.api.model.batch.v1.JobList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import io.swagger.annotations.Api;
@@ -21,19 +20,21 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.devops.domain.DevopsJob;
+import vip.gpg123.devops.mapper.DevopsJobMapper;
 import vip.gpg123.devops.service.DevopsJobService;
 import vip.gpg123.devops.service.DevopsTaskBuildService;
 import vip.gpg123.devops.service.DevopsTaskGitService;
 import vip.gpg123.devops.vo.DevopsVo;
+import vip.gpg123.git.domain.GitCodeSpace;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author gaopuguang
@@ -50,6 +51,9 @@ public class DevopsJobController extends BaseController {
 
     @Autowired
     private DevopsJobService devopsJobService;
+
+    @Autowired
+    private DevopsJobMapper devopsJobMapper;
 
     @Autowired
     private DevopsTaskGitService devopsTaskGitService;
@@ -118,11 +122,16 @@ public class DevopsJobController extends BaseController {
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
                               @RequestParam(value = "nameSpace", required = false) String nameSpace) {
-        IPage<DevopsJob> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
-        page = devopsJobService.page(page, new LambdaQueryWrapper<DevopsJob>()
-                .like(StrUtil.isNotBlank(name), DevopsJob::getJobName, name)
-                .like(StrUtil.isNotBlank(nameSpace), DevopsJob::getNameSpace, nameSpace)
-                .orderByDesc(DevopsJob::getCreateTime));
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<DevopsJob> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        DevopsJob devopsJob = new DevopsJob();
+        devopsJob.setJobName(name);
+        List<DevopsJob> list = devopsJobMapper.page(pageDomain, devopsJob);
+        page.setRecords(list);
+        page.setTotal(devopsJobMapper.list(devopsJob).size());
         return PageUtils.toPageByIPage(page);
     }
 
