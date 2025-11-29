@@ -1,8 +1,8 @@
-package vip.gpg123.notice.mapper;
+package vip.gpg123.system.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import vip.gpg123.notice.domain.SysActionNotice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import vip.gpg123.system.domain.SysActionNotice;
 
 /**
 * @author gaopuguang

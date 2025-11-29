@@ -1,8 +1,7 @@
-package vip.gpg123.common.consumer;
+package vip.gpg123.system.consumer;
 
-import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ArrayUtil;
-import org.springframework.amqp.rabbit.annotation.Queue;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,10 +9,11 @@ import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.service.EmailService;
 
 /**
- * 消息处理中心
+ * 邮件消息处理
  */
 @Component
-public class MessageConsumer {
+@Slf4j
+public class EmailConsumer {
 
     @Autowired
     private EmailService emailService;
@@ -23,15 +23,13 @@ public class MessageConsumer {
      *
      * @param email 消息
      */
-    @RabbitListener(queuesToDeclare = @Queue(value = "cloud-server-email"))  //表示RabbitMQ消费者,声明一个队列
+    @RabbitListener(queues = "cloud-server-message-email")
     public void receive(EmailBody email) {
         // 接收人
         String[] tos = email.getTos();
         String to = ArrayUtil.join(tos, ",");
-        Console.log("开始发送邮件:{}", to);
         // 执行发送
         emailService.sendSimpleMail(email.getTitle(), email.getContent(), to);
-        Console.log("发送完成");
-        // 站内通知
+        log.info("{}:邮件发送完成", to);
     }
 }

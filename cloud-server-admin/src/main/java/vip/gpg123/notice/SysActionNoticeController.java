@@ -15,8 +15,8 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.notice.domain.SysActionNotice;
-import vip.gpg123.notice.service.SysActionNoticeService;
+import vip.gpg123.system.domain.SysActionNotice;
+import vip.gpg123.system.service.SysActionNoticeService;
 
 import java.util.HashMap;
 import java.util.List;

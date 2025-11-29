@@ -2,7 +2,6 @@ package vip.gpg123.discovery;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,10 +21,9 @@ import vip.gpg123.discovery.vo.NacosNameSpaceResponse;
 import vip.gpg123.discovery.vo.NacosServiceResponse;
 import vip.gpg123.discovery.vo.NameSpaceItem;
 import vip.gpg123.discovery.service.NacosApi;
-import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.notice.domain.SysActionNotice;
-import vip.gpg123.notice.service.SysActionNoticeService;
+import vip.gpg123.system.domain.SysActionNotice;
+import vip.gpg123.system.service.SysActionNoticeService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -96,13 +94,13 @@ public class NacosManagerController extends BaseController {
                         sysActionNotice.setToAddress(userEmail);
                         sysActionNoticeService.save(sysActionNotice);
                         // 组装消息
-                        Email email = new Email();
-                        String[] tos = new String[]{};
-                        tos = ArrayUtil.append(tos, userEmail);
-                        email.setTos(tos);
-                        email.setTitle(title);
-                        email.setContent(content);
-                        rabbitTemplate.convertAndSend(ROUTING_KEY, email);
+//                        Email email = new Email();
+//                        String[] tos = new String[]{};
+//                        tos = ArrayUtil.append(tos, userEmail);
+//                        email.setTos(tos);
+//                        email.setTitle(title);
+//                        email.setContent(content);
+//                        rabbitTemplate.convertAndSend(ROUTING_KEY, email);
                     }
                 });
             }

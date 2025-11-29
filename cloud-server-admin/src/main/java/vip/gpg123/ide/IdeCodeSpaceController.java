@@ -56,9 +56,6 @@ public class IdeCodeSpaceController {
     @Autowired
     private IdeClient ideClient;
 
-    @Autowired
-    private MailAccount mailAccount;
-
     /**
      * 分页查询
      *
@@ -203,6 +200,6 @@ public class IdeCodeSpaceController {
 
     @Async
     public void sendEmail(String workSpace) {
-        MailUtil.send(mailAccount, SecurityUtils.getLoginUser().getUser().getEmail(), "云开发工作空间变动提醒", "尊敬的用户:" + SecurityUtils.getUsername() + ",您的" + workSpace + "已创建成功！", false);
+       // MailUtil.send(mailAccount, SecurityUtils.getLoginUser().getUser().getEmail(), "云开发工作空间变动提醒", "尊敬的用户:" + SecurityUtils.getUsername() + ",您的" + workSpace + "已创建成功！", false);
     }
 }

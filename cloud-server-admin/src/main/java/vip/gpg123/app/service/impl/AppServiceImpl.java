@@ -1,7 +1,6 @@
 package vip.gpg123.app.service.impl;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,11 +10,10 @@ import vip.gpg123.app.domain.MineApp;
 import vip.gpg123.app.service.AppService;
 import vip.gpg123.app.service.MineAppService;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.helm.service.impl.HelmApiServiceImpl;
-import vip.gpg123.notice.domain.SysActionNotice;
-import vip.gpg123.notice.service.SysActionNoticeService;
+import vip.gpg123.system.domain.SysActionNotice;
+import vip.gpg123.system.service.SysActionNoticeService;
 
 import java.util.TimerTask;
 
@@ -99,13 +97,13 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                     sysActionNotice.setToAddress(userEmail);
                     sysActionNoticeService.save(sysActionNotice);
                     // 组装消息
-                    Email email = new Email();
-                    String[] tos = new String[]{};
-                    tos = ArrayUtil.append(tos, userEmail);
-                    email.setTos(tos);
-                    email.setTitle(title);
-                    email.setContent(content);
-                    rabbitTemplate.convertAndSend(ROUTING_KEY, email);
+//                    Email email = new Email();
+//                    String[] tos = new String[]{};
+//                    tos = ArrayUtil.append(tos, userEmail);
+//                    email.setTos(tos);
+//                    email.setTitle(title);
+//                    email.setContent(content);
+//                    rabbitTemplate.convertAndSend(ROUTING_KEY, email);
                 }
             });
         }
@@ -162,14 +160,14 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                         sysActionNotice.setToUser(userName);
                         sysActionNotice.setToAddress(userEmail);
                         sysActionNoticeService.save(sysActionNotice);
-                        // 组装消息
-                        Email email = new Email();
-                        String[] tos = new String[]{};
-                        tos = ArrayUtil.append(tos, userEmail);
-                        email.setTos(tos);
-                        email.setTitle(title);
-                        email.setContent(content);
-                        rabbitTemplate.convertAndSend(ROUTING_KEY, email);
+//                        // 组装消息
+//                        Email email = new Email();
+//                        String[] tos = new String[]{};
+//                        tos = ArrayUtil.append(tos, userEmail);
+//                        email.setTos(tos);
+//                        email.setTitle(title);
+//                        email.setContent(content);
+//                        rabbitTemplate.convertAndSend(ROUTING_KEY, email);
                     }
                 });
             }

@@ -1,4 +1,4 @@
-package vip.gpg123.notice.domain;
+package vip.gpg123.system.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

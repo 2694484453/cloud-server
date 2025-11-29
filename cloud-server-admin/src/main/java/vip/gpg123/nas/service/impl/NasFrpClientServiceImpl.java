@@ -1,18 +1,16 @@
 package vip.gpg123.nas.service.impl;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import vip.gpg123.domain.Email;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.service.NasFrpClientService;
 import vip.gpg123.nas.mapper.NasFrpClientMapper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.notice.domain.SysActionNotice;
-import vip.gpg123.notice.service.SysActionNoticeService;
+import vip.gpg123.system.domain.SysActionNotice;
+import vip.gpg123.system.service.SysActionNoticeService;
 import vip.gpg123.common.service.EmailService;
 
 import java.io.Serializable;
@@ -64,13 +62,13 @@ public class NasFrpClientServiceImpl extends ServiceImpl<NasFrpClientMapper, Nas
                 sysActionNoticeService.save(sysActionNotice);
                 // 邮件消息
                 if (StrUtil.isNotBlank(userEmail)) {
-                    Email email = new Email();
-                    String[] tos = new String[]{};
-                    tos = ArrayUtil.append(tos, userEmail);
-                    email.setTos(tos);
-                    email.setTitle("删除frp客户端" + (isSuccess ? "成功" : "失败") + "通知");
-                    email.setContent(userName + "删除frp客户端，结果：" + (isSuccess ? "成功" : "失败"));
-                    emailService.sendSimpleMail(email.getTitle(), email.getContent(), userEmail);
+//                    Email email = new Email();
+//                    String[] tos = new String[]{};
+//                    tos = ArrayUtil.append(tos, userEmail);
+//                    email.setTos(tos);
+//                    email.setTitle("删除frp客户端" + (isSuccess ? "成功" : "失败") + "通知");
+//                    email.setContent(userName + "删除frp客户端，结果：" + (isSuccess ? "成功" : "失败"));
+//                    emailService.sendSimpleMail(email.getTitle(), email.getContent(), userEmail);
                 }
             }
 

@@ -1,9 +1,9 @@
-package vip.gpg123.notice.service.impl;
+package vip.gpg123.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import vip.gpg123.notice.domain.SysActionNotice;
-import vip.gpg123.notice.service.SysActionNoticeService;
-import vip.gpg123.notice.mapper.SysActionNoticeMapper;
+import vip.gpg123.system.domain.SysActionNotice;
+import vip.gpg123.system.service.SysActionNoticeService;
+import vip.gpg123.system.mapper.SysActionNoticeMapper;
 import org.springframework.stereotype.Service;
 
 /**

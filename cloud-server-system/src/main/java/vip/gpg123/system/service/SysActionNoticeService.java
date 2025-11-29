@@ -1,7 +1,8 @@
-package vip.gpg123.notice.service;
+package vip.gpg123.system.service;
 
-import vip.gpg123.notice.domain.SysActionNotice;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import vip.gpg123.system.domain.SysActionNotice;
 
 /**
 * @author gaopuguang

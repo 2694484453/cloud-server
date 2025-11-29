@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vip.gpg123.notice.mapper.SysActionNoticeMapper">
+<mapper namespace="vip.gpg123.system.mapper.SysActionNoticeMapper">
 
-    <resultMap id="BaseResultMap" type="vip.gpg123.notice.domain.SysActionNotice">
+    <resultMap id="BaseResultMap" type="vip.gpg123.system.domain.SysActionNotice">
             <id property="id" column="id" />
             <result property="title" column="title" />
             <result property="content" column="content" />

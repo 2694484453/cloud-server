@@ -119,12 +119,12 @@ public class GitAccessController extends BaseController {
             @Override
             public void run() {
                 // 组装消息
-                Email email = new Email();
-                String[] tos = new String[]{};
-                tos = ArrayUtil.append(tos, userEmail);
-                email.setTos(tos);
-                email.setTitle("Git仓库认证添加通知");
-                email.setContent(userName + "添加" + gitAccess.getName() + "Git仓库认证，结果：" + (isSuccess ? "成功" : "失败"));
+//                Email email = new Email();
+//                String[] tos = new String[]{};
+//                tos = ArrayUtil.append(tos, userEmail);
+//                email.setTos(tos);
+//                email.setTitle("Git仓库认证添加通知");
+//                email.setContent(userName + "添加" + gitAccess.getName() + "Git仓库认证，结果：" + (isSuccess ? "成功" : "失败"));
             }
         });
         return isSuccess ? AjaxResult.success() : AjaxResult.error();
@@ -151,12 +151,12 @@ public class GitAccessController extends BaseController {
             @Override
             public void run() {
                 // 组装消息
-                Email email = new Email();
-                String[] tos = new String[]{};
-                tos = ArrayUtil.append(tos, userEmail);
-                email.setTos(tos);
-                email.setTitle("Git仓库认证修改通知");
-                email.setContent(userName + "修改" + gitAccess.getName() + "Git仓库认证，结果：" + (isSuccess ? "成功" : "失败"));
+//                Email email = new Email();
+//                String[] tos = new String[]{};
+//                tos = ArrayUtil.append(tos, userEmail);
+//                email.setTos(tos);
+//                email.setTitle("Git仓库认证修改通知");
+//                email.setContent(userName + "修改" + gitAccess.getName() + "Git仓库认证，结果：" + (isSuccess ? "成功" : "失败"));
             }
         });
         return isSuccess ? AjaxResult.success() : AjaxResult.error();
@@ -183,12 +183,12 @@ public class GitAccessController extends BaseController {
                 // 获取GitAccess
                 GitAccess gitAccess = gitAccessService.getById(id);
                 // 组装消息
-                Email email = new Email();
-                String[] tos = new String[]{};
-                tos = ArrayUtil.append(tos, userEmail);
-                email.setTos(tos);
-                email.setTitle("Git仓库认证删除通知");
-                email.setContent(userName + "删除" + gitAccess.getName() + "Git仓库认证，结果：" + (isSuccess ? "成功" : "失败"));
+//                Email email = new Email();
+//                String[] tos = new String[]{};
+//                tos = ArrayUtil.append(tos, userEmail);
+//                email.setTos(tos);
+//                email.setTitle("Git仓库认证删除通知");
+//                email.setContent(userName + "删除" + gitAccess.getName() + "Git仓库认证，结果：" + (isSuccess ? "成功" : "失败"));
             }
         });
         return isSuccess ? AjaxResult.success() : AjaxResult.error();

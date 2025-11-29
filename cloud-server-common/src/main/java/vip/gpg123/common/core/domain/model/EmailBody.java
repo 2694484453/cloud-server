@@ -1,18 +1,16 @@
 package vip.gpg123.common.core.domain.model;
 
-import cn.hutool.extra.mail.MailAccount;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.mail.Multipart;
 import java.io.Serializable;
 
 @Data
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class EmailBody implements Serializable {
-
-    /**
-     * 邮箱帐户信息以及一些客户端配置信息
-     */
-    private final MailAccount mailAccount;
 
     /**
      * 收件人列表
