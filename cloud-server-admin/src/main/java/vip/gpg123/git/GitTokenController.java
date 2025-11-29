@@ -1,7 +1,10 @@
 package vip.gpg123.git;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.git.domain.GitAccess;
-import vip.gpg123.git.service.GitAccessService;
+import vip.gpg123.git.domain.GitRepo;
+import vip.gpg123.git.domain.GitToken;
+import vip.gpg123.git.mapper.GitTokenMapper;
+import vip.gpg123.git.service.GitTokenService;
 import vip.gpg123.git.service.GiteeApiService;
 import vip.gpg123.git.service.GithubApiService;
 
@@ -24,38 +31,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/git/accessRepo")
 @Api(tags = "【git】认证查询仓库管理")
-public class GitAccessRepoController extends BaseController {
+public class GitTokenController extends BaseController {
 
     @Autowired
-    private GitAccessService gitAccessService;
+    private GitTokenService gitTokenService;
+
+    @Autowired
+    private GitTokenMapper gitTokenMapper;
 
     @Autowired
     private GiteeApiService giteeApiService;
 
     @Autowired
     private GithubApiService githubApiService;
-
-    /**
-     * 分页查询
-     *
-     * @return r
-     */
-    @GetMapping("/page")
-    @ApiOperation(value = "【分页查询】")
-    public TableDataInfo repos(@RequestParam(value = "type") String type) {
-        // 获取token
-        GitAccess gitAccess = gitAccessService.getOne(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getType, type)
-                .eq(GitAccess::getCreateBy, getUsername())
-        );
-        if (gitAccess == null) {
-            throw new RuntimeException("请先添加" + type + "类型认证");
-        }
-        // 查询
-        List<?> repoList = Convert.toList(list(type).get("data"));
-        return PageUtils.toPage(repoList);
-    }
-
 
     /**
      * 列表查询
@@ -66,15 +54,15 @@ public class GitAccessRepoController extends BaseController {
     @ApiOperation(value = "【列表查询】")
     public AjaxResult list(@RequestParam(value = "type") String type) {
         // 获取token
-        GitAccess gitAccess = gitAccessService.getOne(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getType, type)
-                .eq(GitAccess::getCreateBy, getUsername())
+        GitToken gitToken = gitTokenService.getOne(new LambdaQueryWrapper<GitToken>()
+                .eq(GitToken::getType, type)
+                .eq(GitToken::getCreateBy, getUsername())
         );
-        if (gitAccess == null) {
+        if (gitToken == null) {
             throw new RuntimeException("请先添加" + type + "类型认证");
         }
         //
-        String accessToken = gitAccess.getAccessToken();
+        String accessToken = gitToken.getAccessToken();
         Integer pageNum = 1;
         List<?> repoList = new ArrayList<>();
         switch (type) {
@@ -87,4 +75,32 @@ public class GitAccessRepoController extends BaseController {
         }
         return AjaxResult.success(repoList);
     }
+
+    /**
+     * 分页查询
+     *
+     * @return r
+     */
+    @GetMapping("/page")
+    @ApiOperation(value = "【分页查询】")
+    public TableDataInfo repos(@RequestParam(value = "name", required = false) String name,
+                               @RequestParam(value = "type") String type) {
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<GitToken> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        // 获取token
+        GitToken gitToken = new GitToken();
+        gitToken.setType(type);
+        gitToken.setName(name);
+        gitToken.setCreateBy(String.valueOf(getUserId()));
+
+        // 查询
+        List<GitToken> list = gitTokenMapper.page(pageDomain, gitToken);
+        page.setRecords(list);
+        page.setTotal(gitTokenMapper.list(gitToken).size());
+        return PageUtils.toPage(list);
+    }
+
 }

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.git.domain.GitAccess;
+import vip.gpg123.git.domain.GitToken;
 import vip.gpg123.git.domain.GitRepo;
-import vip.gpg123.git.service.GitAccessService;
+import vip.gpg123.git.service.GitTokenService;
 import vip.gpg123.git.service.GitRepoService;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class GitOverViewController extends BaseController {
 
     @Autowired
-    private GitAccessService gitAccessService;
+    private GitTokenService gitTokenService;
 
     @Autowired
     private GitRepoService gitRepoService;
@@ -47,8 +47,8 @@ public class GitOverViewController extends BaseController {
         Map<String, Object> map = new HashMap<>();
         // 总配置数量
         map.put("title", "我的token配置总数量");
-        map.put("count", gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getCreateBy, getUserId())
+        map.put("count", gitTokenService.list(new LambdaQueryWrapper<GitToken>()
+                .eq(GitToken::getCreateBy, getUserId())
         ).size());
         list.add(map);
 

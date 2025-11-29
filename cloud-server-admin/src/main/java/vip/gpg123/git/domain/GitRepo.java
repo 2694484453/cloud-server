@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 
@@ -14,7 +15,7 @@ import lombok.Data;
  */
 @TableName(value ="git_repo")
 @Data
-public class GitRepo implements Serializable {
+public class GitRepo extends BaseEntity implements Serializable {
     /**
      * 
      */

@@ -2,13 +2,13 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vip.gpg123.git.mapper.GitRepoMapper">
+<mapper namespace="vip.gpg123.git.mapper.GitTokenMapper">
 
-    <resultMap id="BaseResultMap" type="vip.gpg123.git.domain.GitRepo">
+    <resultMap id="BaseResultMap" type="vip.gpg123.git.domain.GitToken">
             <id property="id" column="id" />
-            <result property="name" column="name" />
-            <result property="type" column="type" />
-            <result property="url" column="url" />
+            <result property="homeUrl" column="home_url" />
+            <result property="accessToken" column="access_token" />
+            <result property="tag" column="tag" />
             <result property="description" column="description" />
             <result property="createBy" column="create_by" />
             <result property="createTime" column="create_time" />
@@ -17,7 +17,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,type,url,description,create_by,
+        id,home_url,access_token,tag,description,create_by,
         create_time,update_by,update_time
     </sql>
 
@@ -71,7 +71,7 @@
     <sql id="baseSelect">
         select a.*, b.user_name as 'updateByUserName'
         from (select s.*, u.user_name as 'createByUserName'
-              from git_repo s
+              from git_token s
                        left join sys_user u on u.user_id = s.create_by) a
                  left join sys_user b on a.update_by = b.user_id
     </sql>
@@ -94,5 +94,4 @@
         <include refid="order"/>
         limit #{page.limit} offset #{page.offset}
     </select>
-
 </mapper>

@@ -11,13 +11,16 @@ import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.git.domain.GitAccess;
+import vip.gpg123.git.domain.GitToken;
 import vip.gpg123.git.domain.GitRepo;
-import vip.gpg123.git.service.GitAccessService;
+import vip.gpg123.git.mapper.GitRepoMapper;
+import vip.gpg123.git.service.GitTokenService;
 import vip.gpg123.git.service.GitRepoService;
+import vip.gpg123.nas.domain.NasFrpClient;
 
 import java.util.List;
 
@@ -31,10 +34,13 @@ import java.util.List;
 public class GitRepoController extends BaseController {
 
     @Autowired
-    private GitAccessService gitAccessService;
+    private GitTokenService gitTokenService;
 
     @Autowired
     private GitRepoService gitRepoService;
+
+    @Autowired
+    private GitRepoMapper gitRepoMapper;
 
     /**
      * 列表查询
@@ -55,6 +61,7 @@ public class GitRepoController extends BaseController {
 
     /**
      * 分页查询
+     *
      * @param type 类型
      * @param name 名称
      * @return r
@@ -63,17 +70,25 @@ public class GitRepoController extends BaseController {
     @ApiOperation(value = "【分页查询】")
     public TableDataInfo page(@RequestParam(value = "type", required = false) String type,
                               @RequestParam(value = "name", required = false) String name) {
-        IPage<GitRepo> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
-        page = gitRepoService.page(page, new LambdaQueryWrapper<GitRepo>()
-                .eq(StrUtil.isNotBlank(type), GitRepo::getType, type)
-                .like(StrUtil.isNotBlank(name), GitRepo::getName, name)
-                .eq(GitRepo::getCreateBy, getUsername())
-        );
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<GitRepo> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        GitRepo gitRepo = new GitRepo();
+        gitRepo.setType(type);
+        gitRepo.setName(name);
+        gitRepo.setCreateBy(String.valueOf(getUserId()));
+
+        List<GitRepo> list = gitRepoMapper.page(pageDomain, gitRepo);
+        page.setRecords(list);
+        page.setTotal(gitRepoMapper.list(gitRepo).size());
         return PageUtils.toPageByIPage(page);
     }
 
     /**
      * 新增
+     *
      * @param gitRepo gitRepo
      * @return r
      */
@@ -89,6 +104,7 @@ public class GitRepoController extends BaseController {
 
     /**
      * 导入
+     *
      * @param gitRepo gitRepo
      * @return r
      */
@@ -105,13 +121,14 @@ public class GitRepoController extends BaseController {
         boolean isSaved = gitRepoService.saveOrUpdate(gitRepo);
         if (search != null) {
             return isSaved ? success("更新成功") : error("更新失败");
-        }else {
+        } else {
             return isSaved ? success("导入成功") : error("导入失败");
         }
     }
 
     /**
      * 详情
+     *
      * @param id id
      * @return r
      */
@@ -125,6 +142,7 @@ public class GitRepoController extends BaseController {
 
     /**
      * 删除
+     *
      * @param id id
      * @return r
      */
@@ -147,11 +165,11 @@ public class GitRepoController extends BaseController {
     @ApiOperation(value = "【新增或更新】")
     public AjaxResult insertOrUpdate(@RequestBody List<GitRepo> gitRepos, @RequestParam(value = "type") String type) {
         // 获取token
-        GitAccess gitAccess = gitAccessService.getOne(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getType, type)
-                .eq(GitAccess::getCreateBy, getUsername())
+        GitToken gitToken = gitTokenService.getOne(new LambdaQueryWrapper<GitToken>()
+                .eq(GitToken::getType, type)
+                .eq(GitToken::getCreateBy, getUsername())
         );
-        if (gitAccess == null) {
+        if (gitToken == null) {
             throw new RuntimeException("请先添加" + type + "类型认证");
         }
         // 开始执行新增或更新

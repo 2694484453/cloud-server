@@ -1,7 +1,6 @@
 package vip.gpg123.git;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,8 +16,8 @@ import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.git.domain.GitAccess;
-import vip.gpg123.git.service.GitAccessService;
+import vip.gpg123.git.domain.GitToken;
+import vip.gpg123.git.service.GitTokenService;
 
 import java.util.List;
 import java.util.TimerTask;
@@ -34,7 +33,7 @@ import java.util.TimerTask;
 public class GitAccessController extends BaseController {
 
     @Autowired
-    private GitAccessService gitAccessService;
+    private GitTokenService gitTokenService;
 
 
     /**
@@ -48,13 +47,13 @@ public class GitAccessController extends BaseController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "type", required = false) String type) {
-        List<GitAccess> gitAccessList = gitAccessService.list(new LambdaQueryWrapper<GitAccess>()
-                .eq(StrUtil.isNotBlank(type), GitAccess::getType, type)
-                .like(StrUtil.isNotBlank(name), GitAccess::getName, name)
-                .eq(GitAccess::getCreateBy, getUsername())
-                .orderByDesc(GitAccess::getCreateTime)
+        List<GitToken> gitTokenList = gitTokenService.list(new LambdaQueryWrapper<GitToken>()
+                .eq(StrUtil.isNotBlank(type), GitToken::getType, type)
+                .like(StrUtil.isNotBlank(name), GitToken::getName, name)
+                .eq(GitToken::getCreateBy, getUsername())
+                .orderByDesc(GitToken::getCreateTime)
         );
-        return AjaxResult.success(gitAccessList);
+        return AjaxResult.success(gitTokenList);
     }
 
     /**
@@ -68,11 +67,11 @@ public class GitAccessController extends BaseController {
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
                               @RequestParam(value = "type", required = false) String type) {
-        IPage<GitAccess> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
-        page = gitAccessService.page(page, new LambdaQueryWrapper<GitAccess>()
-                .eq(StrUtil.isNotBlank(type), GitAccess::getType, type)
-                .like(StrUtil.isNotBlank(name), GitAccess::getName, name)
-                .eq(GitAccess::getCreateBy, getUsername()));
+        IPage<GitToken> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
+        page = gitTokenService.page(page, new LambdaQueryWrapper<GitToken>()
+                .eq(StrUtil.isNotBlank(type), GitToken::getType, type)
+                .like(StrUtil.isNotBlank(name), GitToken::getName, name)
+                .eq(GitToken::getCreateBy, getUsername()));
         return PageUtils.toPageByIPage(page);
     }
 
@@ -85,35 +84,35 @@ public class GitAccessController extends BaseController {
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam(value = "id") String id) {
-        GitAccess gitAccess = gitAccessService.getById(id);
-        return AjaxResult.success(gitAccess);
+        GitToken gitToken = gitTokenService.getById(id);
+        return AjaxResult.success(gitToken);
     }
 
     /**
      * 添加
      *
-     * @param gitAccess gitAccess
+     * @param gitToken gitAccess
      * @return r
      */
     @PostMapping("/add")
     @ApiOperation(value = "添加")
-    public AjaxResult add(@RequestBody GitAccess gitAccess) {
+    public AjaxResult add(@RequestBody GitToken gitToken) {
         // 查询
-        int count = gitAccessService.count(new LambdaQueryWrapper<GitAccess>()
-                .eq(GitAccess::getCreateBy, getUsername())
-                .eq(GitAccess::getType, gitAccess.getType())
+        int count = gitTokenService.count(new LambdaQueryWrapper<GitToken>()
+                .eq(GitToken::getCreateBy, getUsername())
+                .eq(GitToken::getType, gitToken.getType())
         );
         // 判断是否已经添加
         if (count >= 1) {
-            return AjaxResult.error("您已经添加过" + gitAccess.getType() + "类型的认证，请勿重复添加");
+            return AjaxResult.error("您已经添加过" + gitToken.getType() + "类型的认证，请勿重复添加");
         }
         // 获取邮箱
         String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
         // 获取用户名
         String userName = SecurityUtils.getLoginUser().getUser().getUserName();
-        gitAccess.setCreateBy(getUsername());
-        gitAccess.setCreateTime(DateUtil.date());
-        boolean isSuccess = gitAccessService.save(gitAccess);
+        gitToken.setCreateBy(getUsername());
+        gitToken.setCreateTime(DateUtil.date());
+        boolean isSuccess = gitTokenService.save(gitToken);
         // 异步消息
         AsyncManager.me().execute(new TimerTask() {
             @Override
@@ -133,19 +132,19 @@ public class GitAccessController extends BaseController {
     /**
      * 修改
      *
-     * @param gitAccess gitAccess
+     * @param gitToken gitAccess
      * @return r
      */
     @PutMapping("/edit")
     @ApiOperation(value = "修改")
-    public AjaxResult edit(@RequestBody GitAccess gitAccess) {
+    public AjaxResult edit(@RequestBody GitToken gitToken) {
         // 获取邮箱
         String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
         // 获取用户名
         String userName = SecurityUtils.getLoginUser().getUser().getUserName();
-        gitAccess.setUpdateBy(getUsername());
-        gitAccess.setUpdateTime(DateUtil.date());
-        boolean isSuccess = gitAccessService.updateById(gitAccess);
+        gitToken.setUpdateBy(getUsername());
+        gitToken.setUpdateTime(DateUtil.date());
+        boolean isSuccess = gitTokenService.updateById(gitToken);
         // 异步消息
         AsyncManager.me().execute(new TimerTask() {
             @Override
@@ -175,13 +174,13 @@ public class GitAccessController extends BaseController {
         String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
         // 获取用户名
         String userName = SecurityUtils.getLoginUser().getUser().getUserName();
-        boolean isSuccess = gitAccessService.removeById(id);
+        boolean isSuccess = gitTokenService.removeById(id);
         // 异步消息
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
                 // 获取GitAccess
-                GitAccess gitAccess = gitAccessService.getById(id);
+                GitToken gitToken = gitTokenService.getById(id);
                 // 组装消息
 //                Email email = new Email();
 //                String[] tos = new String[]{};

@@ -12,11 +12,11 @@ import lombok.Data;
 
 /**
  * git认证信息
- * @TableName git_access
+ * @TableName git_token
  */
-@TableName(value ="git_access")
+@TableName(value ="git_token")
 @Data
-public class GitAccess implements Serializable {
+public class GitToken implements Serializable {
     /**
      * 
      */
