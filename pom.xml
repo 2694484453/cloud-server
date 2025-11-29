@@ -448,9 +448,7 @@
         <module>cloud-server-admin</module>
         <module>cloud-server-framework</module>
         <module>cloud-server-system</module>
-        <module>cloud-server-quartz</module>
         <module>cloud-server-common</module>
-        <module>cloud-server-message</module>
     </modules>
     <packaging>pom</packaging>
 

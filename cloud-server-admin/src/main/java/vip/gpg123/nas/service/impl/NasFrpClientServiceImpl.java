@@ -3,7 +3,6 @@ package vip.gpg123.nas.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.domain.Email;
@@ -14,7 +13,7 @@ import vip.gpg123.nas.mapper.NasFrpClientMapper;
 import org.springframework.stereotype.Service;
 import vip.gpg123.notice.domain.SysActionNotice;
 import vip.gpg123.notice.service.SysActionNoticeService;
-import vip.gpg123.system.service.EmailService;
+import vip.gpg123.common.service.EmailService;
 
 import java.io.Serializable;
 import java.util.TimerTask;
