@@ -76,5 +76,34 @@ public class GitCodeSpaceController extends BaseController {
         return PageUtils.toPageByIPage(page);
     }
 
+    /**
+     * 详情
+     * @param id id
+     * @return r
+     */
+    @GetMapping("/info")
+    @ApiOperation(value = "【详情】")
+    public AjaxResult info(@RequestParam(value = "id") Integer id) {
+        GitCodeSpace gitCodeSpace = gitCodeSpaceMapper.selectById(id);
+        return AjaxResult.success(gitCodeSpace);
+    }
+
+    /**
+     * 查询是否存在codeSpace
+     * @param repoId id
+     * @return r
+     */
+    @GetMapping("/isExist")
+    @ApiOperation(value = "【查询是否存在codeSpace】")
+    public AjaxResult isExist(@RequestParam(value = "repoId") String repoId) {
+        List<GitCodeSpace> list = gitCodeSpaceMapper.selectList(new LambdaQueryWrapper<GitCodeSpace>()
+                .eq(GitCodeSpace::getRepoId, repoId)
+        );
+        if (list.isEmpty()) {
+            return AjaxResult.success("不存在", false);
+        } else {
+            return AjaxResult.success("已存在", true);
+        }
+    }
 
 }
