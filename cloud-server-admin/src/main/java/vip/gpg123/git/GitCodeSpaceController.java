@@ -1,5 +1,6 @@
 package vip.gpg123.git;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -7,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -77,7 +80,22 @@ public class GitCodeSpaceController extends BaseController {
     }
 
     /**
+     * 新增
+     * @param gitCodeSpace git
+     * @return r
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "【新增】")
+    public AjaxResult add(@RequestBody GitCodeSpace gitCodeSpace) {
+        gitCodeSpace.setCreateBy(String.valueOf(getUserId()));
+        gitCodeSpace.setCreateTime(DateUtil.date());
+        boolean save = gitCodeSpaceService.save(gitCodeSpace);
+        return save ? AjaxResult.success("操作成功") : AjaxResult.error("操作失败");
+    }
+
+    /**
      * 详情
+     *
      * @param id id
      * @return r
      */
@@ -90,6 +108,7 @@ public class GitCodeSpaceController extends BaseController {
 
     /**
      * 查询是否存在codeSpace
+     *
      * @param repoId id
      * @return r
      */
@@ -102,7 +121,7 @@ public class GitCodeSpaceController extends BaseController {
         if (list.isEmpty()) {
             return AjaxResult.success("不存在", false);
         } else {
-            return AjaxResult.success("已存在", true);
+            return AjaxResult.success("仓库关联的gitCodeSpace已存在，无法创建", true);
         }
     }
 
