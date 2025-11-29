@@ -16,6 +16,7 @@ import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import org.springframework.stereotype.Service;
 import vip.gpg123.system.service.EmailService;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                // 写入配置文件
+                // 配置文件位置
                 String filePath = exporterPath + "/" + entity.getExporterType() + "/" + entity.getJobName() + ".json";
                 JSONArray jsonArray = new JSONArray();
                 JSONObject jsonObject = new JSONObject();
@@ -58,13 +59,38 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                 }});
                 jsonArray.add(jsonObject);
                 String jsonFormat = JSONUtil.toJsonStr(jsonArray);
+                // 写入
                 FileUtil.writeString(jsonFormat, filePath, StandardCharsets.UTF_8);
-
                 // 发送邮件
                 emailService.sendSimpleMail("cloud-server云服务平台-添加监控端点", "添加监控端点：" + entity.getJobName(), loginUser.getUser().getEmail());
             }
         });
         return super.save(entity);
+    }
+
+    /**
+     * 根据 ID 删除
+     *
+     * @param id 主键ID
+     */
+    @Override
+    public boolean removeById(Serializable id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        AsyncManager.me().execute(new TimerTask() {
+            @Override
+            public void run() {
+                PrometheusExporter entity = baseMapper.selectById(id);
+                if (entity != null) {
+                    // 配置文件位置
+                    String filePath = exporterPath + "/" + entity.getExporterType() + "/" + entity.getJobName() + ".json";
+                    // 删除文件
+                    FileUtil.del(filePath);
+                    // 发送邮件
+                    emailService.sendSimpleMail("cloud-server云服务平台-删除监控端点", "删除监控端点：" + entity.getJobName(), loginUser.getUser().getEmail());
+                }
+            }
+        });
+        return super.removeById(id);
     }
 }
 
