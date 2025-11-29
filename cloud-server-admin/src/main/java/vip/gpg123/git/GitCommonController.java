@@ -28,6 +28,7 @@ public class GitCommonController {
         types.add("github");
         types.add("gitlab");
         types.add("gitcode");
+        types.add("codeup");
         return AjaxResult.success(types);
     }
 }
