@@ -20,7 +20,6 @@ import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.mapper.GitRepoMapper;
 import vip.gpg123.git.service.GitTokenService;
 import vip.gpg123.git.service.GitRepoService;
-import vip.gpg123.nas.domain.NasFrpClient;
 
 import java.util.List;
 
