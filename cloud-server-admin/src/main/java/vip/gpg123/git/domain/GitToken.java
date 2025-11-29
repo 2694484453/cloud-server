@@ -48,6 +48,12 @@ public class GitToken implements Serializable {
     private String homeUrl;
 
     /**
+     * 用户名
+     */
+    @TableField(value = "user_name")
+    private String userName;
+
+    /**
      * token
      */
     @TableField(value = "access_token")
