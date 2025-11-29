@@ -1,5 +1,8 @@
 package vip.gpg123.system;
 
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,6 +65,21 @@ public class SysProfileController extends BaseController
         LoginUser loginUser = getLoginUser();
         SysUser currentUser = loginUser.getUser();
         currentUser.setNickName(user.getNickName());
+        if (StrUtil.isBlank(user.getEmail())) {
+            return error("邮箱不能为空");
+        }
+        if (!Validator.isEmail(user.getEmail())) {
+            return error("邮箱格式错误");
+        }
+        // 修改邮箱
+        if (!user.getUserName().equals(currentUser.getEmail())) {
+           int searchCount = userService.count(new LambdaQueryWrapper<SysUser>()
+                    .eq(SysUser::getEmail, user.getEmail())
+            );
+           if (searchCount >= 1) {
+               return error("邮箱已被使用，请更换");
+           }
+        }
         currentUser.setEmail(user.getEmail());
         currentUser.setPhonenumber(user.getPhonenumber());
         currentUser.setSex(user.getSex());
