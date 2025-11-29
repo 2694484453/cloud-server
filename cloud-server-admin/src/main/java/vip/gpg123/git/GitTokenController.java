@@ -1,6 +1,5 @@
 package vip.gpg123.git;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -18,7 +17,6 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.domain.GitToken;
 import vip.gpg123.git.mapper.GitTokenMapper;
 import vip.gpg123.git.service.GitTokenService;

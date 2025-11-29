@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.git.domain.GitToken;
+import vip.gpg123.git.mapper.GitTokenMapper;
 import vip.gpg123.git.service.GitTokenService;
 
 import java.util.List;
@@ -28,13 +30,15 @@ import java.util.TimerTask;
  * @description Git仓库认证管理
  */
 @RestController
-@RequestMapping("/gitAccess")
+@RequestMapping("/git/token")
 @Api(value = "Git仓库认证管理")
 public class GitAccessController extends BaseController {
 
     @Autowired
     private GitTokenService gitTokenService;
 
+    @Autowired
+    private GitTokenMapper gitTokenMapper;
 
     /**
      * 列表查询
@@ -63,16 +67,31 @@ public class GitAccessController extends BaseController {
      * @param type 类型
      * @return r
      */
+    /**
+     * 分页查询
+     *
+     * @return r
+     */
     @GetMapping("/page")
-    @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
-                              @RequestParam(value = "type", required = false) String type) {
-        IPage<GitToken> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
-        page = gitTokenService.page(page, new LambdaQueryWrapper<GitToken>()
-                .eq(StrUtil.isNotBlank(type), GitToken::getType, type)
-                .like(StrUtil.isNotBlank(name), GitToken::getName, name)
-                .eq(GitToken::getCreateBy, getUsername()));
-        return PageUtils.toPageByIPage(page);
+    @ApiOperation(value = "【分页查询】")
+    public TableDataInfo repos(@RequestParam(value = "name", required = false) String name,
+                               @RequestParam(value = "type") String type) {
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<GitToken> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        // 获取token
+        GitToken gitToken = new GitToken();
+        gitToken.setType(type);
+        gitToken.setName(name);
+        gitToken.setCreateBy(String.valueOf(getUserId()));
+
+        // 查询
+        List<GitToken> list = gitTokenMapper.page(pageDomain, gitToken);
+        page.setRecords(list);
+        page.setTotal(gitTokenMapper.list(gitToken).size());
+        return PageUtils.toPage(list);
     }
 
     /**
