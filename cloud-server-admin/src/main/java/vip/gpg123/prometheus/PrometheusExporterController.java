@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,6 +67,11 @@ public class PrometheusExporterController extends BaseController {
         list.add("traefik-exporter");
         list.add("node-exporter");
         list.add("nginx-exporter");
+        list.add("spring-boot-exporter");
+        list.add("coredns-exporter");
+        list.add("amd-smi-exporter");
+        list.add("amd-gpu-exporter");
+        list.add("jaeger-exporter");
         return AjaxResult.success(list);
     }
 
@@ -119,11 +125,41 @@ public class PrometheusExporterController extends BaseController {
      * @return r
      */
     @PostMapping("/add")
+    @ApiOperation(value = "【新增】")
     public AjaxResult add(@RequestBody PrometheusExporter exporter) {
         exporter.setCreateBy(String.valueOf(getUserId()));
         exporter.setCreateTime(DateUtil.date());
         boolean isSaved = prometheusExporterService.save(exporter);
         return isSaved ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
+    }
+
+    /**
+     * 编辑
+     * @param exporter e
+     * @return r
+     */
+    @PutMapping("/edit")
+    @ApiOperation(value = "【编辑】")
+    public AjaxResult edit(@RequestBody PrometheusExporter exporter) {
+        if (StrUtil.isBlank(exporter.getJobName())) {
+            return AjaxResult.error("名称不能为空");
+        }
+        if (StrUtil.isBlank(exporter.getExporterType())) {
+            return AjaxResult.error("exporter类型不能为空");
+        }
+        PrometheusExporter search = prometheusExporterService.getById(exporter.getId());
+        // 修改了名称
+        if (!search.getJobName().equals(exporter.getJobName())) {
+            int count = prometheusExporterService.count(new  LambdaQueryWrapper<PrometheusExporter>()
+                    .eq(PrometheusExporter::getJobName, exporter.getJobName()));
+            if (count > 0) {
+                return AjaxResult.error("已存在相同名称，请更换");
+            }
+        }
+        exporter.setUpdateBy(String.valueOf(getUserId()));
+        exporter.setUpdateTime(DateUtil.date());
+        boolean isSuccess = prometheusExporterService.updateById(exporter);
+        return isSuccess ? AjaxResult.success("修改成功") : AjaxResult.error("修改失败");
     }
 
     /**
@@ -144,6 +180,7 @@ public class PrometheusExporterController extends BaseController {
      * @return r
      */
     @GetMapping("/syncFile")
+    @ApiOperation(value = "【同步】")
     public AjaxResult sync() {
         File[] files1 = FileUtil.ls(path);
         for (File file : files1) {
