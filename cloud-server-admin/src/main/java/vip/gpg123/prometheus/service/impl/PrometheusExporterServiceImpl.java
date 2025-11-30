@@ -95,7 +95,6 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                     // 删除文件
                     FileUtil.del(filePath);
                     // 发送邮件
-                    // 发送邮件
                     EmailBody emailBody = new EmailBody();
                     emailBody.setTos(new String[]{loginUser.getUser().getEmail()});
                     emailBody.setName(entity.getJobName());
