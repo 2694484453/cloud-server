@@ -9,14 +9,17 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * git认证信息
  * @TableName git_token
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="git_token")
 @Data
-public class GitToken implements Serializable {
+public class GitToken extends BaseEntity implements Serializable {
     /**
      * 
      */

@@ -33,7 +33,7 @@
             <if test="qw.type != null and qw.type !=''">
                 and type = #{qw.type}
             </if>
-            <if test="qw.createBy != null">
+            <if test="qw.createBy != null and qw.createBy != ''">
                 and a.create_by = #{qw.createBy}
             </if>
             <if test="qw.createBys != null and createBys.size() > 0">
