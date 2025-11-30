@@ -82,7 +82,7 @@ public class GitTokenController extends BaseController {
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
     public TableDataInfo repos(@RequestParam(value = "name", required = false) String name,
-                               @RequestParam(value = "type") String type) {
+                               @RequestParam(value = "type", required = false) String type) {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
