@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.core.domain.model.LoginUser;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
@@ -14,7 +15,7 @@ import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
 import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.common.service.EmailService;
+import vip.gpg123.system.producer.MessageProducer;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -31,10 +32,12 @@ import java.util.TimerTask;
 public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporterMapper, PrometheusExporter> implements PrometheusExporterService {
 
     @Autowired
-    private EmailService emailService;
+    private MessageProducer messageProducer;
 
     @Value("${monitor.prometheus.exporterPath}")
     private String exporterPath;
+
+    private static final String modelName = "PrometheusExporter";
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -62,7 +65,12 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                 // 写入
                 FileUtil.writeString(jsonFormat, filePath, StandardCharsets.UTF_8);
                 // 发送邮件
-                emailService.sendSimpleMail("cloud-server云服务平台-添加监控端点", "添加监控端点：" + entity.getJobName(), loginUser.getUser().getEmail());
+                EmailBody emailBody = new EmailBody();
+                emailBody.setTos(new String[]{loginUser.getUser().getEmail()});
+                emailBody.setName(entity.getJobName());
+                emailBody.setAction("新增");
+                emailBody.setModelName(modelName);
+                messageProducer.sendEmail(emailBody, true);
             }
         });
         return super.save(entity);
@@ -75,6 +83,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
      */
     @Override
     public boolean removeById(Serializable id) {
+        boolean flag = super.removeById(id);
         LoginUser loginUser = SecurityUtils.getLoginUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
@@ -86,11 +95,18 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                     // 删除文件
                     FileUtil.del(filePath);
                     // 发送邮件
-                    emailService.sendSimpleMail("cloud-server云服务平台-删除监控端点", "删除监控端点：" + entity.getJobName(), loginUser.getUser().getEmail());
+                    // 发送邮件
+                    EmailBody emailBody = new EmailBody();
+                    emailBody.setTos(new String[]{loginUser.getUser().getEmail()});
+                    emailBody.setName(entity.getJobName());
+                    emailBody.setAction("删除");
+                    emailBody.setModelName(modelName);
+                    emailBody.setResult(flag);
+                    messageProducer.sendEmail(emailBody, true);
                 }
             }
         });
-        return super.removeById(id);
+        return flag;
     }
 }
 

@@ -10,6 +10,8 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +33,6 @@ import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
-import vip.gpg123.vps.domain.CloudHostServer;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/prometheus/exporter")
+@Api(tags = "prometheus-exporter管理")
 public class PrometheusExporterController extends BaseController {
 
     @Value("${monitor.prometheus.exporterPath}")
@@ -75,6 +77,7 @@ public class PrometheusExporterController extends BaseController {
      * @return r
      */
     @GetMapping("/list")
+    @ApiOperation(value = "【列表查询】")
     public AjaxResult list(@RequestParam(name = "jobName", required = false) String jobName,
                            @RequestParam(name = "exporterType", required = false) String exporterType) {
         List<PrometheusExporter> list = prometheusExporterService.list(new LambdaQueryWrapper<PrometheusExporter>()
@@ -92,6 +95,7 @@ public class PrometheusExporterController extends BaseController {
      * @return r
      */
     @GetMapping("/page")
+    @ApiOperation(value = "【分页查询】")
     public TableDataInfo page(@RequestParam(name = "jobName", required = false) String jobName,
                               @RequestParam(name = "exporterType", required = false) String exporterType) {
         // 转换参数

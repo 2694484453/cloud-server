@@ -12,6 +12,11 @@ import java.io.Serializable;
 public class BaseBody implements Serializable {
 
     /**
+     * 模块名称
+     */
+    private String modelName;
+
+    /**
      * 对象名称
      */
     private String name;
