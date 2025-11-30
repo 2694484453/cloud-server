@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,8 +68,6 @@ public class PrometheusExporterController extends BaseController {
         list.add("nginx-exporter");
         return AjaxResult.success(list);
     }
-
-    ;
 
     /**
      * list
@@ -125,6 +124,18 @@ public class PrometheusExporterController extends BaseController {
         exporter.setCreateTime(DateUtil.date());
         boolean isSaved = prometheusExporterService.save(exporter);
         return isSaved ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
+    }
+
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "【删除】")
+    public AjaxResult delete(@RequestParam(value = "id") String id) {
+        boolean isSuccess = prometheusExporterService.removeById(id);
+        return isSuccess ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }
 
     /**
