@@ -13,7 +13,7 @@ cloud-server云服务平台集成了git仓库接入、在线代码开发、在�
 
 >演示地址：https://cloud-web.gpg123.vip 
 
->文档地址：https://docs.gpg123.vip (待发布)
+>文档地址：https://docs.gpg123.vip/cloud-server/docs (待发布)
 
 ## 演示图
 
