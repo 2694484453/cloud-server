@@ -30,10 +30,10 @@ public class PrometheusController extends BaseController {
     @GetMapping("/overView")
     public AjaxResult overView() {
         List<Map<String, Object>> list = new ArrayList<>();
-//        Map<String, Object> totalMap = new HashMap<>();
-//        totalMap.put("title", "当前系统接入端点总数");
-//        totalMap.put("count", prometheusExporterService.count());
-//        list.add(totalMap);
+        Map<String, Object> totalMap = new HashMap<>();
+        totalMap.put("title", "当前系统接入端点总数");
+        totalMap.put("count", prometheusExporterService.count());
+        list.add(totalMap);
 
         Map<String, Object> map = new HashMap<>();
         map.put("title", "我的接入端点总数");
