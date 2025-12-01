@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import vip.gpg123.CloudServerApplication;
-import vip.gpg123.common.feign.AliYunDomainApi;
+import vip.gpg123.domain.service.AliYunDomainApi;
 
 /**
  * 生产者测额是

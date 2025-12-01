@@ -1,4 +1,4 @@
-package vip.gpg123.common.feign;
+package vip.gpg123.traefik.service;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;

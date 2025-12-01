@@ -15,7 +15,7 @@ import vip.gpg123.traefik.domain.TraefikLoadBalancer;
 import vip.gpg123.traefik.domain.TraefikProxy;
 import vip.gpg123.traefik.domain.TraefikRouter;
 import vip.gpg123.traefik.domain.TraefikService;
-import vip.gpg123.common.feign.TraefikApiService;
+import vip.gpg123.traefik.service.TraefikApiService;
 import vip.gpg123.traefik.service.TraefikProxyService;
 
 import java.util.ArrayList;
