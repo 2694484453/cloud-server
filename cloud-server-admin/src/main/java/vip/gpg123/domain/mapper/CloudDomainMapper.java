@@ -1,7 +1,7 @@
 package vip.gpg123.domain.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import vip.gpg123.domain.domain.DomainRecord;
+import vip.gpg123.domain.domain.CloudDomain;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity vip.gpg123.domain.domain.AppDomain
 */
 @Mapper
-public interface DomainRecordMapper extends BaseMapper<DomainRecord> {
+public interface CloudDomainMapper extends BaseMapper<CloudDomain> {
 
 }
 

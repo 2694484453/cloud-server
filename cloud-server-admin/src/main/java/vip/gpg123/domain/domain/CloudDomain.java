@@ -12,11 +12,11 @@ import lombok.Data;
 
 /**
  * 应用域名解析记录信息
- * @TableName domain_record
+ * @TableName cloud_domain
  */
-@TableName(value ="domain_record")
+@TableName(value ="cloud_domain")
 @Data
-public class DomainRecord implements Serializable {
+public class CloudDomain implements Serializable {
     /**
      * 主键
      */

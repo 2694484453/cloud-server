@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.domain.domain.DomainRecord;
-import vip.gpg123.domain.service.DomainRecordService;
+import vip.gpg123.domain.domain.CloudDomain;
+import vip.gpg123.domain.service.CloudDomainService;
 import vip.gpg123.platform.domain.PlatformServiceInstance;
 import vip.gpg123.platform.service.PlatformServiceInstanceService;
 import vip.gpg123.platform.vo.OverViewVo;
@@ -27,7 +27,7 @@ public class PlatformDashboardController extends BaseController {
     private PlatformServiceInstanceService platformServiceInstanceService;
 
     @Autowired
-    private DomainRecordService domainRecordService;
+    private CloudDomainService cloudDomainService;
     /**
      * 概览
      *
@@ -57,8 +57,8 @@ public class PlatformDashboardController extends BaseController {
 
         // records
         Map<String, Object> domainRecord = new LinkedHashMap<>();
-        domainRecord.put("domainRecord", domainRecordService.count(new LambdaQueryWrapper<DomainRecord>()
-                .eq(DomainRecord::getCreateBy, getUsername())
+        domainRecord.put("domainRecord", cloudDomainService.count(new LambdaQueryWrapper<CloudDomain>()
+                .eq(CloudDomain::getCreateBy, getUsername())
         ));
         // 返回
         overViewVo.setService(service);
