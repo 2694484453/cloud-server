@@ -1,4 +1,4 @@
-package vip.gpg123.domain.service;
+package vip.gpg123.common.feign;
 
 import com.aliyun.alidns20150109.models.AddDomainRecordRequest;
 import com.aliyun.alidns20150109.models.AddDomainRecordResponseBody;

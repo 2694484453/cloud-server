@@ -19,7 +19,7 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.platform.domain.ActiveTarget;
 import vip.gpg123.platform.domain.PrometheusTargetData;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
-import vip.gpg123.prometheus.service.PrometheusApi;
+import vip.gpg123.common.feign.PrometheusApi;
 
 import java.util.ArrayList;
 import java.util.List;

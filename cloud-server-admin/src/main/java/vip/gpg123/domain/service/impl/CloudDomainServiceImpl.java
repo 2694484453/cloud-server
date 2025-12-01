@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-06-06 01:16:02
 */
 @Service
-public class DomainRecordServiceImpl extends ServiceImpl<CloudDomainMapper, CloudDomain> implements CloudDomainService {
+public class CloudDomainServiceImpl extends ServiceImpl<CloudDomainMapper, CloudDomain> implements CloudDomainService {
 
 }
 

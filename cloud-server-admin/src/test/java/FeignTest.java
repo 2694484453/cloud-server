@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import vip.gpg123.CloudServerApplication;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
-import vip.gpg123.prometheus.service.PrometheusApi;
+import vip.gpg123.common.feign.PrometheusApi;
 
 import java.net.URI;
 

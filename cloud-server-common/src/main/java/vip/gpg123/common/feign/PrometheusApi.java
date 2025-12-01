@@ -1,4 +1,4 @@
-package vip.gpg123.prometheus.service;
+package vip.gpg123.common.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;

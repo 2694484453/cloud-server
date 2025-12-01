@@ -9,14 +9,17 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 应用域名解析记录信息
  * @TableName cloud_domain
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="cloud_domain")
 @Data
-public class CloudDomain implements Serializable {
+public class CloudDomain extends BaseEntity implements Serializable {
     /**
      * 主键
      */
@@ -30,22 +33,11 @@ public class CloudDomain implements Serializable {
     private String domainName;
 
     /**
-     * 主机
-     */
-    @TableField(value = "domain_host")
-    private String domainHost;
-
-    /**
      * 类型
      */
-    @TableField(value = "domain_type")
-    private String domainType;
+    @TableField(value = "type")
+    private String type;
 
-    /**
-     * 值
-     */
-    @TableField(value = "domain_value")
-    private String domainValue;
 
     /**
      * 状态
