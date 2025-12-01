@@ -1,7 +1,7 @@
 # 项目相关配置
 cloud-server:
   # 名称
-  name: RuoYi
+  name: cloud-server
   # 版本
   version: 3.8.7
   # 版权年份
@@ -84,13 +84,13 @@ spring:
   # redis 配置
   redis:
     # 地址
-    host: 110.42.40.8
+    host: redis.gpg123.vip
     # 端口，默认为6379
     port: 6379
     # 数据库索引
     database: 0
     #
-    username: default
+    #username: default
     # 密码
     password: Gaopuguang@2024%
     # 连接超时时间
