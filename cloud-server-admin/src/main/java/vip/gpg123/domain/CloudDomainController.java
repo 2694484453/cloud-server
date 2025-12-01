@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -94,6 +95,7 @@ public class CloudDomainController extends BaseController {
      * @return r
      */
     @PostMapping("/add")
+    @ApiOperation(value = "【新增】")
     public AjaxResult add(@RequestBody CloudDomain cloudDomain) {
         if (StrUtil.isBlank(cloudDomain.getDomainName())) {
             return AjaxResult.error("域名不能为空");
@@ -105,5 +107,17 @@ public class CloudDomainController extends BaseController {
         cloudDomain.setCreateTime(DateUtil.date());
         boolean result = cloudDomainService.save(cloudDomain);
         return result ? AjaxResult.success("添加成功") : AjaxResult.error("添加失败");
+    }
+
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "【删除】")
+    public AjaxResult delete(@RequestParam(value = "id") String id) {
+        boolean result = cloudDomainService.removeById(id);
+        return result ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }
 }
