@@ -96,13 +96,20 @@ public class CaddyController extends BaseController {
 
     /**
      * 新增
+     *
      * @param cloudCaddy c
      * @return r
      */
     @PostMapping("/add")
     @ApiOperation(value = "")
     public AjaxResult add(@RequestBody CloudCaddy cloudCaddy) {
-        //
+        // 查询
+        int count = cloudCaddyService.count(new LambdaQueryWrapper<CloudCaddy>()
+                .eq(CloudCaddy::getName, cloudCaddy.getName())
+        );
+        if (count > 0) {
+            return AjaxResult.error("名称已被占用，请更换");
+        }
         boolean save = cloudCaddyService.save(cloudCaddy);
         return save ? AjaxResult.success("添加成功") : AjaxResult.error("添加失败");
     }
