@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 
 @Service
-@FeignClient(name = "prometheus-api",url = "${monitor.prometheus.endpoint}")
+@FeignClient(name = "prometheus-api", url = "${monitor.prometheus.endpoint}")
 public interface PrometheusApi {
 
     /**
      * 查询targets
+     *
      * @param state s
      * @return r
      */
