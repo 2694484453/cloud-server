@@ -228,7 +228,6 @@ public class HelmRepoController extends BaseController {
      * 导出仓库配置
      *
      * @param repoName   名称
-     * @return r
      */
     @PostMapping("export")
     @ApiOperation(value = "导出仓库配置")

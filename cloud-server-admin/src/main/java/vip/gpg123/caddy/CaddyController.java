@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -128,23 +129,26 @@ public class CaddyController extends BaseController {
      * 导出
      * @param response r
      */
-    @GetMapping("/exporter")
+    @PostMapping("/export")
     @ApiOperation(value = "【导出】")
-    public void exporter(HttpServletResponse response) {
+    public void exporter(HttpServletResponse response) throws IOException {
         JSONObject jsonObject = caddyApi.config();
-        String jsonStr = JSONUtil.toJsonStr(jsonObject);
+        String jsonStr = JSONUtil.formatJsonStr(JSONUtil.toJsonStr(jsonObject));
         File file = FileUtil.createTempFile();
+        FileWriter fileWriter = new FileWriter(file);
         try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
-            FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(jsonStr);
+            fileWriter.close();
             // 1. 设置响应头
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("caddy.json", "UTF-8"));
             // 2. 带缓冲的流复制
             IoUtil.copy(FileUtil.getInputStream(file), out);
         } catch (Exception e) {
+            response.sendError(500, "文件导出失败：" + e.getMessage());
             throw new RuntimeException(e);
         } finally {
+            IoUtil.close(fileWriter);
             FileUtil.del(file);
         }
     }
