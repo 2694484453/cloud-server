@@ -3,8 +3,11 @@ package vip.gpg123.caddy;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,7 +33,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,7 +109,7 @@ public class CaddyController extends BaseController {
      * @return r
      */
     @PostMapping("/add")
-    @ApiOperation(value = "")
+    @ApiOperation(value = "【新增】")
     public AjaxResult add(@RequestBody CloudCaddy cloudCaddy) {
         // 查询
         int count = cloudCaddyService.count(new LambdaQueryWrapper<CloudCaddy>()
@@ -114,5 +122,30 @@ public class CaddyController extends BaseController {
         cloudCaddy.setCreateTime(DateUtil.date());
         boolean save = cloudCaddyService.save(cloudCaddy);
         return save ? AjaxResult.success("添加成功") : AjaxResult.error("添加失败");
+    }
+
+    /**
+     * 导出
+     * @param response r
+     */
+    @GetMapping("/exporter")
+    @ApiOperation(value = "【导出】")
+    public void exporter(HttpServletResponse response) {
+        JSONObject jsonObject = caddyApi.config();
+        String jsonStr = JSONUtil.toJsonStr(jsonObject);
+        File file = FileUtil.createTempFile();
+        try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(jsonStr);
+            // 1. 设置响应头
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("caddy.json", "UTF-8"));
+            // 2. 带缓冲的流复制
+            IoUtil.copy(FileUtil.getInputStream(file), out);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            FileUtil.del(file);
+        }
     }
 }
