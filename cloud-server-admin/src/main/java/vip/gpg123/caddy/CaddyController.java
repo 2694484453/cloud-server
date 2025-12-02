@@ -110,6 +110,8 @@ public class CaddyController extends BaseController {
         if (count > 0) {
             return AjaxResult.error("名称已被占用，请更换");
         }
+        cloudCaddy.setCreateBy(String.valueOf(getUserId()));
+        cloudCaddy.setCreateTime(DateUtil.date());
         boolean save = cloudCaddyService.save(cloudCaddy);
         return save ? AjaxResult.success("添加成功") : AjaxResult.error("添加失败");
     }
