@@ -106,6 +106,12 @@ public class KubernetesClusterController extends BaseController {
     @PostMapping("/add")
     @ApiOperation(value = "【添加集群】")
     public AjaxResult add(@RequestBody KubernetesCluster kubernetesCluster) {
+        int count = kubernetesClusterService.count(new LambdaQueryWrapper<KubernetesCluster>()
+                .eq(KubernetesCluster::getClusterName, kubernetesCluster.getClusterName())
+        );
+        if (count > 0) {
+            return AjaxResult.error("名称已存在");
+        }
         // 配置名称
         if (StrUtil.isBlank(kubernetesCluster.getClusterName())) {
             return AjaxResult.error("名称不能为空");
@@ -168,6 +174,7 @@ public class KubernetesClusterController extends BaseController {
             kubernetesCluster.setConfig(Serialization.yamlMapper().writeValueAsString(addConfig));
             kubernetesCluster.setCreateBy(String.valueOf(getUserId()));
             kubernetesCluster.setCreateTime(DateUtil.date());
+            kubernetesCluster.setContextName(kubernetesCluster.getClusterName());
             kubernetesClusterService.save(kubernetesCluster);
             // 重写默认文件
             K8sUtil.exportToFile(kubeConfig, K8sUtil.defaultConfigFilePath());

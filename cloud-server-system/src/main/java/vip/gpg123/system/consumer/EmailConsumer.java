@@ -31,7 +31,7 @@ public class EmailConsumer {
         String to = ArrayUtil.join(tos, ",");
         // 执行发送
         String title = "cloud-server云服务平台：<" + email.getAction() + ">操作" + (email.getResult() ? "成功" : "失败") + "通知";
-        String content = "尊敬的用户" + SecurityUtils.getUsername() + ":您刚刚对" + email.getName() + "进行了" + email.getAction() + "操作，此邮件由系统发出，请勿回复！！";
+        String content = "尊敬的用户" + email.getUserName() + ":您刚刚对" + email.getName() + "进行了" + email.getAction() + "操作，此邮件由系统发出，请勿回复！！";
         emailService.sendSimpleMail(title, content, to);
         log.info("{}:邮件发送完成", to);
     }

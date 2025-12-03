@@ -31,4 +31,7 @@ public class BaseBody implements Serializable {
      */
     private Boolean result;
 
+
+    private String userName;
+
 }
