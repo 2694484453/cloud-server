@@ -6,10 +6,14 @@ import io.fabric8.kubernetes.api.model.NamedContext;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
+import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
+import io.fabric8.kubernetes.client.utils.Serialization;
 import io.fabric8.openshift.client.OpenShiftClient;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+
 /**
  * @author gaopuguang
  * @date 2025/3/1 2:34
@@ -27,6 +31,7 @@ public class K8sUtil {
 
     /**
      * 获取配置对象
+     *
      * @return r
      */
     public static Config getConfig() {
@@ -38,8 +43,25 @@ public class K8sUtil {
         }
     }
 
+    public static io.fabric8.kubernetes.api.model.Config getConfigFromFile(String configFilePath) throws IOException {
+        return KubeConfigUtils.parseConfigFromString(FileUtil.readUtf8String(configFilePath));
+    }
+
+    public static io.fabric8.kubernetes.api.model.Config getConfigFromStr(String content) throws IOException {
+        return KubeConfigUtils.parseConfigFromString(content);
+    }
+
+    public static io.fabric8.kubernetes.api.model.Config getDefaultConfig() throws IOException {
+        return KubeConfigUtils.parseConfigFromString(FileUtil.readUtf8String(configFile));
+    }
+
+    public static String configBeanToStr(Config config) throws IOException {
+        return Serialization.yamlMapper().writeValueAsString(config);
+    }
+
     /**
      * k8s客户端默认模式
+     *
      * @return r
      */
     public static KubernetesClient createDefaultKubernetesClient() {
@@ -55,6 +77,7 @@ public class K8sUtil {
 
     /**
      * 上下文模式
+     *
      * @param context c
      * @return r
      */
@@ -76,6 +99,7 @@ public class K8sUtil {
 
     /**
      * openshift客户端
+     *
      * @return r
      */
     public static OpenShiftClient createDefaultOpenShiftClient() {
@@ -85,6 +109,7 @@ public class K8sUtil {
 
     /**
      * openshift客户端
+     *
      * @param context c
      * @return r
      */
@@ -102,6 +127,7 @@ public class K8sUtil {
 
     /**
      * 从文件解析
+     *
      * @param file 文件
      * @return r
      */
@@ -111,7 +137,15 @@ public class K8sUtil {
     }
 
     /**
+     * 导出文件
+     */
+    public static void exportToFile(io.fabric8.kubernetes.api.model.Config kubeConfig, String exportPath) throws IOException {
+        KubeConfigUtils.persistKubeConfigIntoFile(kubeConfig, exportPath);
+    }
+
+    /**
      * 默认路径
+     *
      * @return r
      */
     public static String defaultConfigFilePath() {

@@ -1,37 +1,32 @@
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import cn.hutool.setting.yaml.YamlUtil;
 import io.fabric8.kubernetes.api.model.Config;
+import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import org.junit.jupiter.api.Test;
 import vip.gpg123.common.utils.K8sUtil;
-import vip.gpg123.kubernetes.domain.KubernetesFileConfig;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
 
 
 public class K8sConfigTest {
 
-    private static final String configFilePath = K8sUtil.defaultConfigFilePath();
+    private static final String configFilePath = "/Volumes/gaopuguang/project/cloud-server/k8s/config";
+
+    private static final String addPath = "/Volumes/gaopuguang/project/cloud-server/k8s/add";
+
+    private static final String exportPath = "/Volumes/gaopuguang/project/cloud-server/k8s/export";
 
     @Test
     public void test() {
+        String name = "test.gpg123.vip";
         try {
-            String str = FileUtil.readUtf8String(configFilePath);
-            JSONObject jsonObject = YamlUtil.load(IoUtil.toStream(str,StandardCharsets.UTF_8), JSONObject.class);
-
-            KubernetesFileConfig fileConfig = BeanUtil.toBean(jsonObject, KubernetesFileConfig.class);
-                    //JSONUtil.toBean(jsonObject, KubernetesFileConfig.class);
-                    //YamlUtil.load(IoUtil.toStream(str, StandardCharsets.UTF_8), KubernetesFileConfig.class);
-
-            System.out.println(fileConfig);
-        } catch (IORuntimeException e) {
+            Config kubeConfig = KubeConfigUtils.parseConfigFromString(FileUtil.readUtf8String(configFilePath));
+            Config addConfig = KubeConfigUtils.parseConfigFromString(FileUtil.readUtf8String(addPath));
+            kubeConfig.getClusters().addAll(addConfig.getClusters());
+            kubeConfig.getContexts().addAll(addConfig.getContexts());
+            kubeConfig.getUsers().addAll(addConfig.getUsers());
+            K8sUtil.exportToFile(kubeConfig, exportPath);
+        } catch (IORuntimeException | IOException e) {
             throw new RuntimeException(e);
         }
     }

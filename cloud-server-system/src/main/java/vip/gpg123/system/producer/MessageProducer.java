@@ -43,6 +43,25 @@ public class MessageProducer {
     }
 
     /**
+     * 发送邮件
+     */
+    public void sendEmail(String actionName, String modelName, boolean result, String to, Boolean sendNotice) {
+        EmailBody emailBody = new EmailBody();
+        emailBody.setAction(actionName);
+        emailBody.setResult(result);
+        emailBody.setTos(new String[]{to});
+        emailBody.setModelName(modelName);
+        // 发送消息到交换机，并指定路由键
+        rabbitTemplate.convertAndSend(emailRoutingKey, emailBody);
+        if (sendNotice) {
+            NoticeBody noticeBody = new NoticeBody();
+            BeanUtils.copyProperties(emailBody, noticeBody);
+            this.sendActionNotice(noticeBody);
+        }
+        System.out.println("发送邮件: " + emailBody);
+    }
+
+    /**
      * 发送站内消息
      *
      * @param noticeBody b
