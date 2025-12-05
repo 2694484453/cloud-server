@@ -44,6 +44,12 @@ public class MessageProducer {
 
     /**
      * 发送邮件
+     *
+     * @param actionName 行为
+     * @param modelName 模块名称
+     * @param result 结果
+     * @param to 发给
+     * @param sendNotice 是否发送站内
      */
     public void sendEmail(String actionName, String modelName, boolean result, String to, Boolean sendNotice) {
         EmailBody emailBody = new EmailBody();

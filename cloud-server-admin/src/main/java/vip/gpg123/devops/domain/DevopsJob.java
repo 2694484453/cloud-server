@@ -7,10 +7,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vip.gpg123.common.core.domain.BaseEntity;
+import vip.gpg123.framework.handler.JsonTypeHandler;
 
 /**
  * 普通任务
@@ -47,19 +49,19 @@ public class DevopsJob extends BaseEntity implements Serializable {
     /**
      * 类型
      */
-    @TableField(value = "type")
+    @TableField(value = "type", typeHandler = JacksonTypeHandler.class)
     private String type;
 
-    @TableField(value = "git")
+    @TableField(value = "git",typeHandler = JacksonTypeHandler.class)
     private Object git;
 
-    @TableField(value = "build")
+    @TableField(value = "build",typeHandler = JacksonTypeHandler.class)
     private Object build;
 
-    @TableField(value = "push")
+    @TableField(value = "push",typeHandler = JacksonTypeHandler.class)
     private Object push;
 
-    @TableField(value = "deploy")
+    @TableField(value = "deploy",typeHandler = JacksonTypeHandler.class)
     private Object deploy;
 
     /**

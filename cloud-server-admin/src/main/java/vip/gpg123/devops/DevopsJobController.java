@@ -1,6 +1,5 @@
 package vip.gpg123.devops;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -13,7 +12,6 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +27,6 @@ import vip.gpg123.devops.mapper.DevopsJobMapper;
 import vip.gpg123.devops.service.DevopsJobService;
 import vip.gpg123.devops.service.DevopsTaskBuildService;
 import vip.gpg123.devops.service.DevopsTaskGitService;
-import vip.gpg123.devops.vo.DevopsVo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -156,35 +153,15 @@ public class DevopsJobController extends BaseController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "新增")
-    public AjaxResult add(@RequestParam(value = "jobName", required = false) String jobName,
-                          @RequestParam(value = "nameSpace", required = false) String nameSpace,
-                          @RequestBody DevopsVo devopsVo) {
-        boolean isGitSaved = false;
-        boolean isBuildSaved = false;
-        nameSpace = StrUtil.isBlank(nameSpace) ? "default" : nameSpace;
-        // 解析仓库
-        if (ObjectUtil.isNotNull(devopsVo.getGit())) {
-            // 执行保存
-            isGitSaved = devopsTaskGitService.save(devopsVo.getGit());
+    public AjaxResult add(@RequestBody DevopsJob devopsJob) {
+        if (StrUtil.isBlank(devopsJob.getJobName())) {
+            return AjaxResult.error("名称不能为空");
         }
-        // 解析构建
-        if (ObjectUtil.isNotNull(devopsVo.getBuild())) {
-            // 执行保存
-            isBuildSaved = devopsTaskBuildService.save(devopsVo.getBuild());
-        }
-        DevopsJob devopsJob = new DevopsJob();
-        BeanUtils.copyProperties(devopsVo, devopsJob);
         devopsJob.setCreateBy(String.valueOf(getUserId()));
-        devopsJob.setCreateTime(DateUtil.date());
-        boolean save = devopsJobService.save(devopsJob);
+        devopsJob.setCreateTime(new Date());
+        boolean result = devopsJobService.save(devopsJob);
         // 执行创建
-        Job job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).create();
-        if (ObjectUtil.isNotNull(job)) {
-            String jsonStr = JSONUtil.toJsonStr(job);
-            devopsJob.setContent(JSONUtil.formatJsonStr(jsonStr));
-            devopsJobService.updateById(devopsJob);
-        }
-        return AjaxResult.success("操作成功", job);
+        return result ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
     }
 
     /**

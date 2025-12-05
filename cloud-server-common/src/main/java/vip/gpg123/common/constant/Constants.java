@@ -174,4 +174,12 @@ public class Constants
      */
     public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
             "org.springframework", "org.apache", "vip.gpg123.common.utils.file", "vip.gpg123.common.config", "vip.gpg123.generator" };
+
+
+    public static final String ADD_ACTION = "新增";
+
+    public static final String EDIT_ACTION = "修改";
+
+    public static final String DELETE_ACTION = "删除";
+
 }

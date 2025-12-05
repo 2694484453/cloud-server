@@ -9,10 +9,10 @@
             <result property="jobName" column="job_name" />
             <result property="labels" column="labels" />
             <result property="type" column="type" />
-            <result property="git" column="git" typeHandler="vip.gpg123.framework.handler.JsonTypeHandler"/>
-            <result property="build" column="build" typeHandler="vip.gpg123.framework.handler.JsonTypeHandler"/>
-            <result property="push" column="push" typeHandler="vip.gpg123.framework.handler.JsonTypeHandler"/>
-            <result property="deploy" column="deploy" typeHandler="vip.gpg123.framework.handler.JsonTypeHandler"/>
+            <result property="git" column="git" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+            <result property="build" column="build" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+            <result property="push" column="push" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+            <result property="deploy" column="deploy" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
             <result property="status" column="status" />
             <result property="description" column="description" />
             <result property="createBy" column="create_by" />
