@@ -30,4 +30,11 @@ public class K8sConfigTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    public void test1() {
+        String name = "test1-job";
+        boolean res = K8sUtil.checkResourceName(name);
+        System.out.println(res);
+    }
 }

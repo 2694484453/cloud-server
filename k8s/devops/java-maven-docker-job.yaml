@@ -1,0 +1,129 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-job-demo
+  namespace: devops
+spec:
+  #backoffLimit: 1
+  template:
+    metadata:
+      name: my-job-demo
+    spec:
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 8.8.8.8
+          - 114.114.114.114
+      initContainers:
+        - name: git
+          image: alpine/git:v2.49.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GIT_NAME
+              value: "cloud-server"
+            - name: GIT_URL
+              value: "https://codeup.aliyun.com/63b19ef08de0fe7a6554f8c1/cloud-platform/cloud-server.git"
+            - name: GIT_BRANCH
+              value: "master"
+          command: [ "/bin/sh", "-c", "/git-clone.sh" ]
+          volumeMounts:
+            - mountPath: "/home"
+              name: data
+            - mountPath: "/root/.git-credentials"
+              name: git-cred
+            - mountPath: "/git-clone.sh"
+              name: shell
+              subPath: git-clone.sh
+      containers:
+        - name: my-job-demo
+          image: registry.cn-hangzhou.aliyuncs.com/gpg_dev/docker-java8-maven
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GIT_NAME
+              value: "cloud-server"
+            - name: GIT_URL
+              value: "https://codeup.aliyun.com/63b19ef08de0fe7a6554f8c1/cloud-platform/cloud-server.git"
+            - name: GIT_BRANCH
+              value: "master"
+          command: [ "/bin/sh", "-c", "/maven-package.sh" ]
+          volumeMounts:
+            - mountPath: "/home"
+              name: data
+            - mountPath: "/root/.m2"
+              name: maven
+            - mountPath: "/maven-package.sh"
+              name: shell
+              subPath: maven-package.sh
+        - name: docker-build
+          image: docker:latest
+          env:
+            - name: GIT_NAME
+              value: "cloud-server"
+            - name: IMAGE_NAME
+              value: "registry.cn-hangzhou.aliyuncs.com/gpg_dev/cloud-server"
+            - name: IMAGE_VERSION
+              value: "demo"
+          command: [ "/bin/sh", "-c", "/docker-build.sh" ]
+          volumeMounts:
+            - mountPath: "/run/docker.sock"
+              name: docker-sock
+            - mountPath: "/usr/local/bin/docker"
+              name: docker-cli
+            - mountPath: "/home"
+              name: data
+            - mountPath: "/docker-build.sh"
+              name: shell
+              subPath: docker-build.sh
+        - name: docker-push
+          image: docker:latest
+          env:
+            - name: GIT_NAME
+              value: "cloud-server"
+            - name: IMAGE_NAME
+              value: "registry.cn-hangzhou.aliyuncs.com/gpg_dev/cloud-server"
+            - name: IMAGE_VERSION
+              value: "demo"
+          command: [ "/bin/sh", "-c", "/docker-push.sh" ]
+          volumeMounts:
+            - mountPath: "/run/docker.sock"
+              name: docker-sock
+            - mountPath: "/usr/bin/docker"
+              name: docker-cli
+            - mountPath: "/root/.docker/config.json"
+              name: docker-auth
+            - mountPath: "/docker-push.sh"
+              name: shell
+              subPath: docker-push.sh
+      volumes:
+        - name: shell
+          configMap:
+            name: shell-cm
+            items:
+              - key: git-clone.sh
+                path: "git-clone.sh"
+              - key: maven-package.sh
+                path: "maven-package.sh"
+              - key: docker-build.sh
+                path: "docker-build.sh"
+              - key: docker-push.sh
+                path: "docker-push.sh"
+            defaultMode: 0755
+        - name: maven
+          hostPath:
+            path: "/root/.m2"
+        - name: docker-sock
+          hostPath:
+            path: "/run/docker.sock"
+        - name: docker-cli
+          hostPath:
+            path: "/usr/bin/docker"
+        - name: docker-auth
+          hostPath:
+            path: "/root/.docker/config.json"
+        - name: git-cred
+          hostPath:
+            path: "/root/.git-credentials"
+        - name: data
+          emptyDir:
+            sizeLimit: 1Gi
+      restartPolicy: OnFailure

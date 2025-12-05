@@ -19,8 +19,7 @@ import vip.gpg123.git.mapper.GitCodeSpaceMapper;
 import org.springframework.stereotype.Service;
 import vip.gpg123.git.service.GitRepoService;
 import vip.gpg123.git.service.GitTokenService;
-import vip.gpg123.system.consumer.NoticeConsumer;
-import vip.gpg123.system.producer.MessageProducer;
+import vip.gpg123.amqp.producer.MessageProducer;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;

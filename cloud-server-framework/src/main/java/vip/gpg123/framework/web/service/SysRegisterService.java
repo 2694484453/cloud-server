@@ -1,12 +1,9 @@
 package vip.gpg123.framework.web.service;
 
-import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.constant.CacheConstants;
-import vip.gpg123.common.constant.Constants;
 import vip.gpg123.common.constant.UserConstants;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.domain.model.EmailBody;
@@ -14,11 +11,9 @@ import vip.gpg123.common.core.domain.model.RegisterBody;
 import vip.gpg123.common.core.redis.RedisCache;
 import vip.gpg123.common.exception.user.CaptchaException;
 import vip.gpg123.common.exception.user.CaptchaExpireException;
-import vip.gpg123.common.utils.MessageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.framework.manager.factory.AsyncFactory;
 import vip.gpg123.system.producer.MessageProducer;
 import vip.gpg123.system.service.ISysConfigService;
 import vip.gpg123.system.service.ISysUserService;

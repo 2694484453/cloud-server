@@ -1,4 +1,4 @@
-package vip.gpg123.system.consumer;
+package vip.gpg123.amqp.consumer;
 
 import cn.hutool.core.util.ArrayUtil;
 import lombok.extern.slf4j.Slf4j;

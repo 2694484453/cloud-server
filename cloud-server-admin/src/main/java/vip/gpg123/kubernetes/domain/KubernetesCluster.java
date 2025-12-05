@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,7 +23,7 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value ="kubernetes_cluster")
 @Data
-public class KubernetesCluster extends BaseEntity {
+public class KubernetesCluster extends BaseEntity implements Serializable {
     /**
      * 主键
      */
@@ -52,6 +54,12 @@ public class KubernetesCluster extends BaseEntity {
      */
     @TableField(value = "config")
     private String config;
+
+    /**
+     * 类型
+     */
+    @TableField(value = "type")
+    private String type;
 
     /**
      * 状态

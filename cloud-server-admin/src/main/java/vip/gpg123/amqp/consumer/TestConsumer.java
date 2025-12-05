@@ -1,4 +1,4 @@
-package vip.gpg123.system.consumer;
+package vip.gpg123.amqp.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;

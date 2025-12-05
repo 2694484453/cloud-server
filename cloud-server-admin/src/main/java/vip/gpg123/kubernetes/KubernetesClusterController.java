@@ -61,11 +61,13 @@ public class KubernetesClusterController extends BaseController {
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
     public AjaxResult list(@RequestParam(value = "clusterName", required = false) String clusterName,
-                           @RequestParam(value = "status", required = false) String status) {
+                           @RequestParam(value = "status", required = false) String status,
+                           @RequestParam(value = "isPublic", required = false) boolean isPublic) {
         List<KubernetesCluster> list = kubernetesClusterService.list(new LambdaQueryWrapper<KubernetesCluster>()
                 .like(StrUtil.isNotBlank(clusterName), KubernetesCluster::getClusterName, clusterName)
                 .eq(StrUtil.isNotBlank(status), KubernetesCluster::getStatus, status)
                 .eq(KubernetesCluster::getCreateBy, getUserId())
+                .eq(isPublic, KubernetesCluster::getType, "public")
                 .orderByDesc(KubernetesCluster::getCreateTime)
         );
         return AjaxResult.success(list);
@@ -211,15 +213,15 @@ public class KubernetesClusterController extends BaseController {
         });
         File file = FileUtil.createTempFile();
         try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
-            K8sUtil.exportToFile(config,file.getPath());
+            K8sUtil.exportToFile(config, file.getPath());
             // 设置响应
             response.setContentType("application/x-yaml");
             response.setHeader("Content-Disposition",
                     "attachment; filename=\"config\"");
             response.setCharacterEncoding("UTF-8");
             // 2. 带缓冲的流复制
-            IoUtil.copy(FileUtil.getInputStream(file),out);
-        } catch(Exception e) {
+            IoUtil.copy(FileUtil.getInputStream(file), out);
+        } catch (Exception e) {
             log.error("文件导出失败：{}", e.getMessage());
             response.sendError(500, "文件导出失败：" + e.getMessage());
         } finally {

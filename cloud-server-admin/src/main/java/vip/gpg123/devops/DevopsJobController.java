@@ -3,16 +3,13 @@ package vip.gpg123.devops;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
-import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +32,6 @@ import vip.gpg123.devops.service.DevopsTaskGitService;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * @author gaopuguang
@@ -63,7 +59,6 @@ public class DevopsJobController extends BaseController {
     private DevopsTaskBuildService devopsTaskBuildService;
 
     private static final String nameSpace = "devops";
-
 
     /**
      * 概览
@@ -162,13 +157,36 @@ public class DevopsJobController extends BaseController {
     @ApiOperation(value = "新增")
     public AjaxResult add(@RequestBody DevopsJob devopsJob) {
         if (StrUtil.isBlank(devopsJob.getJobName())) {
-            return AjaxResult.error("名称不能为空");
+            return AjaxResult.error("任务名称不能为空");
+        }
+        if (StrUtil.isBlank(devopsJob.getContextName())) {
+            return AjaxResult.error("contextName不能为空");
         }
         devopsJob.setCreateBy(String.valueOf(getUserId()));
         devopsJob.setCreateTime(new Date());
         boolean result = devopsJobService.save(devopsJob);
         // 执行创建
         return result ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
+    }
+
+    /**
+     * 修改
+     * @param devopsJob d
+     * @return r
+     */
+    @PutMapping("/edit")
+    public AjaxResult edit(@RequestBody DevopsJob devopsJob) {
+        if (StrUtil.isBlank(devopsJob.getJobName())) {
+            return AjaxResult.error("任务名称不能为空");
+        }else if (!K8sUtil.checkResourceName(devopsJob.getJobName())) {
+            return AjaxResult.error("任务名称不合规范");
+        }
+        if (StrUtil.isBlank(devopsJob.getContextName())) {
+            return AjaxResult.error("contextName不能为空");
+        }
+        devopsJob.setUpdateBy(String.valueOf(getUserId()));
+        devopsJob.setUpdateTime(new Date());
+        return devopsJobService.updateById(devopsJob) ? AjaxResult.success("更新成功") : AjaxResult.error("更新失败");
     }
 
     /**

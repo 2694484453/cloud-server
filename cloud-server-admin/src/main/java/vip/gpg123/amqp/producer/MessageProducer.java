@@ -1,4 +1,4 @@
-package vip.gpg123.system.producer;
+package vip.gpg123.amqp.producer;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
@@ -13,9 +13,9 @@ public class MessageProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    private static final String emailRoutingKey = "cloud-server-message-email";
+    private static final String emailRoutingKey = "cloud-server-email";
 
-    private static final String actionNoticeRoutingKey = "cloud-server-message-notice";
+    private static final String actionNoticeRoutingKey = "cloud-server-notice";
 
     /**
      * 发送邮件

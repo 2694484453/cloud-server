@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
+import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
 import io.fabric8.kubernetes.client.utils.Serialization;
 import io.fabric8.openshift.client.OpenShiftClient;
 
@@ -184,5 +185,13 @@ public class K8sUtil {
         return configFile;
     }
 
+    /**
+     * 检查资源名称
+     * @param resourceName r
+     * @return r
+     */
+    public static boolean checkResourceName(String resourceName) {
+        return KubernetesResourceUtil.isValidName(resourceName);
+    }
 }
 
