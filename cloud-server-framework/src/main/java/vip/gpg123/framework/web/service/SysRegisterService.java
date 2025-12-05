@@ -14,7 +14,7 @@ import vip.gpg123.common.exception.user.CaptchaExpireException;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.system.producer.MessageProducer;
+import vip.gpg123.framework.message.MessageProducer;
 import vip.gpg123.system.service.ISysConfigService;
 import vip.gpg123.system.service.ISysUserService;
 

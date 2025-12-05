@@ -11,15 +11,14 @@ public class DevopsProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    private static final String emailRoutingKey = "cloud-server-devops";
-
-    private static final String actionNoticeRoutingKey = "cloud-server-devops-action";
+    private static final String routingKey = "cloud-server-devops";
 
     /**
      * 创建job
+     *
      * @param devopsJob dev
      */
-    public void createDevopsJob(DevopsJob devopsJob){
-        rabbitTemplate.convertAndSend(emailRoutingKey, devopsJob);
+    public void createDevopsJob(DevopsJob devopsJob) {
+        rabbitTemplate.convertAndSend(routingKey, devopsJob);
     }
 }

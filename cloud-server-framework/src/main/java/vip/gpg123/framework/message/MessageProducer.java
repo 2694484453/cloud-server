@@ -1,4 +1,4 @@
-package vip.gpg123.amqp.producer;
+package vip.gpg123.framework.message;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;

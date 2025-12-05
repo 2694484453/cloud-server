@@ -48,14 +48,14 @@ public class RabbitMQConfig {
      *
      * @return r
      */
-    @Bean(name = "emailQueue")
+    @Bean(name = emailQueue)
     public Queue emailQueue() {
         return new Queue(emailQueue, true); // true表示持久化队列
     }
 
     // 绑定队列到交换机
     @Bean(name = "bindingEmail")
-    public Binding bindingEmail(@Qualifier(value = "emailQueue") Queue queue, @Qualifier(value = "cloudServerExchange") DirectExchange exchange) {
+    public Binding bindingEmail(@Qualifier(value = emailQueue) Queue queue, @Qualifier(value = exchange) DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
@@ -64,13 +64,13 @@ public class RabbitMQConfig {
      *
      * @return r
      */
-    @Bean(name = "noticeQueue")
+    @Bean(name = noticeQueue)
     public Queue noticeQueue() {
         return new Queue(noticeQueue, true); // true表示持久化队列
     }
 
     @Bean(name = "bindingNotice")
-    public Binding bindingNotice(@Qualifier(value = "noticeQueue") Queue queue, @Qualifier(value = "cloudServerExchange") DirectExchange exchange) {
+    public Binding bindingNotice(@Qualifier(value = noticeQueue) Queue queue, @Qualifier(value = exchange) DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
@@ -79,18 +79,18 @@ public class RabbitMQConfig {
      *
      * @return r
      */
-    @Bean(name = "devopsQueue")
+    @Bean(name = devopsQueue)
     public Queue devopsQueue() {
         return new Queue(devopsQueue, true);
     }
 
     @Bean(name = "bindingDevops")
-    public Binding bindingDevops(@Qualifier(value = "devopsQueue") Queue queue, @Qualifier(value = "cloudServerExchange") DirectExchange exchange) {
+    public Binding bindingDevops(@Qualifier(value = devopsQueue) Queue queue, @Qualifier(value = exchange) DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
     // 定义直连交换机
-    @Bean(name = "cloudServerExchange")
+    @Bean(name = exchange)
     public DirectExchange messageExchange() {
         return new DirectExchange(exchange);
     }

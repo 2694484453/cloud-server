@@ -9,7 +9,7 @@ import vip.gpg123.kubernetes.domain.KubernetesCluster;
 import vip.gpg123.kubernetes.service.KubernetesClusterService;
 import vip.gpg123.kubernetes.mapper.KubernetesClusterMapper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.amqp.producer.MessageProducer;
+import vip.gpg123.framework.message.MessageProducer;
 
 import java.io.Serializable;
 import java.util.TimerTask;
