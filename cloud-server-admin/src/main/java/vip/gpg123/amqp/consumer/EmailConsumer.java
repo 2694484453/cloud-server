@@ -24,7 +24,7 @@ public class EmailConsumer {
      *
      * @param email 消息
      */
-    @RabbitListener(queues = "cloud-server-message-email")
+    @RabbitListener(queues = "cloud-server-email")
     public void receive(EmailBody email) {
         // 接收人
         String[] tos = email.getTos();

@@ -14,7 +14,7 @@ public class DevopsConsumer {
      *
      * @param devopsJob job
      */
-    @RabbitListener(queues = "devopsQueue")
+    @RabbitListener(queues = "cloud-server-devops")
     public void receiveDevopsJob(DevopsJob devopsJob) {
         Git git = new Git();
         BeanUtils.copyProperties(devopsJob, git);

@@ -25,7 +25,7 @@ public class NoticeConsumer {
      *
      * @param noticeBody s
      */
-    @RabbitListener(queues = "cloud-server-message-notice")
+    @RabbitListener(queues = "cloud-server-notice")
     public void receive(NoticeBody noticeBody) {
         SysNotice sysNotice = new SysNotice();
         sysNotice.setCreateBy("system");

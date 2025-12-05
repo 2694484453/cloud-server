@@ -44,6 +44,15 @@ public class RabbitMQConfig {
     }
 
     /**
+     * cloud-server-exchange
+     * @return r
+     */
+    @Bean(name = exchange)
+    public DirectExchange exchange() {
+        return new DirectExchange(exchange);
+    }
+
+    /**
      * 邮件
      *
      * @return r
@@ -53,9 +62,8 @@ public class RabbitMQConfig {
         return new Queue(emailQueue, true); // true表示持久化队列
     }
 
-    // 绑定队列到交换机
     @Bean(name = "bindingEmail")
-    public Binding bindingEmail(@Qualifier(value = emailQueue) Queue queue, @Qualifier(value = exchange) DirectExchange exchange) {
+    public Binding bindingEmail(@Qualifier(value = emailQueue) Queue queue, @Qualifier(RabbitMQConfig.exchange) DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
@@ -70,7 +78,7 @@ public class RabbitMQConfig {
     }
 
     @Bean(name = "bindingNotice")
-    public Binding bindingNotice(@Qualifier(value = noticeQueue) Queue queue, @Qualifier(value = exchange) DirectExchange exchange) {
+    public Binding bindingNotice(@Qualifier(value = noticeQueue) Queue queue, @Qualifier(RabbitMQConfig.exchange) DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
@@ -85,15 +93,11 @@ public class RabbitMQConfig {
     }
 
     @Bean(name = "bindingDevops")
-    public Binding bindingDevops(@Qualifier(value = devopsQueue) Queue queue, @Qualifier(value = exchange) DirectExchange exchange) {
+    public Binding bindingDevops(@Qualifier(value = devopsQueue) Queue queue, @Qualifier(RabbitMQConfig.exchange) DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
-    // 定义直连交换机
-    @Bean(name = exchange)
-    public DirectExchange messageExchange() {
-        return new DirectExchange(exchange);
-    }
+
 
 
 }
