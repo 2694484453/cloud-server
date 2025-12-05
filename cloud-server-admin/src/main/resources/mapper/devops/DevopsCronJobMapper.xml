@@ -32,8 +32,8 @@
             <if test="qw.id != null">
                 and id = #{qw.id}
             </if>
-            <if test="qw.spaceName != null and qw.spaceName !=''">
-                and space_name like concat('%',#{qw.spaceName},'%')
+            <if test="qw.cronJobName != null and qw.cronJobName !=''">
+                and cron_job_name like concat('%',#{qw.cronJobName},'%')
             </if>
             <if test="qw.type != null and qw.type !=''">
                 and type = #{qw.type}

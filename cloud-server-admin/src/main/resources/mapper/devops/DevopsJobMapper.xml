@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="vip.gpg123.devops.domain.DevopsJob">
             <id property="id" column="id" />
-            <result property="name" column="name" />
+            <result property="jobName" column="job_name" />
             <result property="labels" column="labels" />
             <result property="type" column="type" />
             <result property="env" column="env" />
