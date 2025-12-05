@@ -19,7 +19,7 @@
             <result property="createTime" column="create_time" />
             <result property="updateBy" column="update_by" />
             <result property="updateTime" column="update_time" />
-            <result property="content" column="content" />
+            <result property="contextName" column="content_name" />
     </resultMap>
 
     <sql id="Base_Column_List">

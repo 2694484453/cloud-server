@@ -7,9 +7,12 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.fabric8.kubernetes.api.model.ListOptions;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
+import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.devops.domain.DevopsJob;
 import vip.gpg123.devops.mapper.DevopsJobMapper;
@@ -31,6 +35,7 @@ import vip.gpg123.devops.service.DevopsTaskGitService;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author gaopuguang
@@ -56,6 +61,8 @@ public class DevopsJobController extends BaseController {
 
     @Autowired
     private DevopsTaskBuildService devopsTaskBuildService;
+
+    private static final String nameSpace = "devops";
 
 
     /**
@@ -167,17 +174,36 @@ public class DevopsJobController extends BaseController {
     /**
      * 执行
      *
-     * @param jobName 名称
+     * @param devopsJob dev
      * @return r
      */
-    @PostMapping("/run")
+    @PostMapping("/exec")
     @ApiOperation(value = "执行")
-    public AjaxResult run(@RequestParam("jobName") String jobName,
-                          @RequestParam("nameSpace") String nameSpace) {
-        //
-        client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).scale(0);
-        //
-        client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).scale(1);
+    public AjaxResult run(@RequestBody DevopsJob devopsJob) {
+        if (StrUtil.isBlank(devopsJob.getJobName())) {
+            return AjaxResult.error("任务名称不能为空");
+        }
+        if (StrUtil.isBlank(devopsJob.getContextName())) {
+            return AjaxResult.error("contextName不能为空");
+        }
+        // 查询集群是否存在任务
+        try {
+            KubernetesClient kubernetesClient = K8sUtil.createKubernetesClient(devopsJob.getContextName());
+            Job job = kubernetesClient.batch().v1().jobs().inNamespace(nameSpace).withName(devopsJob.getJobName()).get();
+            if (ObjectUtil.isNotNull(job)) {
+                kubernetesClient.batch().v1().jobs().inNamespace(nameSpace).withName(devopsJob.getJobName()).scale(1);
+            } else {
+                // 重新创建资源
+                Job newJob = new Job();
+                ObjectMeta meta = job.getMetadata();
+                meta.setNamespace(nameSpace);
+                meta.setName(devopsJob.getJobName());
+                newJob.setMetadata(meta);
+                kubernetesClient.batch().v1().jobs().create(newJob);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return AjaxResult.success("操作成功", true);
     }
 

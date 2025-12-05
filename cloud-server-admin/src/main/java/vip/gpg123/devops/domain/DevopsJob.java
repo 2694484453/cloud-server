@@ -105,8 +105,8 @@ public class DevopsJob extends BaseEntity implements Serializable {
     /**
      * 配置内容
      */
-    @TableField(value = "content")
-    private String content;
+    @TableField(value = "context_name")
+    private String contextName;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

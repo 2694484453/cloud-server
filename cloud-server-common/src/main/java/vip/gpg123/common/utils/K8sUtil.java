@@ -43,18 +43,54 @@ public class K8sUtil {
         }
     }
 
+    public static Config getConfig(String currentContext) {
+        try {
+            String content = FileUtil.readString(configFile, StandardCharsets.UTF_8);
+            return Config.fromKubeconfig(content);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从文件获取对象
+     *
+     * @param configFilePath path
+     * @return r
+     * @throws IOException e
+     */
     public static io.fabric8.kubernetes.api.model.Config getConfigFromFile(String configFilePath) throws IOException {
         return KubeConfigUtils.parseConfigFromString(FileUtil.readUtf8String(configFilePath));
     }
 
+    /**
+     * 从字符串获取对象
+     *
+     * @param content c
+     * @return r
+     * @throws IOException e
+     */
     public static io.fabric8.kubernetes.api.model.Config getConfigFromStr(String content) throws IOException {
         return KubeConfigUtils.parseConfigFromString(content);
     }
 
+    /**
+     * 获取默认配置
+     *
+     * @return r
+     * @throws IOException e
+     */
     public static io.fabric8.kubernetes.api.model.Config getDefaultConfig() throws IOException {
         return KubeConfigUtils.parseConfigFromString(FileUtil.readUtf8String(configFile));
     }
 
+    /**
+     * 把对象转换为配置字符串
+     *
+     * @param config c
+     * @return r
+     * @throws IOException e
+     */
     public static String configBeanToStr(Config config) throws IOException {
         return Serialization.yamlMapper().writeValueAsString(config);
     }
@@ -76,18 +112,15 @@ public class K8sUtil {
     }
 
     /**
-     * 上下文模式
+     * 传入currentContext
      *
-     * @param context c
+     * @param currentContext c
      * @return r
      */
-    public static KubernetesClient createKubernetesClient(String context) {
+    public static KubernetesClient createKubernetesClient(String currentContext) {
         try {
             // 设置上下文
-            NamedContext namedContext = new NamedContext();
-            namedContext.setName(context);
-            Config config = Config.fromKubeconfig(FileUtil.readString(configFile, StandardCharsets.UTF_8));
-            config.setCurrentContext(namedContext);
+            Config config = Config.fromKubeconfig(currentContext, FileUtil.readString(configFile, StandardCharsets.UTF_8), defaultConfigFilePath());
             return new KubernetesClientBuilder()
                     .withConfig(config)
                     .build();
@@ -95,7 +128,6 @@ public class K8sUtil {
             throw new RuntimeException(e);
         }
     }
-
 
     /**
      * openshift客户端
@@ -152,10 +184,5 @@ public class K8sUtil {
         return configFile;
     }
 
-
-    public static void main(String[] args) {
-        Config config = getConfig();
-        System.out.println(config);
-    }
 }
 
