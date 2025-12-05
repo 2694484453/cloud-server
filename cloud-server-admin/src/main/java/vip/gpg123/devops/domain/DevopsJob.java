@@ -9,14 +9,17 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 普通任务
  * @TableName devops_job
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="devops_job")
 @Data
-public class DevopsJob implements Serializable {
+public class DevopsJob extends BaseEntity implements Serializable {
     /**
      * 主键
      */
@@ -47,11 +50,17 @@ public class DevopsJob implements Serializable {
     @TableField(value = "type")
     private String type;
 
-    /**
-     * 环境变量
-     */
-    @TableField(value = "env")
-    private String env;
+    @TableField(value = "git")
+    private Object git;
+
+    @TableField(value = "build")
+    private Object build;
+
+    @TableField(value = "push")
+    private Object push;
+
+    @TableField(value = "deploy")
+    private Object deploy;
 
     /**
      * 状态

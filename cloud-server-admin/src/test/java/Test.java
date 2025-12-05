@@ -1,7 +1,9 @@
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.setting.yaml.YamlUtil;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,7 @@ import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -112,5 +115,15 @@ public class Test {
         request.header("Content-Type", "application/json");
         HttpResponse response = request.execute();
         System.out.println(response.body());
+    }
+
+    @org.junit.Test
+    public void t2() {
+        HttpRequest request = HttpUtil.createRequest(cn.hutool.http.Method.GET,"https://docs-text.gpg123.vip/mkdocs.yml");
+        request.charset(StandardCharsets.UTF_8);
+        HttpResponse response = request.execute();
+        InputStream inputStream = IoUtil.toStream(response.body(),StandardCharsets.UTF_8);
+        Map map = YamlUtil.load(inputStream, Map.class);
+        System.out.println(map);
     }
 }
