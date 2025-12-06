@@ -6,4 +6,4 @@ spring:
     username: admin
     password: admin
     #虚拟主机
-    virtual-host: /
+    virtual-host: cloud-server
