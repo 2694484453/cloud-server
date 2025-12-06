@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.amqp.producer.PrometheusProducer;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.PageDomain;
@@ -59,6 +60,9 @@ public class PrometheusExporterController extends BaseController {
 
     @Autowired
     private PrometheusApi prometheusApi;
+
+    @Autowired
+    private PrometheusProducer prometheusProducer;
 
     @GetMapping("/types")
     public AjaxResult types() {
@@ -242,24 +246,7 @@ public class PrometheusExporterController extends BaseController {
      */
     @GetMapping("/syncStatus")
     public AjaxResult syncStatus() {
-        // 查询数据库中
-        List<PrometheusExporter> prometheusExporterList = prometheusExporterService.list();
-        Map<String, PrometheusExporter> map = prometheusExporterList.stream().collect(Collectors.toMap(PrometheusExporter::getJobName, item -> item));
-        // 查询状态prometheus
-        PrometheusTargetResponse response = prometheusApi.targets("");
-        List<ActiveTarget> list = Convert.toList(ActiveTarget.class, JSONUtil.parseArray(response.getData().getActiveTargets()));
-        // 循环
-        list.forEach(target -> {
-            JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
-            String jobName = object.getStr("job");
-            String status = target.getHealth();
-            if (map.containsKey(jobName)) {
-                PrometheusExporter exporter = map.get(jobName);
-                exporter.setStatus(status);
-                exporter.setGlobalUrl(target.getGlobalUrl());
-                prometheusExporterService.updateById(exporter);
-            }
-        });
+        prometheusProducer.syncStatus();
         return AjaxResult.success();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,19 +15,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    private static final String routingKey = "cloud-server";
+    public static final String routingKey = "cloud-server";
 
-    private static final String exchange = "cloud-server-exchange";
+    public static final String exchange = "cloud-server-exchange";
 
-    private static final String testExchange = "test-exchange";
+    public static final String testExchange = "test-exchange";
 
-    private static final String testQueue = "test-queue";
+    public static final String testQueue = "test-queue";
 
-    private static final String emailQueue = "cloud-server-email";
+    public static final String emailQueue = "cloud-server-email";
 
-    private static final String noticeQueue = "cloud-server-notice";
+    public static final String noticeQueue = "cloud-server-notice";
 
-    private static final String devopsQueue = "cloud-server-devops";
+    public static final String devopsQueue = "cloud-server-devops";
+
+    public static final String prometheusQueue = "cloud-server-prometheus";
 
     /**
      * 测试
@@ -97,7 +100,18 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
+    /**
+     * prometheus
+     * @return r
+     */
+    @Bean(name = prometheusQueue)
+    public Queue prometheusQueue() {
+        return new Queue(prometheusQueue, true);
+    }
 
-
+    @Bean(name = "buildingPrometheus")
+    public Binding bindingPrometheus(@Qualifier(value = prometheusQueue) Queue queue, @Qualifier(RabbitMQConfig.exchange) DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+    }
 
 }

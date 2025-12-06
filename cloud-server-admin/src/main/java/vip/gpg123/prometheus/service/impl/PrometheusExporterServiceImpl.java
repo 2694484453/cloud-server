@@ -1,12 +1,10 @@
 package vip.gpg123.prometheus.service.impl;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import vip.gpg123.amqp.producer.PrometheusProducer;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.core.domain.model.LoginUser;
 import vip.gpg123.common.utils.SecurityUtils;
@@ -18,9 +16,6 @@ import org.springframework.stereotype.Service;
 import vip.gpg123.framework.message.MessageProducer;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TimerTask;
 
 /**
@@ -30,6 +25,9 @@ import java.util.TimerTask;
  */
 @Service
 public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporterMapper, PrometheusExporter> implements PrometheusExporterService {
+
+    @Autowired
+    private PrometheusProducer prometheusProducer;
 
     @Autowired
     private MessageProducer messageProducer;
@@ -51,19 +49,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
             @Override
             public void run() {
                 // 配置文件位置
-                String filePath = exporterPath + "/" + entity.getExporterType() + "/" + entity.getJobName() + ".json";
-                JSONArray jsonArray = new JSONArray();
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("labels", new HashMap<String, String>() {{
-                    put("job", entity.getJobName());
-                }});
-                jsonObject.put("targets", new ArrayList<String>() {{
-                    add(entity.getTargets());
-                }});
-                jsonArray.add(jsonObject);
-                String jsonFormat = JSONUtil.toJsonStr(jsonArray);
-                // 写入
-                FileUtil.writeString(jsonFormat, filePath, StandardCharsets.UTF_8);
+                prometheusProducer.createExporterFile(entity);
                 // 发送邮件
                 EmailBody emailBody = new EmailBody();
                 emailBody.setTos(new String[]{loginUser.getUser().getEmail()});
