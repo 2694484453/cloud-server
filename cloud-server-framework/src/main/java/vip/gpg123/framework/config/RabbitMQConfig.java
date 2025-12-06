@@ -33,12 +33,12 @@ public class RabbitMQConfig {
      *
      * @return r
      */
-    @Bean(name = "testQueue")
+    @Bean(name = testQueue)
     public Queue testQueue() {
         return new Queue(testQueue, true);
     }
 
-    @Bean(name = "testExchange")
+    @Bean(name = testExchange)
     public DirectExchange testExchange() {
         return new DirectExchange(testExchange);
     }
