@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.service.EmailService;
-import vip.gpg123.common.utils.SecurityUtils;
 
 /**
  * 邮件消息处理
