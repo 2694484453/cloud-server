@@ -52,6 +52,7 @@ monitor:
 # ide
 ide:
   path: /home/codespace
+  url: https://code-server.gpg123.vip
 #远程主机
 remote:
   host: tcs.gpg123.vip
