@@ -10,7 +10,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import vip.gpg123.framework.config.RabbitMQConfig;
+import vip.gpg123.amqp.producer.GitProducer;
 import vip.gpg123.git.domain.GitCodeSpace;
 import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.domain.GitToken;
@@ -36,9 +36,9 @@ public class GitConsumer {
     private String url;
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = RabbitMQConfig.gitQueue, durable = "true"),
-            exchange = @Exchange(name = RabbitMQConfig.exchange + "-git"),
-            key = RabbitMQConfig.gitQueue + "-gitClone"
+            value = @Queue(name = GitProducer.gitQueue, durable = "true"),
+            exchange = @Exchange(name = GitProducer.gitExchange),
+            key = "gitClone"
     ))
     public void gitClone(GitCodeSpace entity) {
         // 初始化克隆

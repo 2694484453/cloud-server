@@ -12,7 +12,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import vip.gpg123.framework.config.RabbitMQConfig;
+import vip.gpg123.amqp.producer.PrometheusProducer;
 import vip.gpg123.platform.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
@@ -38,14 +38,10 @@ public class PrometheusConsumer {
     @Value("${monitor.prometheus.exporterPath}")
     private String exporterPath;
 
-    public static final String prometheusQueue = "cloud-server-prometheus";
-
-    public static final String prometheusExchange = "cloud-server-exchange-prometheus";
-
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = prometheusQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = prometheusExchange), // 声明直接交换器
+            value = @Queue(name = PrometheusProducer.prometheusQueue, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = PrometheusProducer.prometheusExchange), // 声明直接交换器
             key = "createExporterFile" // 定义路由键
     ))
     public void createExporterFile(PrometheusExporter prometheusExporter) {
@@ -66,8 +62,8 @@ public class PrometheusConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = prometheusQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = prometheusExchange), // 声明直接交换器
+            value = @Queue(name = PrometheusProducer.prometheusQueue, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = PrometheusProducer.prometheusExchange), // 声明直接交换器
             key = "syncStatus" // 定义路由键
     ))
     public void syncStatus() {
