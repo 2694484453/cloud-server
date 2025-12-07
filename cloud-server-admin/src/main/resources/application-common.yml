@@ -51,7 +51,7 @@ monitor:
     endpoint: https://alertmanager.gpg123.vip
 # ide
 ide:
-  path: /home/ide
+  path: /home/codespace
 #远程主机
 remote:
   host: tcs.gpg123.vip
