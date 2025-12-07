@@ -75,10 +75,8 @@ public class GitCodeSpaceServiceImpl extends ServiceImpl<GitCodeSpaceMapper, Git
                             .eq(GitToken::getType, gitRepo.getType())
                     );
                     if (gitToken != null) {
-                        String path = basePath + File.separator + user.getUserId() + File.separator + entity.getSpaceName();
-                        List<String> list = StrUtil.split(path, "//");
-                        String gitUrl = list.get(0) + "//" + gitToken.getUserName() + ":" + gitToken.getAccessToken() + "@" + list.get(1);
-                        RuntimeUtil.execForStr(StandardCharsets.UTF_8, "cd", path, "&&", "git", "clone", gitUrl);
+                        String path = basePath + File.separator + user.getUserId();
+                        RuntimeUtil.execForStr(StandardCharsets.UTF_8, "cd", path, "&&", "git", "clone", entity.getRepoUrl());
                     }
                 }
             }
