@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import vip.gpg123.CloudServerApplication;
+import vip.gpg123.amqp.consumer.TestConsumer;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.framework.config.RabbitMQConfig;
 
@@ -22,17 +23,17 @@ public class AmqpTest {
     //发送hello world
     @Test
     public void test1() {
-        rabbitTemplate.convertAndSend(RabbitMQConfig.testQueue+"-t1", "hello world");
+        rabbitTemplate.convertAndSend("test-key", "hello world");
     }
 
     @Test
     public void test2() {
-        rabbitTemplate.convertAndSend(RabbitMQConfig.testQueue+"-t2", "hello world");
+        rabbitTemplate.convertAndSend("test-exchange","test-key", "hello world");
     }
 
     @Test
     public void test3() {
-        rabbitTemplate.convertAndSend(RabbitMQConfig.testExchange,"test3", "hello world");
+        rabbitTemplate.convertAndSend(TestConsumer.testExchange+"-t3","test4", "hello world");
     }
 
     @Test

@@ -38,8 +38,16 @@ public class PrometheusConsumer {
     @Value("${monitor.prometheus.exporterPath}")
     private String exporterPath;
 
+    public static final String prometheusQueue = "cloud-server-prometheus";
 
-    @RabbitListener(queues = RabbitMQConfig.prometheusQueue)
+    public static final String prometheusExchange = "cloud-server-exchange-prometheus";
+
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = prometheusQueue, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = prometheusExchange), // 声明直接交换器
+            key = "createExporterFile" // 定义路由键
+    ))
     public void createExporterFile(PrometheusExporter prometheusExporter) {
         // 位置
         String filePath = exporterPath + "/" + prometheusExporter.getExporterType() + "/" + prometheusExporter.getJobName()+".json";
@@ -58,9 +66,9 @@ public class PrometheusConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = RabbitMQConfig.prometheusQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = RabbitMQConfig.exchange), // 声明直接交换器
-            key = RabbitMQConfig.prometheusQueue+"-syncStatus" // 定义路由键
+            value = @Queue(name = prometheusQueue, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = prometheusExchange), // 声明直接交换器
+            key = "syncStatus" // 定义路由键
     ))
     public void syncStatus() {
         // 查询数据库中

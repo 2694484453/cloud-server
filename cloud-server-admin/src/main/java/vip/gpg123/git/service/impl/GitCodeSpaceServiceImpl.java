@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import vip.gpg123.amqp.producer.GitProducer;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.utils.SecurityUtils;
@@ -34,18 +35,13 @@ import java.util.TimerTask;
 @Service
 public class GitCodeSpaceServiceImpl extends ServiceImpl<GitCodeSpaceMapper, GitCodeSpace> implements GitCodeSpaceService {
 
-    @Value("${ide.path}")
-    private String basePath;
-
     @Autowired
     private MessageProducer messageProducer;
 
     @Autowired
-    private GitTokenService gitTokenService;
+    private GitProducer gitProducer;
 
-    @Autowired
-    private GitRepoService gitRepoService;
-
+    private static final String modeName = "git仓库管理";
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -65,20 +61,9 @@ public class GitCodeSpaceServiceImpl extends ServiceImpl<GitCodeSpaceMapper, Git
                 emailBody.setName(entity.getSpaceName());
                 emailBody.setResult(result);
                 emailBody.setTos(new String[]{user.getEmail()});
-                messageProducer.sendEmail(emailBody, true);
-                // 初始化克隆
-                boolean isExist = FileUtil.exist(entity.getSpacePath());
-                if (!isExist) {
-                    GitRepo gitRepo = gitRepoService.getById(entity.getRepoId());
-                    GitToken gitToken = gitTokenService.getOne(new LambdaQueryWrapper<GitToken>()
-                            .eq(GitToken::getCreateBy, user.getUserId())
-                            .eq(GitToken::getType, gitRepo.getType())
-                    );
-                    if (gitToken != null) {
-                        String path = basePath + File.separator + user.getUserId();
-                        RuntimeUtil.execForStr(StandardCharsets.UTF_8, "cd", path, "&&", "git", "clone", entity.getRepoUrl());
-                    }
-                }
+                messageProducer.sendEmail("创建", modeName, result, user.getEmail(), true);
+                //
+                gitProducer.gitClone(entity);
             }
         });
         return result;

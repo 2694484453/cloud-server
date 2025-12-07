@@ -7,25 +7,30 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import vip.gpg123.framework.config.RabbitMQConfig;
 
 @Component
 public class TestConsumer {
 
-    @RabbitListener(queues = RabbitMQConfig.testQueue)
+    public static final String testExchange = "test-exchange";
+
+    public static final String testQueue = "test-queue";
+
+    public static final String testRoutingKey = "test-Key";
+
+    @RabbitListener(queues = testQueue)
     public void test1(String message) {
         System.out.println("接收到了消息1: " + message);
     }
 
-    @RabbitListener(queues = RabbitMQConfig.testQueue)
+    @RabbitListener(queues = testQueue)
     public void test2(String message) {
         System.out.println("接收到了消息2: " + message);
     }
 
     //高级用法：动态声明绑定关系
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = RabbitMQConfig.testQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = RabbitMQConfig.testExchange), // 声明直接交换器
+            value = @Queue(name = testQueue + "-t3", durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = testExchange + "-t3"), // 声明直接交换器
             key = "test3" // 定义路由键
     ))
     public void test3(String message) {

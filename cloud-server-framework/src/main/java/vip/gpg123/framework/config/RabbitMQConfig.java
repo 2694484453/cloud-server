@@ -19,32 +19,14 @@ public class RabbitMQConfig {
 
     public static final String exchange = "cloud-server-exchange";
 
-    public static final String testExchange = "test-exchange";
-
-    public static final String testQueue = "test-queue";
-
     public static final String emailQueue = "cloud-server-email";
 
     public static final String noticeQueue = "cloud-server-notice";
 
     public static final String devopsQueue = "cloud-server-devops";
 
-    public static final String prometheusQueue = "cloud-server-prometheus";
 
-    /**
-     * 测试
-     *
-     * @return r
-     */
-    @Bean(name = testQueue)
-    public Queue testQueue() {
-        return new Queue(testQueue, true);
-    }
-
-    @Bean(name = testExchange)
-    public DirectExchange testExchange() {
-        return new DirectExchange(testExchange);
-    }
+    public static final String gitQueue = "cloud-server-git";
 
     /**
      * cloud-server-exchange
@@ -100,18 +82,5 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
-    /**
-     * prometheus
-     * @return r
-     */
-    @Bean(name = prometheusQueue)
-    public Queue prometheusQueue() {
-        return new Queue(prometheusQueue, true);
-    }
-
-    @Bean(name = "buildingPrometheus")
-    public Binding bindingPrometheus(@Qualifier(value = prometheusQueue) Queue queue, @Qualifier(RabbitMQConfig.exchange) DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
-    }
 
 }
