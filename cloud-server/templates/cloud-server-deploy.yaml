@@ -59,7 +59,7 @@ spec:
             claimName: git-pvc
         - name: codespace
           persistentVolumeClaim:
-            claimName: codespace
+            claimName: codespace-pvc
         - name: prometheus
           persistentVolumeClaim:
             claimName: prometheus-pvc
