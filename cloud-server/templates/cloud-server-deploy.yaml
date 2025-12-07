@@ -46,6 +46,12 @@ spec:
             - mountPath: /home/prometheus
               name: prometheus
               readOnly: false
+            - mountPath: /root/.kube/config
+              name: kube
+              readOnly: false
+            - mountPath: /root/.docker/config.json
+              name: docker-auth
+              readOnly: false
       restartPolicy: Always
       volumes:
         - name: docker-sock
@@ -63,3 +69,9 @@ spec:
         - name: prometheus
           persistentVolumeClaim:
             claimName: prometheus-pvc
+        - name: kube
+          persistentVolumeClaim:
+            claimName: kube-pvc
+        - name: docker-auth
+          persistentVolumeClaim:
+            claimName: docker-auth-pvc

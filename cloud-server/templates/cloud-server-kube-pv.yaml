@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: git-pv
+  name: kube-pv
 spec:
   capacity:
-    storage: 5Gi
+    storage: 1Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/root/.git-credentials"
-    type: FileOrCreate
+    path: "/root/.kube/config"
+    type: File
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: git-pvc
+  name: kube-pvc
 spec:
   accessModes:
     - ReadWriteOnce

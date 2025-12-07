@@ -9,7 +9,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/home/codespace"
-    type: File
+    type: DirectoryOrCreate
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
