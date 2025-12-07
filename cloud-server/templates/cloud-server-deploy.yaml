@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: cloud-server
-          image: registry.cn-hangzhou.aliyuncs.com/gpg_dev/cloud-server:2025-11-16-00-00-01
+          image: registry.cn-hangzhou.aliyuncs.com/gpg_dev/cloud-server:2025-12-08-00-00-14
           imagePullPolicy: IfNotPresent
           env:
             - name: APP_SUFFIX
