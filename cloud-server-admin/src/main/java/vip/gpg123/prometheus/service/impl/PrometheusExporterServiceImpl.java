@@ -71,7 +71,6 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
     @Override
     public boolean updateById(PrometheusExporter entity) {
         boolean isSuccess = super.updateById(entity);
-        LoginUser loginUser = SecurityUtils.getLoginUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
