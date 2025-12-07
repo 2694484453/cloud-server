@@ -35,7 +35,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
     @Value("${monitor.prometheus.exporterPath}")
     private String exporterPath;
 
-    private static final String modelName = "PrometheusExporter";
+    private static final String modelName = "Prometheus端点";
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -44,6 +44,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
      */
     @Override
     public boolean save(PrometheusExporter entity) {
+        boolean result = super.save(entity);
         LoginUser loginUser = SecurityUtils.getLoginUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
@@ -56,10 +57,10 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                 emailBody.setName(entity.getJobName());
                 emailBody.setAction("新增");
                 emailBody.setModelName(modelName);
-                messageProducer.sendEmail(emailBody, true);
+                messageProducer.sendEmail("新增", modelName, result, loginUser.getUser().getEmail(), true);
             }
         });
-        return super.save(entity);
+        return result;
     }
 
     /**
