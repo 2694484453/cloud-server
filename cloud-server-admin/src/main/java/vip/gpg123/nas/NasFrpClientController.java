@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.amqp.producer.NasProducer;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.PageDomain;
@@ -56,7 +57,7 @@ public class NasFrpClientController extends BaseController {
     private NasFrpClientMapper nasFrpClientMapper;
 
     @Autowired
-    private FrpServerApiService frpServerApiService;
+    private NasProducer nasProducer;
 
     @Value("${frp.server.ip}")
     private String host;
@@ -318,58 +319,7 @@ public class NasFrpClientController extends BaseController {
      */
     @GetMapping("/sync")
     public AjaxResult sync() {
-        // 查询http代理
-        String o = frpServerApiService.test();
-        List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
-        Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 更新
-
-        // 查询https代理
-        List<FrpServerHttp> httpsList = frpServerApiService.httpsList().getProxies();
-        Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 查询tcp代理
-        List<FrpServerHttp> tcpList = frpServerApiService.tcpList().getProxies();
-        Map<String, FrpServerHttp> tcpMap = tcpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 查询udp代理
-        List<FrpServerHttp> udpList = frpServerApiService.udpList().getProxies();
-        Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 获取list
-        List<NasFrpClient> list = nasFrpClientService.list();
-        list.forEach(item -> {
-            switch (item.getType()) {
-                case "http":
-                    if (httpMap.containsKey(item.getName())) {
-                        item.setStatus(httpMap.get(item.getName()).getStatus());
-                    } else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                case "https":
-                    if (httpsMap.containsKey(item.getName())) {
-                        item.setStatus(httpsMap.get(item.getName()).getStatus());
-                    }else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                case "tcp":
-                    if (tcpMap.containsKey(item.getName())) {
-                        item.setStatus(tcpMap.get(item.getName()).getStatus());
-                    }else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                case "udp":
-                    if (udpMap.containsKey(item.getName())) {
-                        item.setStatus(udpMap.get(item.getName()).getStatus());
-                    }else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                default:
-                    break;
-            }
-            nasFrpClientService.updateById(item);
-        });
+        nasProducer.syncStatus();
         return AjaxResult.success();
     }
 }

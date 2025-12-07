@@ -1,30 +1,18 @@
 package vip.gpg123.git.service.impl;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import vip.gpg123.amqp.producer.GitProducer;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.git.domain.GitCodeSpace;
-import vip.gpg123.git.domain.GitRepo;
-import vip.gpg123.git.domain.GitToken;
 import vip.gpg123.git.service.GitCodeSpaceService;
 import vip.gpg123.git.mapper.GitCodeSpaceMapper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.git.service.GitRepoService;
-import vip.gpg123.git.service.GitTokenService;
 import vip.gpg123.framework.message.MessageProducer;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.TimerTask;
 
 /**
