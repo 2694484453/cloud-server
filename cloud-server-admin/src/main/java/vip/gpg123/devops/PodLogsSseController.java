@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import vip.gpg123.common.utils.K8sUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -25,10 +26,6 @@ import java.io.InputStreamReader;
 @Api(tags = "【devops】sse控制")
 public class PodLogsSseController {
 
-    @Qualifier("KubernetesClient")
-    @Autowired
-    private KubernetesClient kubernetesClient;
-
     /**
      * 获取日志
      * @param podName pd
@@ -38,12 +35,14 @@ public class PodLogsSseController {
     @GetMapping("/podLogs")
     @ApiOperation(value = "日志")
     public SseEmitter podLogs(@RequestParam(value = "podName") String podName,
-                              @RequestParam(value = "nameSpace") String nameSpace){
+                              @RequestParam(value = "nameSpace") String nameSpace,
+                              @RequestParam(value = "contextName") String contextName){
         // 用于创建一个 SSE 连接对象
         SseEmitter emitter = new SseEmitter();
         ThreadUtil.execute(()->{
             try {
-                PodResource podResource = kubernetesClient.pods().inNamespace(nameSpace).withName(podName);
+                KubernetesClient client = K8sUtil.createKubernetesClient(contextName);
+                PodResource podResource = client.pods().inNamespace(nameSpace).withName(podName);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(podResource.watchLog().getOutput()));
                 String line;
                 while ((line = reader.readLine()) != null) {

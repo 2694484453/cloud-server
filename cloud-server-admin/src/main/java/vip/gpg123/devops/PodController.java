@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.swagger.annotations.Api;
@@ -26,9 +27,6 @@ import java.util.List;
 @Api(tags = "【devops】pod控制管理")
 public class PodController {
 
-    @Qualifier("KubernetesClient")
-    @Autowired
-    private KubernetesClient kubernetesClient;
 
     /**
      * 列表查询
@@ -40,8 +38,10 @@ public class PodController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "podName", required = false) String podName,
-                           @RequestParam(value = "nameSpace", required = false) String nameSpace) {
-        List<Pod> pods = kubernetesClient.pods().inAnyNamespace().list().getItems();
+                           @RequestParam(value = "nameSpace", required = false) String nameSpace,
+                           @RequestParam(value = "contextName") String contextName) {
+        KubernetesClient client = K8sUtil.createKubernetesClient(contextName);
+        List<Pod> pods = client.pods().inAnyNamespace().list().getItems();
         return AjaxResult.success("查询成功", pods);
     }
 
@@ -54,8 +54,9 @@ public class PodController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(@RequestParam(value = "podName", required = false) String podName,
-                              @RequestParam(value = "nameSpace", required = false) String nameSpace) {
-        List<?> list = Convert.toList(list(podName, nameSpace).get("data"));
+                              @RequestParam(value = "nameSpace", required = false) String nameSpace,
+                              @RequestParam(value = "contextName") String contextName) {
+        List<?> list = Convert.toList(list(podName, nameSpace, contextName).get("data"));
         return PageUtils.toPage(list);
     }
 }

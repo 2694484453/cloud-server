@@ -28,6 +28,7 @@ import vip.gpg123.devops.mapper.DevopsJobMapper;
 import vip.gpg123.devops.service.DevopsJobService;
 import vip.gpg123.devops.service.DevopsTaskBuildService;
 import vip.gpg123.devops.service.DevopsTaskGitService;
+import vip.gpg123.kubernetes.domain.KubernetesCluster;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -41,10 +42,6 @@ import java.util.*;
 @RequestMapping("/devops/job")
 @Api(tags = "【devops】流水线任务管理")
 public class DevopsJobController extends BaseController {
-
-    @Qualifier("KubernetesClient")
-    @Autowired
-    private KubernetesClient client;
 
     @Autowired
     private DevopsJobService devopsJobService;
@@ -143,7 +140,9 @@ public class DevopsJobController extends BaseController {
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam("jobName") String jobName,
-                           @RequestParam("nameSpace") String nameSpace) {
+                           @RequestParam("nameSpace") String nameSpace,
+                           @RequestParam("contextName") String contextName) {
+        KubernetesClient client = K8sUtil.createKubernetesClient(contextName);
         Job job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).get();
         return ObjectUtil.isNotEmpty(job) ? AjaxResult.success("查询成功", job) : AjaxResult.success("查询成功", new ArrayList<Job>());
     }
@@ -234,7 +233,9 @@ public class DevopsJobController extends BaseController {
     @GetMapping("/log")
     @ApiOperation(value = "日志流")
     public AjaxResult log(@RequestParam("jobName") String jobName,
-                          @RequestParam("nameSpace") String nameSpace) {
+                          @RequestParam("nameSpace") String nameSpace,
+                          @RequestParam("contextName") String contextName) {
+        KubernetesClient client = K8sUtil.createKubernetesClient(contextName);
         String logs = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).getLog(true);
         return AjaxResult.success(logs);
     }
@@ -249,11 +250,13 @@ public class DevopsJobController extends BaseController {
     @GetMapping("/jobLogs")
     @ApiOperation(value = "日志")
     public SseEmitter podLogs(@RequestParam(value = "jobName") String jobName,
-                              @RequestParam(value = "nameSpace") String nameSpace) {
+                              @RequestParam(value = "nameSpace") String nameSpace,
+                              @RequestParam(value = "contextName") String contextName) {
         // 用于创建一个 SSE 连接对象
         SseEmitter emitter = new SseEmitter();
         ThreadUtil.execute(() -> {
             try {
+                KubernetesClient client = K8sUtil.createKubernetesClient(contextName);
                 ScalableResource<Job> job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(job.watchLog().getOutput()));
                 String line;
@@ -272,18 +275,4 @@ public class DevopsJobController extends BaseController {
         return emitter;
     }
 
-    /**
-     * 获取job
-     *
-     * @return r
-     */
-    private List<?> getJobs() {
-        List<Job> jobList;
-        try {
-            jobList = client.batch().v1().jobs().inAnyNamespace().list().getItems();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return jobList;
-    }
 }
