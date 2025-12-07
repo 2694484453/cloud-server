@@ -98,7 +98,7 @@ public class GitRepoController extends BaseController {
             return AjaxResult.error("url地址不能为空");
         }
         // 设置信息
-        gitRepo.setCreateBy(getUsername());
+        gitRepo.setCreateBy(String.valueOf(getUserId()));
         gitRepo.setCreateTime(DateUtil.date());
         gitRepo.setName(gitRepo.getUrl().substring(gitRepo.getUrl().lastIndexOf("/") + 1));
         boolean isSaved = gitRepoService.saveOrUpdate(gitRepo);
