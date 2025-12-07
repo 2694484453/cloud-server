@@ -36,6 +36,16 @@ cloud-server云服务平台集成了git仓库接入、在线代码开发、在�
 
 >文档地址：https://docs.gpg123.vip/cloud-server/docs (待发布)
 
+
+## 部署
+```text
+helm install cloud-server ./cloud-server -n cloud-server --create-namespace --kube-context hcs.gpg123.vip
+```
+## 更新
+```text
+helm upgrade cloud-server ./cloud-server -n cloud-server --kube-context hcs.gpg123.vip
+```
+
 ## 演示图
 
 待发布
