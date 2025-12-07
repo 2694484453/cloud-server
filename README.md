@@ -1,7 +1,7 @@
 ## 平台简介
 cloud-server云服务平台集成了git仓库接入、在线代码开发、在线docker镜像构建、traefik路由、prometheus监控告警、链路追踪、helm应用封装、部署和管理、vps主机管理、多种调度中心任务模式、kubernetes集群托管等功能
 
-## 内置功能
+## 功能一览
 
 >git仓库接入
 
