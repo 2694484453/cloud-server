@@ -4,11 +4,8 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +18,7 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,10 +29,6 @@ import java.util.List;
 @RequestMapping("/ide")
 @Api(tags = "【ide】管理")
 public class IdeController {
-
-    @Qualifier("KubernetesClient")
-    @Autowired
-    private KubernetesClient kubernetesClient;
 
     @Value("${repo.helm.name}")
     private String repoName;
@@ -54,7 +48,7 @@ public class IdeController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public TableDataInfo page() {
-        List<?> list = ides();
+        List<?> list = new ArrayList<>();
         return PageUtils.toPage(list);
     }
 
@@ -66,7 +60,7 @@ public class IdeController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list() {
-        List<?> list = ides();
+        List<?> list = new ArrayList<>();
         return AjaxResult.success(list);
     }
 
@@ -91,10 +85,5 @@ public class IdeController {
         return AjaxResult.success("操作成功", result);
     }
 
-    private List<?> ides() {
-        List<?> list;
-        String user = SecurityUtils.getUsername();
-        list = kubernetesClient.apps().deployments().inNamespace("ide").withLabel(user).list().getItems();
-        return list;
-    }
+
 }
