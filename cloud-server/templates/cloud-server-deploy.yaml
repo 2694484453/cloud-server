@@ -37,6 +37,12 @@ spec:
             - mountPath: /var/run/docker.sock
               name: docker-sock
               readOnly: true
+            - mountPath: /usr/bin/docker
+              name: docker-cli
+            - name: git
+              mountPath: /root/.git-credentials
+            - name: codespace
+              mountPath: /home/codespace
             - mountPath: /home/prometheus
               name: prometheus
               readOnly: false
@@ -45,6 +51,15 @@ spec:
         - name: docker-sock
           persistentVolumeClaim:
             claimName: docker-pvc
+        - name: docker-cli
+          persistentVolumeClaim:
+            claimName: docker-cli-pvc
+        - name: git
+          persistentVolumeClaim:
+            claimName: git-pvc
+        - name: codespace
+          persistentVolumeClaim:
+            claimName: codespace
         - name: prometheus
           persistentVolumeClaim:
             claimName: prometheus-pvc
