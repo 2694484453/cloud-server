@@ -9,7 +9,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/root/.kube/config"
-    type: File
+    type: FileOrCreate
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
