@@ -100,8 +100,8 @@ public class GitRepoController extends BaseController {
         // 设置信息
         gitRepo.setCreateBy(String.valueOf(getUserId()));
         gitRepo.setCreateTime(DateUtil.date());
-        gitRepo.setName(gitRepo.getUrl().substring(gitRepo.getUrl().lastIndexOf("/") + 1));
-        boolean isSaved = gitRepoService.saveOrUpdate(gitRepo);
+        gitRepo.setName(gitRepo.getUrl().substring(gitRepo.getUrl().lastIndexOf("/") + 1, gitRepo.getUrl().lastIndexOf(".")));
+        boolean isSaved = gitRepoService.save(gitRepo);
         return isSaved ? success("新增成功") : error("新增失败");
     }
 

@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-11-20 00:02:45
 */
 @Service
-public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo>
-    implements GitRepoService{
+public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> implements GitRepoService{
 
 }
 
