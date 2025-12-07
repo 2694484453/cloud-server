@@ -45,6 +45,9 @@ public class GitCodeSpaceController extends BaseController {
     @Value("${ide.path}")
     private String basePath;
 
+    @Value("${ide.url}")
+    private String url;
+
     /**
      * 列表查询
      *
@@ -106,8 +109,9 @@ public class GitCodeSpaceController extends BaseController {
         gitCodeSpace.setRepoUrl(gitRepo.getUrl());
         gitCodeSpace.setCreateBy(String.valueOf(getUserId()));
         gitCodeSpace.setCreateTime(DateUtil.date());
-        gitCodeSpace.setSpaceUrl(gitCodeSpace.getSpaceUrl());
-        gitCodeSpace.setSpacePath(basePath + "/" + getUserId() + "/" + gitCodeSpace.getSpaceName());
+        String spacePath = basePath + "/" + getUserId() + "/" + gitCodeSpace.getSpaceName();
+        gitCodeSpace.setSpaceUrl(url + "?folder=" + spacePath);
+        gitCodeSpace.setSpacePath(spacePath);
         boolean save = gitCodeSpaceService.save(gitCodeSpace);
         return save ? AjaxResult.success("操作成功", gitCodeSpace) : AjaxResult.error("操作失败", false);
     }
