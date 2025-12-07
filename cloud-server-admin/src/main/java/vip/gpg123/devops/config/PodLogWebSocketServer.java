@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import vip.gpg123.common.utils.K8sUtil;
 
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
@@ -26,10 +27,6 @@ import java.util.Map;
 @ServerEndpoint(value = "/ws/podLog")
 @Component
 public class PodLogWebSocketServer {
-
-    @Qualifier("KubernetesClient")
-    @Autowired
-    private KubernetesClient kubernetesClient;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PodLogWebSocketServer.class);
 
@@ -53,7 +50,8 @@ public class PodLogWebSocketServer {
         // 开始启动日志流
         String nameSpace = session.getRequestParameterMap().get("nameSpace").get(0);
         String podName = session.getRequestParameterMap().get("podName").get(0);
-        sendMessageToClient(podName, nameSpace);
+        String contextName = session.getRequestParameterMap().get("contextName").get(0);
+        sendMessageToClient(podName, nameSpace, contextName);
     }
 
     // 连接关闭
@@ -90,10 +88,11 @@ public class PodLogWebSocketServer {
     /**
      * 发送消息
      */
-    public void sendMessageToClient(String podName, String nameSpace) {
+    public void sendMessageToClient(String podName, String nameSpace, String contextName) {
         Session session = sessionMap.get("podLog");
         if (session != null && session.isOpen()) {
-            PodResource podResource = kubernetesClient.pods().inNamespace(nameSpace).withName(podName);
+            KubernetesClient client = K8sUtil.createKubernetesClient(contextName);
+            PodResource podResource = client.pods().inNamespace(nameSpace).withName(podName);
             ThreadUtil.execute(() -> {
                 try {
                     session.getBasicRemote().sendText(podResource.getLog());
