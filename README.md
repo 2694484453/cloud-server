@@ -5,7 +5,7 @@ cloud-server云服务平台集成了git仓库接入、在线代码开发、在�
 
 >git仓库接入
 
->在线代码开发
+>在线代码开发（codeSpace）
 
 >在线docker镜像构建
 
