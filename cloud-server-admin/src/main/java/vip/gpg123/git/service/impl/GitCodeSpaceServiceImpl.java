@@ -29,7 +29,7 @@ public class GitCodeSpaceServiceImpl extends ServiceImpl<GitCodeSpaceMapper, Git
     @Autowired
     private GitProducer gitProducer;
 
-    private static final String modeName = "git仓库管理";
+    private static final String modeName = "代码空间codespace";
 
     /**
      * 插入一条记录（选择字段，策略插入）
