@@ -70,8 +70,8 @@ frp:
 #cloud
 cloud:
   aliyun:
-    accessKeyId: LTAI5tQU6m9mYnspgpVq8Rxu
-    accessKeySecret: hWWHQ5rLmblqskgowIoHdxBhxiD7Nc
+    accessKeyId: xx
+    accessKeySecret: xx
     endpoint: https://oss-cn-hangzhou.aliyuncs.com
     ossDomain: https://dev-gpg.oss-cn-hangzhou.aliyuncs.com
     bucketName: dev-gpg
