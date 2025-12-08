@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -127,6 +128,18 @@ public class GitCodeSpaceController extends BaseController {
     public AjaxResult info(@RequestParam(value = "id") Integer id) {
         GitCodeSpace gitCodeSpace = gitCodeSpaceMapper.selectById(id);
         return AjaxResult.success(gitCodeSpace);
+    }
+
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "【删除】")
+    public AjaxResult delete(@RequestParam(value = "id") Integer id) {
+        boolean result = gitCodeSpaceService.removeById(id);
+        return result ? AjaxResult.success("删除成功", id) : AjaxResult.error("删除失败", false);
     }
 
     /**
