@@ -7,8 +7,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.core.domain.model.NoticeBody;
+import vip.gpg123.system.domain.SysActionNotice;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
+import vip.gpg123.system.service.SysActionNoticeService;
 
 /**
  * 行为消息处理
@@ -18,7 +20,7 @@ import vip.gpg123.system.service.ISysNoticeService;
 public class NoticeConsumer {
 
     @Autowired
-    private ISysNoticeService sysNoticeService;
+    private SysActionNoticeService sysActionNoticeService;
 
     /**
      * 处理
@@ -27,12 +29,12 @@ public class NoticeConsumer {
      */
     @RabbitListener(queues = "cloud-server-notice")
     public void receive(NoticeBody noticeBody) {
-        SysNotice sysNotice = new SysNotice();
+        SysActionNotice sysNotice = new SysActionNotice();
         sysNotice.setCreateBy("system");
         sysNotice.setCreateTime(DateUtil.date());
         BeanUtils.copyProperties(noticeBody, sysNotice);
         // 执行保存
-        sysNoticeService.save(sysNotice);
+        sysActionNoticeService.save(sysNotice);
         log.info("{}:站内通知发送完成", sysNotice);
     }
 
