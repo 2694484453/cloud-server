@@ -55,20 +55,12 @@
         <http5.version>3.3.4</http5.version>
         <guava.version>31.1-jre</guava.version>
         <!--jaeger-->
-        <jaeger.version>3.3.1</jaeger.version>
+<!--        <jaeger.version>3.3.1</jaeger.version>-->
     </properties>
 
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
-            <!-- OpenTelemetry BOM 必须优先声明 -->
-            <dependency>
-                <groupId>io.opentelemetry.instrumentation</groupId>
-                <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>${opentelemetry.version}</version> <!-- 请检查最新版本 -->
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- SpringFramework的依赖配置-->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -92,6 +84,15 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- OpenTelemetry BOM -->
+            <dependency>
+                <groupId>io.opentelemetry.instrumentation</groupId>
+                <artifactId>opentelemetry-instrumentation-bom</artifactId>
+                <version>${opentelemetry.version}</version> <!-- 请检查最新版本 -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -293,10 +294,10 @@
             <!--jaeger-->
             <dependency>
                 <groupId>io.opentracing.contrib</groupId>
-                <artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>
+                <artifactId>opentracing-spring-jaeger-starter</artifactId>
+<!--                <artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>-->
                 <version>${jaeger.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -340,30 +341,11 @@
             <artifactId>opentelemetry-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- Nacos 服务发现 -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <!-- 使用spring loadbalancer，弃用ribbon -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Nacos 服务配置 -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
-
-        <!-- OpenFeign服务调用 -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
+        <!--jaeger链路追踪-->
+<!--        <dependency>-->
+<!--            <groupId>io.opentracing.contrib</groupId>-->
+<!--            <artifactId>opentracing-spring-jaeger-starter</artifactId>-->
+<!--        </dependency>-->
 
         <!-- 负载均衡器 -->
         <dependency>
@@ -371,10 +353,10 @@
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
 
-        <!-- 分布式事务 -->
+        <!-- OpenFeign服务调用 -->
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
         <!-- 消息队列 -->
@@ -406,9 +388,18 @@
 
         <!--websocket-->
         <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-websocket</artifactId>
-            <version>9.0.75</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
         </dependency>
     </dependencies>
     <modules>

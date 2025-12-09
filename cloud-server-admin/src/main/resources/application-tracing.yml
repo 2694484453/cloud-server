@@ -6,15 +6,24 @@ otel:
     exporter: none
   traces:
     exporter: otlp
+  metrics:
+    exporter: otlp
   exporter:
     otlp:
-      traces:
-        protocol: http/protobuf
-        endpoint: http://47.97.162.27:4317
-        # 添加超时设置
-        timeout: 10000 # 10秒超时
+      endpoint: http://47.97.162.27:4318
       metrics:
+        endpoint: http://47.97.162.27:8889
         protocol: http/protobuf
-        endpoint: http://47.97.162.27:4318
-        # 添加超时设置
-        timeout: 10000 # 10秒超时
+        timeout: 10000
+      timeout: 10000 # 10秒超时
+      protocol: http/protobuf
+
+#
+#opentracing:
+#  jaeger:
+#    enabled: true # 启用对接Jaeger（可以不配置，默认true）
+#    enable128-bit-traces: true # 使用短TraceID（可以不配置）
+#    udp-sender:
+#      host: 47.97.162.27 # 配置Jaeger服务器地址
+#      port: 4318
+#    service-name: ${spring.application.name}

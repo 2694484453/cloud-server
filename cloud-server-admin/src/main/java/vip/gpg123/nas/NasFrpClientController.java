@@ -26,10 +26,8 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.nas.domain.FrpServerHttp;
 import vip.gpg123.nas.domain.NasFrpClient;
 import vip.gpg123.nas.mapper.NasFrpClientMapper;
-import vip.gpg123.nas.service.FrpServerApiService;
 import vip.gpg123.nas.service.NasFrpClientService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,8 +40,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/nas/frpc")

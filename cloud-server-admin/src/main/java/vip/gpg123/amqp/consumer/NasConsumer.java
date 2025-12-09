@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import vip.gpg123.amqp.producer.NasProducer;
 import vip.gpg123.nas.domain.FrpServerHttp;
 import vip.gpg123.nas.domain.NasFrpClient;
-import vip.gpg123.nas.service.FrpServerApiService;
+import vip.gpg123.nas.service.FrpServerApi;
 import vip.gpg123.nas.service.NasFrpClientService;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class NasConsumer {
 
     @Autowired
-    private FrpServerApiService frpServerApiService;
+    private FrpServerApi frpServerApi;
 
     @Autowired
     private NasFrpClientService nasFrpClientService;
@@ -34,19 +34,19 @@ public class NasConsumer {
     ))
     public void syncStatus(){
         // 查询http代理
-        String o = frpServerApiService.test();
-        List<FrpServerHttp> httpList = frpServerApiService.httpList().getProxies();
+        String o = frpServerApi.test();
+        List<FrpServerHttp> httpList = frpServerApi.httpList().getProxies();
         Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         // 更新
 
         // 查询https代理
-        List<FrpServerHttp> httpsList = frpServerApiService.httpsList().getProxies();
+        List<FrpServerHttp> httpsList = frpServerApi.httpsList().getProxies();
         Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         // 查询tcp代理
-        List<FrpServerHttp> tcpList = frpServerApiService.tcpList().getProxies();
+        List<FrpServerHttp> tcpList = frpServerApi.tcpList().getProxies();
         Map<String, FrpServerHttp> tcpMap = tcpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         // 查询udp代理
-        List<FrpServerHttp> udpList = frpServerApiService.udpList().getProxies();
+        List<FrpServerHttp> udpList = frpServerApi.udpList().getProxies();
         Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         // 获取list
         List<NasFrpClient> list = nasFrpClientService.list();

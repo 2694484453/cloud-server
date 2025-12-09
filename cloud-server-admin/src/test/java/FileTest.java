@@ -18,4 +18,11 @@ public class FileTest {
         String mimeType = tika.detect(file);
         System.out.println(mimeType);
     }
+
+    @Test
+    public void t2() throws IOException {
+        String url = "https://codeup.aliyun.com/63b19ef08de0fe7a6554f8c1/caddy.git";
+        String path = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
+        System.out.println(path);
+    }
 }

@@ -9,7 +9,7 @@ import vip.gpg123.nas.domain.FrpServerInfo;
 
 @FeignClient(name = "nas-frp-server", url = "${frp.server.url}", configuration = FrpServerBasicAuthRequestInterceptor.class)
 @Service
-public interface FrpServerApiService {
+public interface FrpServerApi {
 
     /**
      * 查询服务信息

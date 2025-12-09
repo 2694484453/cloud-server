@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
-import vip.gpg123.nas.service.FrpServerApiService;
+import vip.gpg123.nas.service.FrpServerApi;
 import vip.gpg123.nas.service.NasFrpClientService;
 import vip.gpg123.nas.service.NasFrpServerService;
 
@@ -24,7 +24,7 @@ public class NasController extends BaseController {
     private NasFrpClientService nasFrpClientService;
 
     @Autowired
-    private FrpServerApiService frpServerApiService;
+    private FrpServerApi frpServerApi;
 
 
 }

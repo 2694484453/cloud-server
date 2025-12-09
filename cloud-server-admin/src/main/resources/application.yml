@@ -56,7 +56,7 @@ user:
 # Spring配置
 spring:
   application:
-    name: cloud-server-${APP_SUFFIX:dev}
+    name: cloud-server
   main:
     # 允许bean定义覆盖
     allow-bean-definition-overriding: true
@@ -68,7 +68,7 @@ spring:
     # 国际化资源文件路径
     basename: i18n/messages
   profiles:
-    active: druid,common,tracing,seata,amqp,es
+    active: druid,common,tracing,amqp,es
   # 文件上传
   servlet:
     multipart:
@@ -105,28 +105,6 @@ spring:
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
-  #  sleuth:
-  #    otel:
-  #      config:
-  #        trace-id-ratio-based: 1.0
-  #      exporter:
-  #        otlp:
-  #          endpoint: http://124.221.2.29:4317
-  # spring-cloud
-  cloud:
-    nacos:
-      config:
-        server-addr: 110.42.40.8:8848
-        namespace: gaopuguang
-        group: DEFAULT_GROUP
-        username:
-        password:
-      discovery: #启用 spring cloud nacos discovery
-        server-addr: 110.42.40.8:8848
-        namespace: gaopuguang
-        group: DEFAULT_GROUP
-        username:
-        password:
   quartz:
     properties:
       org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
@@ -145,17 +123,6 @@ spring:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
     default-encoding: utf-8
-#    stream:
-#      rocketmq:
-#        binder:
-#          name-server: 110.42.40.8:9876
-#        bindings:
-#          producer-out-0:
-#            producer:
-#              group: cloud_server
-#      bindings:
-#        producer-out-0:
-#          destination: broadcast
 # token配置
 token:
   # 令牌自定义标识
@@ -164,15 +131,6 @@ token:
   secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟）
   expireTime: 4320
-
-## MyBatis配置
-#mybatis:
-#  # 搜索指定包别名
-#  typeAliasesPackage: vip.gpg123.**.**.domain
-#  # 配置mapper的扫描，找到所有的mapper.xml映射文件
-#  mapperLocations: classpath*:mapper/**/*Mapper.xml
-#  # 加载全局的配置文件
-#  configLocation: classpath:mybatis/mybatis-config.xml
 
 mybatis-plus:
   # Mapper.xml 文件位置 Maven 多模块项目的扫描路径需以 classpath*: 开头
@@ -206,11 +164,3 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
-# feign配置
-feign:
-  client:
-    config:
-      default: # 全局配置
-        connectTimeout: 60000
-        readTimeout: 60000
-        loggerLevel: basic # 可选：none/basic/headers/full
