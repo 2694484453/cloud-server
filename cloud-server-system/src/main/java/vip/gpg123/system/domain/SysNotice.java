@@ -1,30 +1,23 @@
 package vip.gpg123.system.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import vip.gpg123.common.core.domain.BaseEntity;
-import vip.gpg123.common.xss.Xss;
+
+import java.io.Serializable;
 
 /**
  * 通知公告表 sys_notice
  *
  * @author ruoyi
  */
-@Setter
-@TableName(value = "sys_notice")
-public class SysNotice extends BaseEntity
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class SysNotice extends BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     /** 公告ID */
-    @TableId(value = "notice_id", type = IdType.AUTO)
     private Long noticeId;
 
     /** 公告标题 */
