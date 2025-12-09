@@ -1,0 +1,20 @@
+#链路追踪
+otel:
+  service:
+    name: ${spring.application.name}
+  logs:
+    exporter: none
+  traces:
+    exporter: otlp
+  exporter:
+    otlp:
+      traces:
+        protocol: http/protobuf
+        endpoint: http://47.97.162.27:4317
+        # 添加超时设置
+        timeout: 10000 # 10秒超时
+      metrics:
+        protocol: http/protobuf
+        endpoint: http://47.97.162.27:4318
+        # 添加超时设置
+        timeout: 10000 # 10秒超时
