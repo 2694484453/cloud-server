@@ -3,8 +3,6 @@ kind: Job
 metadata:
   name: cloud-server-build
   namespace: devops
-  labels:
-    name: cloud-server-build
 spec:
   #backoffLimit: 1
   template:
