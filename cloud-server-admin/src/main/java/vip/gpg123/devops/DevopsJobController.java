@@ -13,7 +13,6 @@ import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import vip.gpg123.common.core.controller.BaseController;
@@ -28,7 +27,6 @@ import vip.gpg123.devops.mapper.DevopsJobMapper;
 import vip.gpg123.devops.service.DevopsJobService;
 import vip.gpg123.devops.service.DevopsTaskBuildService;
 import vip.gpg123.devops.service.DevopsTaskGitService;
-import vip.gpg123.kubernetes.domain.KubernetesCluster;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -253,11 +251,12 @@ public class DevopsJobController extends BaseController {
                               @RequestParam(value = "nameSpace") String nameSpace,
                               @RequestParam(value = "contextName") String contextName) {
         // 用于创建一个 SSE 连接对象
-        SseEmitter emitter = new SseEmitter();
+        SseEmitter emitter = new SseEmitter(60_000L);
         ThreadUtil.execute(() -> {
             try {
                 KubernetesClient client = K8sUtil.createKubernetesClient(contextName);
                 ScalableResource<Job> job = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName);
+                Job job1 = client.batch().v1().jobs().inNamespace(nameSpace).withName(jobName).get();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(job.watchLog().getOutput()));
                 String line;
                 while ((line = reader.readLine()) != null) {
