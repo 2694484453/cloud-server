@@ -28,10 +28,10 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 400m
+              cpu: 1000m
               memory: 1024Mi
             limits:
-              cpu: 800m
+              cpu: 2000m
               memory: 2048Mi
           volumeMounts:
             - mountPath: /var/run/docker.sock
