@@ -43,7 +43,7 @@ public class SysActionNoticeController extends BaseController {
                            @RequestParam(value = "sendType",required = false) String sendType,
                            @RequestParam(value = "title", required = false) String title) {
         List<SysActionNotice> list = sysActionNoticeService.list(new LambdaQueryWrapper<SysActionNotice>()
-                .eq(SysActionNotice::getCreateBy,  getUsername())
+                .eq(SysActionNotice::getCreateBy, getUserId())
                 .eq(SysActionNotice::getIsConfirm,0)
                 .eq(StrUtil.isNotBlank(type),SysActionNotice::getType, type)
                 .eq(StrUtil.isNotBlank(sendType),SysActionNotice::getSendType, sendType)
