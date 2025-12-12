@@ -28,6 +28,7 @@ import vip.gpg123.scheduling.mapper.SysSchedulingJobMapper;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,30 @@ public class SysSchedulingJobController extends BaseController {
 
     @Autowired
     private SysSchedulingJobMapper schedulingJobMapper;
+
+    /**
+     * 类型查询
+     * @return r
+     */
+    @GetMapping("/types")
+    @ApiOperation(value = "类型")
+    public AjaxResult types() {
+        List<Map<String,String>> types = new ArrayList<>();
+        // 远程主机
+        types.add(new HashMap<String,String>(){{
+            put("value","RemoteShell");
+            put("label","执行远程主机命令");
+        }});
+        types.add(new HashMap<String,String>(){{
+            put("value","API");
+            put("label","接口请求");
+        }});
+        types.add(new HashMap<String,String>(){{
+            put("value","DEFAULT");
+            put("label","默认");
+        }});
+        return AjaxResult.success(types);
+    }
 
     /**
      * 查询定时任务列表
@@ -93,7 +118,7 @@ public class SysSchedulingJobController extends BaseController {
     /**
      * 导出定时任务列表
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:export')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:export')")
     @Log(title = "定时任务", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysJob sysJob)
@@ -106,7 +131,7 @@ public class SysSchedulingJobController extends BaseController {
     /**
      * 获取定时任务详细信息
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:query')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:query')")
     @GetMapping(value = "/{jobId}")
     public AjaxResult getInfo(@PathVariable("jobId") Long jobId)
     {
@@ -116,9 +141,9 @@ public class SysSchedulingJobController extends BaseController {
     /**
      * 新增定时任务
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:add')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:add')")
     @Log(title = "定时任务", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody SysJob job) throws SchedulerException, TaskException
     {
         if (!CronUtils.isValid(job.getCronExpression()))
@@ -126,15 +151,16 @@ public class SysSchedulingJobController extends BaseController {
             return error("新增任务'" + job.getJobName() + "'失败，Cron表达式不正确");
         }
         job.setCreateBy(String.valueOf(getUserId()));
+        job.setCreateTime(new Date());
         return toAjax(jobService.insertJob(job));
     }
 
     /**
      * 修改定时任务
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:edit')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:edit')")
     @Log(title = "定时任务", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PutMapping("edit")
     public AjaxResult edit(@RequestBody SysJob job) throws SchedulerException, TaskException
     {
         if (!CronUtils.isValid(job.getCronExpression()))
@@ -142,13 +168,14 @@ public class SysSchedulingJobController extends BaseController {
             return error("修改任务'" + job.getJobName() + "'失败，Cron表达式不正确");
         }
         job.setUpdateBy(String.valueOf(getUserId()));
+        job.setUpdateTime(new Date());
         return toAjax(jobService.updateJob(job));
     }
 
     /**
      * 定时任务状态修改
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:changeStatus')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:changeStatus')")
     @Log(title = "定时任务", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public AjaxResult changeStatus(@RequestBody SysJob job) throws SchedulerException
@@ -173,7 +200,7 @@ public class SysSchedulingJobController extends BaseController {
     /**
      * 删除定时任务
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:remove')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:remove')")
     @Log(title = "定时任务", businessType = BusinessType.DELETE)
     @DeleteMapping("/{jobIds}")
     public AjaxResult remove(@PathVariable Long[] jobIds) throws SchedulerException, TaskException
