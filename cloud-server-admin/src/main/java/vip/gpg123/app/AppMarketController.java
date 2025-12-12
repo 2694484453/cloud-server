@@ -60,6 +60,7 @@ public class AppMarketController extends BaseController {
     @Autowired
     private MineAppService mineAppService;
 
+    private static final String icon = "https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/icon/helm.jpg";
 
     /**
      * 列表查询
@@ -111,7 +112,6 @@ public class AppMarketController extends BaseController {
                         .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
                         .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
                         .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
-                //.eq(HelmAppMarket::getCreateBy, getUsername())
         );
         return PageUtils.toPageByIPage(pageRes);
     }
@@ -137,7 +137,6 @@ public class AppMarketController extends BaseController {
     @PostMapping("/sync")
     @ApiOperation(value = "同步")
     public AjaxResult sync() {
-        String icon = "https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/icon/helm.jpg";
         HttpResponse response = HttpUtil.createRequest(Method.GET, helmUrl)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .execute();
@@ -196,10 +195,10 @@ public class AppMarketController extends BaseController {
         JSONObject jsonObject = new JSONObject();
         try {
             InputStream inputStream = IoUtil.toStream(values, StandardCharsets.UTF_8);
-            Map<String,Object> obj = YamlUtil.load(inputStream, Map.class);
+            Map<String, Object> obj = YamlUtil.load(inputStream, Map.class);
             jsonObject = JSONUtil.parseObj(obj);
         } catch (Exception e) {
-            throw new RuntimeException("不能转换为yaml格式："+e);
+            throw new RuntimeException("不能转换为yaml格式：" + e);
         }
         return AjaxResult.success(jsonObject);
     }

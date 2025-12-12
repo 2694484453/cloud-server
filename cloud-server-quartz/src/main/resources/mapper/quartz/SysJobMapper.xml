@@ -16,11 +16,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="createTime"     column="create_time"     />
 		<result property="updateBy"       column="update_by"       />
 		<result property="updateTime"     column="update_time"     />
-		<result property="remark"         column="remark"          />
+		<result property="description"    column="description"     />
 	</resultMap>
 
 	<sql id="selectJobVo">
-        select job_id, job_name, job_group,job_class, job_method, job_params, cron_expression, misfire_policy, concurrent, status, create_by, create_time, remark
+        select job_id, job_name, job_group,job_class, job_method, job_params, cron_expression, misfire_policy, concurrent, status, create_by, create_time, description
 		from sys_job
     </sql>
 

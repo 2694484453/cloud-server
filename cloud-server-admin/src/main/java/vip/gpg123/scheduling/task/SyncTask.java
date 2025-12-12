@@ -2,6 +2,7 @@ package vip.gpg123.scheduling.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import vip.gpg123.app.AppMarketController;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.nas.NasFrpClientController;
 import vip.gpg123.prometheus.PrometheusExporterController;
@@ -32,5 +33,12 @@ public class SyncTask {
      */
     public void syncPrometheusExporterStatus() {
         SpringUtils.getBean(PrometheusExporterController.class).syncStatus();
+    }
+
+    /**
+     * helmMarket
+     */
+    public void syncHelmAppMarket() {
+        SpringUtils.getBean(AppMarketController.class).sync();
     }
 }

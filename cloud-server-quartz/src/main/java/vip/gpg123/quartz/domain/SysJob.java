@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
@@ -44,10 +45,12 @@ public class SysJob extends BaseEntity implements Serializable {
     @Excel(name = "任务名称")
     @NotBlank(message = "任务名称不能为空")
     @Size(min = 0, max = 64, message = "任务名称不能超过64个字符")
+    @TableField(value = "job_name")
     private String jobName;
 
     /** 任务组名 */
     @Excel(name = "任务组名")
+    @TableField(value = "job_group")
     private String jobGroup;
 
     /**
@@ -72,7 +75,7 @@ public class SysJob extends BaseEntity implements Serializable {
     /**
      * 参数
      */
-    @TableField(value = "job_params", typeHandler = JsonTypeHandler.class)
+    @TableField(value = "job_params", typeHandler = JacksonTypeHandler.class)
     private Object jobParams;
 
     /** cron执行表达式 */
@@ -93,8 +96,8 @@ public class SysJob extends BaseEntity implements Serializable {
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
     private String status;
 
-    @TableField(value = "remark")
-    private String remark;
+    @TableField(value = "description")
+    private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(value = "run_time")
