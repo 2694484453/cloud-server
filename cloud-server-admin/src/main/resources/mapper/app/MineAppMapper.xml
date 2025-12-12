@@ -32,8 +32,8 @@
     <!--条件语句-->
     <sql id="queryWrapper">
         <where>1=1
-            <if test="qw.jobId != null">
-                and job_id = #{qw.jobId}
+            <if test="qw.id != null">
+                and id = #{qw.id}
             </if>
             <if test="qw.appName != null and qw.appName !=''">
                 and app_name like concat('%',#{qw.appName},'%')
