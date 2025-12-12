@@ -77,8 +77,8 @@ public class HelmApp extends BaseEntity implements Serializable {
     /**
      * 参数
      */
-    @TableField(value = "value")
-    private String value;
+    @TableField(value = "chart_values")
+    private String chartValues;
 
     /**
      * 标签
