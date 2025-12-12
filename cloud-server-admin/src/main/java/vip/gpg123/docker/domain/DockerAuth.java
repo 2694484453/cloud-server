@@ -33,6 +33,12 @@ public class DockerAuth extends BaseEntity implements Serializable {
     private String registryDomain;
 
     /**
+     *
+     */
+    @TableField(value = "namespace")
+    private String namespace;
+
+    /**
      * 
      */
     @TableField(value = "description")
