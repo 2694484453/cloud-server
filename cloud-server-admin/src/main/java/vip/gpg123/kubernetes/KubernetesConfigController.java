@@ -125,7 +125,6 @@ public class KubernetesConfigController extends BaseController {
             // 保存
             KubernetesCluster kubernetesCluster = new KubernetesCluster();
             kubernetesCluster.setContextName(name);
-            kubernetesCluster.setClusterOwner(getUsername());
             kubernetesCluster.setCreateBy(getUsername());
             kubernetesCluster.setConfig(new Yaml().dumpAsMap(newConfig));
             boolean isSuccess = kubernetesClusterService.save(kubernetesCluster);
