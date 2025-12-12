@@ -70,7 +70,7 @@ public class AppManagerController extends BaseController {
     @PostMapping("/install")
     @ApiOperation(value = "安装")
     public AjaxResult install(@RequestBody HelmApp helmApp) {
-        appService.install(helmApp.getReleaseName(), helmApp.getNameSpace(), helmApp.getChartUrl(), helmApp.getValue(), helmApp.getKubeContext());
+        appService.install(helmApp.getReleaseName(), helmApp.getNameSpace(), helmApp.getChartUrl(), helmApp.getChartValues(), helmApp.getKubeContext());
         return AjaxResult.success("安装成功");
     }
 
