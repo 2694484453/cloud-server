@@ -8,16 +8,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.domain.HelmApp;
 import vip.gpg123.app.mapper.MineAppMapper;
-import vip.gpg123.app.service.MineAppService;
+import vip.gpg123.app.service.HelmAppService;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.quartz.domain.SysJob;
 
 import java.util.List;
 
@@ -27,10 +26,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/app/mine")
 @Api(value = "我的应用")
-public class MineAppController extends BaseController {
+public class HelmAppController extends BaseController {
 
     @Autowired
-    private MineAppService helmAppService;
+    private HelmAppService helmAppService;
 
     @Autowired
     private MineAppMapper mineAppMapper;
@@ -49,13 +48,13 @@ public class MineAppController extends BaseController {
                            @RequestParam(value = "chartName", required = false) String chartName,
                            @RequestParam(value = "status", required = false) String status) {
         // 查询
-        List<MineApp> mineApps = helmAppService.list(new LambdaQueryWrapper<MineApp>()
-                .like(StrUtil.isNotBlank(appName), MineApp::getAppName, appName)
-                .like(StrUtil.isNotBlank(chartName), MineApp::getChartName, chartName)
-                .eq(StrUtil.isNotBlank(status), MineApp::getStatus, status)
-                .eq(MineApp::getCreateBy, getUserId())
+        List<HelmApp> helmApps = helmAppService.list(new LambdaQueryWrapper<HelmApp>()
+                .like(StrUtil.isNotBlank(appName), HelmApp::getAppName, appName)
+                .like(StrUtil.isNotBlank(chartName), HelmApp::getChartName, chartName)
+                .eq(StrUtil.isNotBlank(status), HelmApp::getStatus, status)
+                .eq(HelmApp::getCreateBy, getUserId())
         );
-        return AjaxResult.success(mineApps);
+        return AjaxResult.success(helmApps);
     }
 
     /**
@@ -73,13 +72,13 @@ public class MineAppController extends BaseController {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<MineApp> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+        IPage<HelmApp> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
 
-        MineApp search = new MineApp();
+        HelmApp search = new HelmApp();
         search.setAppName(appName);
         search.setChartName(chartName);
         search.setStatus(status);
-        List<MineApp> list = mineAppMapper.page(pageDomain, search);
+        List<HelmApp> list = mineAppMapper.page(pageDomain, search);
         // 获取分页参数
         page.setRecords(list);
         page.setTotal(mineAppMapper.list(search).size());
@@ -88,27 +87,27 @@ public class MineAppController extends BaseController {
 
     /**
      * 添加
-     * @param mineApp app
+     * @param helmApp app
      * @return  r
      */
     @PostMapping("/add")
     @ApiOperation(value = "添加")
-    public AjaxResult add(@RequestBody MineApp mineApp) {
+    public AjaxResult add(@RequestBody HelmApp helmApp) {
         // 添加
-        boolean save = helmAppService.save(mineApp);
+        boolean save = helmAppService.save(helmApp);
         return save ? success() : error();
     }
 
     /**
      * 修改
-     * @param mineApp app
+     * @param helmApp app
      * @return  r
      */
     @PutMapping("/edit")
     @ApiOperation(value = "修改")
-    public AjaxResult edit(@RequestBody MineApp mineApp) {
+    public AjaxResult edit(@RequestBody HelmApp helmApp) {
         // 修改
-        boolean update = helmAppService.updateById(mineApp);
+        boolean update = helmAppService.updateById(helmApp);
         return update ? success() : error();
     }
 

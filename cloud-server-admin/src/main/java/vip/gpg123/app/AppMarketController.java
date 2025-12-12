@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.app.domain.HelmAppMarket;
 import vip.gpg123.app.domain.IndexResponse;
-import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.domain.HelmApp;
 import vip.gpg123.app.service.HelmAppMarketService;
-import vip.gpg123.app.service.MineAppService;
+import vip.gpg123.app.service.HelmAppService;
 import vip.gpg123.app.vo.HelmAppMarketVo;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -58,7 +58,7 @@ public class AppMarketController extends BaseController {
     private AppManagerController appManagerController;
 
     @Autowired
-    private MineAppService mineAppService;
+    private HelmAppService helmAppService;
 
     private static final String icon = "https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/icon/helm.jpg";
 
@@ -83,8 +83,8 @@ public class AppMarketController extends BaseController {
         );
         List<HelmAppMarket> res = new ArrayList<>();
         helmAppMarkets.forEach(helmAppMarket -> {
-            MineApp mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>().eq(MineApp::getAppName, helmAppMarket.getName()));
-            if (mineApp != null) {
+            HelmApp helmApp = helmAppService.getOne(new LambdaQueryWrapper<HelmApp>().eq(HelmApp::getAppName, helmAppMarket.getName()));
+            if (helmApp != null) {
                 helmAppMarket.setStatus("installed");
             }
             res.add(helmAppMarket);
@@ -211,17 +211,17 @@ public class AppMarketController extends BaseController {
     @PostMapping("/install")
     @ApiOperation(value = "安装")
     public AjaxResult install(@RequestBody HelmAppMarketVo helmAppMarket) {
-        MineApp mineApp = new MineApp();
-        mineApp.setAppName(helmAppMarket.getName());
-        mineApp.setReleaseName(helmAppMarket.getName());
-        mineApp.setChartName(helmAppMarket.getName());
-        mineApp.setDescription(helmAppMarket.getDescription());
-        mineApp.setCreateBy(SecurityUtils.getUsername());
-        mineApp.setCreateTime(DateUtils.getNowDate());
-        mineApp.setNameSpace(SecurityUtils.getUserId().toString());
-        mineApp.setIcon(helmAppMarket.getIcon());
-        mineApp.setValue(String.valueOf(helmAppMarket.getValues()));
-        mineApp.setChartUrl(helmAppMarket.getUrl());
-        return appManagerController.install(mineApp);
+        HelmApp helmApp = new HelmApp();
+        helmApp.setAppName(helmAppMarket.getName());
+        helmApp.setReleaseName(helmAppMarket.getName());
+        helmApp.setChartName(helmAppMarket.getName());
+        helmApp.setDescription(helmAppMarket.getDescription());
+        helmApp.setCreateBy(SecurityUtils.getUsername());
+        helmApp.setCreateTime(DateUtils.getNowDate());
+        helmApp.setNameSpace(SecurityUtils.getUserId().toString());
+        helmApp.setIcon(helmAppMarket.getIcon());
+        helmApp.setValue(String.valueOf(helmAppMarket.getValues()));
+        helmApp.setChartUrl(helmAppMarket.getUrl());
+        return appManagerController.install(helmApp);
     }
 }

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vip.gpg123.app.mapper.MineAppMapper">
 
-    <resultMap id="BaseResultMap" type="vip.gpg123.app.domain.MineApp">
+    <resultMap id="BaseResultMap" type="vip.gpg123.app.domain.HelmApp">
             <result property="id" column="id" />
             <result property="appName" column="app_name" />
             <result property="chartName" column="chart_name" />

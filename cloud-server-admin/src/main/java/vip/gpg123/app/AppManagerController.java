@@ -6,14 +6,13 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.domain.HelmApp;
 import vip.gpg123.app.service.AppService;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.common.utils.helm.HelmApp;
 import vip.gpg123.common.utils.helm.HelmStatus;
 import vip.gpg123.common.utils.helm.HelmUtils;
 
@@ -46,7 +45,7 @@ public class AppManagerController extends BaseController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name) {
-        List<HelmApp> list = HelmUtils.list("", SecurityUtils.getUsername());
+        List<vip.gpg123.common.utils.helm.HelmApp> list = HelmUtils.list("", SecurityUtils.getUsername());
         return AjaxResult.success(list);
     }
 
@@ -65,13 +64,13 @@ public class AppManagerController extends BaseController {
     /**
      * 安装
      *
-     * @param mineApp app
+     * @param helmApp app
      * @return r
      */
     @PostMapping("/install")
     @ApiOperation(value = "安装")
-    public AjaxResult install(@RequestBody MineApp mineApp) {
-        appService.install(mineApp.getReleaseName(), mineApp.getNameSpace(), mineApp.getChartUrl(), mineApp.getValue(), mineApp.getKubeContext());
+    public AjaxResult install(@RequestBody HelmApp helmApp) {
+        appService.install(helmApp.getReleaseName(), helmApp.getNameSpace(), helmApp.getChartUrl(), helmApp.getValue(), helmApp.getKubeContext());
         return AjaxResult.success("安装成功");
     }
 

@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.domain.HelmApp;
 import vip.gpg123.app.service.HelmAppMarketService;
-import vip.gpg123.app.service.MineAppService;
+import vip.gpg123.app.service.HelmAppService;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 public class AppOverViewController extends BaseController {
 
     @Autowired
-    private MineAppService mineAppService;
+    private HelmAppService helmAppService;
 
     @Autowired
     private HelmAppMarketService helmAppMarketService;
@@ -46,8 +46,8 @@ public class AppOverViewController extends BaseController {
         Map<String,Object> map = new LinkedHashMap<>();
         // 应用总数量
         map.put("title", "我的应用总数量");
-        map.put("count", mineAppService.count(new LambdaQueryWrapper<MineApp>()
-                .eq(MineApp::getCreateBy,  getUserId())
+        map.put("count", helmAppService.count(new LambdaQueryWrapper<HelmApp>()
+                .eq(HelmApp::getCreateBy,  getUserId())
         ));
         list.add(map);
         return AjaxResult.success(list);

@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.domain.HelmApp;
 import vip.gpg123.app.service.AppService;
-import vip.gpg123.app.service.MineAppService;
+import vip.gpg123.app.service.HelmAppService;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.helm.service.impl.HelmApiServiceImpl;
@@ -24,7 +24,7 @@ import java.util.TimerTask;
 public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
 
     @Autowired
-    private MineAppService mineAppService;
+    private HelmAppService helmAppService;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -46,35 +46,35 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
     @Override
     public String install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
         // 新增
-        MineApp mineApp = new MineApp();
-        mineApp.setAppName(releaseName);
-        mineApp.setChartUrl(chartUrl);
-        mineApp.setGitUrl("");
-        mineApp.setSource("");
-        mineApp.setStatus("installing");
-        mineApp.setValue(values);
-        mineApp.setTags("");
-        mineApp.setDescription("");
-        mineApp.setCreateBy(SecurityUtils.getUsername());
-        mineApp.setCreateTime(DateUtil.date());
-        mineApp.setNameSpace(namespace);
-        mineApp.setReleaseName(releaseName);
-        mineApp.setKubeContext(kubeContext);
+        HelmApp helmApp = new HelmApp();
+        helmApp.setAppName(releaseName);
+        helmApp.setChartUrl(chartUrl);
+        helmApp.setGitUrl("");
+        helmApp.setSource("");
+        helmApp.setStatus("installing");
+        helmApp.setValue(values);
+        helmApp.setTags("");
+        helmApp.setDescription("");
+        helmApp.setCreateBy(SecurityUtils.getUsername());
+        helmApp.setCreateTime(DateUtil.date());
+        helmApp.setNameSpace(namespace);
+        helmApp.setReleaseName(releaseName);
+        helmApp.setKubeContext(kubeContext);
         String res;
         try {
-            boolean isSaved = mineAppService.save(mineApp);
+            boolean isSaved = helmAppService.save(helmApp);
             if (!isSaved) {
                 throw new RuntimeException("保存失败");
             }
             // 安装
             res = super.install(releaseName, namespace, chartUrl, values, kubeContext);
-            mineApp.setStatus("installed");
-            mineApp.setResult(res);
+            helmApp.setStatus("installed");
+            helmApp.setResult(res);
         } catch (Exception e) {
-            mineApp.setStatus("installFailed");
+            helmApp.setStatus("installFailed");
             throw new RuntimeException(e);
         } finally {
-            mineAppService.updateById(mineApp);
+            helmAppService.updateById(helmApp);
             // 获取用户邮箱
             String userEmail = SecurityUtils.getLoginUser().getUser().getEmail();
             // 获取用户名
@@ -84,7 +84,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                 @Override
                 public void run() {
                     String title = "应用安装通知";
-                    String content = "安装" + chartUrl + ",结果：" + mineApp.getStatus();
+                    String content = "安装" + chartUrl + ",结果：" + helmApp.getStatus();
                     // 站内消息
                     SysActionNotice sysActionNotice = new SysActionNotice();
                     sysActionNotice.setTitle(title);
@@ -121,22 +121,22 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
     @Override
     public String uninstall(String namespace, String releaseName, String kubeContext) {
         // 查询
-        MineApp mineApp = mineAppService.getOne(new LambdaQueryWrapper<MineApp>()
-                .eq(MineApp::getReleaseName, releaseName)
-                .eq(MineApp::getKubeContext, kubeContext)
-                .eq(MineApp::getCreateBy, SecurityUtils.getUsername())
+        HelmApp helmApp = helmAppService.getOne(new LambdaQueryWrapper<HelmApp>()
+                .eq(HelmApp::getReleaseName, releaseName)
+                .eq(HelmApp::getKubeContext, kubeContext)
+                .eq(HelmApp::getCreateBy, SecurityUtils.getUsername())
         );
         String res = "";
-        if (ObjectUtil.isNotNull(mineApp)) {
+        if (ObjectUtil.isNotNull(helmApp)) {
             try {
-                mineApp.setStatus("uninstalling");
+                helmApp.setStatus("uninstalling");
                 res = super.uninstall(namespace, releaseName, kubeContext);
                 // 删除
-                mineAppService.removeById(mineApp);
-                mineApp.setResult(res);
+                helmAppService.removeById(helmApp);
+                helmApp.setResult(res);
             } catch (Exception e) {
-                mineApp.setStatus("uninstallFailed");
-                mineAppService.updateById(mineApp);
+                helmApp.setStatus("uninstallFailed");
+                helmAppService.updateById(helmApp);
                 throw new RuntimeException(e);
             } finally {
                 // 获取用户邮箱
@@ -148,7 +148,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
                     @Override
                     public void run() {
                         String title = "应用卸载通知";
-                        String content = "卸载" + releaseName + ",结果：" + mineApp.getStatus();
+                        String content = "卸载" + releaseName + ",结果：" + helmApp.getStatus();
                         // 站内消息
                         SysActionNotice sysActionNotice = new SysActionNotice();
                         sysActionNotice.setTitle(title);

@@ -19,7 +19,7 @@ import vip.gpg123.common.core.domain.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value ="helm_app")
 @Data
-public class MineApp extends BaseEntity implements Serializable {
+public class HelmApp extends BaseEntity implements Serializable {
     /**
      * 
      */
