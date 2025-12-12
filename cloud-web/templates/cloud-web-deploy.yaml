@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-web-deploy
+  namespace: cloud-server
+  labels:
+    app: cloud-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-web
+  template:
+    metadata:
+      name: cloud-web
+      labels:
+        app: cloud-web
+    spec:
+      containers:
+        - name: cloud-web
+          image: registry.cn-hangzhou.aliyuncs.com/gpg_dev/cloud-web:2025-12-11-15-59-42
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: APP_SUFFIX
+              value: prod
+            - name: PORT
+              value: "3001"
+            - name: PREFIX_PATH
+              value: "/api"
+            - name: PROXY
+              value: "https://cloud-server.gpg123.vip"
+          ports:
+            - containerPort: 3001
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 400m
+              memory: 1024Mi
+      restartPolicy: Always
