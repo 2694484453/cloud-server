@@ -1,8 +1,13 @@
 package vip.gpg123.app.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import vip.gpg123.app.domain.MineApp;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import vip.gpg123.common.core.page.PageDomain;
+import vip.gpg123.quartz.domain.SysJob;
+
+import java.util.List;
 
 /**
 * @author gaopuguang
@@ -12,7 +17,22 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 @Mapper
 public interface MineAppMapper extends BaseMapper<MineApp> {
+    /**
+     * 根据 entity 条件，查询一条记录
+     *
+     */
+    MineApp one(@Param("qw") MineApp mineApp);
 
+    /**
+     * 根据 entity 条件，查询全部记录
+     *
+     */
+    List<MineApp> list(@Param("qw") MineApp mineApp);
+
+    /**
+     * 根据 entity 条件，查询全部记录（并翻页）
+     */
+    List<MineApp> page(@Param("page") PageDomain page, @Param("qw") MineApp mineApp);
 }
 
 

@@ -16,7 +16,7 @@
             <result property="description" column="description" />
             <result property="nameSpace" column="name_space" />
             <result property="releaseName" column="release_name" />
-            <result property="clusterName" column="cluster_name" />
+            <result property="kubeContext" column="kube_context" />
             <result property="createBy" column="create_by" />
             <result property="createTime" column="create_time" />
             <result property="updateBy" column="update_by" />
@@ -26,6 +26,69 @@
     <sql id="Base_Column_List">
         id,app_name,chart_name,git_url,source,status,
         value,tags,description,name_space,release_name,
-        cluster_name,create_by,create_time,update_by,update_time
+        kube_context,create_by,create_time,update_by,update_time
     </sql>
+
+    <!--条件语句-->
+    <sql id="queryWrapper">
+        <where>1=1
+            <if test="qw.jobId != null">
+                and job_id = #{qw.jobId}
+            </if>
+            <if test="qw.appName != null and qw.appName !=''">
+                and app_name like concat('%',#{qw.appName},'%')
+            </if>
+            <if test="qw.status != null and qw.status != ''">
+                AND status = #{qw.status}
+            </if>
+            <if test="qw.createBy != null">
+                and a.create_by = #{qw.createBy}
+            </if>
+            <if test="qw.updateBy != null">
+                and a.update_by = #{qw.updateBy}
+            </if>
+        </where>
+    </sql>
+
+    <!--基础查询-->
+    <sql id="baseSelect">
+        select a.*, b.user_name as 'updateByUserName'
+        from (select s.*, u.user_name as 'createByUserName'
+              from helm_app s
+                       left join sys_user u on u.user_id = s.create_by) a
+                 left join sys_user b on a.update_by = b.user_id
+    </sql>
+
+    <select id="list" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--单个查询-->
+    <select id="one" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+    <!--分页-->
+    <sql id="order">
+        <!-- 排序放在where外面 -->
+        <choose>
+            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
+                order by ${page.orderByColumn} ${page.isAsc}
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+
+
+    <!--分页查询-->
+    <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+        <include refid="order"/>
+        limit #{page.limit} offset #{page.offset}
+    </select>
+
 </mapper>

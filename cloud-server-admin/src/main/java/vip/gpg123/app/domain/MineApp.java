@@ -9,14 +9,17 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 
  * @TableName helm_app
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="helm_app")
 @Data
-public class MineApp implements Serializable {
+public class MineApp extends BaseEntity implements Serializable {
     /**
      * 
      */

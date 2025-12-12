@@ -220,7 +220,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
     public int updateJob(SysJob job) throws SchedulerException, TaskException
     {
         SysJob properties = selectJobById(job.getJobId());
-        int rows = jobMapper.updateJob(job);
+        int rows = jobMapper.updateById(job);
         if (rows > 0)
         {
             updateSchedulerJob(job, properties.getJobGroup());

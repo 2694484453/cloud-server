@@ -9,11 +9,15 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.app.domain.MineApp;
+import vip.gpg123.app.mapper.MineAppMapper;
 import vip.gpg123.app.service.MineAppService;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.quartz.domain.SysJob;
 
 import java.util.List;
 
@@ -21,12 +25,15 @@ import java.util.List;
  * 我的应用
  */
 @RestController
-@RequestMapping("/mineApp")
+@RequestMapping("/app/mine")
 @Api(value = "我的应用")
 public class MineAppController extends BaseController {
 
     @Autowired
     private MineAppService helmAppService;
+
+    @Autowired
+    private MineAppMapper mineAppMapper;
 
     /**
      * 列表查询
@@ -46,14 +53,13 @@ public class MineAppController extends BaseController {
                 .like(StrUtil.isNotBlank(appName), MineApp::getAppName, appName)
                 .like(StrUtil.isNotBlank(chartName), MineApp::getChartName, chartName)
                 .eq(StrUtil.isNotBlank(status), MineApp::getStatus, status)
-                .eq(MineApp::getCreateBy, getUsername())
+                .eq(MineApp::getCreateBy, getUserId())
         );
         return AjaxResult.success(mineApps);
     }
 
     /**
      * 分页查询
-     * @param page page
      * @param appName 名称
      * @param chartName chart名称
      * @param status 状态
@@ -61,14 +67,23 @@ public class MineAppController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(Page<MineApp> page,
-                              @RequestParam(value = "appName", required = false) String appName,
+    public TableDataInfo page(@RequestParam(value = "appName", required = false) String appName,
                               @RequestParam(value = "chartName", required = false) String chartName,
                               @RequestParam(value = "status", required = false) String status) {
+        // 转换参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
+        IPage<MineApp> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+
+        MineApp search = new MineApp();
+        search.setAppName(appName);
+        search.setChartName(chartName);
+        search.setStatus(status);
+        List<MineApp> list = mineAppMapper.page(pageDomain, search);
         // 获取分页参数
-        PageUtils.toIPage(page);
-        IPage<MineApp> pageRes = helmAppService.page(page, new LambdaQueryWrapper<MineApp>());
-        return PageUtils.toPageByIPage(pageRes);
+        page.setRecords(list);
+        page.setTotal(mineAppMapper.list(search).size());
+        return PageUtils.toPageByIPage(page);
     }
 
     /**
