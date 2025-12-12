@@ -177,6 +177,7 @@ public class KubernetesClusterController extends BaseController {
             kubernetesCluster.setCreateBy(String.valueOf(getUserId()));
             kubernetesCluster.setCreateTime(DateUtil.date());
             kubernetesCluster.setContextName(kubernetesCluster.getClusterName());
+            kubernetesCluster.setMasterUrl(addCluster.getCluster().getProxyUrl());
             kubernetesClusterService.save(kubernetesCluster);
             // 重写默认文件
             K8sUtil.exportToFile(kubeConfig, K8sUtil.defaultConfigFilePath());

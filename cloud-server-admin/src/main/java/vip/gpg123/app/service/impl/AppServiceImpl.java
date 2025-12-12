@@ -52,7 +52,7 @@ public class AppServiceImpl extends HelmApiServiceImpl implements AppService {
         helmApp.setGitUrl("");
         helmApp.setSource("");
         helmApp.setStatus("installing");
-        helmApp.setValue(values);
+        helmApp.setChartValues(values);
         helmApp.setTags("");
         helmApp.setDescription("");
         helmApp.setCreateBy(SecurityUtils.getUsername());

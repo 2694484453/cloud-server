@@ -40,8 +40,8 @@ public class KubernetesCluster extends BaseEntity implements Serializable {
     /**
      * 用户
      */
-    @TableField(value = "cluster_owner")
-    private String clusterOwner;
+    @TableField(value = "master_url")
+    private String masterUrl;
 
     /**
      * 上下文名称

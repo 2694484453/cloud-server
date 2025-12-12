@@ -220,7 +220,7 @@ public class AppMarketController extends BaseController {
         helmApp.setCreateTime(DateUtils.getNowDate());
         helmApp.setNameSpace(SecurityUtils.getUserId().toString());
         helmApp.setIcon(helmAppMarket.getIcon());
-        helmApp.setValue(String.valueOf(helmAppMarket.getValues()));
+        helmApp.setChartValues(String.valueOf(helmAppMarket.getValues()));
         helmApp.setChartUrl(helmAppMarket.getUrl());
         return appManagerController.install(helmApp);
     }
