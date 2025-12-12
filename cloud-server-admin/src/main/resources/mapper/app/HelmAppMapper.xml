@@ -82,7 +82,6 @@
         </choose>
     </sql>
 
-
     <!--分页查询-->
     <select id="page" resultMap="BaseResultMap">
         <include refid="baseSelect"/>

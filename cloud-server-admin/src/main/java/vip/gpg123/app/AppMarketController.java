@@ -39,7 +39,6 @@ import vip.gpg123.common.utils.helm.HelmUtils;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -79,17 +78,8 @@ public class AppMarketController extends BaseController {
                         .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
                         .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
                         .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
-                //.eq(HelmAppMarket::getCreateBy, getUsername())
         );
-        List<HelmAppMarket> res = new ArrayList<>();
-        helmAppMarkets.forEach(helmAppMarket -> {
-            HelmApp helmApp = helmAppService.getOne(new LambdaQueryWrapper<HelmApp>().eq(HelmApp::getAppName, helmAppMarket.getName()));
-            if (helmApp != null) {
-                helmAppMarket.setStatus("installed");
-            }
-            res.add(helmAppMarket);
-        });
-        return AjaxResult.success(res);
+        return AjaxResult.success(helmAppMarkets);
     }
 
     /**

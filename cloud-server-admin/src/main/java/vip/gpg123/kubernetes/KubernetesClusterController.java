@@ -67,7 +67,8 @@ public class KubernetesClusterController extends BaseController {
                 .like(StrUtil.isNotBlank(clusterName), KubernetesCluster::getClusterName, clusterName)
                 .eq(StrUtil.isNotBlank(status), KubernetesCluster::getStatus, status)
                 .eq(KubernetesCluster::getCreateBy, getUserId())
-                .eq(isPublic, KubernetesCluster::getType, "public")
+                .or(isPublic)
+                .eq(KubernetesCluster::getType, "public")
                 .orderByDesc(KubernetesCluster::getCreateTime)
         );
         return AjaxResult.success(list);
