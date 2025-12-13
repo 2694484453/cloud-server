@@ -13,6 +13,8 @@ cloud-server:
   # 验证码类型 math 数字计算 char 字符验证
   captchaType: math
 management:
+  server:
+    port: 9098
   endpoints:
     web:
       exposure:
