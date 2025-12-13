@@ -25,7 +25,11 @@ spec:
             - mountPath: "/home"
               name: data
             - mountPath: "/root/.git-credentials"
-              name: git-cred
+              name: git
+              subPath: .git-credentials
+            - mountPath: "/root/.gitconfig"
+              name: git
+              subPath: .gitconfig
             - mountPath: "/git-clone.sh"
               name: shell
               subPath: git-clone.sh
@@ -62,8 +66,10 @@ spec:
           volumeMounts:
             - mountPath: "/run/docker.sock"
               name: docker-sock
+              subPath: docker.sock
             - mountPath: "/usr/local/bin/docker"
               name: docker-cli
+              subPath: docker
             - mountPath: "/home"
               name: data
             - mountPath: "/docker-build.sh"
@@ -82,10 +88,13 @@ spec:
           volumeMounts:
             - mountPath: "/run/docker.sock"
               name: docker-sock
+              subPath: docker.sock
             - mountPath: "/usr/bin/docker"
               name: docker-cli
+              subPath: docker
             - mountPath: "/root/.docker/config.json"
               name: docker-auth
+              subPath: config.json
             - mountPath: "/docker-push.sh"
               name: shell
               subPath: docker-push.sh
@@ -102,6 +111,15 @@ spec:
                 path: "docker-build.sh"
               - key: docker-push.sh
                 path: "docker-push.sh"
+            defaultMode: 0755
+        - name: git
+          configMap:
+            name: git-cm
+            items:
+              - key: .git-credentials
+                path: ".git-credentials"
+              - key: .gitconfig
+                path: ".gitconfig"
             defaultMode: 0755
         - name: maven
           hostPath:

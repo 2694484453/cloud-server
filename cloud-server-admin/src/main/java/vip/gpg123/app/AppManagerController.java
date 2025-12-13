@@ -102,7 +102,6 @@ public class AppManagerController extends BaseController {
     @ApiOperation(value = "查询")
     public AjaxResult manager(@RequestParam(value = "name") String name) {
         // 查询工作负载
-
         return AjaxResult.success(HelmUtils.list("", getUsername()));
     }
 }

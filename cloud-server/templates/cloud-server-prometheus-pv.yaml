@@ -2,6 +2,8 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: prometheus-pv
+  labels:
+    pv: prometheus-pv
 spec:
   capacity:
     storage: 5Gi
@@ -11,6 +13,9 @@ spec:
     path: "/home/prometheus"
     type: DirectoryOrCreate
   persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    namespace: {{.Release.Namespace}}
+    name: prometheus-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,3 +27,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
+  selector:
+    matchLabels:
+      pv: prometheus-pv

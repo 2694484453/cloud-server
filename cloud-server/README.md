@@ -22,3 +22,6 @@ helm install releaseName gpg-dev/cloud-server -n nameSpace
 ```text
 helm install releaseName cloud-server -n nameSpace
 ```
+```text
+helm upgrade cloud-server ./cloud-server -n cloud-server
+```

@@ -2,6 +2,8 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: kube-pv
+  labels:
+    pv: kube-pv
 spec:
   capacity:
     storage: 1Gi
@@ -11,6 +13,9 @@ spec:
     path: "/root/.kube/config"
     type: FileOrCreate
   persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    namespace: {{.Release.Namespace}}
+    name: kube-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,3 +27,6 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  selector:
+    matchLabels:
+      pv: kube-pv
