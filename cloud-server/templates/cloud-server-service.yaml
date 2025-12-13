@@ -10,5 +10,9 @@ spec:
       port: 9099
       targetPort: 9099
       nodePort: 9099
+    - protocol: TCP
+      port: 9098
+      targetPort: 9098
+      nodePort: 9098
   type: NodePort
   
