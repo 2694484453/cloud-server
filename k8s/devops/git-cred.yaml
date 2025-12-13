@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: git-cm
+  namespace: devops
+data:
+  .git-credentials: |
+    https://18439406854:pt-jsVgAYsQaAA6JvEULl27CNqa_2e947574-13c4-468e-be31-2dfe881343d3@codeup.aliyun.com
+  .gitconfig: |
+    [user]
+            name = gaopuguang
+            email = 2694484453@qq.com
+    [core]
+            autocrlf = input
+    [credential]
+            helper = store
+    [http]
+            postBuffer = 524288000
