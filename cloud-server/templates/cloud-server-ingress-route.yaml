@@ -1,4 +1,4 @@
-# ingressroute.yaml
+{{ if .Values.traefik }}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -15,3 +15,4 @@ spec:
           port: 9099
   tls:
     certResolver: "myCertResolver"  # 引用 Let's Encrypt 解析器[9](@ref)
+{{ end }}
