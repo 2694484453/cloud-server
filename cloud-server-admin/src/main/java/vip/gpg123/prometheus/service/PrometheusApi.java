@@ -3,6 +3,7 @@ package vip.gpg123.prometheus.service;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 
@@ -18,5 +19,11 @@ public interface PrometheusApi {
      */
     @GetMapping("/api/v1/targets")
     PrometheusTargetResponse targets(@RequestParam(value = "state", required = false, defaultValue = "active") String state);
+
+    /**
+     * 动态加载alert配置
+     */
+    @PostMapping("/-/reload")
+    void reload();
 
 }
