@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.prometheus.mapper.PrometheusAlertMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.prometheus.domain.PrometheusAlert">
+            <id property="id" column="id" />
+            <result property="alertName" column="alert_name" />
+            <result property="alertLevel" column="alert_level" />
+            <result property="groupName" column="group_name" />
+            <result property="type" column="type"/>
+            <result property="message" column="message" />
+            <result property="createTime" column="create_time" />
+            <result property="createBy" column="create_by" />
+            <result property="updateTime" column="update_time" />
+            <result property="updateBy" column="update_by" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,alert_name,alert_level,group_name,message,create_time,
+        create_by,update_time,update_by
+    </sql>
+
+    <!--条件语句-->
+    <sql id="queryWrapper">
+        <where>1=1
+            <if test="qw.id != null">
+                and id = #{qw.id}
+            </if>
+            <if test="qw.alertName != null and qw.alertName !=''">
+                and alter_name like concat('%',#{qw.alertName},'%')
+            </if>
+            <if test="qw.groupName != null and qw.groupName !=''">
+                and group_name like concat('%',#{qw.groupName},'%')
+            </if>
+            <if test="qw.alertLevel != null and qw.alertLevel !=''">
+                and alert_level like concat('%',#{qw.alertLevel},'%')
+            </if>
+            <if test="qw.type != null and qw.type !=''">
+                and type = #{qw.type}
+            </if>
+            <if test="qw.createBy != null">
+                and a.create_by = #{qw.createBy}
+            </if>
+            <if test="qw.updateBy != null">
+                and a.update_by = #{qw.updateBy}
+            </if>
+        </where>
+    </sql>
+
+    <!--分页-->
+    <sql id="order">
+        <!-- 排序放在where外面 -->
+        <choose>
+            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
+                order by ${page.orderByColumn} ${page.isAsc}
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+
+    <!--基础查询-->
+    <sql id="baseSelect">
+        select a.*, b.user_name as 'updateByUserName'
+        from (select s.*, u.user_name as 'createByUserName'
+              from prometheus_alert s
+                       left join sys_user u on u.user_id = s.create_by) a
+                 left join sys_user b on a.update_by = b.user_id
+    </sql>
+
+    <select id="list" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--单个查询-->
+    <select id="one" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--分页查询-->
+    <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+        <include refid="order"/>
+        limit #{page.limit} offset #{page.offset}
+    </select>
+</mapper>
