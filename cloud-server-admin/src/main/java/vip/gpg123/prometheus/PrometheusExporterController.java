@@ -76,6 +76,7 @@ public class PrometheusExporterController extends BaseController {
         list.add("amd-smi-exporter");
         list.add("amd-gpu-exporter");
         list.add("jaeger-exporter");
+        list.add("kube-state-metrics-exporter");
         return AjaxResult.success(list);
     }
 

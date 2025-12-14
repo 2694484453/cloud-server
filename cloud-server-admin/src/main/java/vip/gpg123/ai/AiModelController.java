@@ -32,7 +32,11 @@ public class AiModelController extends BaseController {
         return AjaxResult.success(list);
     }
 
-
+    /**
+     * 分页
+     * @param aiModel a
+     * @return r
+     */
     @GetMapping("/page")
     public TableDataInfo page(AiModel aiModel){
         Page<AiModel> page = new Page<>();
