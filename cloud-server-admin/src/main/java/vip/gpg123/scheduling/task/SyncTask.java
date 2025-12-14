@@ -6,6 +6,7 @@ import vip.gpg123.app.AppMarketController;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.nas.NasFrpClientController;
 import vip.gpg123.prometheus.PrometheusExporterController;
+import vip.gpg123.prometheus.service.PrometheusApi;
 
 import java.util.Map;
 
@@ -40,5 +41,12 @@ public class SyncTask {
      */
     public void syncHelmAppMarket() {
         SpringUtils.getBean(AppMarketController.class).sync();
+    }
+
+    /**
+     * prometheusReload
+     */
+    public void prometheusReload() {
+        SpringUtils.getBean(PrometheusApi.class).reload();
     }
 }

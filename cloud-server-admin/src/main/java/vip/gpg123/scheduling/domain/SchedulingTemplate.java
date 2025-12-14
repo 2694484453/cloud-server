@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 
 /**
@@ -30,7 +32,7 @@ public class SchedulingTemplate implements Serializable {
     /**
      * 
      */
-    @TableField(value = "job_params")
+    @TableField(value = "job_params", typeHandler = JacksonTypeHandler.class)
     private Object jobParams;
 
     /**

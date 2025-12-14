@@ -1,5 +1,6 @@
 package vip.gpg123.scheduling;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -52,5 +53,22 @@ public class SchedulingTemplateController extends BaseController {
                 .eq(StrUtil.isNotBlank(schedulingTemplate.getJobType()), SchedulingTemplate::getJobType, schedulingTemplate.getJobType())
         );
         return PageUtils.toPageByIPage(page);
+    }
+
+    /**
+     * 详情
+     * @param schedulingTemplate sc
+     * @return r
+     */
+    @GetMapping("/info")
+    public AjaxResult info(SchedulingTemplate schedulingTemplate) {
+        SchedulingTemplate entity = schedulingTemplateService.getOne(new LambdaQueryWrapper<SchedulingTemplate>()
+                .eq(StrUtil.isNotBlank(schedulingTemplate.getJobType()), SchedulingTemplate::getJobType, schedulingTemplate.getJobType())
+                .eq(ObjectUtil.isNull(schedulingTemplate.getId()), SchedulingTemplate::getId, schedulingTemplate.getId())
+        );
+        if (entity != null) {
+            return AjaxResult.success(entity);
+        }
+        return AjaxResult.error();
     }
 }
