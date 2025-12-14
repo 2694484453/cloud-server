@@ -18,6 +18,7 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
@@ -79,6 +80,7 @@ public class PrometheusRuleController extends BaseController {
         search.setAlertName(alertName);
         search.setGroupName(groupName);
         search.setType(type);
+        search.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
         List<PrometheusRule> list = prometheusRuleMapper.page(pageDomain, search);
         page.setRecords(list);
         page.setTotal(prometheusRuleMapper.list(search).size());
