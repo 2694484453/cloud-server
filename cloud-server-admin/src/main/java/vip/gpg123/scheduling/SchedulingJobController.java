@@ -8,7 +8,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vip.gpg123.common.annotation.Log;
 import vip.gpg123.common.core.controller.BaseController;
@@ -41,7 +40,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/scheduling/job")
 @Api(tags = "调度任务信息")
-public class SysSchedulingJobController extends BaseController {
+public class SchedulingJobController extends BaseController {
 
     @Autowired
     private ISysJobService jobService;

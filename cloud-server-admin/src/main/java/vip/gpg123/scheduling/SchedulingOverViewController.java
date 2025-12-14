@@ -20,7 +20,7 @@ import java.util.Map;
 @RestController
 @Api(tags = "调度任务信息概览控制")
 @RequestMapping("/scheduling")
-public class SysSchedulingOverViewController extends BaseController {
+public class SchedulingOverViewController extends BaseController {
 
     @Autowired
     private ISysJobService sysJobService;

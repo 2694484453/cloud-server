@@ -26,9 +26,7 @@ public class AiModelController extends BaseController {
 
     @GetMapping("/list")
     public AjaxResult list(AiModel aiModel){
-        List<AiModel> list = aiModelService.list(new LambdaQueryWrapper<AiModel>()
-
-        );
+        List<AiModel> list = aiModelService.list(new LambdaQueryWrapper<AiModel>());
         return AjaxResult.success(list);
     }
 

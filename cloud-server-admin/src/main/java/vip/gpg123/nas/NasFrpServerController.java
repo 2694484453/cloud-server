@@ -38,7 +38,7 @@ public class NasFrpServerController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
-    private AjaxResult list(@RequestParam(value = "name", required = false) String name,
+    public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                             @RequestParam(value = "ip", required = false) String ip,
                             @RequestParam(value = "port", required = false) Integer port) {
         List<NasFrpServer> list = nasFrpServerService.list(new LambdaQueryWrapper<NasFrpServer>()
@@ -60,7 +60,7 @@ public class NasFrpServerController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
-    private TableDataInfo page(@RequestParam(value = "name", required = false) String name,
+    public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
                                @RequestParam(value = "ip", required = false) String ip,
                                @RequestParam(value = "port", required = false) Integer port) {
         IPage<NasFrpServer> page = new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize());
@@ -79,7 +79,7 @@ public class NasFrpServerController extends BaseController {
      */
     @GetMapping("/info")
     @ApiOperation(value = "【详情】")
-    private AjaxResult info(@RequestParam(value = "id") String id) {
+    public AjaxResult info(@RequestParam(value = "id") String id) {
         NasFrpServer Server = nasFrpServerService.getById(id);
         return AjaxResult.success(Server);
     }
@@ -92,7 +92,7 @@ public class NasFrpServerController extends BaseController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
-    private AjaxResult add(@RequestBody NasFrpServer nasFrpServer) {
+    public AjaxResult add(@RequestBody NasFrpServer nasFrpServer) {
         nasFrpServer.setCreateBy(getUsername());
         nasFrpServer.setCreateTime(DateUtil.date());
         boolean isSuccess = nasFrpServerService.save(nasFrpServer);
@@ -107,7 +107,7 @@ public class NasFrpServerController extends BaseController {
      */
     @PutMapping("/edit")
     @ApiOperation(value = "【修改】")
-    private AjaxResult edit(@RequestBody NasFrpServer nasFrpServer) {
+    public AjaxResult edit(@RequestBody NasFrpServer nasFrpServer) {
         nasFrpServer.setUpdateBy(getUsername());
         nasFrpServer.setUpdateTime(DateUtil.date());
         boolean isSuccess = nasFrpServerService.updateById(nasFrpServer);
@@ -121,7 +121,7 @@ public class NasFrpServerController extends BaseController {
      */
     @DeleteMapping("/delete")
     @ApiOperation(value = "【删除】")
-    private AjaxResult delete(@RequestParam("id") String id) {
+    public AjaxResult delete(@RequestParam("id") String id) {
         boolean isSuccess = nasFrpServerService.removeById(id);
         return isSuccess ? AjaxResult.success() : AjaxResult.error();
     }

@@ -75,7 +75,7 @@ public class NasFrpClientController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
-    private AjaxResult list(@RequestParam(value = "name", required = false) String name,
+    public AjaxResult list(@RequestParam(value = "name", required = false) String name,
                             @RequestParam(value = "type", required = false) String type,
                             @RequestParam(value = "ip", required = false) String ip,
                             @RequestParam(value = "port", required = false) Integer port,
@@ -103,7 +103,7 @@ public class NasFrpClientController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
-    private TableDataInfo page(@RequestParam(value = "name", required = false) String name,
+    public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
                                @RequestParam(value = "type", required = false) String type,
                                @RequestParam(value = "ip", required = false) String ip,
                                @RequestParam(value = "port", required = false) Integer port,
@@ -133,7 +133,7 @@ public class NasFrpClientController extends BaseController {
      */
     @GetMapping("/info")
     @ApiOperation(value = "【详情】")
-    private AjaxResult info(@RequestParam(value = "id") String id) {
+    public AjaxResult info(@RequestParam(value = "id") String id) {
         NasFrpClient client = nasFrpClientService.getById(id);
         return AjaxResult.success(client);
     }
@@ -146,7 +146,7 @@ public class NasFrpClientController extends BaseController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
-    private AjaxResult add(@RequestBody NasFrpClient nasFrpClient) {
+    public AjaxResult add(@RequestBody NasFrpClient nasFrpClient) {
         if (StrUtil.isBlankIfStr(nasFrpClient.getName())) {
             return AjaxResult.error("名称不能为空");
         }
@@ -200,7 +200,7 @@ public class NasFrpClientController extends BaseController {
      */
     @DeleteMapping("/delete")
     @ApiOperation(value = "【删除】")
-    private AjaxResult delete(@RequestParam("id") String id) {
+    public AjaxResult delete(@RequestParam("id") String id) {
         // 查询是否存在
         NasFrpClient client = nasFrpClientService.getById(id);
         if (client == null) {

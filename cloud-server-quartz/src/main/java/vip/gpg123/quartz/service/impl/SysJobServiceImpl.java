@@ -202,7 +202,8 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
     public int insertJob(SysJob job) throws SchedulerException, TaskException
     {
         job.setStatus(ScheduleConstants.Status.PAUSE.getValue());
-        int rows = jobMapper.insertJob(job);
+        int rows = baseMapper.insert(job);
+        //jobMapper.insertJob(job);
         if (rows > 0)
         {
             ScheduleUtils.createScheduleJob(scheduler, job);

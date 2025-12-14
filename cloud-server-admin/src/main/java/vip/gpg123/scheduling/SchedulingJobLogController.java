@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/scheduling/jobLog")
 @Api(tags = "调度日志")
-public class SysSchedulingJobLogController {
+public class SchedulingJobLogController {
 
     @Autowired
     private ISysJobLogService sysJobLogService;
