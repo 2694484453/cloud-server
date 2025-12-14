@@ -30,10 +30,22 @@ public class SchedulingTemplate implements Serializable {
     private String jobType;
 
     /**
+     *
+     */
+    @TableField(value = "bind_task")
+    private String bindTask;
+
+    /**
+     *
+     */
+    @TableField(value = "bind_method")
+    private String bindMethod;
+
+    /**
      * 
      */
-    @TableField(value = "job_params", typeHandler = JacksonTypeHandler.class)
-    private Object jobParams;
+    @TableField(value = "bind_params", typeHandler = JacksonTypeHandler.class)
+    private Object bindParams;
 
     /**
      * 

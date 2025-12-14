@@ -85,6 +85,7 @@ public abstract class AbstractQuartzJob implements Job {
         threadLocal.set(new Date());
         // 设置任务为执行状态
         sysJob.setStatus("running");
+        sysJob.setRunTime(new Date());
         // 更新
         SpringUtils.getBean(ISysJobService.class).updateJob(sysJob);
     }
