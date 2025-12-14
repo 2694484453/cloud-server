@@ -52,11 +52,6 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                 // 配置文件位置
                 prometheusProducer.createExporterFile(entity);
                 // 发送邮件
-                EmailBody emailBody = new EmailBody();
-                emailBody.setTos(new String[]{loginUser.getUser().getEmail()});
-                emailBody.setName(entity.getJobName());
-                emailBody.setAction("新增");
-                emailBody.setModelName(modelName);
                 messageProducer.sendEmail("新增", modelName, result, loginUser.getUser().getEmail(), true);
             }
         });

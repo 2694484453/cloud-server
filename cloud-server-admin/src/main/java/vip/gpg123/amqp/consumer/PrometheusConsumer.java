@@ -39,14 +39,22 @@ public class PrometheusConsumer {
     private String exporterPath;
 
 
+    /**
+     * 创建json文件
+     * @param prometheusExporter pe
+     */
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = PrometheusProducer.prometheusQueue, durable = "true"), // 创建持久化队列
             exchange = @Exchange(name = PrometheusProducer.prometheusExchange), // 声明直接交换器
             key = "createExporterFile" // 定义路由键
     ))
     public void createExporterFile(PrometheusExporter prometheusExporter) {
+        String typePath = exporterPath + "/" +prometheusExporter.getExporterType();
+        if (!FileUtil.exist(typePath)) {
+            FileUtil.mkdir(typePath);
+        }
         // 位置
-        String filePath = exporterPath + "/" + prometheusExporter.getExporterType() + "/" + prometheusExporter.getJobName()+".json";
+        String filePath = typePath + "/" + prometheusExporter.getJobName()+".json";
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("labels", new HashMap<String, String>() {{
@@ -56,11 +64,14 @@ public class PrometheusConsumer {
             add(prometheusExporter.getTargets());
         }});
         jsonArray.add(jsonObject);
-        String jsonFormat = JSONUtil.toJsonStr(jsonArray);
+        String jsonFormat = JSONUtil.formatJsonStr(JSONUtil.toJsonStr(jsonArray));
         // 写入
         FileUtil.writeString(jsonFormat, filePath, StandardCharsets.UTF_8);
     }
 
+    /**
+     * 更新状态
+     */
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = PrometheusProducer.prometheusQueue, durable = "true"), // 创建持久化队列
             exchange = @Exchange(name = PrometheusProducer.prometheusExchange), // 声明直接交换器
