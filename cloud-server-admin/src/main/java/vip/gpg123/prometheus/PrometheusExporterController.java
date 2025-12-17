@@ -1,7 +1,10 @@
 package vip.gpg123.prometheus;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -254,6 +257,7 @@ public class PrometheusExporterController extends BaseController {
 
     /**
      * http动态发现
+     *
      * @return r
      */
     @GetMapping("/http-sd")
@@ -264,63 +268,12 @@ public class PrometheusExporterController extends BaseController {
             PrometheusConfigs configs = new PrometheusConfigs();
             String metricsPath = "__metrics_path__";
             Map<String, Object> labels = new HashMap<>();
-            labels.put("job", item.getJobName());
-            labels.put("instance", item.getJobName());
-            switch (item.getExporterType()) {
-                case "spring-boot-exporter":
-                    path = "/actuator/prometheus";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    labels.put("application", item.getJobName());
-                    break;
-                case "node-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "amd-smi-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "amd-gpu-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "nginx-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "coredns-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "caddy-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "traefik-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "jaeger-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "frps-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                case "kube-state-metrics-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    labels.put("k8s", item.getJobName());
-                    labels.put("cluster", item.getJobName());
-                    break;
-                case "windows-exporter":
-                    path = "/metrics";
-                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
-                    break;
-                default:
-                    labels.put("type", item.getExporterType());
-                    break;
+            if (ObjectUtil.isNotNull(item.getLabels())) {
+                labels = Convert.toMap(String.class, Object.class, item.getLabels());
+            } else {
+                labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? "/metrics" : item.getMetricsPath());
+                labels.put("job", item.getJobName());
+                labels.put("instance", item.getJobName());
             }
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
             configs.setLabels(labels);
