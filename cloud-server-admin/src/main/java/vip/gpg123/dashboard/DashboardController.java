@@ -2,6 +2,7 @@ package vip.gpg123.dashboard;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,6 +19,7 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.dashboard.domain.Umami;
 import vip.gpg123.dashboard.domain.UmamiStats;
 import vip.gpg123.dashboard.service.UmamiApi;
+import vip.gpg123.prometheus.PrometheusExporterController;
 import vip.gpg123.scheduling.service.SysSchedulingJobService;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.mapper.SysNoticeMapper;
@@ -52,6 +54,9 @@ public class DashboardController {
 
     @Autowired
     private SysNoticeMapper sysNoticeMapper;
+
+    @Autowired
+    private PrometheusExporterController prometheusExporterController;
 
     @Value("${analytics.umami.share-id}")
     private String shareId;
@@ -148,5 +153,14 @@ public class DashboardController {
         IPage<SysNotice> page = new Page<>();
         page.setRecords(list);
         return PageUtils.toPageByIPage(page);
+    }
+
+    /**
+     * 基于http动态发现
+     * @return r
+     */
+    @GetMapping("/http-sd")
+    public JSONArray httpSd() {
+        return prometheusExporterController.httpSd();
     }
 }

@@ -252,6 +252,10 @@ public class PrometheusExporterController extends BaseController {
         return AjaxResult.success();
     }
 
+    /**
+     * http动态发现
+     * @return r
+     */
     @GetMapping("/http-sd")
     public JSONArray httpSd() {
         JSONArray jsonArray = new JSONArray();
