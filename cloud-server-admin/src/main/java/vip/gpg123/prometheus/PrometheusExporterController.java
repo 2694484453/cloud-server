@@ -320,7 +320,7 @@ public class PrometheusExporterController extends BaseController {
             }
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
             configs.setLabels(labels);
-            jsonArray.add(item);
+            jsonArray.add(configs);
         });
         return jsonArray;
     }
