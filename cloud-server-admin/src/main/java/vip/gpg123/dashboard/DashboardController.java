@@ -26,6 +26,7 @@ import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.system.service.ISysUserService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class DashboardController {
     public AjaxResult overView(@RequestParam(value = "startAt", required = false) String startAt,
                                @RequestParam(value = "endAt", required = false) String endAt) {
         List<Map<String, Object>> list = new ArrayList<>();
-        startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.lastWeek().getTime() / 1000) : startAt;
+        startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7) .getTime()/ 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
         UmamiStats stats = umamiApi.stats(websiteId, startAt, endAt, "hour", "Asia/Shanghai");
 
