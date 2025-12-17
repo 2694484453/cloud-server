@@ -3,11 +3,11 @@ package vip.gpg123.nas.service;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
-import vip.gpg123.framework.interceptor.impl.FrpServerBasicAuthRequestInterceptor;
+import vip.gpg123.nas.config.FrpServerFeignConfig;
 import vip.gpg123.nas.domain.FrpServerHttpResponse;
 import vip.gpg123.nas.domain.FrpServerInfo;
 
-@FeignClient(name = "nas-frp-server", url = "${frp.server.url}", configuration = FrpServerBasicAuthRequestInterceptor.class)
+@FeignClient(name = "nas-frp-server", url = "${frp.server.url}", configuration = FrpServerFeignConfig.class)
 @Service
 public interface FrpServerApi {
 

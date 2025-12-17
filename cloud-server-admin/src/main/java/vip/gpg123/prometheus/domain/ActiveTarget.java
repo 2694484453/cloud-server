@@ -1,4 +1,4 @@
-package vip.gpg123.platform.domain;
+package vip.gpg123.prometheus.domain;
 
 import cn.hutool.json.JSONObject;
 import lombok.Data;
@@ -29,3 +29,4 @@ public class ActiveTarget {
     private String scrapeUrl;
 
 }
+

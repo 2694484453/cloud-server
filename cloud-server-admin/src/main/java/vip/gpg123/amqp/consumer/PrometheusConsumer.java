@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import vip.gpg123.amqp.producer.PrometheusProducer;
-import vip.gpg123.platform.domain.ActiveTarget;
+import vip.gpg123.prometheus.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.service.PrometheusApi;

@@ -44,6 +44,7 @@ server:
 logging:
   level:
     vip.gpg123: debug
+    vip.gpg123.vip.dashboard.service.UmamiApi: debug
     com.ruoyi: debug
     org.springframework: warn
 
@@ -166,3 +167,9 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+feign:
+  client:
+    config:
+      umami-api:
+        logger-level: full
+#

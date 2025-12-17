@@ -1,4 +1,4 @@
-package vip.gpg123.platform.domain;
+package vip.gpg123.prometheus.domain;
 
 import lombok.Data;
 

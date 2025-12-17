@@ -16,8 +16,8 @@ import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.platform.domain.ActiveTarget;
-import vip.gpg123.platform.domain.PrometheusTargetData;
+import vip.gpg123.prometheus.domain.ActiveTarget;
+import vip.gpg123.prometheus.domain.PrometheusTargetData;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.service.PrometheusApi;
 
