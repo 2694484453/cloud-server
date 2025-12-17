@@ -269,11 +269,13 @@ public class PrometheusExporterController extends BaseController {
             String metricsPath = "__metrics_path__";
             Map<String, Object> labels = new HashMap<>();
             if (ObjectUtil.isNotNull(item.getLabels())) {
-                labels = Convert.toMap(String.class, Object.class, item.getLabels());
+                JSONObject labelsJson = JSONUtil.parseObj(item.getLabels());
+                labels = Convert.toMap(String.class, Object.class, labelsJson);
             }
             labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? "/metrics" : item.getMetricsPath());
             labels.put("job", item.getJobName());
             labels.put("instance", item.getJobName());
+            labels.put("type", StrUtil.isBlank(item.getExporterType()) ? "unknow" : item.getExporterType());
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
             configs.setLabels(labels);
             jsonArray.add(configs);
