@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,6 +41,9 @@ public class PrometheusExporter extends BaseEntity implements Serializable {
 
     @TableField(value = "metrics_path")
     private String metricsPath;
+
+    @TableField(value = "labels", typeHandler = JacksonTypeHandler.class)
+    private Object labels;
 
     /**
      * url

@@ -265,6 +265,7 @@ public class PrometheusExporterController extends BaseController {
             String metricsPath = "__metrics_path__";
             Map<String, Object> labels = new HashMap<>();
             labels.put("job", item.getJobName());
+            labels.put("instance", item.getJobName());
             switch (item.getExporterType()) {
                 case "spring-boot-exporter":
                     path = "/actuator/prometheus";
@@ -316,6 +317,9 @@ public class PrometheusExporterController extends BaseController {
                 case "windows-exporter":
                     path = "/metrics";
                     labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                default:
+                    labels.put("type", item.getExporterType());
                     break;
             }
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
