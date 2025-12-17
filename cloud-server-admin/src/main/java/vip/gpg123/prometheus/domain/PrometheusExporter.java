@@ -38,6 +38,9 @@ public class PrometheusExporter extends BaseEntity implements Serializable {
     @TableField(value = "targets")
     private String targets;
 
+    @TableField(value = "metrics_path")
+    private String metricsPath;
+
     /**
      * url
      */

@@ -54,6 +54,7 @@
         <docker-java.version>3.3.4</docker-java.version>
         <http5.version>3.3.4</http5.version>
         <guava.version>31.1-jre</guava.version>
+        <consul.version>4.0.2</consul.version>
         <!--jaeger-->
 <!--        <jaeger.version>3.3.1</jaeger.version>-->
     </properties>
@@ -92,7 +93,7 @@
             <dependency>
                 <groupId>io.opentelemetry.instrumentation</groupId>
                 <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>${opentelemetry.version}</version> <!-- 请检查最新版本 -->
+                <version>${opentelemetry.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -298,6 +299,13 @@
 <!--                <artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>-->
                 <version>${jaeger.version}</version>
             </dependency>
+
+            <!--consul服务发现-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+                <version>${consul.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -333,6 +341,12 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!--consul服务发现-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
         </dependency>
 
         <!-- otlp链路追踪 -->

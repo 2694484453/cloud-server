@@ -29,6 +29,7 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.prometheus.domain.PrometheusConfigs;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
@@ -37,7 +38,10 @@ import vip.gpg123.prometheus.service.PrometheusExporterService;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/prometheus/exporter")
@@ -135,6 +139,7 @@ public class PrometheusExporterController extends BaseController {
 
     /**
      * 编辑
+     *
      * @param exporter e
      * @return r
      */
@@ -150,7 +155,7 @@ public class PrometheusExporterController extends BaseController {
         PrometheusExporter search = prometheusExporterService.getById(exporter.getId());
         // 修改了名称
         if (!search.getJobName().equals(exporter.getJobName())) {
-            int count = prometheusExporterService.count(new  LambdaQueryWrapper<PrometheusExporter>()
+            int count = prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
                     .eq(PrometheusExporter::getJobName, exporter.getJobName()));
             if (count > 0) {
                 return AjaxResult.error("已存在相同名称，请更换");
@@ -164,6 +169,7 @@ public class PrometheusExporterController extends BaseController {
 
     /**
      * 删除
+     *
      * @param id id
      * @return r
      */
@@ -244,5 +250,74 @@ public class PrometheusExporterController extends BaseController {
     public AjaxResult syncStatus() {
         prometheusProducer.syncStatus();
         return AjaxResult.success();
+    }
+
+    @GetMapping("/http-sd")
+    public JSONArray httpSd() {
+        JSONArray jsonArray = new JSONArray();
+        List<PrometheusExporter> list = prometheusExporterService.list();
+        list.forEach(item -> {
+            PrometheusConfigs configs = new PrometheusConfigs();
+            String metricsPath = "__metrics_path__";
+            Map<String, Object> labels = new HashMap<>();
+            labels.put("job", item.getJobName());
+            switch (item.getExporterType()) {
+                case "spring-boot-exporter":
+                    path = "/actuator/prometheus";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    labels.put("application", item.getJobName());
+                    break;
+                case "node-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "amd-smi-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "amd-gpu-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "nginx-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "coredns-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "caddy-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "traefik-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "jaeger-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "frps-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+                case "kube-state-metrics-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    labels.put("k8s", item.getJobName());
+                    labels.put("cluster", item.getJobName());
+                    break;
+                case "windows-exporter":
+                    path = "/metrics";
+                    labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? path : item.getMetricsPath());
+                    break;
+            }
+            configs.setTargets(Arrays.asList(item.getTargets().split(",")));
+            configs.setLabels(labels);
+            jsonArray.add(item);
+        });
+        return jsonArray;
     }
 }
