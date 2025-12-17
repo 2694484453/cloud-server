@@ -270,9 +270,8 @@ public class PrometheusExporterController extends BaseController {
             Map<String, Object> labels = new HashMap<>();
             if (ObjectUtil.isNotNull(item.getLabels())) {
                 labels = Convert.toMap(String.class, Object.class, item.getLabels());
-            } else {
-                labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? "/metrics" : item.getMetricsPath());
             }
+            labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? "/metrics" : item.getMetricsPath());
             labels.put("job", item.getJobName());
             labels.put("instance", item.getJobName());
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
