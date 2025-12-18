@@ -64,6 +64,43 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, Session> impl
         return dataList;
     }
 
+    /**
+     * 访客
+     *
+     * @param startAt s
+     * @param endAt   e
+     * @return r
+     */
+    @Override
+    @DS("umami")
+    public List<Map<String, Object>> chinaMetrics(String startAt, String endAt) {
+        LocalDateTime start = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(Long.parseLong(startAt)),
+                ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
+        );
+        LocalDateTime end = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(Long.parseLong(endAt)),
+                ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
+        );
+        List<Map<String, Object>> dataList = new LinkedList<>();
+        List<Session> list = sessionMapper.selectList(new LambdaQueryWrapper<Session>()
+                .eq(Session::getWebsiteId, websiteId)
+                .eq(Session::getCountry, "CN")
+                .between(Session::getCreatedAt, start, end)
+        );
+        list.forEach(session -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("x", session.getRegion());
+            map.put("y", sessionMapper.selectCount(new LambdaQueryWrapper<Session>()
+                    .eq(Session::getWebsiteId, websiteId)
+                    .eq(Session::getCountry, "CN")
+                    .eq(Session::getRegion, session.getRegion())
+                    .between(Session::getCreatedAt, start, end)));
+            dataList.add(map);
+        });
+        return dataList;
+    }
+
 
     @Override
     @DS("umami")

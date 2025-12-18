@@ -147,12 +147,27 @@ public class DashboardController {
      * @param endAt   ea
      * @return r
      */
-    @GetMapping("/map")
-    public Object map(@RequestParam(value = "startAt", required = false) String startAt,
+    @GetMapping("/worldMapData")
+    public Object worldMapData(@RequestParam(value = "startAt", required = false) String startAt,
                       @RequestParam(value = "endAt", required = false) String endAt) {
         startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
         return sessionService.metrics(startAt, endAt);
+    }
+
+    /**
+     * map
+     *
+     * @param startAt sa
+     * @param endAt   ea
+     * @return r
+     */
+    @GetMapping("/chinaMapData")
+    public Object chinaMapData(@RequestParam(value = "startAt", required = false) String startAt,
+                               @RequestParam(value = "endAt", required = false) String endAt) {
+        startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
+        endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
+        return sessionService.chinaMetrics(startAt, endAt);
     }
 
     /**

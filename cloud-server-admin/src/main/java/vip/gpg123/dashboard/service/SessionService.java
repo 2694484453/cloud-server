@@ -21,6 +21,19 @@ public interface SessionService extends IService<Session> {
      */
     List<Map<String,Object>> metrics(String startAt, String endAt);
 
+    /**
+     * 访客
+     * @param startAt s
+     * @param endAt e
+     * @return r
+     */
+    List<Map<String,Object>> chinaMetrics(String startAt, String endAt);
 
+    /**
+     * vist
+     * @param startAt s
+     * @param endAt e
+     * @return r
+     */
     long visitors(String startAt, String endAt);
 }
