@@ -79,7 +79,4 @@ cloud:
 #访问分析
 analytics:
   umami:
-    api: https://cloud.umami.is/analytics/us/api
-    share-id: iUX6Qz9BIwpXraRV
-    website-id: bdf579c4-ccad-4f66-84ad-12125e206bc9
-    token: TL89uSFeV06lMpJM6aHCftEGk6AvyrA6VTC9xQsN0Nxf6ryxQ/qQdas7M7J0SZRa5uu7fDrsQyxZPjvh1E2KRC6OwrHOZg43wg+mRE5m1sHGysbDavOY3TBjD35gXgZZU81C89hcrgtkuDVAH71i7nzp0B/FgqNN/1uwaSPyb3Fs1wjIUarSY8Wx1F1Q04mOTNJ4EFSSjr41tzXfC1CQuo4huJZsx16zXbcn8u4oFmVGwVdp08sNik/ZSfhEEQaZcDo19/eWn4ROQZjcJkvjVdDGqSA3T/EsoKycxkEhqh64czQxuEgUbJwlMJxX02a4X69xM1aGmwtT1yDPzLR3iqicklP/WUtJ/6DOpA==
+    website-id: 56ec3622-80b9-4202-ad85-212fbc9c1235

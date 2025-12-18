@@ -20,4 +20,7 @@ public interface SessionService extends IService<Session> {
      * @return r
      */
     List<Map<String,Object>> metrics(String startAt, String endAt);
+
+
+    long visitors(String startAt, String endAt);
 }

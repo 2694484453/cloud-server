@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.dashboard.mapper.WebsiteEventMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.dashboard.domain.WebsiteEvent">
+            <id property="eventId" column="event_id" />
+            <result property="websiteId" column="website_id" />
+            <result property="sessionId" column="session_id" />
+            <result property="createdAt" column="created_at" />
+            <result property="urlPath" column="url_path" />
+            <result property="urlQuery" column="url_query" />
+            <result property="referrerPath" column="referrer_path" />
+            <result property="referrerQuery" column="referrer_query" />
+            <result property="referrerDomain" column="referrer_domain" />
+            <result property="pageTitle" column="page_title" />
+            <result property="eventType" column="event_type" />
+            <result property="eventName" column="event_name" />
+            <result property="visitId" column="visit_id" />
+            <result property="tag" column="tag" />
+            <result property="fbclid" column="fbclid" />
+            <result property="gclid" column="gclid" />
+            <result property="liFatId" column="li_fat_id" />
+            <result property="msclkid" column="msclkid" />
+            <result property="ttclid" column="ttclid" />
+            <result property="twclid" column="twclid" />
+            <result property="utmCampaign" column="utm_campaign" />
+            <result property="utmContent" column="utm_content" />
+            <result property="utmMedium" column="utm_medium" />
+            <result property="utmSource" column="utm_source" />
+            <result property="utmTerm" column="utm_term" />
+            <result property="hostname" column="hostname" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        event_id,website_id,session_id,created_at,url_path,url_query,
+        referrer_path,referrer_query,referrer_domain,page_title,event_type,
+        event_name,visit_id,tag,fbclid,gclid,
+        li_fat_id,msclkid,ttclid,twclid,utm_campaign,
+        utm_content,utm_medium,utm_source,utm_term,hostname
+    </sql>
+</mapper>

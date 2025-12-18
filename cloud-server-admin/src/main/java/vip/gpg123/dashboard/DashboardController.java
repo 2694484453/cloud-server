@@ -16,10 +16,9 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.dashboard.domain.Umami;
-import vip.gpg123.dashboard.domain.UmamiStats;
+import vip.gpg123.dashboard.domain.WebsiteEvent;
 import vip.gpg123.dashboard.service.SessionService;
-import vip.gpg123.dashboard.service.UmamiApi;
+import vip.gpg123.dashboard.service.WebsiteEventService;
 import vip.gpg123.prometheus.PrometheusExporterController;
 import vip.gpg123.scheduling.service.SysSchedulingJobService;
 import vip.gpg123.system.domain.SysNotice;
@@ -28,6 +27,9 @@ import vip.gpg123.system.service.ISysConfigService;
 import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.system.service.ISysUserService;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,9 +39,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/dashboard")
 public class DashboardController {
-
-    @Autowired
-    private UmamiApi umamiApi;
 
     @Autowired
     private ISysUserService sysUserService;
@@ -62,14 +61,8 @@ public class DashboardController {
     @Autowired
     private SessionService sessionService;
 
-    @Value("${analytics.umami.share-id}")
-    private String shareId;
-
-    @Value("${analytics.umami.website-id}")
-    private String websiteId;
-
-    @Value("${analytics.umami.token}")
-    private String token;
+    @Autowired
+    private WebsiteEventService websiteEventService;
 
     /**
      * 卡片面板
@@ -84,36 +77,43 @@ public class DashboardController {
         List<Map<String, Object>> list = new ArrayList<>();
         startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
-        UmamiStats stats = umamiApi.stats(websiteId, startAt, endAt, "hour", "Asia/Shanghai");
 
+        LocalDateTime start = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(Long.parseLong(startAt)),
+                ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
+        );
+        LocalDateTime end = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(Long.parseLong(endAt)),
+                ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
+        );
         Map<String, Object> visitors = new HashMap<>();
         visitors.put("title", "访客");
-        visitors.put("count", stats.getVisitors());
-        visitors.put("comparison", stats.getComparison().getVisitors());
+        visitors.put("count", sessionService.visitors(startAt, endAt));
+        visitors.put("comparison", 0);
         list.add(visitors);
 
         Map<String, Object> visits = new HashMap<>();
         visits.put("title", "访问次数");
-        visits.put("count", stats.getVisits());
-        visits.put("comparison", stats.getComparison().getVisits());
+        visits.put("count", websiteEventService.visits(start, end));
+        visits.put("comparison", 0);
         list.add(visits);
 
         Map<String, Object> pageView = new HashMap<>();
         pageView.put("title", "浏览量");
-        pageView.put("count", stats.getPageviews());
-        pageView.put("comparison", stats.getComparison().getPageviews());
+        pageView.put("count", websiteEventService.pageViews(start, end));
+        pageView.put("comparison", 0);
         list.add(pageView);
 
         Map<String, Object> bounces = new HashMap<>();
         bounces.put("title", "跳出率");
-        bounces.put("count", stats.getBounces() + "%");
-        bounces.put("comparison", stats.getComparison().getBounces());
+        bounces.put("count", 0 + "%");
+        bounces.put("comparison", 0);
         list.add(bounces);
 
         Map<String, Object> totalTime = new HashMap<>();
         totalTime.put("title", "平均访问时长");
-        totalTime.put("count", stats.getTotaltime());
-        totalTime.put("comparison", stats.getComparison().getTotaltime());
+        totalTime.put("count", 0);
+        totalTime.put("comparison", 0);
         list.add(totalTime);
 
         Map<String, Object> lastWeekMap = new HashMap<>();
@@ -153,7 +153,6 @@ public class DashboardController {
         startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
         return sessionService.metrics(startAt, endAt);
-                //umamiApi.metrics(websiteId, startAt, endAt, "day", "Asia/Shanghai", "country", "100");
     }
 
     /**

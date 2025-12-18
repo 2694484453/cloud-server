@@ -4,6 +4,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import vip.gpg123.dashboard.domain.Session;
 import vip.gpg123.dashboard.service.SessionService;
 import vip.gpg123.dashboard.mapper.SessionMapper;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +30,8 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, Session> impl
     @Autowired
     private SessionMapper sessionMapper;
 
+    @Value("${analytics.umami.website-id}")
+    private String websiteId;
 
     /**
      * 访客
@@ -48,16 +52,31 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, Session> impl
                 ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
         );
         List<Map<String, Object>> dataList = new LinkedList<>();
-        List<Session> list = sessionMapper.selectList(new LambdaQueryWrapper<Session>()
+        List<Session> list = sessionMapper.selectList(new LambdaQueryWrapper<Session>().eq(Session::getWebsiteId, websiteId)
                 .between(Session::getCreatedAt, start, end)
         );
         list.forEach(session -> {
             Map<String, Object> map = new HashMap<>();
             map.put("x", session.getCountry());
-            map.put("y", sessionMapper.selectCount(new LambdaQueryWrapper<Session>().eq(Session::getCountry, session.getCountry()).between(Session::getCreatedAt, start, end)));
+            map.put("y", sessionMapper.selectCount(new LambdaQueryWrapper<Session>().eq(Session::getWebsiteId, websiteId).eq(Session::getCountry, session.getCountry()).between(Session::getCreatedAt, start, end)));
             dataList.add(map);
         });
         return dataList;
+    }
+
+
+    @Override
+    @DS("umami")
+    public long visitors(String startAt, String endAt) {
+        LocalDateTime start = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(Long.parseLong(startAt)),
+                ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
+        );
+        LocalDateTime end = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(Long.parseLong(endAt)),
+                ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
+        );
+        return sessionMapper.selectCount(new LambdaQueryWrapper<Session>().eq(Session::getWebsiteId, websiteId).between(Session::getCreatedAt, start, end));
     }
 }
 
