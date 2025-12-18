@@ -11,7 +11,7 @@ etcd:
 repo:
   helm:
     name: default
-    url: https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/helm-charts
+    url: https://helm-repo.gpg123.vip
   docker:
     - name: aliyun
       url:

@@ -75,8 +75,11 @@ public class HelmUtils {
      * @param chartUrl    url
      * @param kubeContext kubeContext
      */
-    public static String install(String releaseName, String namespace, String chartUrl, String values, String kubeContext, String kubeConfigPath) {
+    public static String install(String releaseName, String namespace, String chartUrl, String valuesFilePath, String kubeContext, String kubeConfigPath) {
         String[] init = new String[]{"helm", "install"};
+        if (StrUtil.isNotBlank(valuesFilePath)) {
+            init = ArrayUtil.append(init, "-f", valuesFilePath);
+        }
         if (StrUtil.isNotBlank(releaseName)) {
             init = ArrayUtil.append(init, releaseName);
         }
@@ -93,32 +96,34 @@ public class HelmUtils {
         }
         // 路径
         if (StrUtil.isNotBlank(kubeConfigPath)) {
-            init = ArrayUtil.append(init, "--kube-config", kubeConfigPath);
-        }
-        if (StrUtil.isNotBlank(values)) {
-            // 生成临时文件
-            File file = FileUtil.createTempFile();
-            // 转换yaml字符串写入
-            try {
-                FileWriter fileWriter = new FileWriter(file);
-                YamlUtil.dump(values, fileWriter);
-                fileWriter.close();
-                init = ArrayUtil.append(init, "-f", file.getAbsolutePath());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                FileUtil.del(file);
-            }
+            init = ArrayUtil.append(init, "--kubeconfig", kubeConfigPath);
         }
         init = ArrayUtil.append(init, "--output", "json");
-        return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
+        printCmd(init);
+        String res = RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
+        // 删除
+        if(FileUtil.exist(valuesFilePath)) {
+            FileUtil.del(valuesFilePath);
+        }
+        return res;
     }
 
+    /**
+     * 更新
+     * @param releaseName rn
+     * @param namespace ns
+     * @param chartUrl c
+     * @param values v
+     * @param kubeContext k
+     * @param kubeConfigPath k
+     * @return r
+     */
     public static String upgrade(String releaseName, String namespace, String chartUrl, String values, String kubeContext, String kubeConfigPath) {
         String[] init = new String[]{"helm", "upgrade"};
         if (StrUtil.isNotBlank(releaseName)) {
             init = ArrayUtil.append(init, releaseName);
         }
+        printCmd(init);
         return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
     }
 
@@ -209,4 +214,7 @@ public class HelmUtils {
         return JSONUtil.toList(jsonArray, Object.class);
     }
 
+    public static void printCmd(String[] cmd) {
+        System.out.println(StrUtil.join(" ", (Object) cmd));
+    }
 }

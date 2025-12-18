@@ -49,4 +49,11 @@ public class SyncTask {
     public void prometheusReload() {
         SpringUtils.getBean(PrometheusApi.class).reload();
     }
+
+    /**
+     * helm-repo
+     */
+    public void helmRepoSync() {
+        SpringUtils.getBean(HelmAppMarketController.class).sync();
+    }
 }

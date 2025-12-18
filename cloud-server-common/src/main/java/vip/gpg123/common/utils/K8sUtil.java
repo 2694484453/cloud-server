@@ -1,8 +1,14 @@
 package vip.gpg123.common.utils;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.yaml.YamlUtil;
 import cn.hutool.system.SystemUtil;
-import io.fabric8.kubernetes.api.model.NamedContext;
+import com.alibaba.fastjson2.JSON;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
@@ -10,8 +16,10 @@ import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
 import io.fabric8.kubernetes.client.utils.Serialization;
 import io.fabric8.openshift.client.OpenShiftClient;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -20,6 +28,10 @@ import java.nio.charset.StandardCharsets;
  * @date 2025/3/1 2:34
  **/
 public class K8sUtil {
+
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
+    private static final YAMLMapper YAML_MAPPER = new YAMLMapper();
 
     /**
      * 配置文件地址
@@ -193,12 +205,45 @@ public class K8sUtil {
 
     /**
      * 根据string内容导出到文件并返回
+     *
      * @param content c
      * @return r
      */
-    public static File exportToTempFile(String content) {
+    public static File exportConfigToTempFile(String content) {
         File file = FileUtil.createTempFile();
         FileUtil.writeString(content, file.getAbsolutePath(), StandardCharsets.UTF_8);
+        return file;
+    }
+
+    /**
+     * 生成参数文件
+     * @param values v
+     * @return r
+     */
+    public static File exportValuesToTempFile(String values) {
+        File file = FileUtil.createTempFile();
+        // 判断字符串中的内容类型
+        String type = detectFormat(values);
+        switch (type) {
+            case "yaml":
+                System.out.println("参数为yaml格式，不需要转换");
+                FileUtil.writeString(values, file.getAbsolutePath(), StandardCharsets.UTF_8);
+                break;
+            case "json":
+                System.out.println("参数为json格式，需要转换为yaml");
+                try (FileWriter fileWriter = new FileWriter(file, true)) {
+                    JSONObject jsonObject = JSONUtil.parseObj(values);
+                    YamlUtil.dump(jsonObject, fileWriter);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "unknown":
+                System.out.println("未知类型，防止错误生成空内容");
+                values = "";
+                FileUtil.writeString(values, file.getAbsolutePath(), StandardCharsets.UTF_8);
+                break;
+        }
         return file;
     }
 
@@ -219,6 +264,39 @@ public class K8sUtil {
      */
     public static boolean checkResourceName(String resourceName) {
         return KubernetesResourceUtil.isValidName(resourceName);
+    }
+
+    /**
+     * 判断字符串是 JSON、YAML 还是都不是
+     *
+     * @param input 输入字符串
+     * @return "json" / "yaml" / "unknown"
+     */
+    public static String detectFormat(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return "unknown";
+        }
+        // 先尝试解析为 JSON（更严格，避免 YAML 误判简单 JSON）
+        try {
+            JsonNode node = JSON_MAPPER.readTree(input.trim());
+            // 确保不是单个字符串或数字（如 "hello" 是合法 JSON 字符串，但可能是 YAML 内容）
+            // 可选：要求必须是对象或数组
+            if (node.isObject() || node.isArray()) {
+                return "json";
+            }
+        } catch (Exception e) {
+            // JSON 解析失败，继续尝试 YAML
+        }
+
+        // 尝试解析为 YAML
+        try {
+            Object obj = YAML_MAPPER.readValue(input, Object.class);
+            // YAML 成功解析（即使是一个标量，也认为是 YAML）
+            return "yaml";
+        } catch (Exception e) {
+            // YAML 也失败
+        }
+        return "unknown";
     }
 }
 

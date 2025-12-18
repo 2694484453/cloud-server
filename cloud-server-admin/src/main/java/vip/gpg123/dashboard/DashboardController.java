@@ -18,6 +18,7 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.dashboard.domain.Umami;
 import vip.gpg123.dashboard.domain.UmamiStats;
+import vip.gpg123.dashboard.service.SessionService;
 import vip.gpg123.dashboard.service.UmamiApi;
 import vip.gpg123.prometheus.PrometheusExporterController;
 import vip.gpg123.scheduling.service.SysSchedulingJobService;
@@ -57,6 +58,9 @@ public class DashboardController {
 
     @Autowired
     private PrometheusExporterController prometheusExporterController;
+
+    @Autowired
+    private SessionService sessionService;
 
     @Value("${analytics.umami.share-id}")
     private String shareId;
@@ -148,7 +152,8 @@ public class DashboardController {
                       @RequestParam(value = "endAt", required = false) String endAt) {
         startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
-        return umamiApi.metrics(websiteId, startAt, endAt, "day", "Asia/Shanghai", "country", "100");
+        return sessionService.metrics(startAt, endAt);
+                //umamiApi.metrics(websiteId, startAt, endAt, "day", "Asia/Shanghai", "country", "100");
     }
 
     /**

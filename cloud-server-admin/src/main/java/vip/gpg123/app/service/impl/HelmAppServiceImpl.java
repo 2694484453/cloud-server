@@ -52,8 +52,9 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
             public void run() {
                 KubernetesCluster kubernetesCluster = kubernetesClusterMapper.selectOne(new LambdaQueryWrapper<KubernetesCluster>().eq(KubernetesCluster::getContextName, entity.getKubeContext()));
                 if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
-                    File file = K8sUtil.exportToTempFile(kubernetesCluster.getConfig());
-                    String result = HelmUtils.install(entity.getReleaseName(), entity.getNameSpace(), entity.getChartUrl(), entity.getChartValues(), entity.getKubeContext(), file.getAbsolutePath());
+                    File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
+                    File valuesFile = K8sUtil.exportValuesToTempFile(entity.getChartValues());
+                    String result = HelmUtils.install(entity.getReleaseName(), entity.getNameSpace(), entity.getChartUrl(), valuesFile.getAbsolutePath(), entity.getKubeContext(), file.getAbsolutePath());
                     entity.setResult(result);
                 } else {
                     entity.setResult("找不到集群：" + entity.getKubeContext());
@@ -86,8 +87,9 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
                     baseMapper.updateById(entity);
                     KubernetesCluster kubernetesCluster = kubernetesClusterMapper.selectOne(new LambdaQueryWrapper<KubernetesCluster>().eq(KubernetesCluster::getContextName, entity.getKubeContext()));
                     if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
-                        File file = K8sUtil.exportToTempFile(kubernetesCluster.getConfig());
-                        String result = HelmUtils.upgrade(entity.getReleaseName(), entity.getNameSpace(), entity.getChartUrl(), entity.getChartValues(), entity.getKubeContext(), file.getAbsolutePath());
+                        File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
+                        File valuesFile = K8sUtil.exportValuesToTempFile(entity.getChartValues());
+                        String result = HelmUtils.upgrade(entity.getReleaseName(), entity.getNameSpace(), entity.getChartUrl(), valuesFile.getAbsolutePath(), entity.getKubeContext(), file.getAbsolutePath());
                         entity.setResult(result);
                     } else {
                         entity.setResult("找不到集群：" + helmApp.getKubeContext());
@@ -114,7 +116,7 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
         HelmApp entity = this.getById(id);
         KubernetesCluster kubernetesCluster = kubernetesClusterMapper.selectOne(new LambdaQueryWrapper<KubernetesCluster>().eq(KubernetesCluster::getContextName, entity.getKubeContext()));
         if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
-            File file = K8sUtil.exportToTempFile(kubernetesCluster.getConfig());
+            File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
             String result = HelmUtils.uninstall(entity.getNameSpace(), entity.getReleaseName(), entity.getKubeContext(), file.getAbsolutePath());
             entity.setResult(result);
         } else {

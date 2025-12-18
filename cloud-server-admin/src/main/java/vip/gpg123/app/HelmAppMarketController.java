@@ -2,9 +2,6 @@ package vip.gpg123.app;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.http.Method;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.yaml.YamlUtil;
@@ -28,6 +25,7 @@ import vip.gpg123.app.domain.IndexResponse;
 import vip.gpg123.app.domain.HelmApp;
 import vip.gpg123.app.service.HelmAppMarketService;
 import vip.gpg123.app.service.HelmAppService;
+import vip.gpg123.app.service.HelmRepoApi;
 import vip.gpg123.app.vo.HelmAppMarketVo;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -47,14 +45,14 @@ import java.util.Map;
 @Api(value = "应用市场")
 public class HelmAppMarketController extends BaseController {
 
-    @Value("${repo.helm.url}")
-    private String helmUrl;
-
     @Autowired
     private HelmAppMarketService helmAppMarketService;
 
     @Autowired
     private HelmAppService helmAppService;
+
+    @Autowired
+    private HelmRepoApi helmRepoApi;
 
     private static final String icon = "https://dev-gpg.oss-cn-hangzhou.aliyuncs.com/icon/helm.jpg";
 
@@ -72,9 +70,9 @@ public class HelmAppMarketController extends BaseController {
                            @RequestParam(value = "status", required = false) String status) {
         // 查询
         List<HelmAppMarket> helmAppMarkets = helmAppMarketService.list(new LambdaQueryWrapper<HelmAppMarket>()
-                        .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
-                        .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
-                        .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
+                .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
+                .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
+                .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
         );
         return AjaxResult.success(helmAppMarkets);
     }
@@ -96,9 +94,9 @@ public class HelmAppMarketController extends BaseController {
         // 获取分页参数
         PageUtils.toIPage(page);
         IPage<HelmAppMarket> pageRes = helmAppMarketService.page(page, new LambdaQueryWrapper<HelmAppMarket>()
-                        .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
-                        .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
-                        .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
+                .like(StrUtil.isNotBlank(name), HelmAppMarket::getName, name)
+                .like(StrUtil.isNotBlank(version), HelmAppMarket::getVersion, version)
+                .eq(StrUtil.isNotBlank(status), HelmAppMarket::getStatus, status)
         );
         return PageUtils.toPageByIPage(pageRes);
     }
@@ -121,17 +119,11 @@ public class HelmAppMarketController extends BaseController {
      *
      * @return r
      */
-    @PostMapping("/sync")
+    @GetMapping("/sync")
     @ApiOperation(value = "同步")
     public AjaxResult sync() {
-        HttpResponse response = HttpUtil.createRequest(Method.GET, helmUrl)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .execute();
-        String body = response.body();
-        //
-        InputStream inputStream = IoUtil.toStream(body, StandardCharsets.UTF_8);
-        Map<String, Object> obj = YamlUtil.load(inputStream, Map.class);
-        JSONObject jsonObject = JSONUtil.parseObj(obj);
+        String body = helmRepoApi.index();
+        JSONObject jsonObject = JSONUtil.parseObj(body);
         IndexResponse indexResponse = JSONUtil.toBean(jsonObject, IndexResponse.class);
         indexResponse.getEntries().forEach((k, v) -> {
             System.out.println("key:" + k);
@@ -149,13 +141,14 @@ public class HelmAppMarketController extends BaseController {
                     if (StrUtil.isBlankIfStr(entry.getIcon())) {
                         helmAppMarket.setIcon(icon);
                     }
-                    helmAppMarket.setUrl(helmUrl + "/" + entry.getUrls().get(0));
+                    helmAppMarket.setUrl(entry.getUrls().get(0));
                     helmAppMarketService.save(helmAppMarket);
                 } else {
                     // 更新
                     helmAppMarket = search;
                     helmAppMarket.setUpdateTime(DateUtils.getNowDate());
                     helmAppMarket.setUpdateBy("admin");
+                    helmAppMarket.setUrl(entry.getUrls().get(0));
                     if (StrUtil.isBlankIfStr(helmAppMarket.getIcon())) {
                         helmAppMarket.setIcon(icon);
                     }
@@ -198,6 +191,16 @@ public class HelmAppMarketController extends BaseController {
     @PostMapping("/install")
     @ApiOperation(value = "安装")
     public AjaxResult install(@RequestBody HelmAppMarketVo helmAppMarket) {
+        // 检查
+        String releaseName = helmAppMarket.getReleaseName();
+        String nameSpace = helmAppMarket.getNameSpace();
+        long count = helmAppService.count(new LambdaQueryWrapper<HelmApp>()
+                .eq(HelmApp::getReleaseName, releaseName)
+                .eq(HelmApp::getNameSpace, nameSpace)
+        );
+        if (count > 0) {
+            return AjaxResult.error("安装失败：" + nameSpace + "下已存在" + releaseName);
+        }
         HelmApp helmApp = new HelmApp();
         helmApp.setAppName(helmAppMarket.getName());
         helmApp.setReleaseName(helmAppMarket.getName());
@@ -207,9 +210,10 @@ public class HelmAppMarketController extends BaseController {
         helmApp.setCreateTime(DateUtils.getNowDate());
         helmApp.setNameSpace(SecurityUtils.getUserId().toString());
         helmApp.setIcon(helmAppMarket.getIcon());
-        helmApp.setChartValues(String.valueOf(helmAppMarket.getValues()));
+        helmApp.setChartValues(String.valueOf(helmAppMarket.getChartValues()));
         helmApp.setStatus("installing");
         helmApp.setChartUrl(helmAppMarket.getUrl());
+        BeanUtils.copyProperties(helmAppMarket, helmApp);
         boolean result = helmAppService.save(helmApp);
         return result ? AjaxResult.success("安装成功") : AjaxResult.error("安装失败");
     }

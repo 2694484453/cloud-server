@@ -11,8 +11,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.yaml.snakeyaml.Yaml;
 import vip.gpg123.CloudServerApplication;
+import vip.gpg123.app.HelmAppMarketController;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
@@ -37,6 +37,9 @@ public class PrometheusTest {
 
     @Autowired
     private PrometheusApi prometheusApi;
+
+    @Autowired
+    private HelmAppMarketController  helmAppMarketController;
 
     @Test
     public void insert() {
@@ -149,4 +152,5 @@ public class PrometheusTest {
             }
         }
     }
+
 }
