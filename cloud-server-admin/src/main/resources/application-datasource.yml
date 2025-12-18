@@ -8,13 +8,13 @@ spring:
       # 多个数据源定义
       datasource:
         master:
-          url: jdbc:mysql://mysql.gpg123.vip:3306/cloud-server?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+          url: jdbc:mysql://mysql.gpg123.vip:3306/cloud-server?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
           username: root
           password: Gaopuguang@2023%
           driver-class-name: com.mysql.cj.jdbc.Driver
         umami:
           # 从库默认关闭（按需启用）
-          url: jdbc:mysql://mysql.gpg123.vip:3306/umami?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+          url: jdbc:mysql://mysql.gpg123.vip:3306/umami?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
           username: root
           password: Gaopuguang@2023%
           driver-class-name: com.mysql.cj.jdbc.Driver
@@ -40,6 +40,8 @@ spring:
         test-while-idle: true
         test-on-borrow: false
         test-on-return: false
+        # 连接失败重试次数（默认 1，可设为 0 或 1）
+        break-after-acquire-failure: true  # 获取连接失败后，标记数据源不可用（防雪崩）
         web-stat-filter:
           enabled: true
         stat-view-servlet:

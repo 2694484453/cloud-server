@@ -32,58 +32,7 @@ public class NasConsumer {
             exchange = @Exchange(name = NasProducer.nasExchange), // 声明直接交换器
             key = "syncStatus" // 定义路由键
     ))
-    public void syncStatus(){
-        // 查询http代理
-        String o = frpServerApi.test();
-        List<FrpServerHttp> httpList = frpServerApi.httpList().getProxies();
-        Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 更新
+    public void syncStatus() {
 
-        // 查询https代理
-        List<FrpServerHttp> httpsList = frpServerApi.httpsList().getProxies();
-        Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 查询tcp代理
-        List<FrpServerHttp> tcpList = frpServerApi.tcpList().getProxies();
-        Map<String, FrpServerHttp> tcpMap = tcpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 查询udp代理
-        List<FrpServerHttp> udpList = frpServerApi.udpList().getProxies();
-        Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 获取list
-        List<NasFrpClient> list = nasFrpClientService.list();
-        list.forEach(item -> {
-            switch (item.getType()) {
-                case "http":
-                    if (httpMap.containsKey(item.getName())) {
-                        item.setStatus(httpMap.get(item.getName()).getStatus());
-                    } else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                case "https":
-                    if (httpsMap.containsKey(item.getName())) {
-                        item.setStatus(httpsMap.get(item.getName()).getStatus());
-                    }else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                case "tcp":
-                    if (tcpMap.containsKey(item.getName())) {
-                        item.setStatus(tcpMap.get(item.getName()).getStatus());
-                    }else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                case "udp":
-                    if (udpMap.containsKey(item.getName())) {
-                        item.setStatus(udpMap.get(item.getName()).getStatus());
-                    }else {
-                        item.setStatus("noExist");
-                    }
-                    break;
-                default:
-                    break;
-            }
-            nasFrpClientService.updateById(item);
-        });
     }
 }

@@ -1,0 +1,23 @@
+{
+  "apps": {
+    "http": {
+      "servers": {
+        "example": {
+          "listen": [
+            ":8077"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "static_response",
+                  "body": "Hello, World!"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

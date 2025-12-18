@@ -7,7 +7,7 @@ build:
   image: /home/devops/image
   helm: /home/helm-repo
 etcd:
-  endpoints: http://server.gpg123.vip:12379
+
 repo:
   helm:
     name: default
