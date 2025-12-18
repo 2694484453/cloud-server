@@ -170,10 +170,36 @@ public class K8sUtil {
     }
 
     /**
-     * 导出文件
+     * 根据config对象，导出文件
+     *
+     * @param kubeConfig c
+     * @param exportPath e
+     * @throws IOException e
      */
     public static void exportToFile(io.fabric8.kubernetes.api.model.Config kubeConfig, String exportPath) throws IOException {
         KubeConfigUtils.persistKubeConfigIntoFile(kubeConfig, exportPath);
+    }
+
+    /**
+     * 根据content内容导出到文件
+     *
+     * @param content    c
+     * @param exportPath e
+     * @throws IOException i
+     */
+    public static void exportToFile(String content, String exportPath) throws IOException {
+        FileUtil.writeString(content, exportPath, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 根据string内容导出到文件并返回
+     * @param content c
+     * @return r
+     */
+    public static File exportToTempFile(String content) {
+        File file = FileUtil.createTempFile();
+        FileUtil.writeString(content, file.getAbsolutePath(), StandardCharsets.UTF_8);
+        return file;
     }
 
     /**
@@ -187,6 +213,7 @@ public class K8sUtil {
 
     /**
      * 检查资源名称
+     *
      * @param resourceName r
      * @return r
      */

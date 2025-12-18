@@ -45,16 +45,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/app/market")
 @Api(value = "应用市场")
-public class AppMarketController extends BaseController {
+public class HelmAppMarketController extends BaseController {
 
     @Value("${repo.helm.url}")
     private String helmUrl;
 
     @Autowired
     private HelmAppMarketService helmAppMarketService;
-
-    @Autowired
-    private AppManagerController appManagerController;
 
     @Autowired
     private HelmAppService helmAppService;
@@ -206,12 +203,14 @@ public class AppMarketController extends BaseController {
         helmApp.setReleaseName(helmAppMarket.getName());
         helmApp.setChartName(helmAppMarket.getName());
         helmApp.setDescription(helmAppMarket.getDescription());
-        helmApp.setCreateBy(SecurityUtils.getUsername());
+        helmApp.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
         helmApp.setCreateTime(DateUtils.getNowDate());
         helmApp.setNameSpace(SecurityUtils.getUserId().toString());
         helmApp.setIcon(helmAppMarket.getIcon());
         helmApp.setChartValues(String.valueOf(helmAppMarket.getValues()));
+        helmApp.setStatus("installing");
         helmApp.setChartUrl(helmAppMarket.getUrl());
-        return appManagerController.install(helmApp);
+        boolean result = helmAppService.save(helmApp);
+        return result ? AjaxResult.success("安装成功") : AjaxResult.error("安装失败");
     }
 }

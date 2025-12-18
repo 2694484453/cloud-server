@@ -17,6 +17,8 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.helm.HelmStatus;
+import vip.gpg123.common.utils.helm.HelmUtils;
 
 import java.util.List;
 
@@ -123,4 +125,23 @@ public class HelmAppController extends BaseController {
         boolean remove = helmAppService.removeById(id);
         return remove ? success() : error();
     }
+
+    /**
+     * 查询详情
+     *
+     * @param name 名称
+     * @return r
+     */
+    @GetMapping("/info")
+    @ApiOperation(value = "详情")
+    public AjaxResult info(@RequestParam(value = "name") String name) {
+        try {
+            // 查询详情
+            HelmStatus status = HelmUtils.status(name, name, getUsername());
+            return AjaxResult.success(status);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

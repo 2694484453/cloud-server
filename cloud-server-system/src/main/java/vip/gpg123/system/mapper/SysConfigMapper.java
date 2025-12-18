@@ -1,6 +1,8 @@
 package vip.gpg123.system.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import vip.gpg123.system.domain.SysConfig;
 
 /**
@@ -8,6 +10,7 @@ import vip.gpg123.system.domain.SysConfig;
  *
  * @author ruoyi
  */
+@Mapper
 public interface SysConfigMapper
 {
     /**

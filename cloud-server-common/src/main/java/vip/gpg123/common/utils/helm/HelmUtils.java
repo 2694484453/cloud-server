@@ -75,7 +75,7 @@ public class HelmUtils {
      * @param chartUrl    url
      * @param kubeContext kubeContext
      */
-    public static String install(String releaseName, String namespace, String chartUrl, String values, String kubeContext) {
+    public static String install(String releaseName, String namespace, String chartUrl, String values, String kubeContext, String kubeConfigPath) {
         String[] init = new String[]{"helm", "install"};
         if (StrUtil.isNotBlank(releaseName)) {
             init = ArrayUtil.append(init, releaseName);
@@ -87,8 +87,13 @@ public class HelmUtils {
         if (StrUtil.isNotBlank(namespace)) {
             init = ArrayUtil.append(init, "--namespace", namespace);
         }
+        // 名称
         if (StrUtil.isNotBlank(kubeContext)) {
             init = ArrayUtil.append(init, "--kube-context", kubeContext);
+        }
+        // 路径
+        if (StrUtil.isNotBlank(kubeConfigPath)) {
+            init = ArrayUtil.append(init, "--kube-config", kubeConfigPath);
         }
         if (StrUtil.isNotBlank(values)) {
             // 生成临时文件
@@ -109,6 +114,14 @@ public class HelmUtils {
         return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
     }
 
+    public static String upgrade(String releaseName, String namespace, String chartUrl, String values, String kubeContext, String kubeConfigPath) {
+        String[] init = new String[]{"helm", "upgrade"};
+        if (StrUtil.isNotBlank(releaseName)) {
+            init = ArrayUtil.append(init, releaseName);
+        }
+        return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
+    }
+
     /**
      * helm uninstall
      *
@@ -116,8 +129,8 @@ public class HelmUtils {
      * @param releaseName 发布名称
      * @param kubeContext kubeContext
      */
-    public static String uninstall(String namespace, String releaseName, String kubeContext) {
-        return RuntimeUtil.execForStr(StandardCharsets.UTF_8,"helm", "uninstall", releaseName, "--namespace", namespace, "--kube-context", kubeContext);
+    public static String uninstall(String namespace, String releaseName, String kubeContext, String kubeConfigPath) {
+        return RuntimeUtil.execForStr(StandardCharsets.UTF_8, "helm", "uninstall", releaseName, "--namespace", namespace, "--kube-context", kubeContext, "--kube-config", kubeConfigPath);
     }
 
     /**
@@ -178,6 +191,7 @@ public class HelmUtils {
 
     /**
      * 获取系统当前context
+     *
      * @return r
      */
     public static String getCurrentContext() {
@@ -186,6 +200,7 @@ public class HelmUtils {
 
     /**
      * 集群信心
+     *
      * @return r
      */
     public static List<Object> clusters() {

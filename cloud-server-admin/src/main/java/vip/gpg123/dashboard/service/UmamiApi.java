@@ -35,4 +35,24 @@ public interface UmamiApi {
                      @RequestParam(value = "endAt", required = false) String endAt,
                      @RequestParam(value = "unit", required = false) String unit,
                      @RequestParam(value = "timezone", required = false) String timezone);
+
+
+    /**
+     * map
+     * @param websiteId ws
+     * @param startAt s
+     * @param endAt e
+     * @param unit u
+     * @param timezone t
+     * @param limit l
+     * @return r
+     */
+    @GetMapping("/websites/{websiteId}/metrics")
+    Object metrics(@PathVariable("websiteId") String websiteId,
+                   @RequestParam(value = "startAt", required = false) String startAt,
+                   @RequestParam(value = "endAt", required = false) String endAt,
+                   @RequestParam(value = "unit", required = false) String unit,
+                   @RequestParam(value = "timezone", required = false) String timezone,
+                   @RequestParam(value = "type", required = false) String type,
+                   @RequestParam(value = "limit", required = false) String limit);
 }

@@ -55,6 +55,7 @@
         <http5.version>3.3.4</http5.version>
         <guava.version>31.1-jre</guava.version>
         <consul.version>4.0.2</consul.version>
+        <dynamic-datasource.version>4.2.0</dynamic-datasource.version>
         <!--jaeger-->
 <!--        <jaeger.version>3.3.1</jaeger.version>-->
     </properties>
@@ -135,13 +136,6 @@
                 <version>6.5.1</version>
             </dependency>
 
-            <!-- 阿里数据库连接池 -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-
             <!-- 解析客户端操作系统、浏览器等 -->
             <dependency>
                 <groupId>eu.bitwalker</groupId>
@@ -161,6 +155,20 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus-boot-starter.version}</version>
+            </dependency>
+
+            <!-- 阿里数据库连接池 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <!-- dynamic-datasource 多数据源 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic-datasource.version}</version>
             </dependency>
 
             <!-- 手动指定 JSqlParser 版本 -->

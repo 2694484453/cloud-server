@@ -78,7 +78,7 @@ public class DashboardController {
     public AjaxResult overView(@RequestParam(value = "startAt", required = false) String startAt,
                                @RequestParam(value = "endAt", required = false) String endAt) {
         List<Map<String, Object>> list = new ArrayList<>();
-        startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7) .getTime()/ 1000) : startAt;
+        startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
         UmamiStats stats = umamiApi.stats(websiteId, startAt, endAt, "hour", "Asia/Shanghai");
 
@@ -102,7 +102,7 @@ public class DashboardController {
 
         Map<String, Object> bounces = new HashMap<>();
         bounces.put("title", "跳出率");
-        bounces.put("count", stats.getBounces());
+        bounces.put("count", stats.getBounces() + "%");
         bounces.put("comparison", stats.getComparison().getBounces());
         list.add(bounces);
 
@@ -137,6 +137,21 @@ public class DashboardController {
     }
 
     /**
+     * map
+     *
+     * @param startAt sa
+     * @param endAt   ea
+     * @return r
+     */
+    @GetMapping("/map")
+    public Object map(@RequestParam(value = "startAt", required = false) String startAt,
+                      @RequestParam(value = "endAt", required = false) String endAt) {
+        startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
+        endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
+        return umamiApi.metrics(websiteId, startAt, endAt, "day", "Asia/Shanghai", "country", "100");
+    }
+
+    /**
      * 通知
      *
      * @param name 名称
@@ -157,6 +172,7 @@ public class DashboardController {
 
     /**
      * 基于http动态发现
+     *
      * @return r
      */
     @GetMapping("/http-sd")
