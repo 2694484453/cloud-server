@@ -8,19 +8,19 @@ spring:
       # 多个数据源定义
       datasource:
         master:
-          url: jdbc:mysql://mysql.gpg123.vip:3306/cloud-server?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&connectTimeout=1000&socketTimeout=30000
+          url: jdbc:mysql://rm-bp1zuw0127446a368ko.mysql.rds.aliyuncs.com:3306/cloud-server?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&connectTimeout=1000&socketTimeout=30000
           username: root
           password: Gaopuguang@2023%
           driver-class-name: com.mysql.cj.jdbc.Driver
         umami:
           # 从库默认关闭（按需启用）
-          url: jdbc:mysql://mysql.gpg123.vip:3306/umami?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&connectTimeout=1000&socketTimeout=30000
+          url: jdbc:mysql://rm-bp1zuw0127446a368ko.mysql.rds.aliyuncs.com:3306/umami?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&connectTimeout=1000&socketTimeout=30000
           username: root
           password: Gaopuguang@2023%
           driver-class-name: com.mysql.cj.jdbc.Driver
         map:
           # 从库默认关闭（按需启用）
-          url: jdbc:mysql://mysql.gpg123.vip:3306/map-data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&connectTimeout=1000&socketTimeout=30000
+          url: jdbc:mysql://rm-bp1zuw0127446a368ko.mysql.rds.aliyuncs.com:3306/map-data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&connectTimeout=1000&socketTimeout=30000
           username: root
           password: Gaopuguang@2023%
           driver-class-name: com.mysql.cj.jdbc.Driver

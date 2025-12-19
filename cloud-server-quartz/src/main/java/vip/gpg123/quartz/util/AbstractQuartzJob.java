@@ -83,7 +83,7 @@ public abstract class AbstractQuartzJob implements Job {
     protected void before(JobExecutionContext context, SysJob sysJob) throws SchedulerException, TaskException {
         threadLocal.set(new Date());
         // 设置任务为执行状态
-        sysJob.setStatus("running");
+        sysJob.setRunStatus("running");
         sysJob.setRunTime(new Date());
         // 更新
         SpringUtils.getBean(ISysJobService.class).updateJob(sysJob);
@@ -111,7 +111,6 @@ public abstract class AbstractQuartzJob implements Job {
         long runMs = sysJobLog.getStopTime().getTime() - sysJobLog.getStartTime().getTime();
         sysJobLog.setJobMessage(sysJobLog.getJobName() + " 总共耗时：" + runMs + "毫秒");
         if (e != null) {
-            sysJobLog.setStatus("fail");
             String errorMsg = StringUtils.substring(ExceptionUtil.getExceptionMessage(e), 0, 2000);
             sysJobLog.setExceptionInfo(errorMsg);
             sysJob.setRunStatus("error");
