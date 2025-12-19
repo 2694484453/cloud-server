@@ -15,7 +15,7 @@ Type=simple
 WorkingDirectory=/home/cloud-server
 # 启动位置
 ExecStart=/usr/bin/java \
-    -Xms1024m \
+    -Xms2048m \
     -Xmx2048m \
     -Dfile.encoding=UTF-8 \
     -jar /home/cloud-server/cloud-server-admin.jar \
