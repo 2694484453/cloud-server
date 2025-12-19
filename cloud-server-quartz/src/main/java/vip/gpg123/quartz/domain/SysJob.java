@@ -2,7 +2,6 @@ package vip.gpg123.quartz.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -13,17 +12,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import vip.gpg123.common.annotation.Excel;
 import vip.gpg123.common.annotation.Excel.ColumnType;
 import vip.gpg123.common.constant.ScheduleConstants;
 import vip.gpg123.common.core.domain.BaseEntity;
-import vip.gpg123.common.utils.StringUtils;
-import vip.gpg123.framework.handler.JsonTypeHandler;
-import vip.gpg123.quartz.util.CronUtils;
 
 /**
  * 定时任务调度表 sys_job

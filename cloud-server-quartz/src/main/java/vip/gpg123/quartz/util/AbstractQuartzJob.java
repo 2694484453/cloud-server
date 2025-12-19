@@ -113,16 +113,13 @@ public abstract class AbstractQuartzJob implements Job {
         if (e != null) {
             String errorMsg = StringUtils.substring(ExceptionUtil.getExceptionMessage(e), 0, 2000);
             sysJobLog.setExceptionInfo(errorMsg);
-            sysJob.setRunStatus("error");
             sysJob.setRunResult(errorMsg);
         } else {
-            sysJob.setRunStatus("done");
             sysJob.setRunResult(null);
         }
-        sysJob.setStatus("");
+        sysJob.setRunStatus(null);
         // 更新状态
         SpringUtils.getBean(ISysJobService.class).updateById(sysJob);
-        sysJobLog.setStatus(sysJob.getRunStatus());
         // 结果日志写入数据库当中
         SpringUtils.getBean(ISysJobLogService.class).save(sysJobLog);
     }

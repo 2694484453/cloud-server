@@ -18,10 +18,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: health,info,metrics,druid
   endpoint:
     health:
       show-details: always
+    druid:
+      enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
