@@ -58,7 +58,7 @@ public abstract class AbstractQuartzJob implements Job {
                 // 有参数调用
                 res = method.invoke(bean, params);
             } else {
-                logger.info("调用无参方法:{}", params);
+                logger.info("调用无参方法");
                 //无参数调用
                 res = method.invoke(bean);
             }

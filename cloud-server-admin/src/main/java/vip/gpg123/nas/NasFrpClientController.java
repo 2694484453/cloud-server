@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -83,10 +84,10 @@ public class NasFrpClientController extends BaseController {
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
     public AjaxResult list(@RequestParam(value = "name", required = false) String name,
-                            @RequestParam(value = "type", required = false) String type,
-                            @RequestParam(value = "ip", required = false) String ip,
-                            @RequestParam(value = "port", required = false) Integer port,
-                            @RequestParam(value = "server", required = false) String server) {
+                           @RequestParam(value = "type", required = false) String type,
+                           @RequestParam(value = "ip", required = false) String ip,
+                           @RequestParam(value = "port", required = false) Integer port,
+                           @RequestParam(value = "server", required = false) String server) {
         List<NasFrpClient> list = nasFrpClientService.list(new LambdaQueryWrapper<NasFrpClient>()
                 .like(StrUtil.isNotBlank(name), NasFrpClient::getName, name)
                 .eq(StrUtil.isNotBlank(type), NasFrpClient::getType, type)
@@ -111,10 +112,10 @@ public class NasFrpClientController extends BaseController {
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
     public TableDataInfo page(@RequestParam(value = "name", required = false) String name,
-                               @RequestParam(value = "type", required = false) String type,
-                               @RequestParam(value = "ip", required = false) String ip,
-                               @RequestParam(value = "port", required = false) Integer port,
-                               @RequestParam(value = "server", required = false) String server) {
+                              @RequestParam(value = "type", required = false) String type,
+                              @RequestParam(value = "ip", required = false) String ip,
+                              @RequestParam(value = "port", required = false) Integer port,
+                              @RequestParam(value = "server", required = false) String server) {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
@@ -126,7 +127,7 @@ public class NasFrpClientController extends BaseController {
         search.setType(type);
         search.setLocalIp(ip);
         search.setCreateBy(String.valueOf(getUserId()));
-        List<NasFrpClient> list = nasFrpClientMapper.page(pageDomain,search);
+        List<NasFrpClient> list = nasFrpClientMapper.page(pageDomain, search);
         page.setRecords(list);
         page.setTotal(nasFrpClientMapper.list(search).size());
         return PageUtils.toPageByIPage(page);
@@ -275,36 +276,37 @@ public class NasFrpClientController extends BaseController {
 
     /**
      * 概览
+     *
      * @return r
      */
     @GetMapping("/overView")
     @ApiOperation(value = "【概览】")
     public AjaxResult overview() {
         List<Map<String, Object>> list = new ArrayList<>();
-        Map<String,Object> clientCount = new LinkedHashMap<>();
+        Map<String, Object> clientCount = new LinkedHashMap<>();
         // 我的frpc配置总数
-        clientCount.put("title","我的frpc配置总数");
-        clientCount.put("count",nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
+        clientCount.put("title", "我的frpc配置总数");
+        clientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getCreateBy, getUserId())
         ));
         // 我的frpc配置在线数
-        Map<String,Object> healthClientCount = new LinkedHashMap<>();
-        healthClientCount.put("title","在线数");
+        Map<String, Object> healthClientCount = new LinkedHashMap<>();
+        healthClientCount.put("title", "在线数");
         healthClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getStatus, "online")
                 .eq(NasFrpClient::getCreateBy, getUserId())
         ));
 
         // 我的frpc配置离线数
-        Map<String,Object> downClientCount = new LinkedHashMap<>();
-        downClientCount.put("title","离线数");
+        Map<String, Object> downClientCount = new LinkedHashMap<>();
+        downClientCount.put("title", "离线数");
         downClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getCreateBy, getUserId())
                 .eq(NasFrpClient::getStatus, "down")
         ));
         // 我的frpc配置不存在数
-        Map<String,Object> noExistClientCount = new LinkedHashMap<>();
-        noExistClientCount.put("title","不存在数");
+        Map<String, Object> noExistClientCount = new LinkedHashMap<>();
+        noExistClientCount.put("title", "不存在数");
         noExistClientCount.put("count", nasFrpClientService.count(new LambdaQueryWrapper<NasFrpClient>()
                 .eq(NasFrpClient::getCreateBy, getUserId())
                 .eq(NasFrpClient::getStatus, "noExist")
@@ -318,6 +320,7 @@ public class NasFrpClientController extends BaseController {
 
     /**
      * 同步状态
+     *
      * @return r
      */
     @GetMapping("/sync")
@@ -325,8 +328,6 @@ public class NasFrpClientController extends BaseController {
         // 查询http代理
         List<FrpServerHttp> httpList = frpServerApi.httpList().getProxies();
         Map<String, FrpServerHttp> httpMap = httpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
-        // 更新
-
         // 查询https代理
         List<FrpServerHttp> httpsList = frpServerApi.httpsList().getProxies();
         Map<String, FrpServerHttp> httpsMap = httpsList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
@@ -338,40 +339,57 @@ public class NasFrpClientController extends BaseController {
         Map<String, FrpServerHttp> udpMap = udpList.stream().collect(Collectors.toMap(FrpServerHttp::getName, Function.identity()));
         // 获取list
         List<NasFrpClient> list = nasFrpClientService.list();
+        AtomicBoolean isUpdate = new AtomicBoolean(false);
         list.forEach(item -> {
             switch (item.getType()) {
                 case "http":
                     if (httpMap.containsKey(item.getName())) {
-                        item.setStatus(httpMap.get(item.getName()).getStatus());
+                        if (!httpMap.get(item.getName()).getStatus().equals(item.getStatus())) {
+                            item.setStatus(httpMap.get(item.getName()).getStatus());
+                            isUpdate.set(true);
+                        }
                     } else {
                         item.setStatus("noExist");
+                        isUpdate.set(true);
                     }
                     break;
                 case "https":
                     if (httpsMap.containsKey(item.getName())) {
-                        item.setStatus(httpsMap.get(item.getName()).getStatus());
-                    }else {
+                        if (!httpsMap.get(item.getName()).getStatus().equals(item.getStatus())) {
+                            item.setStatus(httpsMap.get(item.getName()).getStatus());
+                            isUpdate.set(true);
+                        }
+                    } else {
                         item.setStatus("noExist");
+                        isUpdate.set(true);
                     }
                     break;
                 case "tcp":
                     if (tcpMap.containsKey(item.getName())) {
-                        item.setStatus(tcpMap.get(item.getName()).getStatus());
-                    }else {
+                        if (!tcpMap.get(item.getName()).getStatus().equals(item.getStatus())) {
+                            item.setStatus(tcpMap.get(item.getName()).getStatus());
+                            isUpdate.set(true);
+                        }
+                    } else {
                         item.setStatus("noExist");
+                        isUpdate.set(true);
                     }
                     break;
                 case "udp":
                     if (udpMap.containsKey(item.getName())) {
-                        item.setStatus(udpMap.get(item.getName()).getStatus());
-                    }else {
+                        if (!udpMap.get(item.getName()).getStatus().equals(item.getStatus())) {
+                            item.setStatus(udpMap.get(item.getName()).getStatus());
+                            isUpdate.set(true);
+                        }
+                    } else {
                         item.setStatus("noExist");
+                        isUpdate.set(true);
                     }
                     break;
-                default:
-                    break;
             }
-            nasFrpClientService.updateById(item);
+            if (isUpdate.get()) {
+                nasFrpClientService.updateById(item);
+            }
         });
         return AjaxResult.success();
     }

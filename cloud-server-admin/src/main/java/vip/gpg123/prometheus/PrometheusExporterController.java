@@ -267,9 +267,11 @@ public class PrometheusExporterController extends BaseController {
             String status = target.getHealth();
             if (map.containsKey(jobName)) {
                 PrometheusExporter exporter = map.get(jobName);
-                exporter.setStatus(status);
-                exporter.setGlobalUrl(target.getGlobalUrl());
-                prometheusExporterService.updateById(exporter);
+                if (!exporter.getStatus().equals(status)) {
+                    exporter.setStatus(status);
+                    exporter.setGlobalUrl(target.getGlobalUrl());
+                    prometheusExporterService.updateById(exporter);
+                }
             }
         });
         return AjaxResult.success();

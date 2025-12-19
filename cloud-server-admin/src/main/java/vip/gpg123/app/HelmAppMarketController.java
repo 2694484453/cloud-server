@@ -128,12 +128,12 @@ public class HelmAppMarketController extends BaseController {
         indexResponse.getEntries().forEach((k, v) -> {
             System.out.println("key:" + k);
             v.forEach(entry -> {
-                HelmAppMarket helmAppMarket = new HelmAppMarket();
                 //
                 HelmAppMarket search = helmAppMarketService.getOne(new LambdaQueryWrapper<HelmAppMarket>()
                         .eq(StrUtil.isNotBlank(k), HelmAppMarket::getName, k)
                 );
                 if (search == null) {
+                    HelmAppMarket helmAppMarket = new HelmAppMarket();
                     // 添加
                     helmAppMarket.setName(k);
                     helmAppMarket.setCreateBy("admin");
@@ -144,16 +144,26 @@ public class HelmAppMarketController extends BaseController {
                     helmAppMarket.setUrl(entry.getUrls().get(0));
                     helmAppMarketService.save(helmAppMarket);
                 } else {
+                    boolean isUpdate = false;
                     // 更新
-                    helmAppMarket = search;
-                    helmAppMarket.setUpdateTime(DateUtils.getNowDate());
-                    helmAppMarket.setUpdateBy("admin");
-                    helmAppMarket.setUrl(entry.getUrls().get(0));
-                    if (StrUtil.isBlankIfStr(helmAppMarket.getIcon())) {
-                        helmAppMarket.setIcon(icon);
+                    if (!entry.getUrls().get(0).equals(search.getUrl())) {
+                        search.setUrl(entry.getUrls().get(0));
+                        isUpdate = true;
                     }
-                    helmAppMarketService.updateById(helmAppMarket);
-                    System.out.println(helmAppMarket.getName() + "已存在跳过");
+                    if (StrUtil.isNotBlank(entry.getIcon()) && !entry.getIcon().equals(search.getIcon())) {
+                        search.setIcon(entry.getIcon());
+                        isUpdate = true;
+                    }
+                    if (StrUtil.isBlank(entry.getIcon())) {
+                        search.setIcon(icon);
+                        isUpdate = true;
+                    }
+                    if (isUpdate) {
+                        search.setUpdateTime(DateUtils.getNowDate());
+                        search.setUpdateBy("admin");
+                        helmAppMarketService.updateById(search);
+                    }
+                    System.out.println(search.getName() + "已存在跳过");
                 }
             });
         });

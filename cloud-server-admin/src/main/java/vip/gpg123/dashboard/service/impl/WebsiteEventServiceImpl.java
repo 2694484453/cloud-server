@@ -41,6 +41,7 @@ public class WebsiteEventServiceImpl extends ServiceImpl<WebsiteEventMapper, Web
     }
 
     @Override
+    @DS("umami")
     public List<TodayView> todayViews() {
         return websiteEventMapper.todyVisitView(websiteId);
     }
