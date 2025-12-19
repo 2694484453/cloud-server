@@ -33,15 +33,22 @@ public class HelmUtils {
      * @param namespace 命名空间
      * @return r
      */
-    public static String listJsonStr(String namespace, String kubeContext) {
-        String[] init = new String[]{"helm", "list", "--output", "json"};
+    public static String listJsonStr(String namespace, String kubeContext, String configPath) {
+        String[] init = new String[]{"helm", "list"};
         if (StrUtil.isBlank(namespace)) {
             init = ArrayUtil.append(init, "-A");
         } else {
             init = ArrayUtil.append(init, "--namespace ", namespace);
         }
-        init = ArrayUtil.append(init, "--kube-context", kubeContext);
-        return RuntimeUtil.execForStr(init);
+        if (StrUtil.isNotBlank(kubeContext)) {
+            init = ArrayUtil.append(init, "--kube-context", kubeContext);
+        }
+        if (StrUtil.isNotBlank(configPath)) {
+            init = ArrayUtil.append(init, "--kubeconfig", configPath);
+        }
+        init = ArrayUtil.append(init, "--output", "json");
+        printCmd(init);
+        return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
     }
 
     /**
@@ -50,8 +57,8 @@ public class HelmUtils {
      * @param namespace 命名空间
      * @return r
      */
-    public static JSONArray listJsonArray(String namespace, String kubeContext) {
-        String jsonStr = listJsonStr(namespace, kubeContext);
+    public static JSONArray listJsonArray(String namespace, String kubeContext, String configPath) {
+        String jsonStr = listJsonStr(namespace, kubeContext, configPath);
         return JSONUtil.parseArray(jsonStr);
     }
 
@@ -61,8 +68,8 @@ public class HelmUtils {
      * @param namespace 命名空间
      * @return r
      */
-    public static List<HelmApp> list(String namespace, String kubeContext) {
-        JSONArray jsonArray = listJsonArray(namespace, kubeContext);
+    public static List<HelmApp> list(String namespace, String kubeContext, String configPath) {
+        JSONArray jsonArray = listJsonArray(namespace, kubeContext, configPath);
         return Convert.toList(HelmApp.class, jsonArray);
     }
 
@@ -236,6 +243,7 @@ public class HelmUtils {
 
     /**
      * 查看readme
+     *
      * @param chartUrl c
      * @return r
      */

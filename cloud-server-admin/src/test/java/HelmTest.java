@@ -28,8 +28,8 @@ public class HelmTest {
 
     @Test
     public void test() {
-        JSONArray jsonArray = HelmUtils.listJsonArray("", context);
-        List<HelmApp> helmApps = HelmUtils.list("", context);
+        JSONArray jsonArray = HelmUtils.listJsonArray("","", context);
+        List<HelmApp> helmApps = HelmUtils.list("","", context);
     }
 
     @Test

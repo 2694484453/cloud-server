@@ -1,6 +1,7 @@
 package vip.gpg123.app.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,24 @@ public class HelmApi {
             return "找不到集群：" + entity.getKubeContext();
         }
     }
+
+    /**
+     * 列出应用
+     *
+     * @param entity e
+     * @return r
+     */
+    public JSONArray listJsonArray(HelmEntity entity) {
+        KubernetesCluster kubernetesCluster = getKubernetesCluster(entity.getKubeContext());
+        if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
+            File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
+            return HelmUtils.listJsonArray(entity.getNameSpace(), entity.getKubeContext(), file.getAbsolutePath());
+        } else {
+            System.out.println("找不到集群：" + entity.getKubeContext());
+            return null;
+        }
+    }
+
 
     /**
      * 获取参数
