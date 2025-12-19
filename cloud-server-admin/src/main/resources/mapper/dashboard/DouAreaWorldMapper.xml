@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.dashboard.mapper.DouAreaWorldMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.dashboard.domain.DouAreaWorld">
+            <id property="areaId" column="area_id" />
+            <result property="parentId" column="parent_id" />
+            <result property="name" column="name" />
+            <result property="isoCode2" column="iso_code_2" />
+            <result property="isoCode3" column="iso_code_3" />
+            <result property="status" column="status" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        area_id,parent_id,name,iso_code_2,iso_code_3,status
+    </sql>
+</mapper>

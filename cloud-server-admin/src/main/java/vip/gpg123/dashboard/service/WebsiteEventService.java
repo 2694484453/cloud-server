@@ -1,9 +1,11 @@
 package vip.gpg123.dashboard.service;
 
+import vip.gpg123.dashboard.domain.TodayView;
 import vip.gpg123.dashboard.domain.WebsiteEvent;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author gaopuguang
@@ -15,4 +17,6 @@ public interface WebsiteEventService extends IService<WebsiteEvent> {
     int visits(LocalDateTime start, LocalDateTime end);
 
     long pageViews(LocalDateTime start, LocalDateTime end);
+
+    List<TodayView> todayViews();
 }

@@ -33,6 +33,11 @@
             <result property="hostname" column="hostname" />
     </resultMap>
 
+    <resultMap id="todyVisitViewBaseMap" type="vip.gpg123.dashboard.domain.TodayView">
+        <result property="hour" column="hour"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         event_id,website_id,session_id,created_at,url_path,url_query,
         referrer_path,referrer_query,referrer_domain,page_title,event_type,
@@ -40,4 +45,25 @@
         li_fat_id,msclkid,ttclid,twclid,utm_campaign,
         utm_content,utm_medium,utm_source,utm_term,hostname
     </sql>
+
+    <select id="todyVisitView" resultMap="todyVisitViewBaseMap">
+        <![CDATA[
+        WITH RE
+        CURSIVE hours AS (
+        SELECT 0 AS h
+        UNION ALL
+        SELECT h + 1 FROM hours WHERE h < 23
+        )
+        SELECT
+        h.h AS hour,
+        COUNT(e.created_at) AS count
+        FROM hours h
+        LEFT JOIN website_event e
+        ON DATE(CONVERT_TZ(e.created_at, '+00:00', 'Asia/Shanghai')) = CURDATE()
+        AND HOUR(CONVERT_TZ(e.created_at, '+00:00', 'Asia/Shanghai')) = h.h
+        And e.website_id = #{websiteId}
+        GROUP BY h.h
+        ORDER BY h.h;
+        ]]>
+    </select>
 </mapper>

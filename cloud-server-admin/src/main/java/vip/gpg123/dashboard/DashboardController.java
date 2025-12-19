@@ -18,6 +18,7 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.dashboard.domain.WebsiteEvent;
 import vip.gpg123.dashboard.service.SessionService;
+import vip.gpg123.dashboard.service.StatesService;
 import vip.gpg123.dashboard.service.WebsiteEventService;
 import vip.gpg123.prometheus.PrometheusExporterController;
 import vip.gpg123.scheduling.service.SysSchedulingJobService;
@@ -168,6 +169,11 @@ public class DashboardController {
         startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
         return sessionService.chinaMetrics(startAt, endAt);
+    }
+
+    @GetMapping("/todayVisitView")
+    public Object todayVisitView() {
+        return websiteEventService.todayViews();
     }
 
     /**
