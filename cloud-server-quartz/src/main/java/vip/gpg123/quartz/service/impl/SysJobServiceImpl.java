@@ -2,6 +2,8 @@ package vip.gpg123.quartz.service.impl;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
+
+import com.baomidou.dynamic.datasource.annotation.DS;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -52,6 +54,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      * @return
      */
     @Override
+    @DS("quartz")
     public List<SysJob> selectJobList(SysJob job)
     {
         return jobMapper.selectJobList(job);
@@ -64,6 +67,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      * @return 调度任务对象信息
      */
     @Override
+    @DS("quartz")
     public SysJob selectJobById(Long jobId)
     {
         return jobMapper.selectJobById(jobId);
@@ -76,6 +80,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public int pauseJob(SysJob job) throws SchedulerException
     {
         Long jobId = job.getJobId();
@@ -96,6 +101,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public int resumeJob(SysJob job) throws SchedulerException
     {
         Long jobId = job.getJobId();
@@ -116,6 +122,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public int deleteJob(SysJob job) throws SchedulerException
     {
         Long jobId = job.getJobId();
@@ -136,6 +143,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public void deleteJobByIds(Long[] jobIds) throws SchedulerException
     {
         for (Long jobId : jobIds)
@@ -152,6 +160,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public int changeStatus(SysJob job) throws SchedulerException
     {
         int rows = 0;
@@ -174,6 +183,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public boolean run(SysJob job) throws SchedulerException
     {
         boolean result = false;
@@ -199,6 +209,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public int insertJob(SysJob job) throws SchedulerException, TaskException
     {
         job.setStatus(ScheduleConstants.Status.PAUSE.getValue());
@@ -218,6 +229,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper,SysJob> implemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("quartz")
     public int updateJob(SysJob job) throws SchedulerException, TaskException
     {
         SysJob properties = selectJobById(job.getJobId());
