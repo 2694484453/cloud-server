@@ -1,10 +1,8 @@
 package vip.gpg123.app;
 
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,7 +10,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.app.domain.HelmAppMarket;
+import vip.gpg123.app.domain.HelmEntity;
 import vip.gpg123.app.domain.IndexResponse;
 import vip.gpg123.app.domain.HelmApp;
 import vip.gpg123.app.service.HelmAppMarketService;
@@ -33,12 +31,8 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.DateUtils;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.common.utils.helm.HelmUtils;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/app/market")
@@ -104,13 +98,13 @@ public class HelmAppMarketController extends BaseController {
     /**
      * 删除
      *
-     * @param helmAppMarket h
+     * @param id id
      * @return r
      */
     @DeleteMapping("/delete")
     @ApiOperation(value = "删除")
-    public AjaxResult delete(@RequestBody HelmAppMarket helmAppMarket) {
-        boolean del = helmAppMarketService.removeById(helmAppMarket.getId());
+    public AjaxResult delete(@RequestParam("id") String id) {
+        boolean del = helmAppMarketService.removeById(id);
         return del ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }
 
@@ -172,38 +166,16 @@ public class HelmAppMarketController extends BaseController {
 
 
     /**
-     * values
-     *
-     * @param helmAppMarket mark
-     * @return r
-     */
-    @PostMapping("/values")
-    @ApiOperation(value = "渲染参数")
-    public AjaxResult values(@RequestBody HelmAppMarket helmAppMarket) {
-        String values = HelmUtils.showValues(helmAppMarket.getUrl());
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            InputStream inputStream = IoUtil.toStream(values, StandardCharsets.UTF_8);
-            Map<String, Object> obj = YamlUtil.load(inputStream, Map.class);
-            jsonObject = JSONUtil.parseObj(obj);
-        } catch (Exception e) {
-            throw new RuntimeException("不能转换为yaml格式：" + e);
-        }
-        return AjaxResult.success(jsonObject);
-    }
-
-    /**
      * 安装
      *
      * @return r
      */
     @PostMapping("/install")
     @ApiOperation(value = "安装")
-    public AjaxResult install(@RequestBody HelmAppMarketVo helmAppMarket) {
+    public AjaxResult install(@RequestBody HelmEntity entity) {
         // 检查
-        String releaseName = helmAppMarket.getReleaseName();
-        String nameSpace = helmAppMarket.getNameSpace();
+        String releaseName = entity.getReleaseName();
+        String nameSpace = entity.getNameSpace();
         long count = helmAppService.count(new LambdaQueryWrapper<HelmApp>()
                 .eq(HelmApp::getReleaseName, releaseName)
                 .eq(HelmApp::getNameSpace, nameSpace)
@@ -212,18 +184,11 @@ public class HelmAppMarketController extends BaseController {
             return AjaxResult.error("安装失败：" + nameSpace + "下已存在" + releaseName);
         }
         HelmApp helmApp = new HelmApp();
-        helmApp.setAppName(helmAppMarket.getName());
-        helmApp.setReleaseName(helmAppMarket.getName());
-        helmApp.setChartName(helmAppMarket.getName());
-        helmApp.setDescription(helmAppMarket.getDescription());
+        helmApp.setAppName(entity.getChartName());
         helmApp.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
         helmApp.setCreateTime(DateUtils.getNowDate());
-        helmApp.setNameSpace(SecurityUtils.getUserId().toString());
-        helmApp.setIcon(helmAppMarket.getIcon());
-        helmApp.setChartValues(String.valueOf(helmAppMarket.getChartValues()));
         helmApp.setStatus("installing");
-        helmApp.setChartUrl(helmAppMarket.getUrl());
-        BeanUtils.copyProperties(helmAppMarket, helmApp);
+        BeanUtils.copyProperties(entity, helmApp);
         boolean result = helmAppService.save(helmApp);
         return result ? AjaxResult.success("安装成功") : AjaxResult.error("安装失败");
     }

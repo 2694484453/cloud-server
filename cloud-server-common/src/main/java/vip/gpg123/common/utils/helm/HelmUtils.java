@@ -100,7 +100,7 @@ public class HelmUtils {
         printCmd(init);
         String res = RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
         // 删除
-        if(FileUtil.exist(valuesFilePath)) {
+        if (FileUtil.exist(valuesFilePath)) {
             FileUtil.del(valuesFilePath);
         }
         return res;
@@ -108,18 +108,34 @@ public class HelmUtils {
 
     /**
      * 更新
-     * @param releaseName rn
-     * @param namespace ns
-     * @param chartUrl c
-     * @param values v
-     * @param kubeContext k
+     *
+     * @param releaseName    rn
+     * @param namespace      ns
+     * @param chartUrl       c
+     * @param valuesFilePath v
+     * @param kubeContext    k
      * @param kubeConfigPath k
      * @return r
      */
-    public static String upgrade(String releaseName, String namespace, String chartUrl, String values, String kubeContext, String kubeConfigPath) {
+    public static String upgrade(String releaseName, String namespace, String chartUrl, String valuesFilePath, String kubeContext, String kubeConfigPath) {
         String[] init = new String[]{"helm", "upgrade"};
+        if (StrUtil.isNotBlank(valuesFilePath)) {
+            init = ArrayUtil.append(init, "-f", valuesFilePath);
+        }
         if (StrUtil.isNotBlank(releaseName)) {
             init = ArrayUtil.append(init, releaseName);
+        }
+        if (StrUtil.isNotBlank(chartUrl)) {
+            init = ArrayUtil.append(init, chartUrl);
+        }
+        if (StrUtil.isNotBlank(namespace)) {
+            init = ArrayUtil.append(init, "--namespace", namespace);
+        }
+        if (StrUtil.isNotBlank(kubeContext)) {
+            init = ArrayUtil.append(init, "--kube-context", kubeContext);
+        }
+        if (StrUtil.isNotBlank(kubeConfigPath)) {
+            init = ArrayUtil.append(init, "--kubeconfig", kubeConfigPath);
         }
         printCmd(init);
         return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
@@ -133,7 +149,18 @@ public class HelmUtils {
      * @param kubeContext kubeContext
      */
     public static String uninstall(String namespace, String releaseName, String kubeContext, String kubeConfigPath) {
-        return RuntimeUtil.execForStr(StandardCharsets.UTF_8, "helm", "uninstall", releaseName, "--namespace", namespace, "--kube-context", kubeContext, "--kube-config", kubeConfigPath);
+        String[] init = new String[]{"helm", "uninstall"};
+        if (StrUtil.isNotBlank(namespace)) {
+            init = ArrayUtil.append(init, "--namespace", namespace);
+        }
+        if (StrUtil.isNotBlank(kubeContext)) {
+            init = ArrayUtil.append(init, "--kube-context", kubeContext);
+        }
+        if (StrUtil.isNotBlank(kubeConfigPath)) {
+            init = ArrayUtil.append(init, "--kubeconfig", kubeConfigPath);
+        }
+        printCmd(init);
+        return RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
     }
 
     /**
@@ -143,8 +170,22 @@ public class HelmUtils {
      * @param kubeContext kc
      * @return r
      */
-    public static HelmStatus status(String releaseName, String namespace, String kubeContext) {
-        String json = RuntimeUtil.execForStr("helm", "status", releaseName, "--namespace", namespace, "--kube-context", kubeContext, "--output", "json");
+    public static HelmStatus status(String releaseName, String namespace, String kubeContext, String kubeConfigPath) {
+        String[] init = new String[]{"helm", "status"};
+        if (StrUtil.isNotBlank(releaseName)) {
+            init = ArrayUtil.append(init, releaseName);
+        }
+        if (StrUtil.isNotBlank(namespace)) {
+            init = ArrayUtil.append(init, "--namespace", namespace);
+        }
+        if (StrUtil.isNotBlank(kubeContext)) {
+            init = ArrayUtil.append(init, "--kube-context", kubeContext);
+        }
+        if (StrUtil.isNotBlank(kubeConfigPath)) {
+            init = ArrayUtil.append(init, "--kubeconfig", kubeConfigPath);
+        }
+        printCmd(init);
+        String json = RuntimeUtil.execForStr(StandardCharsets.UTF_8, init);
         return JSONUtil.toBean(json, HelmStatus.class);
     }
 
@@ -189,6 +230,21 @@ public class HelmUtils {
         if (StrUtil.isNotBlank(chartUrl)) {
             init = ArrayUtil.append(init, chartUrl);
         }
+        printCmd(init);
+        return RuntimeUtil.execForStr(init);
+    }
+
+    /**
+     * 查看readme
+     * @param chartUrl c
+     * @return r
+     */
+    public static String showReadme(String chartUrl) {
+        String[] init = new String[]{"helm", "show", "readme"};
+        if (StrUtil.isNotBlank(chartUrl)) {
+            init = ArrayUtil.append(init, chartUrl);
+        }
+        printCmd(init);
         return RuntimeUtil.execForStr(init);
     }
 

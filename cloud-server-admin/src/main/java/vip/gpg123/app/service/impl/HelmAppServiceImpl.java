@@ -4,8 +4,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.app.domain.HelmApp;
+import vip.gpg123.app.domain.HelmEntity;
 import vip.gpg123.app.service.HelmAppService;
 import vip.gpg123.app.mapper.MineAppMapper;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
     private MessageProducer producer;
 
     @Autowired
-    private KubernetesClusterMapper kubernetesClusterMapper;
+    private HelmApi helmApi;
 
     private static final String modelName = "应用管理";
 
@@ -50,17 +52,12 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                KubernetesCluster kubernetesCluster = kubernetesClusterMapper.selectOne(new LambdaQueryWrapper<KubernetesCluster>().eq(KubernetesCluster::getContextName, entity.getKubeContext()));
-                if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
-                    File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
-                    File valuesFile = K8sUtil.exportValuesToTempFile(entity.getChartValues());
-                    String result = HelmUtils.install(entity.getReleaseName(), entity.getNameSpace(), entity.getChartUrl(), valuesFile.getAbsolutePath(), entity.getKubeContext(), file.getAbsolutePath());
-                    entity.setResult(result);
-                } else {
-                    entity.setResult("找不到集群：" + entity.getKubeContext());
-                }
+                HelmEntity helmEntity = new HelmEntity();
+                BeanUtils.copyProperties(entity, helmEntity);
+                String installRes = helmApi.install(helmEntity);
                 entity.setUpdateTime(DateUtil.date());
                 entity.setStatus("ok");
+                entity.setResult(installRes);
                 baseMapper.updateById(entity);
                 // 发送消息
                 producer.sendEmail("安装应用", modelName, res, sysUser.getEmail(), true);
@@ -85,15 +82,15 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
                 if (!entity.getChartValues().equals(helmApp.getChartValues())) {
                     entity.setStatus("updating");
                     baseMapper.updateById(entity);
-                    KubernetesCluster kubernetesCluster = kubernetesClusterMapper.selectOne(new LambdaQueryWrapper<KubernetesCluster>().eq(KubernetesCluster::getContextName, entity.getKubeContext()));
-                    if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
-                        File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
-                        File valuesFile = K8sUtil.exportValuesToTempFile(entity.getChartValues());
-                        String result = HelmUtils.upgrade(entity.getReleaseName(), entity.getNameSpace(), entity.getChartUrl(), valuesFile.getAbsolutePath(), entity.getKubeContext(), file.getAbsolutePath());
-                        entity.setResult(result);
-                    } else {
-                        entity.setResult("找不到集群：" + helmApp.getKubeContext());
-                    }
+                    HelmEntity helmEntity = new HelmEntity();
+                    helmEntity.setChartUrl(entity.getChartUrl());
+                    helmEntity.setChartValues(entity.getChartValues());
+                    helmEntity.setKubeContext(entity.getKubeContext());
+                    helmEntity.setNameSpace(entity.getNameSpace());
+                    String result = helmApi.upgrade(helmEntity);
+                    entity.setUpdateTime(DateUtil.date());
+                    entity.setStatus("ok");
+                    entity.setResult(result);
                 }
                 entity.setStatus("ok");
                 entity.setUpdateTime(DateUtil.date());
@@ -105,7 +102,6 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
         return res;
     }
 
-
     /**
      * 根据 ID 删除
      *
@@ -114,14 +110,10 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
     @Override
     public boolean removeById(Serializable id) {
         HelmApp entity = this.getById(id);
-        KubernetesCluster kubernetesCluster = kubernetesClusterMapper.selectOne(new LambdaQueryWrapper<KubernetesCluster>().eq(KubernetesCluster::getContextName, entity.getKubeContext()));
-        if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
-            File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
-            String result = HelmUtils.uninstall(entity.getNameSpace(), entity.getReleaseName(), entity.getKubeContext(), file.getAbsolutePath());
-            entity.setResult(result);
-        } else {
-            entity.setResult("找不到集群：" + entity.getKubeContext());
-        }
+        HelmEntity helmEntity = new HelmEntity();
+        BeanUtils.copyProperties(entity, helmEntity);
+        String result = helmApi.uninstall(helmEntity);
+        entity.setResult(result);
         entity.setUpdateTime(DateUtil.date());
         baseMapper.updateById(entity);
         boolean res = super.removeById(id);

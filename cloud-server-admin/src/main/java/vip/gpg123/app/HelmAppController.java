@@ -1,5 +1,6 @@
 package vip.gpg123.app;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -16,10 +17,14 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.helm.HelmStatus;
 import vip.gpg123.common.utils.helm.HelmUtils;
+import vip.gpg123.kubernetes.domain.KubernetesCluster;
+import vip.gpg123.kubernetes.service.KubernetesClusterService;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -35,6 +40,9 @@ public class HelmAppController extends BaseController {
 
     @Autowired
     private MineAppMapper mineAppMapper;
+
+    @Autowired
+    private KubernetesClusterService kubernetesClusterService;
 
     /**
      * 列表查询
@@ -61,9 +69,10 @@ public class HelmAppController extends BaseController {
 
     /**
      * 分页查询
-     * @param appName 名称
+     *
+     * @param appName   名称
      * @param chartName chart名称
-     * @param status 状态
+     * @param status    状态
      * @return r
      */
     @GetMapping("/page")
@@ -89,8 +98,9 @@ public class HelmAppController extends BaseController {
 
     /**
      * 添加
+     *
      * @param helmApp app
-     * @return  r
+     * @return r
      */
     @PostMapping("/add")
     @ApiOperation(value = "添加")
@@ -102,8 +112,9 @@ public class HelmAppController extends BaseController {
 
     /**
      * 修改
+     *
      * @param helmApp app
-     * @return  r
+     * @return r
      */
     @PutMapping("/edit")
     @ApiOperation(value = "修改")
@@ -115,6 +126,7 @@ public class HelmAppController extends BaseController {
 
     /**
      * 删除
+     *
      * @param id id
      * @return r
      */
@@ -129,16 +141,21 @@ public class HelmAppController extends BaseController {
     /**
      * 查询详情
      *
-     * @param name 名称
+     * @param helmApp h
      * @return r
      */
     @GetMapping("/info")
     @ApiOperation(value = "详情")
-    public AjaxResult info(@RequestParam(value = "name") String name) {
+    public AjaxResult info(HelmApp helmApp) {
         try {
             // 查询详情
-            HelmStatus status = HelmUtils.status(name, name, getUsername());
-            return AjaxResult.success(status);
+            KubernetesCluster kubernetesCluster = kubernetesClusterService.getOne(new LambdaQueryWrapper<KubernetesCluster>().eq(KubernetesCluster::getContextName, helmApp.getKubeContext()));
+            if (ObjectUtil.isNotEmpty(kubernetesCluster)) {
+                File file = K8sUtil.exportConfigToTempFile(kubernetesCluster.getConfig());
+                HelmStatus status = HelmUtils.status(helmApp.getReleaseName(), helmApp.getNameSpace(), helmApp.getKubeContext(), file.getAbsolutePath());
+                return AjaxResult.success(status);
+            }
+            return AjaxResult.error("找不到集群：" + helmApp.getKubeContext());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
