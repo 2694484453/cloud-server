@@ -1,8 +1,11 @@
 package vip.gpg123.app;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,7 +66,13 @@ public class HelmAppManagerController extends BaseController {
         list.forEach(kubernetesCluster -> {
             entity.setKubeContext(kubernetesCluster.getContextName());
             JSONArray res = helmApi.listJsonArray(entity);
-            jsonArray.addAll(res);
+            if (ObjectUtil.isNotEmpty(res)) {
+                res.forEach(item -> {
+                    JSONObject jsonObject = JSONUtil.parseObj(item);
+                    jsonObject.putOnce("kubeContext", kubernetesCluster.getContextName());
+                    jsonArray.add(jsonObject);
+                });
+            }
         });
         return jsonArray;
     }
