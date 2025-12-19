@@ -32,8 +32,10 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.prometheus.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusConfigs;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
@@ -45,6 +47,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/prometheus/exporter")
@@ -251,7 +254,24 @@ public class PrometheusExporterController extends BaseController {
      */
     @GetMapping("/syncStatus")
     public AjaxResult syncStatus() {
-        prometheusProducer.syncStatus();
+        // 查询数据库中
+        List<PrometheusExporter> prometheusExporterList = prometheusExporterService.list();
+        Map<String, PrometheusExporter> map = prometheusExporterList.stream().collect(Collectors.toMap(PrometheusExporter::getJobName, item -> item));
+        // 查询状态prometheus
+        PrometheusTargetResponse response = prometheusApi.targets("");
+        List<ActiveTarget> list = Convert.toList(ActiveTarget.class, JSONUtil.parseArray(response.getData().getActiveTargets()));
+        // 循环
+        list.forEach(target -> {
+            JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
+            String jobName = object.getStr("job");
+            String status = target.getHealth();
+            if (map.containsKey(jobName)) {
+                PrometheusExporter exporter = map.get(jobName);
+                exporter.setStatus(status);
+                exporter.setGlobalUrl(target.getGlobalUrl());
+                prometheusExporterService.updateById(exporter);
+            }
+        });
         return AjaxResult.success();
     }
 

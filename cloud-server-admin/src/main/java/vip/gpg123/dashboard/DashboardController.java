@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,9 +15,8 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.dashboard.domain.WebsiteEvent;
+import vip.gpg123.dashboard.domain.TodayView;
 import vip.gpg123.dashboard.service.SessionService;
-import vip.gpg123.dashboard.service.StatesService;
 import vip.gpg123.dashboard.service.WebsiteEventService;
 import vip.gpg123.prometheus.PrometheusExporterController;
 import vip.gpg123.scheduling.service.SysSchedulingJobService;
@@ -150,7 +148,7 @@ public class DashboardController {
      */
     @GetMapping("/worldMapData")
     public Object worldMapData(@RequestParam(value = "startAt", required = false) String startAt,
-                      @RequestParam(value = "endAt", required = false) String endAt) {
+                               @RequestParam(value = "endAt", required = false) String endAt) {
         startAt = StrUtil.isBlank(startAt) ? String.valueOf(DateUtil.offsetDay(new Date(), -7).getTime() / 1000) : startAt;
         endAt = StrUtil.isBlank(endAt) ? String.valueOf(DateUtil.date().getTime() / 1000) : endAt;
         return sessionService.metrics(startAt, endAt);
@@ -171,9 +169,22 @@ public class DashboardController {
         return sessionService.chinaMetrics(startAt, endAt);
     }
 
+    /**
+     * 今天访问量
+     *
+     * @return r
+     */
     @GetMapping("/todayVisitView")
     public Object todayVisitView() {
-        return websiteEventService.todayViews();
+        List<TodayView> list = websiteEventService.todayViews();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        list.forEach(t -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", t.getHour() + ":00");
+            map.put("value", t.getCount());
+            mapList.add(map);
+        });
+        return mapList;
     }
 
     /**

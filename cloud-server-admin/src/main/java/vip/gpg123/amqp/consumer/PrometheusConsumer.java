@@ -78,23 +78,6 @@ public class PrometheusConsumer {
             key = "syncStatus" // 定义路由键
     ))
     public void syncStatus() {
-        // 查询数据库中
-        List<PrometheusExporter> prometheusExporterList = prometheusExporterService.list();
-        Map<String, PrometheusExporter> map = prometheusExporterList.stream().collect(Collectors.toMap(PrometheusExporter::getJobName, item -> item));
-        // 查询状态prometheus
-        PrometheusTargetResponse response = prometheusApi.targets("");
-        List<ActiveTarget> list = Convert.toList(ActiveTarget.class, JSONUtil.parseArray(response.getData().getActiveTargets()));
-        // 循环
-        list.forEach(target -> {
-            JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
-            String jobName = object.getStr("job");
-            String status = target.getHealth();
-            if (map.containsKey(jobName)) {
-                PrometheusExporter exporter = map.get(jobName);
-                exporter.setStatus(status);
-                exporter.setGlobalUrl(target.getGlobalUrl());
-                prometheusExporterService.updateById(exporter);
-            }
-        });
+
     }
 }
