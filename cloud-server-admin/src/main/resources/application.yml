@@ -133,7 +133,7 @@ spring:
     default-encoding: utf-8
   cloud:
     consul:
-      host: hcs.gpg123.vip
+      host: ecs.gpg123.vip
       port: 8500
       discovery:
         prefer-ip-address: true
