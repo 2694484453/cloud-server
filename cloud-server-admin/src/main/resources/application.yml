@@ -135,13 +135,14 @@ spring:
       port: 8500
       discovery:
         enabled: true
-        prefer-ip-address: true
+        prefer-ip-address: false
         register-health-check: false
         health-check-path: ${management.server.servlet.context-path}/actuator/health
         health-check-interval: 15s
         acl-token: 30e4a95a-28d6-4974-9826-d2067ffddfcd
         instance-id: ${cloud-server.name}
-        service-name: ${cloud-server.name}
+        service-name: ${cloud-server.name}-${os.name}
+      scheme: http
 
 # token配置
 token:
