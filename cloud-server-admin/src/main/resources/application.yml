@@ -13,8 +13,6 @@ cloud-server:
   # 验证码类型 math 数字计算 char 字符验证
   captchaType: math
 management:
-  server:
-    port: 9098
   endpoints:
     web:
       exposure:
@@ -136,10 +134,15 @@ spring:
       host: ecs.gpg123.vip
       port: 8500
       discovery:
+        enabled: true
         prefer-ip-address: true
-        health-check-path: /actuator/health
+        register-health-check: false
+        health-check-path: ${management.server.servlet.context-path}/actuator/health
         health-check-interval: 15s
-        #tags: prometheus           # 可选：用于过滤
+        acl-token: 30e4a95a-28d6-4974-9826-d2067ffddfcd
+        instance-id: ${cloud-server.name}
+        service-name: ${cloud-server.name}
+
 # token配置
 token:
   # 令牌自定义标识
