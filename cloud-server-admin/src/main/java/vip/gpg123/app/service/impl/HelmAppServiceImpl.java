@@ -1,8 +1,6 @@
 package vip.gpg123.app.service.impl;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +10,10 @@ import vip.gpg123.app.service.HelmAppService;
 import vip.gpg123.app.mapper.MineAppMapper;
 import org.springframework.stereotype.Service;
 import vip.gpg123.common.core.domain.entity.SysUser;
-import vip.gpg123.common.utils.K8sUtil;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.common.utils.helm.HelmUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.framework.message.MessageProducer;
-import vip.gpg123.kubernetes.domain.KubernetesCluster;
-import vip.gpg123.kubernetes.mapper.KubernetesClusterMapper;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.TimerTask;
 

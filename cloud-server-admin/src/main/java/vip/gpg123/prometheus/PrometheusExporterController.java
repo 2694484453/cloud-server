@@ -2,8 +2,7 @@ package vip.gpg123.prometheus;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
@@ -24,14 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import vip.gpg123.amqp.producer.PrometheusProducer;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.prometheus.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusConfigs;
 import vip.gpg123.prometheus.domain.PrometheusExporter;
@@ -40,11 +37,13 @@ import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,9 +53,6 @@ import java.util.stream.Collectors;
 @Api(tags = "prometheus-exporter管理")
 public class PrometheusExporterController extends BaseController {
 
-    @Value("${monitor.prometheus.exporterPath}")
-    private String path;
-
     @Autowired
     private PrometheusExporterService prometheusExporterService;
 
@@ -65,9 +61,6 @@ public class PrometheusExporterController extends BaseController {
 
     @Autowired
     private PrometheusApi prometheusApi;
-
-    @Autowired
-    private PrometheusProducer prometheusProducer;
 
     @GetMapping("/types")
     public AjaxResult types() {
@@ -187,72 +180,41 @@ public class PrometheusExporterController extends BaseController {
     }
 
     /**
-     * 同步数据
-     *
-     * @return r
+     * export
+     * @param exporter e
+     * @param response r
+     * @throws IOException e
      */
-    @GetMapping("/syncFile")
-    @ApiOperation(value = "【同步】")
-    public AjaxResult sync() {
-        File[] files1 = FileUtil.ls(path);
-        for (File file : files1) {
-            if (FileUtil.isDirectory(file)) {
-                String type = file.getName();
-                // 再循环
-                List<File> files = FileUtil.loopFiles(file.getPath());
-                if (!files.isEmpty()) {
-                    for (File file2 : files) {
-                        if (file2.getName().endsWith(".json")) {
-                            // 解析endpoint
-                            try {
-                                System.out.println(file2 + "开始解析：");
-                                JSONArray jsonArray = JSONUtil.readJSONArray(file2, StandardCharsets.UTF_8);
-                                if (!jsonArray.isEmpty()) {
-                                    jsonArray.forEach(item -> {
-                                        PrometheusExporter exporter = new PrometheusExporter();
-                                        //
-                                        JSONObject labels = ((JSONObject) item).getJSONObject("labels");
-                                        String jobName = labels.get("job").toString();
-                                        //
-                                        JSONArray targets = ((JSONObject) item).getJSONArray("targets");
-                                        String targetsStr = StrUtil.join(",", targets);
-                                        //
-                                        PrometheusExporter search = prometheusExporterService.getOne(new LambdaQueryWrapper<PrometheusExporter>()
-                                                .eq(StrUtil.isNotBlank(jobName), PrometheusExporter::getJobName, jobName)
-                                        );
-                                        if (search != null) {
-                                            // 更新
-                                            exporter = search;
-                                            exporter.setUpdateBy(SecurityUtils.getUsername());
-                                            exporter.setTargets(targetsStr);
-                                            exporter.setUpdateTime(DateUtil.date());
-                                            prometheusExporterService.updateById(exporter);
-                                        } else {
-                                            exporter.setJobName(jobName);
-                                            exporter.setTargets(targetsStr);
-                                            exporter.setExporterType(type);
-                                            exporter.setCreateBy(SecurityUtils.getUsername());
-                                            exporter.setCreateTime(DateUtil.date());
-                                            prometheusExporterService.save(exporter);
-                                        }
-                                    });
-                                }
-                            } catch (Exception e) {
-                                System.out.println(file2.getName() + "解析失败：" + e.getMessage());
-                            }
-                        }
-                    }
-                }
-
-            }
+    @PostMapping("/export")
+    @ApiOperation(value = "export")
+    public void export(@RequestBody PrometheusExporter exporter, HttpServletResponse response) throws IOException {
+        List<PrometheusExporter> list = prometheusExporterService.list(new LambdaQueryWrapper<PrometheusExporter>()
+                .eq(StrUtil.isNotBlank(exporter.getExporterType()), PrometheusExporter::getExporterType, exporter.getExporterType())
+                .eq(StrUtil.isNotBlank(exporter.getSchemeType()), PrometheusExporter::getSchemeType, exporter.getSchemeType())
+                .eq(StrUtil.isNotBlank(exporter.getStatus()), PrometheusExporter::getStatus, exporter.getStatus())
+                .eq(PrometheusExporter::getCreateBy, String.valueOf(getUserId()))
+                .orderByDesc(PrometheusExporter::getCreateTime)
+        );
+        JSONArray jsonArray = listToJsonArray(list);
+        String jsonStr = JSONUtil.formatJsonStr(JSONUtil.toJsonStr(jsonArray));
+        try (OutputStream out = new BufferedOutputStream(response.getOutputStream())){
+            // 1. 设置响应头
+            response.setContentType("application/json;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("prometheus-exporter.json", "UTF-8"));
+            // 2. 带缓冲的流复制
+            IoUtil.copy(IoUtil.toUtf8Stream(jsonStr), out);
+        } catch (Exception e) {
+            logger.error("文件导出失败：{}", e.getMessage());
+            response.sendError(500, "文件导出失败：" + e.getMessage());
         }
-        return null;
     }
+
 
     /**
      * 同步状态
      */
     @GetMapping("/syncStatus")
+    @ApiOperation(value = "syncStatus")
     public AjaxResult syncStatus() {
         // 查询数据库中
         List<PrometheusExporter> prometheusExporterList = prometheusExporterService.list();
@@ -283,21 +245,24 @@ public class PrometheusExporterController extends BaseController {
      * @return r
      */
     @GetMapping("/http-sd")
+    @ApiOperation(value = "http-sd")
     public JSONArray httpSd() {
-        JSONArray jsonArray = new JSONArray();
         List<PrometheusExporter> list = prometheusExporterService.list();
+        return listToJsonArray(list);
+    }
+
+    public JSONArray listToJsonArray(List<PrometheusExporter> list) {
+        JSONArray jsonArray = new JSONArray();
         list.forEach(item -> {
             PrometheusConfigs configs = new PrometheusConfigs();
-            String metricsPath = "__metrics_path__";
-            Map<String, Object> labels = new HashMap<>();
-            if (ObjectUtil.isNotNull(item.getLabels())) {
-                JSONObject labelsJson = JSONUtil.parseObj(item.getLabels());
-                labels = Convert.toMap(String.class, Object.class, labelsJson);
-            }
-            labels.put(metricsPath, StrUtil.isBlank(item.getMetricsPath()) ? "/metrics" : item.getMetricsPath());
-            labels.put("job", item.getJobName());
-            labels.put("instance", item.getJobName());
-            labels.put("type", StrUtil.isBlank(item.getExporterType()) ? "unknow" : item.getExporterType());
+            JSONObject labels = JSONUtil.parseObj(ObjectUtil.isNotNull(item.getLabels()) && JSONUtil.isTypeJSON(item.getLabels().toString()) ? item.getLabels() : new JSONObject());
+            labels.set("__scrape_timeout__", ObjectUtil.defaultIfNull(item.getScrapeTimeout(), 15 + "s"));
+            labels.set("__scrape_interval__", ObjectUtil.defaultIfNull(item.getScrapeInterval(), 10 + "s"));
+            labels.set("__scheme__", ObjectUtil.defaultIfBlank(item.getSchemeType(), "http"));
+            labels.set("__metrics_path__", ObjectUtil.defaultIfBlank(item.getMetricsPath(), "/metrics"));
+            labels.set("job", item.getJobName());
+            labels.set("instance", item.getJobName());
+            labels.set("type", ObjectUtil.defaultIfBlank(item.getExporterType(), "unknow"));
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
             configs.setLabels(labels);
             jsonArray.add(configs);

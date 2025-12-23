@@ -1,5 +1,6 @@
 package vip.gpg123.prometheus.domain;
 
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -39,9 +40,33 @@ public class PrometheusExporter extends BaseEntity implements Serializable {
     @TableField(value = "targets")
     private String targets;
 
+    /**
+     * path
+     */
     @TableField(value = "metrics_path")
     private String metricsPath;
 
+    /**
+     * type
+     */
+    @TableField(value = "scheme_type")
+    private String schemeType;
+
+    /**
+     *
+     */
+    @TableField(value = "scrape_interval")
+    private Integer scrapeInterval;
+
+    /**
+     *
+     */
+    @TableField(value = "scrape_timeout")
+    private Integer scrapeTimeout;
+
+    /**
+     * labels
+     */
     @TableField(value = "labels", typeHandler = JacksonTypeHandler.class)
     private Object labels;
 

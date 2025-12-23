@@ -9,6 +9,9 @@
             <result property="jobName" column="job_name" />
             <result property="targets" column="targets" />
             <result property="metricsPath" column="metrics_path"/>
+            <result property="schemeType" column="scheme_type"/>
+            <result property="scrapeInterval" column="scrape_interval"/>
+            <result property="scrapeTimeout" column="scrape_timeout"/>
             <result property="labels" column="labels" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
             <result property="exporterType" column="exporter_type" />
             <result property="status" column="status" />
