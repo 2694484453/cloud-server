@@ -1,6 +1,7 @@
 package vip.gpg123.prometheus;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -151,8 +152,8 @@ public class PrometheusRuleController extends BaseController {
            String alertName = prometheusRule.getAlertName();
            String groupName = prometheusRule.getGroupName();
            String type = prometheusRule.getType();
-           String status = prometheusRule.getStatus();
-           String alertStatus = prometheusRule.getAlertStatus();
+           String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
+           String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getAlertStatus(), "");
            groups.forEach(group -> {
                JSONObject groupJsonObject = JSONUtil.parseObj(group);
                String prometheusGroupName = groupJsonObject.getStr("name");
@@ -162,13 +163,14 @@ public class PrometheusRuleController extends BaseController {
                    JSONObject ruleJsonObject = JSONUtil.parseObj(rule);
                    String prometheusRuleName = ruleJsonObject.getStr("name");
                    String prometheusRuleStatus = ruleJsonObject.getStr("health");
+                   String prometheusRuleState = ruleJsonObject.getStr("state");
                    if (groupName.equals(prometheusGroupName) && alertName.equals(prometheusRuleName)) {
                         if (!status.equals(prometheusRuleStatus)) {
-                             prometheusRule.setStatus(status);
+                             prometheusRule.setStatus(prometheusRuleStatus);
                              isUpdate = true;
                         }
-                        if (!alertStatus.equals(prometheusRuleStatus)) {
-                            prometheusRule.setAlertStatus(alertStatus);
+                        if (!alertStatus.equals(prometheusRuleState)) {
+                            prometheusRule.setAlertStatus(prometheusRuleState);
                             isUpdate = true;
                         }
                    }
