@@ -8,6 +8,7 @@
             <id property="id" column="id" />
             <result property="groupName" column="group_name" />
             <result property="alertName" column="alert_name" />
+            <result property="alertStatus" column="alert_status"/>
             <result property="labels" column="labels" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
             <result property="forTime" column="for_time" />
             <result property="expr" column="expr" />

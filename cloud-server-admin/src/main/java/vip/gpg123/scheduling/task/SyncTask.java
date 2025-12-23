@@ -6,6 +6,7 @@ import vip.gpg123.app.HelmAppMarketController;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.nas.NasFrpClientController;
 import vip.gpg123.prometheus.PrometheusExporterController;
+import vip.gpg123.prometheus.PrometheusRuleController;
 import vip.gpg123.prometheus.service.PrometheusApi;
 
 @Component("syncTask")
@@ -24,6 +25,13 @@ public class SyncTask {
      */
     public void syncPrometheusExporterStatus() {
         SpringUtils.getBean(PrometheusExporterController.class).syncStatus();
+    }
+
+    /**
+     * 执行prometheusRule状态同步
+     */
+    public void syncPrometheusRuleStatus() {
+        SpringUtils.getBean(PrometheusRuleController.class).syncStatus();
     }
 
     /**
@@ -46,4 +54,5 @@ public class SyncTask {
     public void helmRepoSync() {
         SpringUtils.getBean(HelmAppMarketController.class).sync();
     }
+
 }

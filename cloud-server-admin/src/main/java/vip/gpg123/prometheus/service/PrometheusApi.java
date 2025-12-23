@@ -1,5 +1,6 @@
 package vip.gpg123.prometheus.service;
 
+import cn.hutool.json.JSONObject;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,5 +26,13 @@ public interface PrometheusApi {
      */
     @PostMapping("/-/reload")
     void reload();
+
+    /**
+     * 规则
+     * @param type t
+     * @return r
+     */
+    @GetMapping("/api/v1/rules")
+    JSONObject rules(@RequestParam(value = "type", required = false, defaultValue = "alert") String type);
 
 }

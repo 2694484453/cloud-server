@@ -39,6 +39,12 @@ public class PrometheusRule extends BaseEntity implements Serializable {
     private String alertName;
 
     /**
+     * 告警状态
+     */
+    @TableField(value = "alert_status")
+    private String alertStatus;
+
+    /**
      * 
      */
     @TableField(value = "labels", typeHandler = JacksonTypeHandler.class)
