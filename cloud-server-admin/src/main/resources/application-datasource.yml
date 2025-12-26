@@ -30,23 +30,22 @@ spring:
           username: root
           password: Gaopuguang@2023%
           driver-class-name: com.mysql.cj.jdbc.Driver
-
       # Druid 全局参数（可选，会被每个数据源继承）
       druid:
+        # 连接池基础参数
         initial-size: 5
         min-idle: 10
         max-active: 20
-        # 获取连接时等待超时（毫秒）
-        max-wait: 60000
+        max-wait: 60000    # 获取连接超时 10 秒（避免 Quartz 线程卡死）
+        # 超时设置（防网络卡死）
         connect-timeout: 30000
         socket-timeout: 60000
-        # 检测间隔（建议小于 MySQL wait_timeout，例如 30 秒）
-        time-between-eviction-runs-millis: 60000
-        # 连接最小空闲时间（可选）
-        min-evictable-idle-time-millis: 300000
-        max-evictable-idle-time-millis: 900000
-        # 用于检测连接是否有效的 SQL（MySQL 推荐用 SELECT 1）
-        validation-query: SELECT 1 FROM DUAL
+        # 空闲连接回收（必须 < MySQL 的 wait_timeout，默认 8 小时=28800秒）
+        time-between-eviction-runs-millis: 30000  #每 30 秒检查一次
+        min-evictable-idle-time-millis: 180000   # 空闲 3 分钟可回收
+        max-evictable-idle-time-millis: 600000   # 空闲 10 分钟强制回收
+        # 连接有效性检测（关键！防止 MySQL wait_timeout 断连）
+        validation-query: SELECT 1
         validation-query-timeout: 2
         # 关键：开启空闲连接检测
         test-while-idle: true
@@ -54,23 +53,12 @@ spring:
         test-on-return: false
         # 连接失败重试次数（默认 1，可设为 0 或 1）
         break-after-acquire-failure: true  # 获取连接失败后，标记数据源不可用（防雪崩）
-        web-stat-filter:
-          enabled: true
-        stat-view-servlet:
-          enabled: true
-          url-pattern: /druid/*
-          login-username: ruoyi
-          login-password: 123456
-          allow: # 白名单，留空表示允许所有
-        filter:
-          stat:
-            enabled: true
-            log-slow-sql: true
-            slow-sql-millis: 1000
-            merge-sql: true
-          wall:
-            config:
-              multi-statement-allow: true
+        # 防止连接泄漏（重要！Quartz 任务若异常未释放连接会泄漏）
+        remove-abandoned: true
+        remove-abandoned-timeout-millis: 120  # 超过 2 分钟未归还视为泄漏
+        log-abandoned: true # 记录泄漏堆栈（便于排查）
+
+
 
 mybatis-plus:
   # Mapper.xml 文件位置 Maven 多模块项目的扫描路径需以 classpath*: 开头

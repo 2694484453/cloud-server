@@ -2,6 +2,7 @@ package vip.gpg123.scheduling.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import vip.gpg123.app.HelmAppMarketController;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.nas.NasFrpClientController;
@@ -16,6 +17,7 @@ public class SyncTask {
     /**
      * 刷新frpc状态-无参数
      */
+    @Transactional(rollbackFor = Exception.class)
     public void syncNasFrpClientStatus() {
         SpringUtils.getBean(NasFrpClientController.class).sync();
     }
@@ -23,6 +25,7 @@ public class SyncTask {
     /**
      * 执行prometheus状态同步
      */
+    @Transactional(rollbackFor = Exception.class)
     public void syncPrometheusExporterStatus() {
         SpringUtils.getBean(PrometheusExporterController.class).syncStatus();
     }
@@ -30,6 +33,7 @@ public class SyncTask {
     /**
      * 执行prometheusRule状态同步
      */
+    @Transactional(rollbackFor = Exception.class)
     public void syncPrometheusRuleStatus() {
         SpringUtils.getBean(PrometheusRuleController.class).syncStatus();
     }
@@ -37,6 +41,7 @@ public class SyncTask {
     /**
      * helmMarket
      */
+    @Transactional(rollbackFor = Exception.class)
     public void syncHelmAppMarket() {
         SpringUtils.getBean(HelmAppMarketController.class).sync();
     }
@@ -44,6 +49,7 @@ public class SyncTask {
     /**
      * prometheusReload
      */
+    @Transactional(rollbackFor = Exception.class)
     public void prometheusReload() {
         SpringUtils.getBean(PrometheusApi.class).reload();
     }
@@ -51,6 +57,7 @@ public class SyncTask {
     /**
      * helm-repo
      */
+    @Transactional(rollbackFor = Exception.class)
     public void helmRepoSync() {
         SpringUtils.getBean(HelmAppMarketController.class).sync();
     }
