@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -33,6 +35,7 @@ public class PrometheusAlertController extends BaseController {
 
     /**
      * list
+     *
      * @param prometheusAlert pl
      * @return r
      */
@@ -50,6 +53,7 @@ public class PrometheusAlertController extends BaseController {
 
     /**
      * page
+     *
      * @param prometheusAlert pl
      * @return r
      */
@@ -65,4 +69,14 @@ public class PrometheusAlertController extends BaseController {
         return PageUtils.toPageByIPage(page);
     }
 
+    /**
+     * 删除
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    public AjaxResult delete(@RequestParam("id") String id) {
+        boolean res = prometheusAlertService.removeById(id);
+        return res ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
+    }
 }
