@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-12-14 21:14:02
 */
 @Service
-public class PrometheusAlertServiceImpl extends ServiceImpl<PrometheusAlertMapper, PrometheusAlert>
-    implements PrometheusAlertService{
+public class PrometheusAlertServiceImpl extends ServiceImpl<PrometheusAlertMapper, PrometheusAlert> implements PrometheusAlertService{
 
 }
 
