@@ -39,7 +39,7 @@ public class SysJobController extends BaseController
     /**
      * 查询定时任务列表
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:list')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysJob sysJob)
     {
@@ -51,7 +51,7 @@ public class SysJobController extends BaseController
     /**
      * 导出定时任务列表
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:export')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:export')")
     @Log(title = "定时任务", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysJob sysJob)
@@ -64,7 +64,7 @@ public class SysJobController extends BaseController
     /**
      * 获取定时任务详细信息
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:query')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:query')")
     @GetMapping(value = "/{jobId}")
     public AjaxResult getInfo(@PathVariable("jobId") Long jobId)
     {
@@ -74,7 +74,7 @@ public class SysJobController extends BaseController
     /**
      * 新增定时任务
      */
-    @PreAuthorize("@ss.hasPermi('monitor:job:add')")
+    //@PreAuthorize("@ss.hasPermi('monitor:job:add')")
     @Log(title = "定时任务", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SysJob job) throws SchedulerException, TaskException

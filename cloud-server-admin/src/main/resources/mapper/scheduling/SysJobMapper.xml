@@ -40,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				and job_group = #{qw.jobGroup}
 			</if>
 			<if test="qw.status != null and qw.status != ''">
-				AND status = #{qw.status}
+				AND a.status = #{qw.status}
 			</if>
 			<if test="qw.createBy != null">
 				and a.create_by = #{qw.createBy}

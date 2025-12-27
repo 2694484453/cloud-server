@@ -209,6 +209,22 @@ public class SchedulingJobController extends BaseController {
     }
 
     /**
+     * delete
+     * @param id id
+     * @return r
+     * @throws SchedulerException s
+     * @throws TaskException t
+     */
+    @Log(title = "定时任务", businessType = BusinessType.DELETE)
+    @DeleteMapping("/delete")
+    public AjaxResult removeById(@RequestParam("id") String id) throws SchedulerException, TaskException
+    {
+        Long[] ids = new Long[]{Long.valueOf(id)};
+        jobService.deleteJobByIds(ids);
+        return success();
+    }
+
+    /**
      * 概览
      * @return r
      */
