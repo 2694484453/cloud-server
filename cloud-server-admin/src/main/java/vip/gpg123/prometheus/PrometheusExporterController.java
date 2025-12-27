@@ -130,6 +130,12 @@ public class PrometheusExporterController extends BaseController {
     public AjaxResult add(@RequestBody PrometheusExporter exporter) {
         exporter.setCreateBy(String.valueOf(getUserId()));
         exporter.setCreateTime(DateUtil.date());
+        int count = prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
+                .eq(PrometheusExporter::getJobName, exporter.getJobName())
+                .eq(PrometheusExporter::getExporterType, exporter.getExporterType()));
+        if (count > 0) {
+            return AjaxResult.error("已存在相同类型、名称（已被占用），请更换");
+        }
         boolean isSaved = prometheusExporterService.save(exporter);
         return isSaved ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
     }
@@ -153,9 +159,10 @@ public class PrometheusExporterController extends BaseController {
         // 修改了名称
         if (!search.getJobName().equals(exporter.getJobName())) {
             int count = prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
-                    .eq(PrometheusExporter::getJobName, exporter.getJobName()));
+                    .eq(PrometheusExporter::getJobName, exporter.getJobName())
+                    .eq(PrometheusExporter::getExporterType, exporter.getExporterType()));
             if (count > 0) {
-                return AjaxResult.error("已存在相同名称，请更换");
+                return AjaxResult.error("已存在相同类型、名称（已被占用），请更换");
             }
         }
         exporter.setUpdateBy(String.valueOf(getUserId()));
