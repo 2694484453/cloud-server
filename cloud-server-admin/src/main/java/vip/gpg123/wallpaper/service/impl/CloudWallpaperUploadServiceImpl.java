@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-11-29 05:22:05
 */
 @Service
-public class CloudWallpaperUploadServiceImpl extends ServiceImpl<CloudWallpaperUploadMapper, CloudWallpaperUpload>
-    implements CloudWallpaperUploadService{
+public class CloudWallpaperUploadServiceImpl extends ServiceImpl<CloudWallpaperUploadMapper, CloudWallpaperUpload> implements CloudWallpaperUploadService{
 
 }
 

@@ -215,7 +215,6 @@ public class PrometheusExporterController extends BaseController {
         }
     }
 
-
     /**
      * 同步状态
      */

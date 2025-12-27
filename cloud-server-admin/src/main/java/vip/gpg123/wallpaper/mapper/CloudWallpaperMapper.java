@@ -1,5 +1,6 @@
 package vip.gpg123.wallpaper.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.common.core.page.PageDomain;
@@ -21,17 +22,20 @@ public interface CloudWallpaperMapper extends BaseMapper<CloudWallpaper> {
      * 根据 entity 条件，查询一条记录
      *
      */
+    @DS("wallpaper")
     CloudWallpaper one(@Param("qw") CloudWallpaper cloudWallpaper);
 
     /**
      * 根据 entity 条件，查询全部记录
      *
      */
+    @DS("wallpaper")
     List<CloudWallpaper> list(@Param("qw") CloudWallpaper cloudWallpaper);
 
     /**
      * 根据 entity 条件，查询全部记录（并翻页）
      */
+    @DS("wallpaper")
     List<CloudWallpaper> page(@Param("page") PageDomain page, @Param("qw") CloudWallpaper cloudWallpaper);
 
 }

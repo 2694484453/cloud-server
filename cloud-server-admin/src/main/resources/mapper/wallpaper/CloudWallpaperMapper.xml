@@ -73,9 +73,9 @@
     <sql id="baseSelect">
         select a.*, b.user_name as 'updateByUserName'
         from (select s.*, u.user_name as 'createByUserName'
-              from cloud_wallpaper s
-                       left join sys_user u on u.user_id = s.create_by) a
-                 left join sys_user b on a.update_by = b.user_id
+              from `wallpaper`.cloud_wallpaper s
+                       left join `cloud-server`.sys_user u on u.user_id = s.create_by) a
+                 left join `cloud-server`.sys_user b on a.update_by = b.user_id
     </sql>
 
     <select id="list" resultMap="BaseResultMap">

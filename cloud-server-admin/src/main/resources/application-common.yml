@@ -31,13 +31,7 @@ git:
     access_token: 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
 # 大模型
 ai:
-  tyqw:
-    api-key: sk-37d9ef3dd4e74516b355f7ccba0f73cd
-    http: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
-    sdk: https://dashscope.aliyuncs.com/compatible-mode/v1
-  deepseek:
-    api-key: sk-37d9ef3dd4e74516b355f7ccba0f73cd
-    http: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+  open-webui: 
 
 # 链路追踪
 trace:
