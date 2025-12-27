@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,8 +44,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/prometheus/exporter")
@@ -181,6 +179,7 @@ public class PrometheusExporterController extends BaseController {
 
     /**
      * export
+     *
      * @param exporter e
      * @param response r
      * @throws IOException e
@@ -197,7 +196,7 @@ public class PrometheusExporterController extends BaseController {
         );
         JSONArray jsonArray = listToJsonArray(list);
         String jsonStr = JSONUtil.formatJsonStr(JSONUtil.toJsonStr(jsonArray));
-        try (OutputStream out = new BufferedOutputStream(response.getOutputStream())){
+        try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
             // 1. 设置响应头
             response.setContentType("application/json;charset=UTF-8");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("prometheus-exporter.json", "UTF-8"));
@@ -218,24 +217,49 @@ public class PrometheusExporterController extends BaseController {
     public AjaxResult syncStatus() {
         // 查询数据库中
         List<PrometheusExporter> prometheusExporterList = prometheusExporterService.list();
-        Map<String, PrometheusExporter> map = prometheusExporterList.stream().collect(Collectors.toMap(PrometheusExporter::getJobName, item -> item));
+        //Map<String, PrometheusExporter> map = prometheusExporterList.stream().collect(Collectors.toMap(PrometheusExporter::getJobName, item -> item));
         // 查询状态prometheus
         PrometheusTargetResponse response = prometheusApi.targets("");
         List<ActiveTarget> list = Convert.toList(ActiveTarget.class, JSONUtil.parseArray(response.getData().getActiveTargets()));
-        // 循环
-        list.forEach(target -> {
-            JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
-            String jobName = object.getStr("job");
-            String status = target.getHealth();
-            if (map.containsKey(jobName)) {
-                PrometheusExporter exporter = map.get(jobName);
-                if (!exporter.getStatus().equals(status)) {
-                    exporter.setStatus(status);
-                    exporter.setGlobalUrl(target.getGlobalUrl());
+        // 不为空
+        if (ObjectUtil.isNotEmpty(prometheusExporterList)) {
+            prometheusExporterList.forEach(exporter -> {
+                AtomicBoolean isUpdate = new AtomicBoolean(false);
+                // 循环
+                list.forEach(target -> {
+                    JSONObject object = JSONUtil.parseObj(target.getDiscoveredLabels());
+                    String jobName = object.getStr("job");
+                    String status = target.getHealth();
+                    // 找到了
+                    if (jobName.equals(exporter.getJobName())) {
+                        // 状态发生变化或者是错误原因为空白
+                        if (!exporter.getStatus().equals(status) || (StrUtil.isBlank(exporter.getErrorReason()) && "down".equals(exporter.getStatus()))) {
+                            exporter.setStatus(status);
+                            exporter.setGlobalUrl(target.getGlobalUrl());
+                            if ("down".equals(status)) {
+                                exporter.setErrorReason(target.getLastError());
+                            } else if ("up".equals(status)) {
+                                exporter.setErrorReason(null);
+                            } else {
+                                exporter.setStatus("unknown");
+                                exporter.setErrorReason("unknown");
+                            }
+                            isUpdate.set(true);
+                        }
+                    } else {
+                        // 找不到
+                        if (!"unknown".equals(exporter.getStatus())) {
+                            exporter.setStatus("unknown");
+                            exporter.setErrorReason("unknown");
+                            isUpdate.set(true);
+                        }
+                    }
+                });
+                if (isUpdate.get()) {
                     prometheusExporterService.updateById(exporter);
                 }
-            }
-        });
+            });
+        }
         return AjaxResult.success();
     }
 

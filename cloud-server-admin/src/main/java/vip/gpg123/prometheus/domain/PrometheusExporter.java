@@ -95,6 +95,12 @@ public class PrometheusExporter extends BaseEntity implements Serializable {
     private String description;
 
     /**
+     *
+     */
+    @TableField(value = "error_reason")
+    private String errorReason;
+
+    /**
      * 
      */
     @TableField(value = "create_time")
