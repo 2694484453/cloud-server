@@ -45,7 +45,7 @@ public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesClusterM
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(actionName, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail(actionName, modeName, result, sysUser, true);
             }
         });
         return result;
@@ -63,7 +63,7 @@ public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesClusterM
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(actionName, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail(actionName, modeName, result, sysUser, true);
             }
         });
         return result;
@@ -81,7 +81,7 @@ public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesClusterM
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(actionName, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail(actionName, modeName, result, sysUser, true);
             }
         });
         return result;

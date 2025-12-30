@@ -22,6 +22,7 @@ public class NoticeBody implements Serializable {
      */
     private Boolean result;
 
-
     private String userName;
+
+    private String userId;
 }

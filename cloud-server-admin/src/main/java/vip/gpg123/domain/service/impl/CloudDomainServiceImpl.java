@@ -46,7 +46,7 @@ public class CloudDomainServiceImpl extends ServiceImpl<CloudDomainMapper, Cloud
                 // 创建
                 umamiProducer.createWebsite(entity.getDomain(), entity.getId(), entity.getCreateBy());
                 // 发送
-                messageProducer.sendEmail("新增", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail("新增", modelName, res, sysUser, true);
             }
         });
         return res;
@@ -67,7 +67,7 @@ public class CloudDomainServiceImpl extends ServiceImpl<CloudDomainMapper, Cloud
                 // 删除
                 umamiProducer.deleteWebsite(String.valueOf(id));
                 // 发送
-                messageProducer.sendEmail("删除", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail("删除", modelName, res, sysUser, true);
             }
         });
         return res;
@@ -87,7 +87,7 @@ public class CloudDomainServiceImpl extends ServiceImpl<CloudDomainMapper, Cloud
             public void run() {
                 umamiProducer.updateWebsite(entity.getDomain(), entity.getId(), entity.getCreateBy());
                 //
-                messageProducer.sendEmail("修改", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail("修改", modelName, res, sysUser, true);
             }
         });
         return res;

@@ -49,7 +49,7 @@ public class GitCodeSpaceServiceImpl extends ServiceImpl<GitCodeSpaceMapper, Git
                 emailBody.setName(entity.getSpaceName());
                 emailBody.setResult(result);
                 emailBody.setTos(new String[]{user.getEmail()});
-                messageProducer.sendEmail("创建", modeName, result, user.getUserName(), user.getEmail(), true);
+                messageProducer.sendEmail("创建", modeName, result, user, true);
                 //
                 gitProducer.gitClone(entity);
             }

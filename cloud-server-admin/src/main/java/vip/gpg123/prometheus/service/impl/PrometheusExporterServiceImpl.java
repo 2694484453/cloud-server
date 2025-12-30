@@ -53,7 +53,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                 // 配置文件位置
                 prometheusProducer.createExporterFile(entity);
                 // 发送邮件
-                messageProducer.sendEmail("新增", modelName, result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail("新增", modelName, result, sysUser, true);
             }
         });
         return result;
@@ -108,7 +108,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                     // 删除文件
                     FileUtil.del(filePath);
                     // 发送邮件
-                    messageProducer.sendEmail("删除", modelName, flag, sysUser.getUserName(), sysUser.getEmail(), true);
+                    messageProducer.sendEmail("删除", modelName, flag, sysUser, true);
                 }
             }
         });

@@ -42,7 +42,7 @@ public class DevopsJobServiceImpl extends ServiceImpl<DevopsJobMapper, DevopsJob
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(Constants.ADD_ACTION, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail(Constants.ADD_ACTION, modeName, result, sysUser, true);
             }
         });
         return result;
@@ -60,7 +60,7 @@ public class DevopsJobServiceImpl extends ServiceImpl<DevopsJobMapper, DevopsJob
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(Constants.ADD_ACTION, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail(Constants.ADD_ACTION, modeName, result, sysUser, true);
             }
         });
         return result;

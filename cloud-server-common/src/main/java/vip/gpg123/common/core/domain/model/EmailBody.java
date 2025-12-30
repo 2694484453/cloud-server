@@ -74,4 +74,6 @@ public class EmailBody implements Serializable {
 
 
     private String userName;
+
+    private String userId;
 }

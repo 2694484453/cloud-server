@@ -5,6 +5,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,13 +40,14 @@ public class ThreadPoolConfig
         executor.setKeepAliveSeconds(keepAliveSeconds);
         // 线程池对拒绝任务(无线程可用)的处理策略
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
         return executor;
     }
 
     /**
      * 执行周期性或定时任务
      */
-    @Bean(name = "scheduledExecutorService")
+    @Bean(name = "scheduledExecutorService", destroyMethod = "shutdown")
     protected ScheduledExecutorService scheduledExecutorService()
     {
         return new ScheduledThreadPoolExecutor(corePoolSize,

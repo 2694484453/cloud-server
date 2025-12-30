@@ -53,7 +53,7 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
                 entity.setResult(installRes);
                 baseMapper.updateById(entity);
                 // 发送消息
-                producer.sendEmail("安装应用", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
+                producer.sendEmail("安装应用", modelName, res, sysUser, true);
             }
         });
         return res;
@@ -89,7 +89,7 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
                 entity.setUpdateTime(DateUtil.date());
                 baseMapper.updateById(entity);
                 // 发送消息
-                producer.sendEmail("更新应用", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
+                producer.sendEmail("更新应用", modelName, res, sysUser, true);
             }
         });
         return res;
@@ -115,7 +115,7 @@ public class HelmAppServiceImpl extends ServiceImpl<MineAppMapper, HelmApp> impl
             @Override
             public void run() {
                 // 发送消息
-                producer.sendEmail("卸载应用", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
+                producer.sendEmail("卸载应用", modelName, res, sysUser, true);
             }
         });
         return res;

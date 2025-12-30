@@ -39,7 +39,7 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(modeName, "添加", result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail(modeName, "添加", result, sysUser, true);
             }
         });
         return result;
@@ -67,7 +67,7 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(modeName, "删除", result, sysUser.getUserName(), sysUser.getEmail(), true);
+                messageProducer.sendEmail(modeName, "删除", result, sysUser, true);
             }
         });
         return result;
