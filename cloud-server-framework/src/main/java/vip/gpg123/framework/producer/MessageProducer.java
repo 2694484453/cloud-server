@@ -30,7 +30,7 @@ public class MessageProducer {
      */
     public void sendEmail(EmailBody emailBody) {
         // 发送消息到交换机，并指定路由键
-        rabbitTemplate.convertAndSend(email, emailBody);
+        rabbitTemplate.convertAndSend(email, email, emailBody);
         System.out.println("发送邮件: " + emailBody);
     }
 
@@ -39,7 +39,7 @@ public class MessageProducer {
      */
     public void sendEmail(EmailBody emailBody, Boolean sendNotice) {
         // 发送消息到交换机，并指定路由键
-        rabbitTemplate.convertAndSend(email, emailBody);
+        rabbitTemplate.convertAndSend(email, email, emailBody);
         if (sendNotice) {
             NoticeBody noticeBody = new NoticeBody();
             BeanUtils.copyProperties(emailBody, noticeBody);
@@ -52,12 +52,12 @@ public class MessageProducer {
      * 发送邮件
      *
      * @param actionName 行为
-     * @param modelName 模块名称
-     * @param result 结果
-     * @param to 发给
+     * @param modelName  模块名称
+     * @param result     结果
+     * @param to         发给
      * @param sendNotice 是否发送站内
      */
-    public void sendEmail(String actionName, String modelName, boolean result,String userName, String to, Boolean sendNotice) {
+    public void sendEmail(String actionName, String modelName, boolean result, String userName, String to, Boolean sendNotice) {
         EmailBody emailBody = new EmailBody();
         emailBody.setAction(actionName);
         emailBody.setResult(result);
@@ -66,11 +66,11 @@ public class MessageProducer {
         if (StrUtil.isNotBlank(to) && !Validator.isEmail(to)) {
             to = sysUserService.getById(to).getEmail();
         }
-        if (StrUtil.isNotBlank(to) && Validator.isEmail(to) ) {
+        if (StrUtil.isNotBlank(to) && Validator.isEmail(to)) {
             emailBody.setTos(new String[]{to});
             emailBody.setModelName(modelName);
             // 发送消息到交换机，并指定路由键
-            rabbitTemplate.convertAndSend(email, emailBody);
+            rabbitTemplate.convertAndSend(email, email, emailBody);
             if (sendNotice) {
                 NoticeBody noticeBody = new NoticeBody();
                 BeanUtils.copyProperties(emailBody, noticeBody);

@@ -1,5 +1,6 @@
 package vip.gpg123.amqp.consumer;
 
+import cn.hutool.core.convert.Convert;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -57,8 +58,7 @@ public class UmamiConsumer {
             key = "createWebsite" // 定义路由键
     ))
     public void createWebsite(Map<String, Object> map) {
-        Website website = new Website();
-        BeanUtils.copyProperties(map, website);
+        Website website = Convert.convert(Website.class, map);
         websiteService.save(website);
     }
 
@@ -72,8 +72,7 @@ public class UmamiConsumer {
             key = "updateWebsite" // 定义路由键
     ))
     public void updateWebsite(Map<String, Object> map) {
-        Website website = new Website();
-        BeanUtils.copyProperties(map, website);
+        Website website = Convert.convert(Website.class, map);
         websiteService.updateById(website);
     }
 
@@ -87,8 +86,7 @@ public class UmamiConsumer {
             key = "deleteWebsite" // 定义路由键
     ))
     public void deleteWebsite(Map<String, Object> map) {
-        Website website = new Website();
-        BeanUtils.copyProperties(map, website);
+        Website website = Convert.convert(Website.class, map);
         websiteService.removeById(website);
     }
 }

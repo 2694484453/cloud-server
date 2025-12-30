@@ -15,7 +15,7 @@ public class UmamiProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public static final String umamiExchange = "cloud-server-umami";
+    public static final String umami = "cloud-server-umami";
 
     /**
      * 创建用户
@@ -23,7 +23,7 @@ public class UmamiProducer {
      * @param sysUser s
      */
     public void createUser(SysUser sysUser) {
-        rabbitTemplate.convertAndSend(umamiExchange, "createUser", sysUser);
+        rabbitTemplate.convertAndSend(umami, "createUser", sysUser);
         System.out.println("创建umami用户: " + sysUser);
     }
 
@@ -39,7 +39,7 @@ public class UmamiProducer {
         map.put("createdAt", new Date());
         map.put("userId", userId);
         map.put("shareId", userId);
-        rabbitTemplate.convertAndSend(umamiExchange, "createWebsite", map);
+        rabbitTemplate.convertAndSend(umami, "createWebsite", map);
         System.out.println("创建umami站点: " + domain);
     }
 
@@ -55,7 +55,7 @@ public class UmamiProducer {
         map.put("updatedAt", new Date());
         map.put("userId", userId);
         map.put("shareId", userId);
-        rabbitTemplate.convertAndSend(umamiExchange, "updateWebsite", map);
+        rabbitTemplate.convertAndSend(umami, "updateWebsite", map);
         System.out.println("更新umami站点: " + domain);
     }
 
@@ -63,7 +63,7 @@ public class UmamiProducer {
      * 删除网站
      */
     public void deleteWebsite(String domainId) {
-        rabbitTemplate.convertAndSend(umamiExchange, "deleteWebsite", domainId);
+        rabbitTemplate.convertAndSend(umami, "deleteWebsite", domainId);
         System.out.println("删除umami站点: " + domainId);
     }
 

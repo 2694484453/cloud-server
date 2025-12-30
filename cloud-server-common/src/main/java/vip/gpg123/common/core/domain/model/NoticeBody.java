@@ -13,11 +13,6 @@ public class NoticeBody implements Serializable {
     private String modelName;
 
     /**
-     * 对象名称
-     */
-    private String name;
-
-    /**
      * 操作
      */
     private String action;
