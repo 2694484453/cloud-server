@@ -2,7 +2,7 @@ package vip.gpg123.git.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import vip.gpg123.common.core.domain.model.LoginUser;
+import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.framework.producer.MessageProducer;
@@ -35,11 +35,11 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
     @Override
     public boolean save(GitRepo entity) {
         boolean result = super.save(entity);
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(modeName, "添加", result, loginUser.getUser().getEmail(), true);
+                messageProducer.sendEmail(modeName, "添加", result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;
@@ -63,11 +63,11 @@ public class GitRepoServiceImpl extends ServiceImpl<GitRepoMapper, GitRepo> impl
     @Override
     public boolean removeById(Serializable id) {
         boolean result = super.removeById(id);
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(modeName, "删除", result, loginUser.getUser().getEmail(), true);
+                messageProducer.sendEmail(modeName, "删除", result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import vip.gpg123.amqp.producer.PrometheusProducer;
+import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.core.domain.model.LoginUser;
 import vip.gpg123.common.utils.SecurityUtils;
@@ -45,14 +46,14 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
     @Override
     public boolean save(PrometheusExporter entity) {
         boolean result = super.save(entity);
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
                 // 配置文件位置
                 prometheusProducer.createExporterFile(entity);
                 // 发送邮件
-                messageProducer.sendEmail("新增", modelName, result, loginUser.getUser().getEmail(), true);
+                messageProducer.sendEmail("新增", modelName, result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;
@@ -96,7 +97,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
     @Override
     public boolean removeById(Serializable id) {
         boolean flag = super.removeById(id);
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
@@ -107,13 +108,7 @@ public class PrometheusExporterServiceImpl extends ServiceImpl<PrometheusExporte
                     // 删除文件
                     FileUtil.del(filePath);
                     // 发送邮件
-                    EmailBody emailBody = new EmailBody();
-                    emailBody.setTos(new String[]{loginUser.getUser().getEmail()});
-                    emailBody.setName(entity.getJobName());
-                    emailBody.setAction("删除");
-                    emailBody.setModelName(modelName);
-                    emailBody.setResult(flag);
-                    messageProducer.sendEmail(emailBody, true);
+                    messageProducer.sendEmail("删除", modelName, flag, sysUser.getUserName(), sysUser.getEmail(), true);
                 }
             }
         });

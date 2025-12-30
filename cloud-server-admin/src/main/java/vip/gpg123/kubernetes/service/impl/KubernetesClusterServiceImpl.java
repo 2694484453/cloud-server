@@ -2,6 +2,7 @@ package vip.gpg123.kubernetes.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.domain.model.LoginUser;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
@@ -40,11 +41,11 @@ public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesClusterM
     @Override
     public boolean save(KubernetesCluster entity) {
         boolean result = super.save(entity);
-        LoginUser user = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(actionName, modeName, result, user.getUser().getEmail(), true);
+                messageProducer.sendEmail(actionName, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;
@@ -58,11 +59,11 @@ public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesClusterM
     @Override
     public boolean removeById(Serializable id) {
         boolean result = super.removeById(id);
-        LoginUser user = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(actionName, modeName, result, user.getUser().getEmail(), true);
+                messageProducer.sendEmail(actionName, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;
@@ -76,11 +77,11 @@ public class KubernetesClusterServiceImpl extends ServiceImpl<KubernetesClusterM
     @Override
     public boolean updateById(KubernetesCluster entity) {
         boolean result = super.updateById(entity);
-        LoginUser user = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(actionName, modeName, result, user.getUser().getEmail(), true);
+                messageProducer.sendEmail(actionName, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;

@@ -3,6 +3,7 @@ package vip.gpg123.devops.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.common.constant.Constants;
+import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.domain.model.LoginUser;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.devops.domain.DevopsJob;
@@ -16,10 +17,10 @@ import java.io.Serializable;
 import java.util.TimerTask;
 
 /**
-* @author gaopuguang
-* @description 针对表【devops_job(普通任务)】的数据库操作Service实现
-* @createDate 2025-05-08 01:57:47
-*/
+ * @author gaopuguang
+ * @description 针对表【devops_job(普通任务)】的数据库操作Service实现
+ * @createDate 2025-05-08 01:57:47
+ */
 @Service
 public class DevopsJobServiceImpl extends ServiceImpl<DevopsJobMapper, DevopsJob> implements DevopsJobService {
 
@@ -37,11 +38,11 @@ public class DevopsJobServiceImpl extends ServiceImpl<DevopsJobMapper, DevopsJob
     @Override
     public boolean save(DevopsJob entity) {
         boolean result = super.save(entity);
-        LoginUser user = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(Constants.ADD_ACTION,modeName,result,user.getUser().getEmail(),true);
+                messageProducer.sendEmail(Constants.ADD_ACTION, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;
@@ -55,11 +56,11 @@ public class DevopsJobServiceImpl extends ServiceImpl<DevopsJobMapper, DevopsJob
     @Override
     public boolean removeById(Serializable id) {
         boolean result = super.removeById(id);
-        LoginUser user = SecurityUtils.getLoginUser();
+        SysUser sysUser = SecurityUtils.getLoginUser().getUser();
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                messageProducer.sendEmail(Constants.ADD_ACTION,modeName,result,user.getUser().getEmail(),true);
+                messageProducer.sendEmail(Constants.ADD_ACTION, modeName, result, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return result;

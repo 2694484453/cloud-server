@@ -1,5 +1,6 @@
 package vip.gpg123.common.core.domain.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
@@ -24,7 +25,7 @@ import vip.gpg123.common.xss.Xss;
  */
 @Setter
 @TableName(value = "sys_user")
-public class SysUser extends BaseEntity
+public class SysUser extends BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 

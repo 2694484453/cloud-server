@@ -21,7 +21,7 @@ import java.util.TimerTask;
  * @createDate 2025-06-06 01:16:02
  */
 @Service
-public class DomainRecordServiceImpl extends ServiceImpl<CloudDomainMapper, CloudDomain> implements CloudDomainService {
+public class CloudDomainServiceImpl extends ServiceImpl<CloudDomainMapper, CloudDomain> implements CloudDomainService {
 
     @Autowired
     private UmamiProducer umamiProducer;
@@ -46,7 +46,7 @@ public class DomainRecordServiceImpl extends ServiceImpl<CloudDomainMapper, Clou
                 // 创建
                 umamiProducer.createWebsite(entity.getDomain(), entity.getId(), entity.getCreateBy());
                 // 发送
-                messageProducer.sendEmail("新增", modelName, res, sysUser.getEmail(), true);
+                messageProducer.sendEmail("新增", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return res;
@@ -67,7 +67,7 @@ public class DomainRecordServiceImpl extends ServiceImpl<CloudDomainMapper, Clou
                 // 删除
                 umamiProducer.deleteWebsite(String.valueOf(id));
                 // 发送
-                messageProducer.sendEmail("删除", modelName, res, sysUser.getEmail(), true);
+                messageProducer.sendEmail("删除", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return res;
@@ -87,7 +87,7 @@ public class DomainRecordServiceImpl extends ServiceImpl<CloudDomainMapper, Clou
             public void run() {
                 umamiProducer.updateWebsite(entity.getDomain(), entity.getId(), entity.getCreateBy());
                 //
-                messageProducer.sendEmail("修改", modelName, res, sysUser.getEmail(), true);
+                messageProducer.sendEmail("修改", modelName, res, sysUser.getUserName(), sysUser.getEmail(), true);
             }
         });
         return res;

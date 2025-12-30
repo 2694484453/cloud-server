@@ -57,10 +57,11 @@ public class MessageProducer {
      * @param to 发给
      * @param sendNotice 是否发送站内
      */
-    public void sendEmail(String actionName, String modelName, boolean result, String to, Boolean sendNotice) {
+    public void sendEmail(String actionName, String modelName, boolean result,String userName, String to, Boolean sendNotice) {
         EmailBody emailBody = new EmailBody();
         emailBody.setAction(actionName);
         emailBody.setResult(result);
+        emailBody.setUserName(userName);
         // 是否邮箱格式
         if (StrUtil.isNotBlank(to) && !Validator.isEmail(to)) {
             to = sysUserService.getById(to).getEmail();
