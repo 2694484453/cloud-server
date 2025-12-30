@@ -14,7 +14,8 @@ import vip.gpg123.common.exception.user.CaptchaExpireException;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.framework.message.MessageProducer;
+import vip.gpg123.framework.producer.MessageProducer;
+import vip.gpg123.framework.producer.UmamiProducer;
 import vip.gpg123.system.service.ISysConfigService;
 import vip.gpg123.system.service.ISysUserService;
 
@@ -38,6 +39,9 @@ public class SysRegisterService {
 
     @Autowired
     private MessageProducer messageProducer;
+
+    @Autowired
+    private UmamiProducer umamiProducer;
 
     /**
      * 注册
@@ -92,9 +96,10 @@ public class SysRegisterService {
                         EmailBody emailBody = new EmailBody();
                         emailBody.setTos(new String[]{email});
                         emailBody.setTitle("云服务平台，欢迎注册！");
-                        emailBody.setContent("您已完成平台注册请登陆：<a href='https://cloud-web.gpg123.vip'>点击登陆</a>");
+                        emailBody.setContent("您已完成平台注册请登陆：<a href='https://gpg123.vip'>点击登陆</a>");
                         emailBody.setHtml(true);
                         messageProducer.sendEmail(emailBody);
+                        umamiProducer.createUser(sysUser);
                     }
                 });
             }

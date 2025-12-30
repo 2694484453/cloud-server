@@ -1,4 +1,4 @@
-package vip.gpg123.dashboard.domain;
+package vip.gpg123.umami.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

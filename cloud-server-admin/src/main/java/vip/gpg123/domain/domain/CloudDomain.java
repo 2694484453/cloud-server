@@ -29,8 +29,8 @@ public class CloudDomain extends BaseEntity implements Serializable {
     /**
      * 域名
      */
-    @TableField(value = "domain_name")
-    private String domainName;
+    @TableField(value = "domain")
+    private String domain;
 
     /**
      * 类型
@@ -50,6 +50,12 @@ public class CloudDomain extends BaseEntity implements Serializable {
      */
     @TableField(value = "description")
     private String description;
+
+    /**
+     *
+     */
+    @TableField(value = "analysis_url")
+    private String analysisUrl;
 
     /**
      * 创建者

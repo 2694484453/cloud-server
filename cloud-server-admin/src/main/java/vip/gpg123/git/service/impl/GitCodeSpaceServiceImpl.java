@@ -11,7 +11,7 @@ import vip.gpg123.git.domain.GitCodeSpace;
 import vip.gpg123.git.service.GitCodeSpaceService;
 import vip.gpg123.git.mapper.GitCodeSpaceMapper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.framework.message.MessageProducer;
+import vip.gpg123.framework.producer.MessageProducer;
 
 import java.util.TimerTask;
 

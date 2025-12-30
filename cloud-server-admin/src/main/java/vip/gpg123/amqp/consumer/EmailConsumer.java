@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.service.EmailService;
-import vip.gpg123.framework.config.RabbitMQConfig;
+
 
 /**
  * 邮件消息处理
@@ -19,12 +19,14 @@ public class EmailConsumer {
     @Autowired
     private EmailService emailService;
 
+    public static final String email = "cloud-server-email";
+
     /**
      * 当消费者从队列取出消息时的回调方法
      *
      * @param email 消息
      */
-    @RabbitListener(queues = RabbitMQConfig.emailQueue)
+    @RabbitListener(queues = email)
     public void receive(EmailBody email) {
         // 接收人
         String[] tos = email.getTos();

@@ -1,4 +1,4 @@
-package vip.gpg123.dashboard.service.impl;
+package vip.gpg123.umami.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import vip.gpg123.dashboard.domain.TodayView;
-import vip.gpg123.dashboard.domain.WebsiteEvent;
-import vip.gpg123.dashboard.service.WebsiteEventService;
-import vip.gpg123.dashboard.mapper.WebsiteEventMapper;
+import vip.gpg123.umami.domain.WebsiteEvent;
+import vip.gpg123.umami.service.WebsiteEventService;
+import vip.gpg123.umami.mapper.WebsiteEventMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

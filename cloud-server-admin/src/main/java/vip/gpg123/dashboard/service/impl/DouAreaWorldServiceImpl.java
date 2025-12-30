@@ -4,9 +4,9 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.dashboard.domain.DouAreaWorld;
-import vip.gpg123.dashboard.service.DouAreaWorldService;
 import vip.gpg123.dashboard.mapper.DouAreaWorldMapper;
 import org.springframework.stereotype.Service;
+import vip.gpg123.dashboard.service.DouAreaWorldService;
 
 /**
  * @author gaopuguang

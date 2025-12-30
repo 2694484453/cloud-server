@@ -1,7 +1,7 @@
-package vip.gpg123.dashboard.service;
+package vip.gpg123.umami.service;
 
 import vip.gpg123.dashboard.domain.TodayView;
-import vip.gpg123.dashboard.domain.WebsiteEvent;
+import vip.gpg123.umami.domain.WebsiteEvent;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.time.LocalDateTime;

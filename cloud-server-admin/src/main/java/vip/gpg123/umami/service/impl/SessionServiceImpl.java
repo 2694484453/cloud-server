@@ -1,4 +1,4 @@
-package vip.gpg123.dashboard.service.impl;
+package vip.gpg123.umami.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -7,17 +7,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import vip.gpg123.dashboard.domain.Session;
+import vip.gpg123.umami.domain.Session;
 import vip.gpg123.dashboard.service.DouAreaWorldService;
-import vip.gpg123.dashboard.service.SessionService;
-import vip.gpg123.dashboard.mapper.SessionMapper;
+import vip.gpg123.umami.service.SessionService;
+import vip.gpg123.umami.mapper.SessionMapper;
 import org.springframework.stereotype.Service;
 import vip.gpg123.dashboard.service.StatesService;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

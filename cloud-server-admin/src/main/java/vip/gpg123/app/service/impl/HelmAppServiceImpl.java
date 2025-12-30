@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.framework.message.MessageProducer;
+import vip.gpg123.framework.producer.MessageProducer;
 
 import java.io.Serializable;
 import java.util.TimerTask;

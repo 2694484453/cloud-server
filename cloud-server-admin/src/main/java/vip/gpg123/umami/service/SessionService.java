@@ -1,6 +1,6 @@
-package vip.gpg123.dashboard.service;
+package vip.gpg123.umami.service;
 
-import vip.gpg123.dashboard.domain.Session;
+import vip.gpg123.umami.domain.Session;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

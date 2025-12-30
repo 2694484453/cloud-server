@@ -1,9 +1,9 @@
-package vip.gpg123.dashboard.mapper;
+package vip.gpg123.umami.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import vip.gpg123.dashboard.domain.Session;
+import vip.gpg123.umami.domain.Session;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author gaopuguang
  * @description 针对表【session】的数据库操作Mapper
  * @createDate 2025-12-19 03:07:34
- * @Entity vip.gpg123.dashboard.domain.Session
+ * @Entity vip.gpg123.umami.domain.Session
  */
 @Mapper
 public interface SessionMapper extends BaseMapper<Session> {

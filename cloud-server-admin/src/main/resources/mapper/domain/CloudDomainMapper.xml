@@ -6,8 +6,11 @@
 
     <resultMap id="BaseResultMap" type="vip.gpg123.domain.domain.CloudDomain">
             <id property="id" column="id" />
-            <result property="domainName" column="domain_name" />
+            <result property="domain" column="domain" />
             <result property="description" column="description" />
+            <result property="type" column="type"/>
+            <result property="status" column="status"/>
+            <result property="analysisUrl" column="analysis_url"/>
             <result property="createBy" column="create_by" />
             <result property="createTime" column="create_time" />
             <result property="updateBy" column="update_by" />
@@ -15,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,domain_name,domain_type,domain_value,description,create_by,
+        id,domain,domain_type,domain_value,description,create_by,
         create_time,update_by,update_time
     </sql>
 
@@ -25,8 +28,8 @@
             <if test="qw.id != null">
                 and id = #{qw.id}
             </if>
-            <if test="qw.domainName != null and qw.domainName !=''">
-                and domain_name like concat('%',#{qw.domainName},'%')
+            <if test="qw.domain != null and qw.domain !=''">
+                and domain like concat('%',#{qw.domain},'%')
             </if>
             <if test="qw.type != null and qw.type !=''">
                 and type = #{qw.type}

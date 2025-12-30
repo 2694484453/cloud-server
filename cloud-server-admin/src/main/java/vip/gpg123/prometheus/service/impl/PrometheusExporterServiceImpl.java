@@ -13,7 +13,7 @@ import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.service.PrometheusExporterService;
 import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import org.springframework.stereotype.Service;
-import vip.gpg123.framework.message.MessageProducer;
+import vip.gpg123.framework.producer.MessageProducer;
 
 import java.io.Serializable;
 import java.util.TimerTask;

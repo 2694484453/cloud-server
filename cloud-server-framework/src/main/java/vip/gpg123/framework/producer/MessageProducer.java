@@ -1,17 +1,23 @@
-package vip.gpg123.framework.message;
+package vip.gpg123.framework.producer;
 
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.StrUtil;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vip.gpg123.common.core.domain.model.NoticeBody;
 import vip.gpg123.common.core.domain.model.EmailBody;
+import vip.gpg123.system.service.ISysUserService;
 
 @Service
 public class MessageProducer {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private ISysUserService sysUserService;
 
     private static final String emailRoutingKey = "cloud-server-email";
 
@@ -55,16 +61,24 @@ public class MessageProducer {
         EmailBody emailBody = new EmailBody();
         emailBody.setAction(actionName);
         emailBody.setResult(result);
-        emailBody.setTos(new String[]{to});
-        emailBody.setModelName(modelName);
-        // 发送消息到交换机，并指定路由键
-        rabbitTemplate.convertAndSend(emailRoutingKey, emailBody);
-        if (sendNotice) {
-            NoticeBody noticeBody = new NoticeBody();
-            BeanUtils.copyProperties(emailBody, noticeBody);
-            this.sendActionNotice(noticeBody);
+        // 是否邮箱格式
+        if (StrUtil.isNotBlank(to) && !Validator.isEmail(to)) {
+            to = sysUserService.getById(to).getEmail();
         }
-        System.out.println("发送邮件: " + emailBody);
+        if (StrUtil.isNotBlank(to) && Validator.isEmail(to) ) {
+            emailBody.setTos(new String[]{to});
+            emailBody.setModelName(modelName);
+            // 发送消息到交换机，并指定路由键
+            rabbitTemplate.convertAndSend(emailRoutingKey, emailBody);
+            if (sendNotice) {
+                NoticeBody noticeBody = new NoticeBody();
+                BeanUtils.copyProperties(emailBody, noticeBody);
+                this.sendActionNotice(noticeBody);
+            }
+            System.out.println("发送邮件: " + emailBody);
+        } else {
+            System.out.println("不是邮箱地址: " + emailBody);
+        }
     }
 
     /**

@@ -3,7 +3,7 @@ package vip.gpg123.test.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(name = "cloud-server-message")
+@FeignClient(name = "cloud-server-producer")
 public interface TestFeign {
 
     @GetMapping("/test")

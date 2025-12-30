@@ -15,7 +15,7 @@ import vip.gpg123.system.service.ISysConfigService;
 /**
  * 注册验证
  *
- * @author ruoyi
+ * @author gaopuguang
  */
 @RestController
 @Api(tags = "【用户注册】注册管理")

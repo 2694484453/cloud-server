@@ -1,7 +1,6 @@
 package vip.gpg123.domain;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -36,7 +35,6 @@ public class CloudDomainController extends BaseController {
     @Autowired
     private CloudDomainService cloudDomainService;
 
-
     @Autowired
     private CloudDomainMapper cloudDomainMapper;
 
@@ -53,7 +51,7 @@ public class CloudDomainController extends BaseController {
                            @RequestParam(value = "type", required = false) String type) {
         List<CloudDomain> list = cloudDomainService.list(new LambdaQueryWrapper<CloudDomain>()
                 .eq(StrUtil.isNotBlank(type), CloudDomain::getType, type)
-                .like(StrUtil.isNotBlank(name), CloudDomain::getDomainName, name)
+                .like(StrUtil.isNotBlank(name), CloudDomain::getDomain, name)
                 .eq(CloudDomain::getCreateBy, getUserId())
                 .orderByDesc(CloudDomain::getCreateTime)
         );
@@ -63,13 +61,13 @@ public class CloudDomainController extends BaseController {
     /**
      * 分页查询
      *
-     * @param domainName 名称
+     * @param domain     名称
      * @param type       类型
      * @return r
      */
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
-    public TableDataInfo repos(@RequestParam(value = "domainName", required = false) String domainName,
+    public TableDataInfo repos(@RequestParam(value = "domain", required = false) String domain,
                                @RequestParam(value = "type", required = false) String type) {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
@@ -79,7 +77,7 @@ public class CloudDomainController extends BaseController {
         // 获取token
         CloudDomain cloudDomain = new CloudDomain();
         cloudDomain.setType(type);
-        cloudDomain.setDomainName(domainName);
+        cloudDomain.setDomain(domain);
         cloudDomain.setCreateBy(String.valueOf(getUserId()));
 
         // 查询
@@ -97,7 +95,7 @@ public class CloudDomainController extends BaseController {
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
     public AjaxResult add(@RequestBody CloudDomain cloudDomain) {
-        if (StrUtil.isBlank(cloudDomain.getDomainName())) {
+        if (StrUtil.isBlank(cloudDomain.getDomain())) {
             return AjaxResult.error("域名不能为空");
         }
 //        if (NetUtil.) {

@@ -37,7 +37,7 @@ public class PodLogWebSocketServer {
     // 收到消息
     @OnMessage
     public void onMessage(String message) {
-        LOGGER.info("[websocket] 收到消息：id={}，message={}", this.session.getId(), message);
+        LOGGER.info("[websocket] 收到消息：id={}，producer={}", this.session.getId(), message);
     }
 
     // 连接打开

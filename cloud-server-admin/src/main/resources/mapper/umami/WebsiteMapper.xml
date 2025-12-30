@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.gpg123.umami.mapper.WebsiteMapper">
+
+    <resultMap id="BaseResultMap" type="vip.gpg123.umami.domain.Website">
+            <id property="websiteId" column="website_id" />
+            <result property="name" column="name" />
+            <result property="domain" column="domain" />
+            <result property="shareId" column="share_id" />
+            <result property="resetAt" column="reset_at" />
+            <result property="userId" column="user_id" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+            <result property="createdBy" column="created_by" />
+            <result property="teamId" column="team_id" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        website_id,name,domain,share_id,reset_at,user_id,
+        created_at,updated_at,deleted_at,created_by,team_id
+    </sql>
+</mapper>

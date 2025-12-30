@@ -1,10 +1,10 @@
-package vip.gpg123.dashboard.mapper;
+package vip.gpg123.umami.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import vip.gpg123.dashboard.domain.TodayView;
-import vip.gpg123.dashboard.domain.WebsiteEvent;
+import vip.gpg123.umami.domain.WebsiteEvent;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.util.List;
 * @author gaopuguang
 * @description 针对表【website_event】的数据库操作Mapper
 * @createDate 2025-12-19 03:49:53
-* @Entity vip.gpg123.dashboard.domain.WebsiteEvent
+* @Entity vip.gpg123.umami.domain.WebsiteEvent
 */
 @Mapper
 public interface WebsiteEventMapper extends BaseMapper<WebsiteEvent> {

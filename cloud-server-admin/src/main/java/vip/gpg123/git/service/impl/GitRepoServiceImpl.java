@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.common.core.domain.model.LoginUser;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
-import vip.gpg123.framework.message.MessageProducer;
+import vip.gpg123.framework.producer.MessageProducer;
 import vip.gpg123.git.domain.GitRepo;
 import vip.gpg123.git.service.GitRepoService;
 import vip.gpg123.git.mapper.GitRepoMapper;

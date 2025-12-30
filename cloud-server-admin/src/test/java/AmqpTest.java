@@ -44,6 +44,6 @@ public class AmqpTest {
         emailBody.setTitle("mq发送");
         emailBody.setContent("hello world");
         emailBody.setTos(new String[]{"2694484453@qq.com"});
-        rabbitTemplate.convertAndSend("cloud-server-message",emailBody);
+        rabbitTemplate.convertAndSend("cloud-server-producer",emailBody);
     }
 }
