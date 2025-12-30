@@ -11,7 +11,6 @@ import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.umami.domain.UmamiUser;
 import vip.gpg123.umami.domain.Website;
 import vip.gpg123.umami.service.UmamiUserService;
-import vip.gpg123.framework.producer.UmamiProducer;
 import vip.gpg123.umami.service.WebsiteService;
 
 import java.util.Map;
@@ -19,7 +18,7 @@ import java.util.Map;
 @Component
 public class UmamiConsumer {
 
-    public static final String umamiQueue = "cloud-server-umami";
+    public static final String umami = "cloud-server-umami";
 
     @Autowired
     private UmamiUserService umamiUserService;
@@ -32,8 +31,8 @@ public class UmamiConsumer {
      * @param sysUser s
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = umamiQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = UmamiProducer.umamiExchange), // 声明直接交换器
+            value = @Queue(name = umami, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = umami), // 声明直接交换器
             key = "createUser" // 定义路由键
     ))
     public void createUser(SysUser sysUser) {
@@ -53,8 +52,8 @@ public class UmamiConsumer {
      * @param map m
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = umamiQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = UmamiProducer.umamiExchange), // 声明直接交换器
+            value = @Queue(name = umami, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = umami), // 声明直接交换器
             key = "createWebsite" // 定义路由键
     ))
     public void createWebsite(Map<String, Object> map) {
@@ -68,8 +67,8 @@ public class UmamiConsumer {
      * @param map m
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = umamiQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = UmamiProducer.umamiExchange), // 声明直接交换器
+            value = @Queue(name = umami, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = umami), // 声明直接交换器
             key = "updateWebsite" // 定义路由键
     ))
     public void updateWebsite(Map<String, Object> map) {
@@ -83,8 +82,8 @@ public class UmamiConsumer {
      * @param map m
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = umamiQueue, durable = "true"), // 创建持久化队列
-            exchange = @Exchange(name = UmamiProducer.umamiExchange), // 声明直接交换器
+            value = @Queue(name = umami, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = umami), // 声明直接交换器
             key = "deleteWebsite" // 定义路由键
     ))
     public void deleteWebsite(Map<String, Object> map) {

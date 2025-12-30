@@ -2,18 +2,15 @@ package vip.gpg123.common.core.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import vip.gpg123.common.core.domain.BaseBody;
 
 import javax.mail.Multipart;
 import java.io.Serializable;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class EmailBody extends BaseBody implements Serializable {
+public class EmailBody implements Serializable {
 
     /**
      * 收件人列表
@@ -54,4 +51,27 @@ public class EmailBody extends BaseBody implements Serializable {
      * 正文、附件和图片的混合部分
      */
     private final Multipart multipart;
+
+    /**
+     * 模块名称
+     */
+    private String modelName;
+
+    /**
+     * 对象名称
+     */
+    private String name;
+
+    /**
+     * 操作
+     */
+    private String action;
+
+    /**
+     * 操作结果
+     */
+    private Boolean result;
+
+
+    private String userName;
 }

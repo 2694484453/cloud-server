@@ -19,9 +19,9 @@ public class MessageProducer {
     @Autowired
     private ISysUserService sysUserService;
 
-    private static final String emailRoutingKey = "cloud-server-email";
+    private static final String email = "cloud-server-email";
 
-    private static final String actionNoticeRoutingKey = "cloud-server-notice";
+    private static final String notice = "cloud-server-notice";
 
     /**
      * 发送邮件
@@ -30,7 +30,7 @@ public class MessageProducer {
      */
     public void sendEmail(EmailBody emailBody) {
         // 发送消息到交换机，并指定路由键
-        rabbitTemplate.convertAndSend(emailRoutingKey, emailBody);
+        rabbitTemplate.convertAndSend(email, emailBody);
         System.out.println("发送邮件: " + emailBody);
     }
 
@@ -39,7 +39,7 @@ public class MessageProducer {
      */
     public void sendEmail(EmailBody emailBody, Boolean sendNotice) {
         // 发送消息到交换机，并指定路由键
-        rabbitTemplate.convertAndSend(emailRoutingKey, emailBody);
+        rabbitTemplate.convertAndSend(email, emailBody);
         if (sendNotice) {
             NoticeBody noticeBody = new NoticeBody();
             BeanUtils.copyProperties(emailBody, noticeBody);
@@ -69,7 +69,7 @@ public class MessageProducer {
             emailBody.setTos(new String[]{to});
             emailBody.setModelName(modelName);
             // 发送消息到交换机，并指定路由键
-            rabbitTemplate.convertAndSend(emailRoutingKey, emailBody);
+            rabbitTemplate.convertAndSend(email, emailBody);
             if (sendNotice) {
                 NoticeBody noticeBody = new NoticeBody();
                 BeanUtils.copyProperties(emailBody, noticeBody);
@@ -87,7 +87,7 @@ public class MessageProducer {
      * @param noticeBody b
      */
     public void sendActionNotice(NoticeBody noticeBody) {
-        rabbitTemplate.convertAndSend(actionNoticeRoutingKey, noticeBody);
+        rabbitTemplate.convertAndSend(notice, noticeBody);
         System.out.println("发送站内消息: " + noticeBody);
     }
 }

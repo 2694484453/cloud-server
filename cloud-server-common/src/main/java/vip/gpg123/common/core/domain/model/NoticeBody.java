@@ -1,13 +1,32 @@
 package vip.gpg123.common.core.domain.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import vip.gpg123.common.core.domain.BaseBody;
 
 import java.io.Serializable;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class NoticeBody extends BaseBody implements Serializable {
+public class NoticeBody implements Serializable {
 
+    /**
+     * 模块名称
+     */
+    private String modelName;
+
+    /**
+     * 对象名称
+     */
+    private String name;
+
+    /**
+     * 操作
+     */
+    private String action;
+
+    /**
+     * 操作结果
+     */
+    private Boolean result;
+
+
+    private String userName;
 }
