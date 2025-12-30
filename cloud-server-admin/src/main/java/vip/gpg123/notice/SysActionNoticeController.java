@@ -66,7 +66,7 @@ public class SysActionNoticeController extends BaseController {
                               @RequestParam(value = "sendType",required = false) String sendType,
                               @RequestParam(value = "title", required = false) String title) {
         IPage<SysActionNotice> page = sysActionNoticeService.page(new Page<>(TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()), new LambdaQueryWrapper<SysActionNotice>()
-                .eq(SysActionNotice::getCreateBy,  getUsername())
+                .eq(SysActionNotice::getCreateBy,  getUserId())
                 .eq(StrUtil.isNotBlank(type),SysActionNotice::getType, type)
                 .eq(StrUtil.isNotBlank(sendType),SysActionNotice::getSendType, sendType)
                 .like(StrUtil.isNotBlank(title),SysActionNotice::getTitle, title)

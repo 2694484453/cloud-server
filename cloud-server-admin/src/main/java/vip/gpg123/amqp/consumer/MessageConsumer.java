@@ -66,8 +66,8 @@ public class MessageConsumer {
         SysActionNotice sysNotice = new SysActionNotice();
         sysNotice.setCreateBy(emailBody.getUserId());
         sysNotice.setCreateTime(DateUtil.date());
-        sysNotice.setTitle(setTitle(emailBody));
-        sysNotice.setContent(setContent(emailBody));
+        sysNotice.setTitle(emailBody.getModelName() + emailBody.getAction() + "通知");
+        sysNotice.setContent(emailBody.getAction() + ",结果：" + (emailBody.getResult() ? "成功" : "失败"));
         sysNotice.setToUser(emailBody.getUserName());
         sysNotice.setToAddress(StrUtil.join(",", (Object) emailBody.getTos()));
         // 执行保存
