@@ -3,6 +3,7 @@ package vip.gpg123.wallpaper.service.impl;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import vip.gpg123.wallpaper.domain.Wallpaper;
 import vip.gpg123.wallpaper.service.WallpaperService;
@@ -105,6 +106,18 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
     @DS("wallpaper")
     public int count(Wrapper<Wallpaper> queryWrapper) {
         return super.count(queryWrapper);
+    }
+
+    /**
+     * 翻页查询
+     *
+     * @param page         翻页对象
+     * @param queryWrapper 实体对象封装操作类 {@link QueryWrapper}
+     */
+    @Override
+    @DS("wallpaper")
+    public <E extends IPage<Wallpaper>> E page(E page, Wrapper<Wallpaper> queryWrapper) {
+        return super.page(page, queryWrapper);
     }
 }
 

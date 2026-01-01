@@ -69,12 +69,11 @@ public class WallpaperController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam(value = "name", required = false) String name,
-                           @RequestParam(value = "type", required = false) String type) {
+    public AjaxResult list(Wallpaper wallpaper) {
         List<Wallpaper> list = wallpaperService.list(new LambdaQueryWrapper<Wallpaper>()
                 .eq(Wallpaper::getCreateBy, getUsername())
-                .like(StrUtil.isNotBlank(name), Wallpaper::getName, name)
-                .eq(StrUtil.isNotBlank(type), Wallpaper::getType, type)
+                .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getType())
+                .eq(StrUtil.isNotBlank(wallpaper.getType()), Wallpaper::getType, wallpaper.getType())
                 .orderByDesc(Wallpaper::getCreateTime)
         );
         return AjaxResult.success(list);
