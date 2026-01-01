@@ -8,6 +8,7 @@ import javax.validation.constraints.*;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -77,6 +78,7 @@ public class SysUser extends BaseEntity implements Serializable
 
     /** 最后登录时间 */
     @Excel(name = "最后登录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Type.EXPORT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date loginDate;
 
     /** 部门对象 */
