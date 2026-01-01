@@ -100,10 +100,6 @@ public class WallpaperController extends BaseController {
         Wallpaper search = new Wallpaper();
         search.setName(name);
         search.setType(type);
-        if (StrUtil.isNotBlank(source)) {
-            // 看来源
-            search.setSource(source);
-        }
         if (ObjectUtil.isNotEmpty(users)) {
             // 只看自己
             search.setCreateBys(users);
@@ -174,15 +170,13 @@ public class WallpaperController extends BaseController {
     public AjaxResult overView() {
         List<Map<String,Object>> list = new ArrayList<>();
         Map<String,Object> map = new HashMap<>();
-        map.put("title","系统壁纸总数");
+        map.put("title","壁纸总数");
         map.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
-                .eq(Wallpaper::getSource,"system")
         ));
         list.add(map);
         Map<String,Object> map1 = new HashMap<>();
-        map1.put("title","我的上传壁纸数");
+        map1.put("title","我的壁纸数");
         map1.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
-                .eq(Wallpaper::getSource,"upload")
                 .eq(Wallpaper::getCreateBy,getUserId())
         ));
         list.add(map1);
@@ -230,12 +224,10 @@ public class WallpaperController extends BaseController {
                     // 开始插入
                     log.info("开始插入：{}",file.getName());
                     long count = wallpaperService.count(new LambdaQueryWrapper<Wallpaper>()
-                            .eq(Wallpaper::getSource, source)
                             .eq(Wallpaper::getName, file.getName())
                     );
                     // 不存在
                     if (count <= 0) {
-                        wallpaper.setSource(source);
                         wallpaper.setCreateBy("1");
                         wallpaper.setCreateTime(DateUtil.date());
                         wallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
