@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -69,7 +70,7 @@ public class WallpaperController extends BaseController {
         List<Wallpaper> list = wallpaperService.list(new LambdaQueryWrapper<Wallpaper>()
                 .eq(Wallpaper::getCreateBy, getUsername())
                 .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getType())
-                .eq(StrUtil.isNotBlank(wallpaper.getType()), Wallpaper::getDirPath, wallpaper.getType())
+                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(),"dongman"))
                 .orderByDesc(Wallpaper::getCreateTime)
         );
         return AjaxResult.success(list);
@@ -88,7 +89,7 @@ public class WallpaperController extends BaseController {
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
         IPage<Wallpaper> page = wallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<Wallpaper>()
                 .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getName())
-                .eq(StrUtil.isBlankIfStr(wallpaper.getType()), Wallpaper::getType, wallpaper.getType())
+                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(),"dongman"))
         );
         return PageUtils.toPageByIPage(page);
     }
