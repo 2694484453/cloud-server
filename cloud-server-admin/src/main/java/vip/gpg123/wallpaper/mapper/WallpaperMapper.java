@@ -18,26 +18,6 @@ import java.util.List;
 @Mapper
 public interface WallpaperMapper extends BaseMapper<Wallpaper> {
 
-    /**
-     * 根据 entity 条件，查询一条记录
-     *
-     */
-    @DS("wallpaper")
-    Wallpaper one(@Param("qw") Wallpaper wallpaper);
-
-    /**
-     * 根据 entity 条件，查询全部记录
-     *
-     */
-    @DS("wallpaper")
-    List<Wallpaper> list(@Param("qw") Wallpaper wallpaper);
-
-    /**
-     * 根据 entity 条件，查询全部记录（并翻页）
-     */
-    @DS("wallpaper")
-    List<Wallpaper> page(@Param("page") PageDomain page, @Param("qw") Wallpaper wallpaper);
-
 }
 
 

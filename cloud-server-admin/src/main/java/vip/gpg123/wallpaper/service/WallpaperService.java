@@ -85,12 +85,21 @@ public interface WallpaperService extends IService<Wallpaper> {
 
     /**
      * 查询所有
-     *
-     * @see Wrappers#emptyWrapper()
      */
     @Override
     @DS("wallpaper")
     default List<Wallpaper> list() {
         return IService.super.list();
+    }
+
+    /**
+     * 根据 Wrapper 条件，查询总记录数
+     *
+     * @param queryWrapper 实体对象封装操作类 {@link QueryWrapper}
+     */
+    @Override
+    @DS("wallpaper")
+    default int count(Wrapper<Wallpaper> queryWrapper) {
+        return IService.super.count(queryWrapper);
     }
 }

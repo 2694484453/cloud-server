@@ -69,10 +69,10 @@ public class WallpaperController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam(value = "name",required = false) String name,
-                           @RequestParam(value = "type",required = false) String type) {
+    public AjaxResult list(@RequestParam(value = "name", required = false) String name,
+                           @RequestParam(value = "type", required = false) String type) {
         List<Wallpaper> list = wallpaperService.list(new LambdaQueryWrapper<Wallpaper>()
-                .eq(Wallpaper::getCreateBy,  getUsername())
+                .eq(Wallpaper::getCreateBy, getUsername())
                 .like(StrUtil.isNotBlank(name), Wallpaper::getName, name)
                 .eq(StrUtil.isNotBlank(type), Wallpaper::getType, type)
                 .orderByDesc(Wallpaper::getCreateTime)
@@ -87,43 +87,30 @@ public class WallpaperController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "name",required = false) String name,
-                              @RequestParam(value = "type",required = false) String type,
-                              @RequestParam(value = "source",required = false) String source,
-                              @RequestParam(value = "users", required = false) List<String> users) {
-
+    public TableDataInfo page(Wallpaper wallpaper) {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<Wallpaper> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
-
-        Wallpaper search = new Wallpaper();
-        search.setName(name);
-        search.setType(type);
-        if (ObjectUtil.isNotEmpty(users)) {
-            // 只看自己
-            search.setCreateBys(users);
-        }
-        List<Wallpaper> list = wallpaperMapper.page(pageDomain, search);
-        page.setRecords(list);
-        page.setTotal(wallpaperMapper.list(search).size());
+        IPage<Wallpaper> page = wallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<Wallpaper>().like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getName()));
         return PageUtils.toPageByIPage(page);
     }
 
     /**
      * 详情查询
+     *
      * @param id id
      * @return r
      */
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
-    public AjaxResult info(@RequestParam(value = "id",required = false) String id) {
+    public AjaxResult info(@RequestParam(value = "id", required = false) String id) {
         Wallpaper wallpaper = wallpaperService.getById(id);
         return AjaxResult.success(wallpaper);
     }
 
     /**
      * 新增
+     *
      * @param wallpaper w
      * @return r
      */
@@ -139,6 +126,7 @@ public class WallpaperController extends BaseController {
 
     /**
      * 修改
+     *
      * @param wallpaper w
      * @return r
      */
@@ -153,12 +141,13 @@ public class WallpaperController extends BaseController {
 
     /**
      * 删除
+     *
      * @param id id
      * @return r
      */
     @DeleteMapping("/delete")
     @ApiOperation(value = "删除")
-    public AjaxResult delete(@RequestParam(value = "id",required = false) String id) {
+    public AjaxResult delete(@RequestParam(value = "id", required = false) String id) {
         boolean remove = wallpaperService.removeById(id);
         if (remove) {
             return AjaxResult.success();
@@ -168,16 +157,16 @@ public class WallpaperController extends BaseController {
 
     @GetMapping("/overView")
     public AjaxResult overView() {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("title","壁纸总数");
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", "壁纸总数");
         map.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
         ));
         list.add(map);
-        Map<String,Object> map1 = new HashMap<>();
-        map1.put("title","我的壁纸数");
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("title", "我的壁纸数");
         map1.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
-                .eq(Wallpaper::getCreateBy,getUserId())
+                .eq(Wallpaper::getCreateBy, getUserId())
         ));
         list.add(map1);
         return AjaxResult.success(list);
@@ -197,7 +186,7 @@ public class WallpaperController extends BaseController {
                     case "mp4":
                         wallpaper.setType("dynamic");
                         String[] tags1 = new String[]{};
-                        tags1 = ArrayUtil.append(tags1, "动态壁纸","动态","壁纸");
+                        tags1 = ArrayUtil.append(tags1, "动态壁纸", "动态", "壁纸");
                         tags1 = ArrayUtil.append(tags1, file.getName().split(" "));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("_"));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("-"));
@@ -208,7 +197,7 @@ public class WallpaperController extends BaseController {
                     case "jpg":
                         wallpaper.setType("static");
                         String[] tags2 = new String[]{};
-                        tags2 = ArrayUtil.append(tags2, "静态壁纸","静态","壁纸");
+                        tags2 = ArrayUtil.append(tags2, "静态壁纸", "静态", "壁纸");
                         tags2 = ArrayUtil.append(tags2, file.getName().split(" "));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("_"));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("-"));
@@ -221,7 +210,7 @@ public class WallpaperController extends BaseController {
                 }
                 if (flag) {
                     // 开始插入
-                    log.info("开始插入：{}",file.getName());
+                    log.info("开始插入：{}", file.getName());
                     long count = wallpaperService.count(new LambdaQueryWrapper<Wallpaper>()
                             .eq(Wallpaper::getName, file.getName())
                     );
@@ -233,9 +222,9 @@ public class WallpaperController extends BaseController {
                         wallpaper.setUrl(ossDomain + "/cloud-wallpaper/" + parentPath + "/" + URLUtil.encode(file.getName()));
                         wallpaper.setName(file.getName());
                         wallpaperService.save(wallpaper);
-                        log.info("完成插入：{}",file.getName());
-                    } else  {
-                        log.info("{}已存在跳过",file.getName());
+                        log.info("完成插入：{}", file.getName());
+                    } else {
+                        log.info("{}已存在跳过", file.getName());
                     }
                 }
                 System.out.println(wallpaper);
