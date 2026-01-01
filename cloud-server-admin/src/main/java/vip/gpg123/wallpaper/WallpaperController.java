@@ -4,10 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import com.aliyun.oss.OSS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -29,7 +27,6 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.system.SysNoticeController;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.wallpaper.domain.Wallpaper;
@@ -56,15 +53,8 @@ public class WallpaperController extends BaseController {
     @Autowired
     private ISysNoticeService sysNoticeService;
 
-    @Autowired
-    private OSS ossClient;
-
     @Value("${cloud.aliyun.ossDomain}")
     private String ossDomain;
-
-    private static final String bucketName = "dev-gpg";
-
-    private static final String keyPrefix = "cloud-wallpaper/";
 
     private static final String sourcePath = "/Volumes/gaopuguang/wallpaper/";
 
@@ -79,7 +69,7 @@ public class WallpaperController extends BaseController {
         List<Wallpaper> list = wallpaperService.list(new LambdaQueryWrapper<Wallpaper>()
                 .eq(Wallpaper::getCreateBy, getUsername())
                 .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getType())
-                .eq(StrUtil.isNotBlank(wallpaper.getType()), Wallpaper::getType, wallpaper.getType())
+                .eq(StrUtil.isNotBlank(wallpaper.getType()), Wallpaper::getDirPath, wallpaper.getType())
                 .orderByDesc(Wallpaper::getCreateTime)
         );
         return AjaxResult.success(list);
@@ -96,7 +86,10 @@ public class WallpaperController extends BaseController {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<Wallpaper> page = wallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<Wallpaper>().like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getName()));
+        IPage<Wallpaper> page = wallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<Wallpaper>()
+                .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getName())
+                .eq(StrUtil.isBlankIfStr(wallpaper.getType()), Wallpaper::getType, wallpaper.getType())
+        );
         return PageUtils.toPageByIPage(page);
     }
 
