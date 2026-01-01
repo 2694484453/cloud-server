@@ -29,6 +29,9 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.system.SysNoticeController;
+import vip.gpg123.system.domain.SysNotice;
+import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.wallpaper.domain.Wallpaper;
 import vip.gpg123.wallpaper.mapper.WallpaperMapper;
 import vip.gpg123.wallpaper.service.WallpaperService;
@@ -49,6 +52,9 @@ public class WallpaperController extends BaseController {
 
     @Autowired
     private WallpaperMapper wallpaperMapper;
+
+    @Autowired
+    private ISysNoticeService sysNoticeService;
 
     @Autowired
     private OSS ossClient;
@@ -154,6 +160,10 @@ public class WallpaperController extends BaseController {
         return AjaxResult.error();
     }
 
+    /**
+     * over
+     * @return r
+     */
     @GetMapping("/overView")
     public AjaxResult overView() {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -168,6 +178,18 @@ public class WallpaperController extends BaseController {
                 .eq(Wallpaper::getCreateBy, getUserId())
         ));
         list.add(map1);
+        return AjaxResult.success(list);
+    }
+
+    /**
+     * 公告
+     * @return r
+     */
+    @GetMapping("/notice")
+    public AjaxResult notice() {
+        List<SysNotice> list = sysNoticeService.list(new LambdaQueryWrapper<SysNotice>()
+                .eq(SysNotice::getNoticeType,"wallpaper")
+        );
         return AjaxResult.success(list);
     }
 
