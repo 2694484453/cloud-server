@@ -29,9 +29,9 @@ import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.wallpaper.domain.CloudWallpaper;
-import vip.gpg123.wallpaper.mapper.CloudWallpaperMapper;
-import vip.gpg123.wallpaper.service.CloudWallpaperService;
+import vip.gpg123.wallpaper.domain.Wallpaper;
+import vip.gpg123.wallpaper.mapper.WallpaperMapper;
+import vip.gpg123.wallpaper.service.WallpaperService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,13 +42,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/wallpaper")
 @Slf4j
-public class CloudWallpaperController extends BaseController {
+public class WallpaperController extends BaseController {
 
     @Autowired
-    private CloudWallpaperService cloudWallpaperService;
+    private WallpaperService wallpaperService;
 
     @Autowired
-    private CloudWallpaperMapper cloudWallpaperMapper;
+    private WallpaperMapper wallpaperMapper;
 
     @Autowired
     private OSS ossClient;
@@ -71,11 +71,11 @@ public class CloudWallpaperController extends BaseController {
     @ApiOperation(value = "列表查询")
     public AjaxResult list(@RequestParam(value = "name",required = false) String name,
                            @RequestParam(value = "type",required = false) String type) {
-        List<CloudWallpaper> list = cloudWallpaperService.list(new LambdaQueryWrapper<CloudWallpaper>()
-                .eq(CloudWallpaper::getCreateBy,  getUsername())
-                .like(StrUtil.isNotBlank(name), CloudWallpaper::getName, name)
-                .eq(StrUtil.isNotBlank(type), CloudWallpaper::getType, type)
-                .orderByDesc(CloudWallpaper::getCreateTime)
+        List<Wallpaper> list = wallpaperService.list(new LambdaQueryWrapper<Wallpaper>()
+                .eq(Wallpaper::getCreateBy,  getUsername())
+                .like(StrUtil.isNotBlank(name), Wallpaper::getName, name)
+                .eq(StrUtil.isNotBlank(type), Wallpaper::getType, type)
+                .orderByDesc(Wallpaper::getCreateTime)
         );
         return AjaxResult.success(list);
     }
@@ -95,9 +95,9 @@ public class CloudWallpaperController extends BaseController {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<CloudWallpaper> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+        IPage<Wallpaper> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
 
-        CloudWallpaper search = new CloudWallpaper();
+        Wallpaper search = new Wallpaper();
         search.setName(name);
         search.setType(type);
         if (StrUtil.isNotBlank(source)) {
@@ -108,9 +108,9 @@ public class CloudWallpaperController extends BaseController {
             // 只看自己
             search.setCreateBys(users);
         }
-        List<CloudWallpaper> list = cloudWallpaperMapper.page(pageDomain, search);
+        List<Wallpaper> list = wallpaperMapper.page(pageDomain, search);
         page.setRecords(list);
-        page.setTotal(cloudWallpaperMapper.list(search).size());
+        page.setTotal(wallpaperMapper.list(search).size());
         return PageUtils.toPageByIPage(page);
     }
 
@@ -122,36 +122,36 @@ public class CloudWallpaperController extends BaseController {
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam(value = "id",required = false) String id) {
-        CloudWallpaper wallpaper = cloudWallpaperService.getById(id);
+        Wallpaper wallpaper = wallpaperService.getById(id);
         return AjaxResult.success(wallpaper);
     }
 
     /**
      * 新增
-     * @param cloudWallpaper w
+     * @param wallpaper w
      * @return r
      */
     @PostMapping("/add")
     @ApiOperation(value = "新增")
-    public AjaxResult add(@RequestBody CloudWallpaper cloudWallpaper) {
-        cloudWallpaper.setCreateBy(String.valueOf(getUserId()));
-        cloudWallpaper.setCreateTime(DateUtil.date());
+    public AjaxResult add(@RequestBody Wallpaper wallpaper) {
+        wallpaper.setCreateBy(String.valueOf(getUserId()));
+        wallpaper.setCreateTime(DateUtil.date());
         // 对密码特殊处理
-        boolean save = cloudWallpaperService.save(cloudWallpaper);
+        boolean save = wallpaperService.save(wallpaper);
         return save ? AjaxResult.success() : AjaxResult.error();
     }
 
     /**
      * 修改
-     * @param cloudWallpaper w
+     * @param wallpaper w
      * @return r
      */
     @PutMapping("/edit")
     @ApiOperation(value = "修改")
-    public AjaxResult edit(@RequestBody CloudWallpaper cloudWallpaper) {
-        cloudWallpaper.setUpdateBy(String.valueOf(getUserId()));
-        cloudWallpaper.setUpdateTime(DateUtil.date());
-        boolean update = cloudWallpaperService.updateById(cloudWallpaper);
+    public AjaxResult edit(@RequestBody Wallpaper wallpaper) {
+        wallpaper.setUpdateBy(String.valueOf(getUserId()));
+        wallpaper.setUpdateTime(DateUtil.date());
+        boolean update = wallpaperService.updateById(wallpaper);
         return update ? AjaxResult.success() : AjaxResult.error();
     }
 
@@ -163,7 +163,7 @@ public class CloudWallpaperController extends BaseController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "删除")
     public AjaxResult delete(@RequestParam(value = "id",required = false) String id) {
-        boolean remove = cloudWallpaperService.removeById(id);
+        boolean remove = wallpaperService.removeById(id);
         if (remove) {
             return AjaxResult.success();
         }
@@ -175,15 +175,15 @@ public class CloudWallpaperController extends BaseController {
         List<Map<String,Object>> list = new ArrayList<>();
         Map<String,Object> map = new HashMap<>();
         map.put("title","系统壁纸总数");
-        map.put("count",cloudWallpaperMapper.selectCount(new LambdaQueryWrapper<CloudWallpaper>()
-                .eq(CloudWallpaper::getSource,"system")
+        map.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
+                .eq(Wallpaper::getSource,"system")
         ));
         list.add(map);
         Map<String,Object> map1 = new HashMap<>();
         map1.put("title","我的上传壁纸数");
-        map1.put("count",cloudWallpaperMapper.selectCount(new LambdaQueryWrapper<CloudWallpaper>()
-                .eq(CloudWallpaper::getSource,"upload")
-                .eq(CloudWallpaper::getCreateBy,getUserId())
+        map1.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
+                .eq(Wallpaper::getSource,"upload")
+                .eq(Wallpaper::getCreateBy,getUserId())
         ));
         list.add(map1);
         return AjaxResult.success(list);
@@ -198,28 +198,28 @@ public class CloudWallpaperController extends BaseController {
                 String parentPath = file.getParent().replaceAll(sourcePath, "");
                 String source = "system";
                 String type = FileUtil.getType(file);
-                CloudWallpaper cloudWallpaper = new CloudWallpaper();
+                Wallpaper wallpaper = new Wallpaper();
                 boolean flag = false;
                 switch (type) {
                     case "mp4":
-                        cloudWallpaper.setType("dynamic");
+                        wallpaper.setType("dynamic");
                         String[] tags1 = new String[]{};
                         tags1 = ArrayUtil.append(tags1, "动态壁纸","动态","壁纸");
                         tags1 = ArrayUtil.append(tags1, file.getName().split(" "));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("_"));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("-"));
-                        cloudWallpaper.setTags(StrUtil.join(",", (Object) tags1));
+                        wallpaper.setTags(StrUtil.join(",", (Object) tags1));
                         flag = true;
                         break;
                     case "png":
                     case "jpg":
-                        cloudWallpaper.setType("static");
+                        wallpaper.setType("static");
                         String[] tags2 = new String[]{};
                         tags2 = ArrayUtil.append(tags2, "静态壁纸","静态","壁纸");
                         tags2 = ArrayUtil.append(tags2, file.getName().split(" "));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("_"));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("-"));
-                        cloudWallpaper.setTags(StrUtil.join(",", (Object) tags2));
+                        wallpaper.setTags(StrUtil.join(",", (Object) tags2));
                         flag = true;
                         break;
                     default:
@@ -229,25 +229,25 @@ public class CloudWallpaperController extends BaseController {
                 if (flag) {
                     // 开始插入
                     log.info("开始插入：{}",file.getName());
-                    long count = cloudWallpaperService.count(new LambdaQueryWrapper<CloudWallpaper>()
-                            .eq(CloudWallpaper::getSource, source)
-                            .eq(CloudWallpaper::getName, file.getName())
+                    long count = wallpaperService.count(new LambdaQueryWrapper<Wallpaper>()
+                            .eq(Wallpaper::getSource, source)
+                            .eq(Wallpaper::getName, file.getName())
                     );
                     // 不存在
                     if (count <= 0) {
-                        cloudWallpaper.setSource(source);
-                        cloudWallpaper.setCreateBy("1");
-                        cloudWallpaper.setCreateTime(DateUtil.date());
-                        cloudWallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
-                        cloudWallpaper.setUrl(ossDomain + "/cloud-wallpaper/" + parentPath + "/" + URLUtil.encode(file.getName()));
-                        cloudWallpaper.setName(file.getName());
-                        cloudWallpaperService.save(cloudWallpaper);
+                        wallpaper.setSource(source);
+                        wallpaper.setCreateBy("1");
+                        wallpaper.setCreateTime(DateUtil.date());
+                        wallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
+                        wallpaper.setUrl(ossDomain + "/cloud-wallpaper/" + parentPath + "/" + URLUtil.encode(file.getName()));
+                        wallpaper.setName(file.getName());
+                        wallpaperService.save(wallpaper);
                         log.info("完成插入：{}",file.getName());
                     } else  {
                         log.info("{}已存在跳过",file.getName());
                     }
                 }
-                System.out.println(cloudWallpaper);
+                System.out.println(wallpaper);
             }
         return AjaxResult.success();
     }
