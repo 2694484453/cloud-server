@@ -69,11 +69,9 @@ public class WallpaperTest {
                     String localFileName = file.getName();
                     String localFilePath = file.getAbsolutePath();
                     wallpaper.setName(localFileName);
-                    wallpaper.setFilePath(localFilePath);
                     wallpaper.setUrl(domain + "/wallpaper/" + URLUtil.encode(localFilePath.replaceAll(sourcePath, "")));
 
                     // 新增文件
-                    wallpaper.setSource(source);
                     wallpaper.setCreateBy("1");
                     wallpaper.setCreateTime(DateUtil.date());
                     wallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
@@ -86,7 +84,6 @@ public class WallpaperTest {
     public void test2() {
         List<Wallpaper> list = wallpaperService.list();
         for (Wallpaper wallpaper : list) {
-            wallpaper.setUrl(domain + "/wallpaper/" + URLUtil.encode(wallpaper.getFilePath().replaceAll(sourcePath, "")));
             wallpaperService.save(wallpaper);
         }
     }

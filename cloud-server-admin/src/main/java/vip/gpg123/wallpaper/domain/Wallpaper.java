@@ -42,6 +42,9 @@ public class Wallpaper extends BaseEntity implements Serializable {
     @TableField(value = "type")
     private String type;
 
+    @TableField(value = "dir_path")
+    private String dirPath;
+
     /**
      *
      */
