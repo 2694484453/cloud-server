@@ -183,7 +183,6 @@ public class WallpaperController extends BaseController {
         return AjaxResult.success(list);
     }
 
-
     @GetMapping("/sync")
     public AjaxResult sync() {
         List<File> files = FileUtil.loopFiles(sourcePath);
