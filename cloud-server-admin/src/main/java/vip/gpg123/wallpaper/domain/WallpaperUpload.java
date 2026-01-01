@@ -17,7 +17,7 @@ import vip.gpg123.common.core.domain.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value ="cloud_wallpaper_upload")
 @Data
-public class CloudWallpaperUpload extends BaseEntity implements Serializable {
+public class WallpaperUpload extends BaseEntity implements Serializable {
     /**
      * 
      */

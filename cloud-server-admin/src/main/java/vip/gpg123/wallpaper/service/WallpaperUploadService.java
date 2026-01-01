@@ -1,6 +1,6 @@
 package vip.gpg123.wallpaper.service;
 
-import vip.gpg123.wallpaper.domain.CloudWallpaperUpload;
+import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -8,6 +8,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @description 针对表【cloud_wallpaper_upload】的数据库操作Service
 * @createDate 2025-11-29 05:22:05
 */
-public interface CloudWallpaperUploadService extends IService<CloudWallpaperUpload> {
+public interface WallpaperUploadService extends IService<WallpaperUpload> {
 
 }

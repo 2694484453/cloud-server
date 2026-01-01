@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import vip.gpg123.CloudServerApplication;
-import vip.gpg123.wallpaper.domain.CloudWallpaper;
-import vip.gpg123.wallpaper.service.CloudWallpaperService;
+import vip.gpg123.wallpaper.domain.Wallpaper;
+import vip.gpg123.wallpaper.service.WallpaperService;
 
 import java.io.File;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 public class WallpaperTest {
 
     @Autowired
-    private CloudWallpaperService cloudWallpaperService;
+    private WallpaperService wallpaperService;
 
     private static final String sourcePath = "/Volumes/gaopuguang/wallpaper/";
 
@@ -37,28 +37,28 @@ public class WallpaperTest {
             if (file.isFile() && !file.getName().startsWith(".")) {
                 String source = "system";
                 String type = FileUtil.getType(file);
-                CloudWallpaper cloudWallpaper = new CloudWallpaper();
+                Wallpaper wallpaper = new Wallpaper();
                 boolean flag = false;
                 switch (type) {
                     case "mp4":
-                        cloudWallpaper.setType("dynamic");
+                        wallpaper.setType("dynamic");
                         String[] tags1 = new String[]{};
                         tags1 = ArrayUtil.append(tags1, "动态壁纸", "动态", "壁纸");
                         tags1 = ArrayUtil.append(tags1, file.getName().split(" "));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("_"));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("-"));
-                        cloudWallpaper.setTags(StrUtil.join(",", (Object) tags1));
+                        wallpaper.setTags(StrUtil.join(",", (Object) tags1));
                         flag = true;
                         break;
                     case "png":
                     case "jpg":
-                        cloudWallpaper.setType("static");
+                        wallpaper.setType("static");
                         String[] tags2 = new String[]{};
                         tags2 = ArrayUtil.append(tags2, "静态壁纸", "静态", "壁纸");
                         tags2 = ArrayUtil.append(tags2, file.getName().split(" "));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("_"));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("-"));
-                        cloudWallpaper.setTags(StrUtil.join(",", (Object) tags2));
+                        wallpaper.setTags(StrUtil.join(",", (Object) tags2));
                         flag = true;
                         break;
                     default:
@@ -68,26 +68,26 @@ public class WallpaperTest {
                 if (flag) {
                     String localFileName = file.getName();
                     String localFilePath = file.getAbsolutePath();
-                    cloudWallpaper.setName(localFileName);
-                    cloudWallpaper.setFilePath(localFilePath);
-                    cloudWallpaper.setUrl(domain + "/wallpaper/" + URLUtil.encode(localFilePath.replaceAll(sourcePath, "")));
+                    wallpaper.setName(localFileName);
+                    wallpaper.setFilePath(localFilePath);
+                    wallpaper.setUrl(domain + "/wallpaper/" + URLUtil.encode(localFilePath.replaceAll(sourcePath, "")));
 
                     // 新增文件
-                    cloudWallpaper.setSource(source);
-                    cloudWallpaper.setCreateBy("1");
-                    cloudWallpaper.setCreateTime(DateUtil.date());
-                    cloudWallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
-                    cloudWallpaperService.save(cloudWallpaper);
+                    wallpaper.setSource(source);
+                    wallpaper.setCreateBy("1");
+                    wallpaper.setCreateTime(DateUtil.date());
+                    wallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
+                    wallpaperService.save(wallpaper);
                 }
             }
     }
 
     @Test
     public void test2() {
-        List<CloudWallpaper> list = cloudWallpaperService.list();
-        for (CloudWallpaper cloudWallpaper : list) {
-            cloudWallpaper.setUrl(domain + "/wallpaper/" + URLUtil.encode(cloudWallpaper.getFilePath().replaceAll(sourcePath, "")));
-            cloudWallpaperService.save(cloudWallpaper);
+        List<Wallpaper> list = wallpaperService.list();
+        for (Wallpaper wallpaper : list) {
+            wallpaper.setUrl(domain + "/wallpaper/" + URLUtil.encode(wallpaper.getFilePath().replaceAll(sourcePath, "")));
+            wallpaperService.save(wallpaper);
         }
     }
 }

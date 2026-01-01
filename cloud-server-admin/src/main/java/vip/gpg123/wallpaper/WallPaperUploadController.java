@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/wallpaper/oss")
-public class WallPaperController extends BaseController {
+public class WallPaperUploadController extends BaseController {
 
     @Autowired
     private OSS ossClient;

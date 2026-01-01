@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import vip.gpg123.CloudServerApplication;
-import vip.gpg123.wallpaper.domain.CloudWallpaper;
-import vip.gpg123.wallpaper.service.CloudWallpaperService;
+import vip.gpg123.wallpaper.domain.Wallpaper;
+import vip.gpg123.wallpaper.service.WallpaperService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class OssTest {
     private OSS ossClient;
 
     @Autowired
-    private CloudWallpaperService cloudWallpaperService;
+    private WallpaperService wallpaperService;
 
     @Value("${cloud.aliyun.bucketName}")
     private String bucketName;
@@ -53,8 +53,8 @@ public class OssTest {
     @Test
     public void ListFiles() {
         List<File> files = FileUtil.loopFiles(sourcePath);
-        List<CloudWallpaper> cloudWallpapers = cloudWallpaperService.list();
-        Map<Integer, CloudWallpaper> cloudWallpapersMap = cloudWallpapers.stream().collect(Collectors.toMap(CloudWallpaper::getId, cloudWallpaper -> cloudWallpaper));
+        List<Wallpaper> wallpapers = wallpaperService.list();
+        Map<Integer, Wallpaper> cloudWallpapersMap = wallpapers.stream().collect(Collectors.toMap(Wallpaper::getId, cloudWallpaper -> cloudWallpaper));
 
         // 遍历文件
         for (File file : files)
@@ -62,28 +62,28 @@ public class OssTest {
                 String parentDirName = file.getParent().replaceAll(sourcePath, "");
                 String source = "system";
                 String type = FileUtil.getType(file);
-                CloudWallpaper cloudWallpaper = new CloudWallpaper();
+                Wallpaper wallpaper = new Wallpaper();
                 boolean flag = false;
                 switch (type) {
                     case "mp4":
-                        cloudWallpaper.setType("dynamic");
+                        wallpaper.setType("dynamic");
                         String[] tags1 = new String[]{};
                         tags1 = ArrayUtil.append(tags1, "动态壁纸", "动态", "壁纸");
                         tags1 = ArrayUtil.append(tags1, file.getName().split(" "));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("_"));
                         tags1 = ArrayUtil.append(tags1, file.getName().split("-"));
-                        cloudWallpaper.setTags(StrUtil.join(",", (Object) tags1));
+                        wallpaper.setTags(StrUtil.join(",", (Object) tags1));
                         flag = true;
                         break;
                     case "png":
                     case "jpg":
-                        cloudWallpaper.setType("static");
+                        wallpaper.setType("static");
                         String[] tags2 = new String[]{};
                         tags2 = ArrayUtil.append(tags2, "静态壁纸", "静态", "壁纸");
                         tags2 = ArrayUtil.append(tags2, file.getName().split(" "));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("_"));
                         tags2 = ArrayUtil.append(tags2, file.getName().split("-"));
-                        cloudWallpaper.setTags(StrUtil.join(",", (Object) tags2));
+                        wallpaper.setTags(StrUtil.join(",", (Object) tags2));
                         flag = true;
                         break;
                     default:
@@ -94,16 +94,16 @@ public class OssTest {
                     String localFileName = file.getName();
                     String localFilePath = file.getAbsolutePath();
                     // 根据hashCode查询是否存在文件
-                    cloudWallpaper.setId(file.hashCode());
-                    cloudWallpaper.setName(localFileName);
-                    cloudWallpaper.setFilePath(file.getAbsolutePath());
-                    cloudWallpaper.setUrl(ossDomain + "/" + PrefixObject + "/" + parentDirName + "/" + URLUtil.encode(localFileName));
-                    CloudWallpaper searchRes = cloudWallpaperService.getById(cloudWallpaper);
+                    wallpaper.setId(file.hashCode());
+                    wallpaper.setName(localFileName);
+                    wallpaper.setFilePath(file.getAbsolutePath());
+                    wallpaper.setUrl(ossDomain + "/" + PrefixObject + "/" + parentDirName + "/" + URLUtil.encode(localFileName));
+                    Wallpaper searchRes = wallpaperService.getById(wallpaper);
 
                     // 如果数据库中不包含本地文件id
                     if (!cloudWallpapersMap.containsKey(file.hashCode())) {
                         // 移除数据库记录
-                        cloudWallpaperService.removeById(file.hashCode());
+                        wallpaperService.removeById(file.hashCode());
                         log.info("{}不存在,移除数据库记录", file.getName());
                     }
 
@@ -117,12 +117,12 @@ public class OssTest {
                             RenameObjectRequest renameObjectRequest = new RenameObjectRequest(bucketName, PrefixObject + "/" + parentDirName + "/" + searchRes.getName(), PrefixObject + "/" + parentDirName + "/" + localFileName);
                             ossClient.renameObject(renameObjectRequest);
                             // 更新文件数据库名称
-                            cloudWallpaper.setName(localFileName);
+                            wallpaper.setName(localFileName);
                             log.info("{}被修改名称过,同时对数据库进行修改名称", localFileName);
                         } else if (!filePath.equals(localFilePath)) {
                             // 名称相同但是路径不相同，证明本地文件被移动过了
-                            cloudWallpaper.setFilePath(localFilePath);
-                            String oldPath = cloudWallpaper.getFilePath();
+                            wallpaper.setFilePath(localFilePath);
+                            String oldPath = wallpaper.getFilePath();
                             String oldParentDirName = oldPath.replaceAll(sourcePath, "").replaceAll("/" + localFilePath, "");
                             CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucketName, PrefixObject + "/" + oldParentDirName + "/" + localFileName, bucketName, PrefixObject + "/" + parentDirName + "/" + localFileName);
                             ossClient.copyObject(copyObjectRequest);
@@ -135,16 +135,16 @@ public class OssTest {
                             ossClient.deleteObjects(deleteObjectsRequest);
                             log.info("{}被移动过,同时对数据库进行修改路径", localFileName);
                         }
-                        cloudWallpaper.setUpdateBy("1");
-                        cloudWallpaper.setUpdateTime(DateUtil.date());
-                        cloudWallpaperService.updateById(cloudWallpaper);
+                        wallpaper.setUpdateBy("1");
+                        wallpaper.setUpdateTime(DateUtil.date());
+                        wallpaperService.updateById(wallpaper);
                     } else {
                         // 新增文件
-                        cloudWallpaper.setSource(source);
-                        cloudWallpaper.setCreateBy("1");
-                        cloudWallpaper.setCreateTime(DateUtil.date());
-                        cloudWallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
-                        cloudWallpaperService.save(cloudWallpaper);
+                        wallpaper.setSource(source);
+                        wallpaper.setCreateBy("1");
+                        wallpaper.setCreateTime(DateUtil.date());
+                        wallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
+                        wallpaperService.save(wallpaper);
                         // 上传
                         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, PrefixObject + "/" + parentDirName + "/" + localFileName, file);
                         PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
@@ -157,11 +157,11 @@ public class OssTest {
 
     @Test
     public void update() {
-        List<CloudWallpaper> list = cloudWallpaperService.list();
+        List<Wallpaper> list = wallpaperService.list();
         list.forEach(cloudWallpaper -> {
             String url = StrUtil.replace(cloudWallpaper.getUrl(), "/cloud-wallpaper/", "/cloud-wallpaper/wallpaper/");
             cloudWallpaper.setUrl(url);
-            cloudWallpaperService.updateById(cloudWallpaper);
+            wallpaperService.updateById(cloudWallpaper);
         });
     }
 

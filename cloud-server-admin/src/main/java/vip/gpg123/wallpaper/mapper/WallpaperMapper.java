@@ -4,7 +4,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.common.core.page.PageDomain;
-import vip.gpg123.wallpaper.domain.CloudWallpaper;
+import vip.gpg123.wallpaper.domain.Wallpaper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
@@ -13,30 +13,30 @@ import java.util.List;
 * @author gaopuguang
 * @description 针对表【cloud_wallpaper】的数据库操作Mapper
 * @createDate 2025-11-24 20:12:31
-* @Entity vip.gpg123.wallpaper.domain.CloudWallpaper
+* @Entity vip.gpg123.wallpaper.domain.Wallpaper
 */
 @Mapper
-public interface CloudWallpaperMapper extends BaseMapper<CloudWallpaper> {
+public interface WallpaperMapper extends BaseMapper<Wallpaper> {
 
     /**
      * 根据 entity 条件，查询一条记录
      *
      */
     @DS("wallpaper")
-    CloudWallpaper one(@Param("qw") CloudWallpaper cloudWallpaper);
+    Wallpaper one(@Param("qw") Wallpaper wallpaper);
 
     /**
      * 根据 entity 条件，查询全部记录
      *
      */
     @DS("wallpaper")
-    List<CloudWallpaper> list(@Param("qw") CloudWallpaper cloudWallpaper);
+    List<Wallpaper> list(@Param("qw") Wallpaper wallpaper);
 
     /**
      * 根据 entity 条件，查询全部记录（并翻页）
      */
     @DS("wallpaper")
-    List<CloudWallpaper> page(@Param("page") PageDomain page, @Param("qw") CloudWallpaper cloudWallpaper);
+    List<Wallpaper> page(@Param("page") PageDomain page, @Param("qw") Wallpaper wallpaper);
 
 }
 

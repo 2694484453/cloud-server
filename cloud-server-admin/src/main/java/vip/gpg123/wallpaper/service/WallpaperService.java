@@ -3,7 +3,7 @@ package vip.gpg123.wallpaper.service;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import vip.gpg123.wallpaper.domain.CloudWallpaper;
+import vip.gpg123.wallpaper.domain.Wallpaper;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import java.util.List;
 * @description 针对表【cloud_wallpaper】的数据库操作Service
 * @createDate 2025-11-24 20:12:31
 */
-public interface CloudWallpaperService extends IService<CloudWallpaper> {
+public interface WallpaperService extends IService<Wallpaper> {
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -24,7 +24,7 @@ public interface CloudWallpaperService extends IService<CloudWallpaper> {
      */
     @Override
     @DS("wallpaper")
-    default boolean save(CloudWallpaper entity) {
+    default boolean save(Wallpaper entity) {
         return IService.super.save(entity);
     }
 
@@ -46,7 +46,7 @@ public interface CloudWallpaperService extends IService<CloudWallpaper> {
      */
     @Override
     @DS("wallpaper")
-    default boolean remove(Wrapper<CloudWallpaper> queryWrapper) {
+    default boolean remove(Wrapper<Wallpaper> queryWrapper) {
         return IService.super.remove(queryWrapper);
     }
 
@@ -57,7 +57,7 @@ public interface CloudWallpaperService extends IService<CloudWallpaper> {
      */
     @Override
     @DS("wallpaper")
-    default boolean updateById(CloudWallpaper entity) {
+    default boolean updateById(Wallpaper entity) {
         return IService.super.updateById(entity);
     }
 
@@ -68,7 +68,7 @@ public interface CloudWallpaperService extends IService<CloudWallpaper> {
      */
     @Override
     @DS("wallpaper")
-    default List<CloudWallpaper> listByIds(Collection<? extends Serializable> idList) {
+    default List<Wallpaper> listByIds(Collection<? extends Serializable> idList) {
         return IService.super.listByIds(idList);
     }
 
@@ -79,7 +79,7 @@ public interface CloudWallpaperService extends IService<CloudWallpaper> {
      */
     @Override
     @DS("wallpaper")
-    default List<CloudWallpaper> list(Wrapper<CloudWallpaper> queryWrapper) {
+    default List<Wallpaper> list(Wrapper<Wallpaper> queryWrapper) {
         return IService.super.list(queryWrapper);
     }
 
@@ -90,7 +90,7 @@ public interface CloudWallpaperService extends IService<CloudWallpaper> {
      */
     @Override
     @DS("wallpaper")
-    default List<CloudWallpaper> list() {
+    default List<Wallpaper> list() {
         return IService.super.list();
     }
 }
