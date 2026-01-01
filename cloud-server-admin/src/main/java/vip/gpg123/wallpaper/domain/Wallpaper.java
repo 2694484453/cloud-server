@@ -15,7 +15,7 @@ import vip.gpg123.common.core.domain.BaseEntity;
  * @TableName cloud_wallpaper
  */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value ="cloud_wallpaper")
+@TableName(value ="wallpaper_system")
 @Data
 public class Wallpaper extends BaseEntity implements Serializable {
     /**
@@ -29,12 +29,6 @@ public class Wallpaper extends BaseEntity implements Serializable {
      */
     @TableField(value = "name")
     private String name;
-
-    /**
-     *
-     */
-    @TableField(value = "file_path")
-    private String filePath;
 
     /**
      * 
@@ -59,12 +53,6 @@ public class Wallpaper extends BaseEntity implements Serializable {
      */
     @TableField(value = "url")
     private String url;
-
-    /**
-     *
-     */
-    @TableField(value = "source")
-    private String source;
 
     /**
      * 

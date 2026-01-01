@@ -9,6 +9,7 @@
             <result property="name" column="name" />
             <result property="tags" column="tags" />
             <result property="size" column="size" />
+            <result property="url" column="url"/>
             <result property="createTime" column="create_time" />
             <result property="createBy" column="create_by" />
             <result property="updateTime" column="update_time" />
@@ -31,9 +32,6 @@
             </if>
             <if test="qw.type != null and qw.type !=''">
                 and type = #{qw.type}
-            </if>
-            <if test="qw.source != null and qw.source !=''">
-                and source = #{qw.source}
             </if>
             <if test="qw.createBy != null">
                 and a.create_by = #{qw.createBy}
