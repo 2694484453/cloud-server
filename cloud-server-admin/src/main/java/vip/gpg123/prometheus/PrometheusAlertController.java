@@ -48,7 +48,7 @@ public class PrometheusAlertController extends BaseController {
                 .eq(StrUtil.isNotBlank(prometheusAlert.getType()), PrometheusAlert::getType, prometheusAlert.getType())
                 .eq(ObjectUtil.isNotNull(prometheusAlert.getId()), PrometheusAlert::getId, prometheusAlert.getId())
         );
-        return AjaxResult.success(prometheusAlertService.list());
+        return AjaxResult.success(alerts);
     }
 
     /**

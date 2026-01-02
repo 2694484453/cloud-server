@@ -11,5 +11,5 @@ public class PrometheusTargetData {
 
     private Object droppedTargetCounts;
 
-    private List<String> droppedTargets;
+    private List<Object> droppedTargets;
 }
