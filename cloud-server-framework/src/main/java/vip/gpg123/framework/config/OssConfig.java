@@ -27,7 +27,7 @@ public class OssConfig {
     @Data
     @Component
     @ConfigurationProperties(prefix = "ali.auth")
-    public static class OssAuthProperties {
+    public static class AliAuthProperties {
         private String accessKeyId;
         private String accessKeySecret;
     }
@@ -38,12 +38,13 @@ public class OssConfig {
      * @return OSS 客户端实例
      */
     @Bean(destroyMethod = "shutdown")
-    public OSS ossClient(OssProperties ossProperties, OssAuthProperties ossAuthProperties) {
+    public OSS ossClient(OssProperties ossProperties, AliAuthProperties ossAuthProperties) {
         // 1. 创建凭证提供者
         DefaultCredentialProvider credentialsProvider = new DefaultCredentialProvider(ossAuthProperties.accessKeyId, ossAuthProperties.accessKeySecret);
 
         // 2. 使用 Builder 构建 OSS 客户端
-        return OSSClientBuilder.create()
+        return OSSClientBuilder
+                .create()
                 .endpoint(ossProperties.endpoint)
                 .credentialsProvider(credentialsProvider)
                 .build();
