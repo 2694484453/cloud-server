@@ -279,8 +279,8 @@ public class PrometheusExporterController extends BaseController {
         list.forEach(item -> {
             PrometheusConfigs configs = new PrometheusConfigs();
             JSONObject labels = JSONUtil.parseObj(ObjectUtil.isNotNull(item.getLabels()) && JSONUtil.isTypeJSON(item.getLabels().toString()) ? item.getLabels() : new JSONObject());
-            labels.set("__scrape_timeout__", ObjectUtil.defaultIfNull(item.getScrapeTimeout(), 15 + "s"));
-            labels.set("__scrape_interval__", ObjectUtil.defaultIfNull(item.getScrapeInterval(), 10 + "s"));
+            labels.set("__scrape_timeout__", ObjectUtil.defaultIfNull(item.getScrapeTimeout() + "s", 15 + "s"));
+            labels.set("__scrape_interval__", ObjectUtil.defaultIfNull(item.getScrapeInterval() + "s", 10 + "s"));
             labels.set("__scheme__", ObjectUtil.defaultIfBlank(item.getSchemeType(), "http"));
             labels.set("__metrics_path__", ObjectUtil.defaultIfBlank(item.getMetricsPath(), "/metrics"));
             labels.set("job", item.getJobName());
