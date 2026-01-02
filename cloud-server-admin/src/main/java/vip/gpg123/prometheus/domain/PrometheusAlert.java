@@ -36,6 +36,9 @@ public class PrometheusAlert extends BaseEntity implements Serializable {
     @TableField(value = "alert_level")
     private String alertLevel;
 
+    /**
+     *
+     */
     @TableField(value = "type")
     private String type;
 
@@ -48,8 +51,14 @@ public class PrometheusAlert extends BaseEntity implements Serializable {
     /**
      * 
      */
-    @TableField(value = "producer")
-    private String message;
+    @TableField(value = "description")
+    private String description;
+
+    /**
+     *
+     */
+    @TableField(value = "status")
+    private String status;
 
     /**
      * 

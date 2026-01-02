@@ -1,5 +1,6 @@
 package vip.gpg123.prometheus.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
@@ -13,6 +14,7 @@ import java.util.List;
 * @createDate 2025-12-14 21:14:02
 * @Entity vip.gpg123.prometheus.domain.PrometheusAlert
 */
+@Mapper
 public interface PrometheusAlertMapper extends BaseMapper<PrometheusAlert> {
     /**
      * 根据 entity 条件，查询一条记录
