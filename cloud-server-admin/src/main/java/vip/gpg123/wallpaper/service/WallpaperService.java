@@ -1,14 +1,7 @@
 package vip.gpg123.wallpaper.service;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import vip.gpg123.wallpaper.domain.Wallpaper;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
 
 /**
 * @author gaopuguang

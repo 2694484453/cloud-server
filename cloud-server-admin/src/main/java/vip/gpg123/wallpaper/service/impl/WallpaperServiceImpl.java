@@ -119,6 +119,17 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
     public <E extends IPage<Wallpaper>> E page(E page, Wrapper<Wallpaper> queryWrapper) {
         return super.page(page, queryWrapper);
     }
+
+    /**
+     * 根据 ID 查询
+     *
+     * @param id 主键ID
+     */
+    @Override
+    @DS("wallpaper")
+    public Wallpaper getById(Serializable id) {
+        return super.getById(id);
+    }
 }
 
 
