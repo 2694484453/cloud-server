@@ -2,13 +2,13 @@ package vip.gpg123.wallpaper;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -27,10 +27,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.config.OssConfig;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
@@ -38,16 +40,17 @@ import vip.gpg123.wallpaper.domain.Wallpaper;
 import vip.gpg123.wallpaper.mapper.WallpaperMapper;
 import vip.gpg123.wallpaper.service.WallpaperService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.net.URI;
+import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/wallpaper")
@@ -182,6 +185,30 @@ public class WallpaperController extends BaseController {
     }
 
     /**
+     * download
+     *
+     * @param id       id
+     * @param response response
+     * @throws Exception e
+     */
+    @GetMapping("/download")
+    @ApiOperation(value = "下载")
+    public AjaxResult download(@RequestParam(value = "id") String id, HttpServletResponse response) throws Exception {
+        Wallpaper wallpaper = wallpaperService.getById(id);
+        //
+        try {
+            SysUser sysUser = SecurityUtils.getLoginUser().getUser();
+            // 检查是否具有下载权限,生成签名地址
+            // 设置预签名URL过期时间，单位为毫秒。本示例以设置过期时间为2分钟为例。
+            Date expiration = new Date(new Date().getTime() + 120 * 1000L);
+            URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), "wallpaper/" + wallpaper.getDirPath(), expiration);
+            return AjaxResult.success("",url.toString());
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage() + ",请先登录");
+        }
+    }
+
+    /**
      * over
      *
      * @return r
@@ -216,63 +243,4 @@ public class WallpaperController extends BaseController {
         return AjaxResult.success(list);
     }
 
-    @GetMapping("/sync")
-    public AjaxResult sync() {
-        List<File> files = FileUtil.loopFiles(sourcePath);
-        for (File file : files)
-            if (file.isFile() && !file.getName().startsWith(".")) {
-                String parentPath = file.getParent().replaceAll(sourcePath, "");
-                String source = "system";
-                String type = FileUtil.getType(file);
-                Wallpaper wallpaper = new Wallpaper();
-                boolean flag = false;
-                switch (type) {
-                    case "mp4":
-                        wallpaper.setType("dynamic");
-                        String[] tags1 = new String[]{};
-                        tags1 = ArrayUtil.append(tags1, "动态壁纸", "动态", "壁纸");
-                        tags1 = ArrayUtil.append(tags1, file.getName().split(" "));
-                        tags1 = ArrayUtil.append(tags1, file.getName().split("_"));
-                        tags1 = ArrayUtil.append(tags1, file.getName().split("-"));
-                        wallpaper.setTags(StrUtil.join(",", (Object) tags1));
-                        flag = true;
-                        break;
-                    case "png":
-                    case "jpg":
-                        wallpaper.setType("static");
-                        String[] tags2 = new String[]{};
-                        tags2 = ArrayUtil.append(tags2, "静态壁纸", "静态", "壁纸");
-                        tags2 = ArrayUtil.append(tags2, file.getName().split(" "));
-                        tags2 = ArrayUtil.append(tags2, file.getName().split("_"));
-                        tags2 = ArrayUtil.append(tags2, file.getName().split("-"));
-                        wallpaper.setTags(StrUtil.join(",", (Object) tags2));
-                        flag = true;
-                        break;
-                    default:
-                        log.info("不是图像文件，忽略。。。");
-                        break;
-                }
-                if (flag) {
-                    // 开始插入
-                    log.info("开始插入：{}", file.getName());
-                    long count = wallpaperService.count(new LambdaQueryWrapper<Wallpaper>()
-                            .eq(Wallpaper::getName, file.getName())
-                    );
-                    // 不存在
-                    if (count <= 0) {
-                        wallpaper.setCreateBy("1");
-                        wallpaper.setCreateTime(DateUtil.date());
-                        wallpaper.setSize(DataSizeUtil.format(FileUtil.size(file)));
-                        wallpaper.setUrl(ossDomain + "/cloud-wallpaper/" + parentPath + "/" + URLUtil.encode(file.getName()));
-                        wallpaper.setName(file.getName());
-                        wallpaperService.save(wallpaper);
-                        log.info("完成插入：{}", file.getName());
-                    } else {
-                        log.info("{}已存在跳过", file.getName());
-                    }
-                }
-                System.out.println(wallpaper);
-            }
-        return AjaxResult.success();
-    }
 }
