@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import vip.gpg123.framework.UmamiConfig;
 import vip.gpg123.umami.domain.Session;
 import vip.gpg123.dashboard.service.DouAreaWorldService;
 import vip.gpg123.umami.service.SessionService;
@@ -39,8 +40,8 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, Session> impl
     @Autowired
     private StatesService statesService;
 
-    @Value("${analytics.umami.website-id}")
-    private String websiteId;
+    @Autowired
+    private UmamiConfig.umamiCloudWebProperties umamiCloudWebProperties;
 
     /**
      * 访客
@@ -61,7 +62,7 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, Session> impl
                 ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
         );
         List<Map<String, Object>> dataList = new LinkedList<>();
-        List<Map<String, Object>> result = sessionMapper.countByCountry(start, end, websiteId);
+        List<Map<String, Object>> result = sessionMapper.countByCountry(start, end, umamiCloudWebProperties.getWebsiteId());
         result.forEach(item -> {
             Map<String, Object> map = new HashMap<>();
             if (ObjectUtil.isNotEmpty(item)) {
@@ -96,7 +97,7 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, Session> impl
                 ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
         );
         List<Map<String, Object>> dataList = new LinkedList<>();
-        List<Map<String, Object>> result = sessionMapper.countByRegion(start, end, websiteId, "CN");
+        List<Map<String, Object>> result = sessionMapper.countByRegion(start, end, umamiCloudWebProperties.getWebsiteId(), "CN");
         result.forEach(item -> {
             Map<String, Object> map = new HashMap<>();
             if (ObjectUtil.isNotNull(item)) {
@@ -127,7 +128,7 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, Session> impl
                 ZoneId.systemDefault() // 使用系统默认时区，如 Asia/Shanghai
         );
 
-        return sessionMapper.selectCount(new LambdaQueryWrapper<Session>().eq(Session::getWebsiteId, websiteId).between(Session::getCreatedAt, start, end));
+        return sessionMapper.selectCount(new LambdaQueryWrapper<Session>().eq(Session::getWebsiteId, umamiCloudWebProperties.getWebsiteId()).between(Session::getCreatedAt, start, end));
     }
 }
 

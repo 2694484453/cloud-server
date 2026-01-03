@@ -1,19 +1,15 @@
 package vip.gpg123.wallpaper;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.unit.DataSizeUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
 import com.aliyun.oss.OSS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -33,19 +29,19 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.framework.UmamiConfig;
 import vip.gpg123.framework.config.OssConfig;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
+import vip.gpg123.umami.domain.WebsiteEvent;
+import vip.gpg123.umami.service.WebsiteEventService;
 import vip.gpg123.wallpaper.domain.Wallpaper;
+import vip.gpg123.wallpaper.domain.WallpaperQuery;
 import vip.gpg123.wallpaper.mapper.WallpaperMapper;
 import vip.gpg123.wallpaper.service.WallpaperService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,12 +69,13 @@ public class WallpaperController extends BaseController {
     private OssConfig.OssProperties ossProperties;
 
     @Autowired
+    private WebsiteEventService websiteEventService;
+
+    @Autowired
+    private UmamiConfig.umamiWallpaperProperties umamiWallpaperProperties;
+
+    @Autowired
     private OSS oss;
-
-    @Value("${cloud.aliyun.ossDomain}")
-    private String ossDomain;
-
-    private static final String sourcePath = "/Volumes/gaopuguang/wallpaper/";
 
     private static final String defaultType = "dongman";
 
@@ -114,14 +111,22 @@ public class WallpaperController extends BaseController {
                 .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getName())
                 .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(), defaultType))
         );
-        // 设置预签名URL过期时间，单位为毫秒。本示例以设置过期时间为1小时为例。
-//        Date expiration = new Date(new Date().getTime() + 60 * 1000L);
-//        page.getRecords().forEach(item -> {
-//            String objectName = "wallpaper/" + item.getDirPath();
-//            URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), objectName, expiration);
-//            item.setUrl(url.toString());
-//        });
-        return PageUtils.toPageByIPage(page);
+        IPage<WallpaperQuery> wallpaperQueryIPage = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+        List<WallpaperQuery> list = new ArrayList<>();
+        page.getRecords().forEach(item -> {
+            WallpaperQuery wallpaperQuery = new WallpaperQuery();
+            long visitCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
+                    .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
+                    .eq(WebsiteEvent::getUrlPath, "/info")
+                    .eq(WebsiteEvent::getUrlQuery, "id=" + item.getId())
+            );
+            BeanUtils.copyProperties(item, wallpaperQuery);
+            wallpaperQuery.setVisitCount(Math.toIntExact(visitCount));
+            list.add(wallpaperQuery);
+        });
+        wallpaperQueryIPage.setRecords(list);
+        wallpaperQueryIPage.setTotal(page.getTotal());
+        return PageUtils.toPageByIPage(wallpaperQueryIPage);
     }
 
     /**
@@ -202,7 +207,7 @@ public class WallpaperController extends BaseController {
             // 设置预签名URL过期时间，单位为毫秒。本示例以设置过期时间为2分钟为例。
             Date expiration = new Date(new Date().getTime() + 120 * 1000L);
             URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), "wallpaper/" + wallpaper.getDirPath(), expiration);
-            return AjaxResult.success("",url.toString());
+            return AjaxResult.success("", url.toString());
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage() + ",请先登录");
         }

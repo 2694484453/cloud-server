@@ -1,3 +1,4 @@
+/*
 package vip.gpg123.wallpaper;
 
 import cn.hutool.core.io.unit.DataSizeUtil;
@@ -32,11 +33,13 @@ public class WallPaperUploadController extends BaseController {
 
     private static final String keyPrefix = "wallpaper/";
 
-    /**
+    */
+/**
      * list
      *
      * @return r
-     */
+     *//*
+
     @GetMapping("/list")
     public AjaxResult list() {
         List<HashMap<String,Object>> list = new ArrayList<>();
@@ -67,3 +70,4 @@ public class WallPaperUploadController extends BaseController {
         return AjaxResult.success(list);
     }
 }
+*/

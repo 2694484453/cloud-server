@@ -62,15 +62,10 @@ frp:
     token: ADt8zh5VFdJKcccVWh2jkv1l6Z0IblSvm0H7M2yclJpYkWV0KPEadr9gZWdd77HM
     userName: gaopuguang
     passWord: 1999y4m30d
-#cloud
-cloud:
-  aliyun:
-    accessKeyId: xx
-    accessKeySecret: xx
-    endpoint: https://oss-cn-hangzhou.aliyuncs.com
-    ossDomain: https://dev-gpg.oss-cn-hangzhou.aliyuncs.com
-    bucketName: dev-gpg
 #访问分析
 analytics:
   umami:
-    website-id: 56ec3622-80b9-4202-ad85-212fbc9c1235
+    cloud-web:
+      website-id: 56ec3622-80b9-4202-ad85-212fbc9c1235
+    wallpaper:
+      website-id: 379a0d2f-0272-42ce-8002-e4bb3bb31526
