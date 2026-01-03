@@ -77,6 +77,8 @@ public class WallpaperController extends BaseController {
 
     private static final String sourcePath = "/Volumes/gaopuguang/wallpaper/";
 
+    private static final String defaultType = "dongman";
+
     /**
      * 列表查询
      *
@@ -88,7 +90,7 @@ public class WallpaperController extends BaseController {
         List<Wallpaper> list = wallpaperService.list(new LambdaQueryWrapper<Wallpaper>()
                 .eq(Wallpaper::getCreateBy, getUsername())
                 .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getType())
-                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(), "dongman"))
+                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(), defaultType))
                 .orderByDesc(Wallpaper::getCreateTime)
         );
         return AjaxResult.success(list);
@@ -107,15 +109,15 @@ public class WallpaperController extends BaseController {
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
         IPage<Wallpaper> page = wallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<Wallpaper>()
                 .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getName())
-                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(), "dongman"))
+                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(), defaultType))
         );
         // 设置预签名URL过期时间，单位为毫秒。本示例以设置过期时间为1小时为例。
-        Date expiration = new Date(new Date().getTime() + 60 * 1000L);
-        page.getRecords().forEach(item -> {
-            String objectName = "wallpaper/" + item.getDirPath();
-            URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), objectName, expiration);
-            item.setUrl(url.toString());
-        });
+//        Date expiration = new Date(new Date().getTime() + 60 * 1000L);
+//        page.getRecords().forEach(item -> {
+//            String objectName = "wallpaper/" + item.getDirPath();
+//            URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), objectName, expiration);
+//            item.setUrl(url.toString());
+//        });
         return PageUtils.toPageByIPage(page);
     }
 
