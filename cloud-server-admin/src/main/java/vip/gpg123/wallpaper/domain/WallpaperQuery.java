@@ -11,4 +11,5 @@ public class WallpaperQuery extends Wallpaper implements Serializable {
 
     private Integer visitCount;
 
+    private Integer downloadCount;
 }

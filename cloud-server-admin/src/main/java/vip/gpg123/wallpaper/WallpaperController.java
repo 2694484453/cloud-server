@@ -120,8 +120,14 @@ public class WallpaperController extends BaseController {
                     .eq(WebsiteEvent::getUrlPath, "/info")
                     .eq(WebsiteEvent::getUrlQuery, "id=" + item.getId())
             );
+            long downloadCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
+                    .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
+                    .eq(WebsiteEvent::getUrlPath, "/download")
+                    .eq(WebsiteEvent::getUrlQuery, "id=" + item.getId())
+            );
             BeanUtils.copyProperties(item, wallpaperQuery);
             wallpaperQuery.setVisitCount(Math.toIntExact(visitCount));
+            wallpaperQuery.setDownloadCount(Math.toIntExact(downloadCount));
             list.add(wallpaperQuery);
         });
         wallpaperQueryIPage.setRecords(list);
