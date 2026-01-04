@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.dashboard.domain.TodayView;
-import vip.gpg123.framework.UmamiConfig;
+import vip.gpg123.framework.config.UmamiConfig;
 import vip.gpg123.umami.domain.WebsiteEvent;
 import vip.gpg123.umami.service.WebsiteEventService;
 import vip.gpg123.umami.mapper.WebsiteEventMapper;

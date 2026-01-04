@@ -30,11 +30,11 @@ import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.prometheus.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusConfigs;
-import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
-import vip.gpg123.prometheus.service.PrometheusExporterService;
+import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -51,10 +51,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/prometheus/exporter")
 @Api(tags = "prometheus-exporter管理")
-public class PrometheusExporterController extends BaseController {
+public class PrometheusTargetController extends BaseController {
 
     @Autowired
-    private PrometheusExporterService prometheusExporterService;
+    private PrometheusTargetService prometheusTargetService;
 
     @Autowired
     private PrometheusExporterMapper prometheusExporterMapper;
@@ -88,10 +88,10 @@ public class PrometheusExporterController extends BaseController {
     @ApiOperation(value = "【列表查询】")
     public AjaxResult list(@RequestParam(name = "jobName", required = false) String jobName,
                            @RequestParam(name = "exporterType", required = false) String exporterType) {
-        List<PrometheusExporter> list = prometheusExporterService.list(new LambdaQueryWrapper<PrometheusExporter>()
-                .like(StrUtil.isNotBlank(jobName), PrometheusExporter::getJobName, jobName)
-                .eq(StrUtil.isNotBlank(exporterType), PrometheusExporter::getExporterType, exporterType)
-                .orderByDesc(PrometheusExporter::getCreateTime)
+        List<PrometheusTarget> list = prometheusTargetService.list(new LambdaQueryWrapper<PrometheusTarget>()
+                .like(StrUtil.isNotBlank(jobName), PrometheusTarget::getJobName, jobName)
+                .eq(StrUtil.isNotBlank(exporterType), PrometheusTarget::getExporterType, exporterType)
+                .orderByDesc(PrometheusTarget::getCreateTime)
         );
         return AjaxResult.success(list);
     }
@@ -109,13 +109,13 @@ public class PrometheusExporterController extends BaseController {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<PrometheusExporter> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+        IPage<PrometheusTarget> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
 
-        PrometheusExporter exporter = new PrometheusExporter();
+        PrometheusTarget exporter = new PrometheusTarget();
         exporter.setJobName(jobName);
         exporter.setExporterType(exporterType);
         exporter.setCreateBy(String.valueOf(getUserId()));
-        List<PrometheusExporter> list = prometheusExporterMapper.page(pageDomain, exporter);
+        List<PrometheusTarget> list = prometheusExporterMapper.page(pageDomain, exporter);
         page.setRecords(list);
         page.setTotal(prometheusExporterMapper.list(exporter).size());
         return PageUtils.toPageByIPage(page);
@@ -129,16 +129,16 @@ public class PrometheusExporterController extends BaseController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "【新增】")
-    public AjaxResult add(@RequestBody PrometheusExporter exporter) {
+    public AjaxResult add(@RequestBody PrometheusTarget exporter) {
         exporter.setCreateBy(String.valueOf(getUserId()));
         exporter.setCreateTime(DateUtil.date());
-        int count = prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
-                .eq(PrometheusExporter::getJobName, exporter.getJobName())
-                .eq(PrometheusExporter::getExporterType, exporter.getExporterType()));
+        int count = prometheusTargetService.count(new LambdaQueryWrapper<PrometheusTarget>()
+                .eq(PrometheusTarget::getJobName, exporter.getJobName())
+                .eq(PrometheusTarget::getExporterType, exporter.getExporterType()));
         if (count > 0) {
             return AjaxResult.error("已存在相同类型、名称（已被占用），请更换");
         }
-        boolean isSaved = prometheusExporterService.save(exporter);
+        boolean isSaved = prometheusTargetService.save(exporter);
         return isSaved ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
     }
 
@@ -150,26 +150,26 @@ public class PrometheusExporterController extends BaseController {
      */
     @PutMapping("/edit")
     @ApiOperation(value = "【编辑】")
-    public AjaxResult edit(@RequestBody PrometheusExporter exporter) {
+    public AjaxResult edit(@RequestBody PrometheusTarget exporter) {
         if (StrUtil.isBlank(exporter.getJobName())) {
             return AjaxResult.error("名称不能为空");
         }
         if (StrUtil.isBlank(exporter.getExporterType())) {
             return AjaxResult.error("exporter类型不能为空");
         }
-        PrometheusExporter search = prometheusExporterService.getById(exporter.getId());
+        PrometheusTarget search = prometheusTargetService.getById(exporter.getTargetId());
         // 修改了名称
         if (!search.getJobName().equals(exporter.getJobName())) {
-            int count = prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
-                    .eq(PrometheusExporter::getJobName, exporter.getJobName())
-                    .eq(PrometheusExporter::getExporterType, exporter.getExporterType()));
+            int count = prometheusTargetService.count(new LambdaQueryWrapper<PrometheusTarget>()
+                    .eq(PrometheusTarget::getJobName, exporter.getJobName())
+                    .eq(PrometheusTarget::getExporterType, exporter.getExporterType()));
             if (count > 0) {
                 return AjaxResult.error("已存在相同类型、名称（已被占用），请更换");
             }
         }
         exporter.setUpdateBy(String.valueOf(getUserId()));
         exporter.setUpdateTime(DateUtil.date());
-        boolean isSuccess = prometheusExporterService.updateById(exporter);
+        boolean isSuccess = prometheusTargetService.updateById(exporter);
         return isSuccess ? AjaxResult.success("修改成功") : AjaxResult.error("修改失败");
     }
 
@@ -182,7 +182,7 @@ public class PrometheusExporterController extends BaseController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "【删除】")
     public AjaxResult delete(@RequestParam(value = "id") String id) {
-        boolean isSuccess = prometheusExporterService.removeById(id);
+        boolean isSuccess = prometheusTargetService.removeById(id);
         return isSuccess ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }
 
@@ -195,13 +195,13 @@ public class PrometheusExporterController extends BaseController {
      */
     @PostMapping("/export")
     @ApiOperation(value = "export")
-    public void export(@RequestBody PrometheusExporter exporter, HttpServletResponse response) throws IOException {
-        List<PrometheusExporter> list = prometheusExporterService.list(new LambdaQueryWrapper<PrometheusExporter>()
-                .eq(StrUtil.isNotBlank(exporter.getExporterType()), PrometheusExporter::getExporterType, exporter.getExporterType())
-                .eq(StrUtil.isNotBlank(exporter.getSchemeType()), PrometheusExporter::getSchemeType, exporter.getSchemeType())
-                .eq(StrUtil.isNotBlank(exporter.getStatus()), PrometheusExporter::getStatus, exporter.getStatus())
-                .eq(PrometheusExporter::getCreateBy, String.valueOf(getUserId()))
-                .orderByDesc(PrometheusExporter::getCreateTime)
+    public void export(@RequestBody PrometheusTarget exporter, HttpServletResponse response) throws IOException {
+        List<PrometheusTarget> list = prometheusTargetService.list(new LambdaQueryWrapper<PrometheusTarget>()
+                .eq(StrUtil.isNotBlank(exporter.getExporterType()), PrometheusTarget::getExporterType, exporter.getExporterType())
+                .eq(StrUtil.isNotBlank(exporter.getSchemeType()), PrometheusTarget::getSchemeType, exporter.getSchemeType())
+                .eq(StrUtil.isNotBlank(exporter.getStatus()), PrometheusTarget::getStatus, exporter.getStatus())
+                .eq(PrometheusTarget::getCreateBy, String.valueOf(getUserId()))
+                .orderByDesc(PrometheusTarget::getCreateTime)
         );
         JSONArray jsonArray = listToJsonArray(list);
         String jsonStr = JSONUtil.formatJsonStr(JSONUtil.toJsonStr(jsonArray));
@@ -224,20 +224,20 @@ public class PrometheusExporterController extends BaseController {
     @ApiOperation(value = "syncStatus")
     public AjaxResult syncStatus() {
         // 查询数据库中
-        List<PrometheusExporter> prometheusExporterList = prometheusExporterService.list();
-        Map<String, PrometheusExporter> map = prometheusExporterList.stream().collect(Collectors.toMap(PrometheusExporter::getJobName, item -> item));
+        List<PrometheusTarget> prometheusTargetList = prometheusTargetService.list();
+        Map<String, PrometheusTarget> map = prometheusTargetList.stream().collect(Collectors.toMap(PrometheusTarget::getJobName, item -> item));
         // 查询状态prometheus
         PrometheusTargetResponse response = prometheusApi.targets("");
         List<ActiveTarget> list = Convert.toList(ActiveTarget.class, JSONUtil.parseArray(response.getData().getActiveTargets()));
         // 不为空
-        if (ObjectUtil.isNotEmpty(prometheusExporterList) && ObjectUtil.isNotEmpty(list)) {
+        if (ObjectUtil.isNotEmpty(prometheusTargetList) && ObjectUtil.isNotEmpty(list)) {
             list.forEach(target -> {
                 AtomicBoolean isUpdate = new AtomicBoolean(false);
                 String targetName = target.getLabels().getStr("job");
                 // 找到了
                 if (map.containsKey(targetName)) {
                     String targetStatus = target.getHealth();
-                    PrometheusExporter exporter = map.get(targetName);
+                    PrometheusTarget exporter = map.get(targetName);
                     String exportStatus = exporter.getStatus();
                     // 状态发生变化或者是错误原因为空白
                     if (!exportStatus.equals(targetStatus) || (StrUtil.isBlank(exporter.getErrorReason()) && "down".equals(exporter.getStatus()))) {
@@ -254,7 +254,7 @@ public class PrometheusExporterController extends BaseController {
                         isUpdate.set(true);
                     }
                     if (isUpdate.get()) {
-                        prometheusExporterService.updateById(exporter);
+                        prometheusTargetService.updateById(exporter);
                     }
                 }
             });
@@ -270,11 +270,11 @@ public class PrometheusExporterController extends BaseController {
     @GetMapping("/http-sd")
     @ApiOperation(value = "http-sd")
     public JSONArray httpSd() {
-        List<PrometheusExporter> list = prometheusExporterService.list();
+        List<PrometheusTarget> list = prometheusTargetService.list();
         return listToJsonArray(list);
     }
 
-    public JSONArray listToJsonArray(List<PrometheusExporter> list) {
+    public JSONArray listToJsonArray(List<PrometheusTarget> list) {
         JSONArray jsonArray = new JSONArray();
         list.forEach(item -> {
             PrometheusConfigs configs = new PrometheusConfigs();

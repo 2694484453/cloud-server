@@ -27,9 +27,11 @@ import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
+import vip.gpg123.prometheus.domain.PrometheusGroup;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
+import vip.gpg123.prometheus.service.PrometheusGroupService;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
 
 import java.util.List;
@@ -50,6 +52,9 @@ public class PrometheusRuleController extends BaseController {
     private PrometheusRuleMapper prometheusRuleMapper;
 
     @Autowired
+    private PrometheusGroupService prometheusGroupService;
+
+    @Autowired
     private PrometheusApi prometheusApi;
 
     /**
@@ -59,13 +64,11 @@ public class PrometheusRuleController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(@RequestParam(value = "alertName", required = false) String alertName,
-                           @RequestParam(value = "groupName", required = false) String groupName,
-                           @RequestParam(value = "type", required = false) String type) {
+    public AjaxResult list(PrometheusRule prometheusRule) {
         List<PrometheusRule> list = prometheusRuleService.list(new LambdaQueryWrapper<PrometheusRule>()
-                .eq(StrUtil.isNotBlank(alertName), PrometheusRule::getAlertName, alertName)
-                .eq(StrUtil.isNotBlank(groupName), PrometheusRule::getGroupName, groupName)
-                .eq(StrUtil.isNotBlank(type), PrometheusRule::getType, type)
+                .eq(StrUtil.isNotBlank(prometheusRule.getRuleName()), PrometheusRule::getRuleName, prometheusRule.getRuleName())
+                .eq(StrUtil.isNotBlank(prometheusRule.getGroupId()), PrometheusRule::getGroupId, prometheusRule.getGroupId())
+                .eq(StrUtil.isNotBlank(prometheusRule.getType()), PrometheusRule::getType, prometheusRule.getType())
                 .eq(PrometheusRule::getCreateBy, getUserId())
                 .orderByAsc(PrometheusRule::getCreateTime)
         );
@@ -79,20 +82,15 @@ public class PrometheusRuleController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(@RequestParam(value = "alertName", required = false) String alertName,
-                              @RequestParam(value = "groupName", required = false) String groupName,
-                              @RequestParam(value = "type", required = false) String type) {
+    public TableDataInfo page(PrometheusRule prometheusRule) {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
         IPage<PrometheusRule> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
 
         PrometheusRule search = new PrometheusRule();
-        search.setAlertName(alertName);
-        search.setGroupName(groupName);
-        search.setType(type);
         search.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
-        List<PrometheusRule> list = prometheusRuleMapper.page(pageDomain, search);
+        List<PrometheusRule> list = prometheusRuleMapper.page(pageDomain, prometheusRule);
         page.setRecords(list);
         page.setTotal(prometheusRuleMapper.list(search).size());
         return PageUtils.toPageByIPage(page);
@@ -100,6 +98,7 @@ public class PrometheusRuleController extends BaseController {
 
     /**
      * 新增
+     *
      * @param prometheusRule p
      * @return r
      */
@@ -114,6 +113,7 @@ public class PrometheusRuleController extends BaseController {
 
     /**
      * 修改
+     *
      * @param prometheusRule pr
      * @return r
      */
@@ -128,6 +128,7 @@ public class PrometheusRuleController extends BaseController {
 
     /**
      * delete
+     *
      * @param id id
      * @return r
      */
@@ -149,36 +150,38 @@ public class PrometheusRuleController extends BaseController {
         JSONObject data = jsonObject.getJSONObject("data");
         JSONArray groups = data.getJSONArray("groups");
         prometheusRules.forEach(prometheusRule -> {
-           String alertName = prometheusRule.getAlertName();
-           String groupName = prometheusRule.getGroupName();
-           String type = prometheusRule.getType();
-           String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
-           String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getAlertStatus(), "");
-           groups.forEach(group -> {
-               JSONObject groupJsonObject = JSONUtil.parseObj(group);
-               String prometheusGroupName = groupJsonObject.getStr("name");
-               JSONArray rules = groupJsonObject.getJSONArray("rules");
-               rules.forEach(rule -> {
-                   boolean isUpdate = false;
-                   JSONObject ruleJsonObject = JSONUtil.parseObj(rule);
-                   String prometheusRuleName = ruleJsonObject.getStr("name");
-                   String prometheusRuleStatus = ruleJsonObject.getStr("health");
-                   String prometheusRuleState = ruleJsonObject.getStr("state");
-                   if (groupName.equals(prometheusGroupName) && alertName.equals(prometheusRuleName)) {
+            // 查询group
+            PrometheusGroup prometheusGroup = prometheusGroupService.getById(prometheusRule.getGroupId());
+            String alertName = prometheusRule.getRuleName();
+            String groupName = prometheusGroup.getGroupName();
+            String type = prometheusRule.getType();
+            String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
+            String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
+            groups.forEach(group -> {
+                JSONObject groupJsonObject = JSONUtil.parseObj(group);
+                String prometheusGroupName = groupJsonObject.getStr("name");
+                JSONArray rules = groupJsonObject.getJSONArray("rules");
+                rules.forEach(rule -> {
+                    boolean isUpdate = false;
+                    JSONObject ruleJsonObject = JSONUtil.parseObj(rule);
+                    String prometheusRuleName = ruleJsonObject.getStr("name");
+                    String prometheusRuleStatus = ruleJsonObject.getStr("health");
+                    String prometheusRuleState = ruleJsonObject.getStr("state");
+                    if (groupName.equals(prometheusGroupName) && alertName.equals(prometheusRuleName)) {
                         if (!status.equals(prometheusRuleStatus)) {
-                             prometheusRule.setStatus(prometheusRuleStatus);
-                             isUpdate = true;
-                        }
-                        if (!alertStatus.equals(prometheusRuleState)) {
-                            prometheusRule.setAlertStatus(prometheusRuleState);
+                            prometheusRule.setStatus(prometheusRuleStatus);
                             isUpdate = true;
                         }
-                   }
-                   if (isUpdate) {
-                       prometheusRuleService.updateById(prometheusRule);
-                   }
-               });
-           });
+                        if (!alertStatus.equals(prometheusRuleState)) {
+                            prometheusRule.setStatus(prometheusRuleState);
+                            isUpdate = true;
+                        }
+                    }
+                    if (isUpdate) {
+                        prometheusRuleService.updateById(prometheusRule);
+                    }
+                });
+            });
         });
     }
 }

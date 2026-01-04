@@ -9,12 +9,12 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import vip.gpg123.amqp.producer.PrometheusProducer;
-import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.framework.config.MonitorConfig;
+import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.service.PrometheusApi;
-import vip.gpg123.prometheus.service.PrometheusExporterService;
+import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -24,38 +24,37 @@ import java.util.HashMap;
 public class PrometheusConsumer {
 
     @Autowired
-    private PrometheusExporterService prometheusExporterService;
+    private PrometheusTargetService prometheusTargetService;
 
     @Autowired
     private PrometheusApi prometheusApi;
 
-    @Value("${monitor.prometheus.exporterPath}")
-    private String exporterPath;
-
+    @Autowired
+    private MonitorConfig.PrometheusProperties prometheusProperties;
 
     /**
      * 创建json文件
-     * @param prometheusExporter pe
+     * @param prometheusTarget pe
      */
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = PrometheusProducer.prometheusQueue, durable = "true"), // 创建持久化队列
             exchange = @Exchange(name = PrometheusProducer.prometheusExchange), // 声明直接交换器
             key = "createExporterFile" // 定义路由键
     ))
-    public void createExporterFile(PrometheusExporter prometheusExporter) {
-        String typePath = exporterPath + "/" +prometheusExporter.getExporterType();
+    public void createExporterFile(PrometheusTarget prometheusTarget) {
+        String typePath = prometheusProperties.getPath() + "/" + prometheusTarget.getExporterType();
         if (!FileUtil.exist(typePath)) {
             FileUtil.mkdir(typePath);
         }
         // 位置
-        String filePath = typePath + "/" + prometheusExporter.getJobName()+".json";
+        String filePath = typePath + "/" + prometheusTarget.getJobName()+".json";
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("labels", new HashMap<String, String>() {{
-            put("job", prometheusExporter.getJobName());
+            put("job", prometheusTarget.getJobName());
         }});
         jsonObject.put("targets", new ArrayList<String>() {{
-            add(prometheusExporter.getTargets());
+            add(prometheusTarget.getTargets());
         }});
         jsonArray.add(jsonObject);
         String jsonFormat = JSONUtil.formatJsonStr(JSONUtil.toJsonStr(jsonArray));

@@ -1,6 +1,5 @@
 package vip.gpg123.prometheus.domain;
 
-import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -16,17 +15,17 @@ import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 
- * @TableName prometheus_exporter
+ * @TableName prometheus_target
  */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value ="prometheus_exporter")
+@TableName(value ="prometheus_target")
 @Data
-public class PrometheusExporter extends BaseEntity implements Serializable {
+public class PrometheusTarget extends BaseEntity implements Serializable {
     /**
      * 
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "targetId", type = IdType.AUTO)
+    private Integer targetId;
 
     /**
      * 应用名称

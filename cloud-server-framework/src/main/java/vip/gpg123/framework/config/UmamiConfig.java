@@ -1,4 +1,4 @@
-package vip.gpg123.framework;
+package vip.gpg123.framework.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

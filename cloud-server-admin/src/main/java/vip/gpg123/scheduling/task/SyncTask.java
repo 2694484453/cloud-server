@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vip.gpg123.app.HelmAppMarketController;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.nas.NasFrpClientController;
-import vip.gpg123.prometheus.PrometheusExporterController;
+import vip.gpg123.prometheus.PrometheusTargetController;
 import vip.gpg123.prometheus.PrometheusRuleController;
 import vip.gpg123.prometheus.service.PrometheusApi;
 
@@ -27,7 +27,7 @@ public class SyncTask {
      */
     @Transactional(rollbackFor = Exception.class)
     public void syncPrometheusExporterStatus() {
-        SpringUtils.getBean(PrometheusExporterController.class).syncStatus();
+        SpringUtils.getBean(PrometheusTargetController.class).syncStatus();
     }
 
     /**

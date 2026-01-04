@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.prometheus.domain.PrometheusExporter;
-import vip.gpg123.prometheus.service.PrometheusExporterService;
+import vip.gpg123.prometheus.domain.PrometheusTarget;
+import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class PrometheusController extends BaseController {
 
     @Autowired
-    private PrometheusExporterService prometheusExporterService;
+    private PrometheusTargetService prometheusTargetService;
 
     /**
      * 概览
@@ -32,29 +32,29 @@ public class PrometheusController extends BaseController {
         List<Map<String, Object>> list = new ArrayList<>();
         Map<String, Object> totalMap = new HashMap<>();
         totalMap.put("title", "当前系统接入端点总数");
-        totalMap.put("count", prometheusExporterService.count());
+        totalMap.put("count", prometheusTargetService.count());
         list.add(totalMap);
 
         Map<String, Object> map = new HashMap<>();
         map.put("title", "我的接入端点总数");
-        map.put("count", prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
-                .eq(PrometheusExporter::getCreateBy, getUserId())
+        map.put("count", prometheusTargetService.count(new LambdaQueryWrapper<PrometheusTarget>()
+                .eq(PrometheusTarget::getCreateBy, getUserId())
         ));
         list.add(map);
         //
         Map<String, Object> health = new HashMap<>();
         health.put("title", "我的接入端点健康数量");
-        health.put("count", prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
-                .eq(PrometheusExporter::getCreateBy, getUserId())
-                .eq(PrometheusExporter::getStatus, "up")
+        health.put("count", prometheusTargetService.count(new LambdaQueryWrapper<PrometheusTarget>()
+                .eq(PrometheusTarget::getCreateBy, getUserId())
+                .eq(PrometheusTarget::getStatus, "up")
         ));
         list.add(health);
         //
         Map<String, Object> down = new HashMap<>();
         down.put("title", "我的接入端点异常数量");
-        down.put("count", prometheusExporterService.count(new LambdaQueryWrapper<PrometheusExporter>()
-                .eq(PrometheusExporter::getCreateBy, getUserId())
-                .eq(PrometheusExporter::getStatus, "down")
+        down.put("count", prometheusTargetService.count(new LambdaQueryWrapper<PrometheusTarget>()
+                .eq(PrometheusTarget::getCreateBy, getUserId())
+                .eq(PrometheusTarget::getStatus, "down")
         ));
         list.add(down);
         return AjaxResult.success(list);

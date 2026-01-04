@@ -3,7 +3,6 @@ package vip.gpg123.prometheus.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.common.core.page.PageDomain;
-import vip.gpg123.prometheus.domain.PrometheusExporter;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

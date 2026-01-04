@@ -13,11 +13,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import vip.gpg123.CloudServerApplication;
 import vip.gpg123.app.HelmAppMarketController;
-import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.common.utils.spring.SpringUtils;
+import vip.gpg123.prometheus.PrometheusTargetController;
+import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.service.PrometheusApi;
-import vip.gpg123.prometheus.service.PrometheusExporterService;
+import vip.gpg123.prometheus.service.PrometheusTargetService;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
 
 import java.io.File;
@@ -30,7 +32,7 @@ import java.util.Map;
 public class PrometheusTest {
 
     @Autowired
-    private PrometheusExporterService prometheusExporterService;
+    private PrometheusTargetService prometheusTargetService;
 
     @Autowired
     private PrometheusRuleService prometheusRuleService;
@@ -64,7 +66,7 @@ public class PrometheusTest {
                                 JSONArray jsonArray = JSONUtil.readJSONArray(file2, StandardCharsets.UTF_8);
                                 if (!jsonArray.isEmpty()) {
                                     jsonArray.forEach(item -> {
-                                        PrometheusExporter exporter = new PrometheusExporter();
+                                        PrometheusTarget exporter = new PrometheusTarget();
                                         //
                                         JSONObject labels = ((JSONObject) item).getJSONObject("labels");
                                         String jobName = labels.get("job").toString();
@@ -72,8 +74,8 @@ public class PrometheusTest {
                                         JSONArray targets = ((JSONObject) item).getJSONArray("targets");
                                         String targetsStr = StrUtil.join(",", targets);
                                         //
-                                        PrometheusExporter search = prometheusExporterService.getOne(new LambdaQueryWrapper<PrometheusExporter>()
-                                                .eq(StrUtil.isNotBlank(jobName), PrometheusExporter::getJobName, jobName)
+                                        PrometheusTarget search = prometheusTargetService.getOne(new LambdaQueryWrapper<PrometheusTarget>()
+                                                .eq(StrUtil.isNotBlank(jobName), PrometheusTarget::getJobName, jobName)
                                         );
                                         if (search != null) {
                                             // 更新
@@ -81,14 +83,14 @@ public class PrometheusTest {
                                             exporter.setUpdateBy("ark.gpg123.vip");
                                             exporter.setTargets(targetsStr);
                                             exporter.setUpdateTime(DateUtil.date());
-                                            prometheusExporterService.updateById(exporter);
+                                            prometheusTargetService.updateById(exporter);
                                         } else {
                                             exporter.setJobName(jobName);
                                             exporter.setTargets(targetsStr);
                                             exporter.setExporterType(type);
                                             exporter.setCreateBy("ark.gpg123.vip");
                                             exporter.setCreateTime(DateUtil.date());
-                                            prometheusExporterService.save(exporter);
+                                            prometheusTargetService.save(exporter);
                                         }
                                     });
                                 }
@@ -110,47 +112,12 @@ public class PrometheusTest {
     }
 
     @Test
-    public void createRules() {
-        String path = "/Volumes/gaopuguang/project/prometheus/rules";
-        List<File> files = FileUtil.loopFiles(FileUtil.file(path));
-        for (File file : files) {
-            System.out.println(file.getName());
-            if (file.getName().endsWith(".yml") && !file.getName().startsWith(".")) {
-                System.out.println(file.getName());
-                // 获取parentName
-                String parentDirName = file.getParentFile().getName();
-                // 解析yaml
-                Map<String, Object> map = YamlUtil.loadByPath(file.getPath(), Map.class);
-                JSONObject jsonObject = JSONUtil.parseObj(map);
-                JSONArray jsonArray = JSONUtil.parseArray(jsonObject.get("groups"));
-                jsonArray.forEach(item -> {
-                    JSONObject object = (JSONObject) item;
-                    String groupName = object.get("name").toString();
-                    JSONArray rules = object.getJSONArray("rules");
-                    rules.forEach(e -> {
-                        PrometheusRule prometheusRule = new PrometheusRule();
-                        JSONObject rule = JSONUtil.parseObj(e);
-                        String alert = rule.get("alert").toString();
-                        String expr = rule.get("expr").toString();
-                        JSONObject labels = rule.containsKey("labels") ? (JSONObject) rule.get("labels") : new JSONObject();
-                        JSONObject annotations = rule.containsKey("annotations") ? (JSONObject) rule.get("annotations") : new JSONObject();
-                        String forTime = rule.get("for").toString();
-                        //
-                        prometheusRule.setAlertName(alert);
-                        prometheusRule.setGroupName(groupName);
-                        prometheusRule.setExpr(expr);
-                        prometheusRule.setType(parentDirName);
-                        prometheusRule.setCreateBy("1");
-                        prometheusRule.setLabels(labels.toString());
-                        prometheusRule.setAnnotations(annotations.toString());
-                        prometheusRule.setForTime(forTime);
-                        prometheusRule.setCreateTime(DateUtil.date());
-
-                        prometheusRuleService.save(prometheusRule);
-                    });
-                });
-            }
-        }
+    public void reloadRules() {
+        prometheusApi.reload();
     }
 
+    @Test
+    public void syncStatus() {
+        SpringUtils.getBean(PrometheusTargetController.class).syncStatus();
+    }
 }

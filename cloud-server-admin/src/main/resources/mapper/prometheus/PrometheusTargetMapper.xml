@@ -4,24 +4,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vip.gpg123.prometheus.mapper.PrometheusExporterMapper">
 
-    <resultMap id="BaseResultMap" type="vip.gpg123.prometheus.domain.PrometheusExporter">
-            <id property="id" column="id" />
-            <result property="jobName" column="job_name" />
-            <result property="targets" column="targets" />
-            <result property="metricsPath" column="metrics_path"/>
-            <result property="schemeType" column="scheme_type"/>
-            <result property="scrapeInterval" column="scrape_interval"/>
-            <result property="scrapeTimeout" column="scrape_timeout"/>
-            <result property="labels" column="labels" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
-            <result property="exporterType" column="exporter_type" />
-            <result property="status" column="status" />
-            <result property="globalUrl" column="global_url"/>
-            <result property="description" column="description" />
-            <result property="errorReason" column="error_reason"/>
-            <result property="createTime" column="create_time" />
-            <result property="createBy" column="create_by" />
-            <result property="updateTime" column="update_time" />
-            <result property="updateBy" column="update_by" />
+    <resultMap id="BaseResultMap" type="vip.gpg123.prometheus.domain.PrometheusTarget">
+        <id property="targetId" column="target_id"/>
+        <result property="jobName" column="job_name"/>
+        <result property="targets" column="targets"/>
+        <result property="metricsPath" column="metrics_path"/>
+        <result property="schemeType" column="scheme_type"/>
+        <result property="scrapeInterval" column="scrape_interval"/>
+        <result property="scrapeTimeout" column="scrape_timeout"/>
+        <result property="labels" column="labels"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="exporterType" column="exporter_type"/>
+        <result property="status" column="status"/>
+        <result property="globalUrl" column="global_url"/>
+        <result property="description" column="description"/>
+        <result property="errorReason" column="error_reason"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -33,8 +34,8 @@
     <!--条件语句-->
     <sql id="queryWrapper">
         <where>1=1
-            <if test="qw.id != null">
-                and id = #{qw.id}
+            <if test="qw.targetId != null">
+                and target_id = #{qw.targetId}
             </if>
             <if test="qw.jobName != null and qw.jobName !=''">
                 and job_name like concat('%',#{qw.jobName},'%')
@@ -43,10 +44,10 @@
                 and exporter_type = #{qw.exporterType}
             </if>
             <if test="qw.createBy != null">
-                and a.create_by = #{qw.createBy}
+                and t.create_by = #{qw.createBy}
             </if>
             <if test="qw.updateBy != null">
-                and a.update_by = #{qw.updateBy}
+                and t.update_by = #{qw.updateBy}
             </if>
         </where>
     </sql>
@@ -66,11 +67,12 @@
 
     <!--基础查询-->
     <sql id="baseSelect">
-        select a.*, b.user_name as 'updateByUserName'
-        from (select s.*, u.user_name as 'createByUserName'
-              from prometheus_exporter s
-                       left join sys_user u on u.user_id = s.create_by) a
-                 left join sys_user b on a.update_by = b.user_id
+        SELECT t.*,
+               uc.user_name AS createByUserName,
+               uu.user_name AS updateByUserName
+        FROM prometheus_target t
+                 LEFT JOIN sys_user uc ON t.create_by = uc.user_id
+                 LEFT JOIN sys_user uu ON t.update_by = uu.user_id
     </sql>
 
     <select id="list" resultMap="BaseResultMap">

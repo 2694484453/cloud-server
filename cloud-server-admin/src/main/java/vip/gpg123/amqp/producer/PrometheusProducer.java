@@ -3,7 +3,7 @@ package vip.gpg123.amqp.producer;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vip.gpg123.prometheus.domain.PrometheusExporter;
+import vip.gpg123.prometheus.domain.PrometheusTarget;
 
 @Service
 public class PrometheusProducer {
@@ -18,10 +18,10 @@ public class PrometheusProducer {
     /**
      * 创建exporter文件
      *
-     * @param prometheusExporter e
+     * @param prometheusTarget e
      */
-    public void createExporterFile(PrometheusExporter prometheusExporter) {
-        rabbitTemplate.convertAndSend(prometheusExchange, "createExporterFile", prometheusExporter);
+    public void createExporterFile(PrometheusTarget prometheusTarget) {
+        rabbitTemplate.convertAndSend(prometheusExchange, "createExporterFile", prometheusTarget);
     }
 
     /**

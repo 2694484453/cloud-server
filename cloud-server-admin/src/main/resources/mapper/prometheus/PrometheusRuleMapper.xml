@@ -5,25 +5,28 @@
 <mapper namespace="vip.gpg123.prometheus.mapper.PrometheusRuleMapper">
 
     <resultMap id="BaseResultMap" type="vip.gpg123.prometheus.domain.PrometheusRule">
-            <id property="id" column="id" />
-            <result property="groupName" column="group_name" />
-            <result property="alertName" column="alert_name" />
-            <result property="alertStatus" column="alert_status"/>
-            <result property="labels" column="labels" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
-            <result property="forTime" column="for_time" />
-            <result property="expr" column="expr" />
-            <result property="annotations" column="annotations" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
-            <result property="type" column="type" />
-            <result property="status" column="status" />
-            <result property="description" column="description" />
-            <result property="createBy" column="create_by" />
-            <result property="createTime" column="create_time" />
-            <result property="updateBy" column="update_by" />
-            <result property="updateTime" column="update_time" />
+        <id property="ruleId" column="rule_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="groupName" column="group_name"/>
+        <result property="ruleName" column="rule_name"/>
+        <result property="status" column="status"/>
+        <result property="labels" column="labels"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="forTime" column="for_time"/>
+        <result property="expr" column="expr"/>
+        <result property="annotations" column="annotations"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="type" column="type"/>
+        <result property="status" column="status"/>
+        <result property="description" column="description"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,group_name,alert_name,labels,for_time,expr,
+        rule_id,group_name,alert_name,labels,for_time,expr,
         annotations,type,status,description,create_by,
         create_time,update_by,update_time
     </sql>
@@ -31,11 +34,14 @@
     <!--条件语句-->
     <sql id="queryWrapper">
         <where>1=1
-            <if test="qw.id != null">
-                and id = #{qw.id}
+            <if test="qw.ruleId != null">
+                and rule_id = #{qw.ruleId}
             </if>
-            <if test="qw.alertName != null and qw.alertName !=''">
-                and alter_name like concat('%',#{qw.alertName},'%')
+            <if test="qw.ruleName != null and qw.ruleName !=''">
+                and rule_name like concat('%',#{qw.ruleName},'%')
+            </if>
+            <if test="qw.groupId != null and qw.groupId !=''">
+                and group_id like concat('%',#{qw.groupId},'%')
             </if>
             <if test="qw.groupName != null and qw.groupName !=''">
                 and group_name like concat('%',#{qw.groupName},'%')
@@ -44,10 +50,10 @@
                 and type = #{qw.type}
             </if>
             <if test="qw.createBy != null">
-                and a.create_by = #{qw.createBy}
+                and r.create_by = #{qw.createBy}
             </if>
             <if test="qw.updateBy != null">
-                and a.update_by = #{qw.updateBy}
+                and r.update_by = #{qw.updateBy}
             </if>
         </where>
     </sql>
@@ -67,11 +73,14 @@
 
     <!--基础查询-->
     <sql id="baseSelect">
-        select a.*, b.user_name as 'updateByUserName'
-        from (select s.*, u.user_name as 'createByUserName'
-              from prometheus_rule s
-                       left join sys_user u on u.user_id = s.create_by) a
-                 left join sys_user b on a.update_by = b.user_id
+        SELECT r.*,
+               g.group_name,
+               uu.user_name AS createByUserName,
+               uc.user_name AS updateByUserName
+        FROM prometheus_rule r
+                 LEFT JOIN prometheus_group g ON r.group_id = g.group_id
+                 LEFT JOIN sys_user uu ON r.create_by = uu.user_id
+                 LEFT JOIN sys_user uc ON r.update_by = uc.user_id
     </sql>
 
     <select id="list" resultMap="BaseResultMap">

@@ -18,7 +18,7 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.dashboard.domain.TodayView;
 import vip.gpg123.umami.service.SessionService;
 import vip.gpg123.umami.service.WebsiteEventService;
-import vip.gpg123.prometheus.PrometheusExporterController;
+import vip.gpg123.prometheus.PrometheusTargetController;
 import vip.gpg123.scheduling.service.SysSchedulingJobService;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.mapper.SysNoticeMapper;
@@ -55,7 +55,7 @@ public class DashboardController {
     private SysNoticeMapper sysNoticeMapper;
 
     @Autowired
-    private PrometheusExporterController prometheusExporterController;
+    private PrometheusTargetController prometheusTargetController;
 
     @Autowired
     private SessionService sessionService;
@@ -213,6 +213,6 @@ public class DashboardController {
      */
     @GetMapping("/http-sd")
     public JSONArray httpSd() {
-        return prometheusExporterController.httpSd();
+        return prometheusTargetController.httpSd();
     }
 }

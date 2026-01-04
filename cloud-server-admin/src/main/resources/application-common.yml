@@ -39,10 +39,10 @@ trace:
 #监控
 monitor:
   prometheus:
-    exporterPath: "/home/prometheus/exporter"
-    endpoint: https://prometheus.gpg123.vip
-  alertmanager:
-    endpoint: https://alertmanager.gpg123.vip
+    path: "/home/oss/prometheus/rules"
+    url: https://prometheus.gpg123.vip
+  alert-manager:
+    url: https://alertmanager.gpg123.vip
 # ide
 ide:
   path: /home/codespace
