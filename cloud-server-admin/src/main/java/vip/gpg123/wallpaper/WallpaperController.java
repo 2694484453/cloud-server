@@ -145,7 +145,21 @@ public class WallpaperController extends BaseController {
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam(value = "id", required = false) String id) {
         Wallpaper wallpaper = wallpaperService.getById(id);
-        return AjaxResult.success(wallpaper);
+        WallpaperQuery wallpaperQuery = new WallpaperQuery();
+        BeanUtils.copyProperties(wallpaper, wallpaperQuery);
+        long visitCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
+                .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
+                .eq(WebsiteEvent::getUrlPath, "/info")
+                .eq(WebsiteEvent::getUrlQuery, "id=" + id)
+        );
+        long downloadCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
+                .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
+                .eq(WebsiteEvent::getUrlPath, "/download")
+                .eq(WebsiteEvent::getUrlQuery, "id=" + id)
+        );
+        wallpaperQuery.setVisitCount(Math.toIntExact(visitCount + 1));
+        wallpaperQuery.setDownloadCount(Math.toIntExact(downloadCount));
+        return AjaxResult.success(wallpaperQuery);
     }
 
     /**

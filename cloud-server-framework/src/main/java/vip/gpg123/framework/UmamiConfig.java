@@ -13,7 +13,7 @@ public class UmamiConfig {
      */
     @Data
     @Component
-    @ConfigurationProperties(prefix = "analyticsi.umami.cloud-web")
+    @ConfigurationProperties(prefix = "analytics.umami.cloud-web")
     public static class umamiCloudWebProperties {
         // 必须生成 Getter 和 Setter 方法
         private String websiteId;
@@ -24,7 +24,7 @@ public class UmamiConfig {
      */
     @Data
     @Component
-    @ConfigurationProperties(prefix = "analyticsi.umami.wallpaper")
+    @ConfigurationProperties(prefix = "analytics.umami.wallpaper")
     public static class umamiWallpaperProperties {
         // 必须生成 Getter 和 Setter 方法
         private String websiteId;
