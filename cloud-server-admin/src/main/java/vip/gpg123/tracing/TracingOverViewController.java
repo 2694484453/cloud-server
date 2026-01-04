@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.framework.client.JaegerClient;
-import vip.gpg123.framework.client.PrometheusClient;
+import vip.gpg123.framework.config.MonitorConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +35,7 @@ public class TracingOverViewController {
     private TracingAppController tracingAppController;
 
     @Autowired
-    private PrometheusClient prometheusClient;
+    private MonitorConfig.PrometheusProperties prometheusProperties;
 
     @Qualifier("JaegerClient")
     @Autowired
@@ -67,7 +67,7 @@ public class TracingOverViewController {
     }
 
     public Object queryUpTime() {
-        HttpResponse httpResponse = HttpUtil.createGet(prometheusClient.getEndpoint() + "/api/v1/query?query=otelcol_process_uptime{service='opentelemetry'}")
+        HttpResponse httpResponse = HttpUtil.createGet(prometheusProperties.getUrl() + "/api/v1/query?query=otelcol_process_uptime{service='opentelemetry'}")
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
         JSONObject data = JSONUtil.parseObj(jsonObject.get("data"));
