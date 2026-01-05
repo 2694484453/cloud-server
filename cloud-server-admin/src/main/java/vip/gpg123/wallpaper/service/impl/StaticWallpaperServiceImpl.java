@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import vip.gpg123.wallpaper.domain.Wallpaper;
-import vip.gpg123.wallpaper.service.WallpaperService;
-import vip.gpg123.wallpaper.mapper.WallpaperMapper;
+import vip.gpg123.wallpaper.domain.StaticWallpaper;
+import vip.gpg123.wallpaper.service.StaticWallpaperService;
+import vip.gpg123.wallpaper.mapper.StaticWallpaperMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -20,7 +20,7 @@ import java.util.List;
 * @createDate 2025-11-24 20:12:31
 */
 @Service
-public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper> implements WallpaperService {
+public class StaticWallpaperServiceImpl extends ServiceImpl<StaticWallpaperMapper, StaticWallpaper> implements StaticWallpaperService {
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -29,7 +29,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public boolean save(Wallpaper entity) {
+    public boolean save(StaticWallpaper entity) {
         return super.save(entity);
     }
 
@@ -51,7 +51,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public boolean remove(Wrapper<Wallpaper> queryWrapper) {
+    public boolean remove(Wrapper<StaticWallpaper> queryWrapper) {
         return super.remove(queryWrapper);
     }
 
@@ -62,7 +62,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public boolean updateById(Wallpaper entity) {
+    public boolean updateById(StaticWallpaper entity) {
         return super.updateById(entity);
     }
 
@@ -73,7 +73,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public List<Wallpaper> listByIds(Collection<? extends Serializable> idList) {
+    public List<StaticWallpaper> listByIds(Collection<? extends Serializable> idList) {
         return super.listByIds(idList);
     }
 
@@ -84,7 +84,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public List<Wallpaper> list(Wrapper<Wallpaper> queryWrapper) {
+    public List<StaticWallpaper> list(Wrapper<StaticWallpaper> queryWrapper) {
         return super.list(queryWrapper);
     }
 
@@ -93,7 +93,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public List<Wallpaper> list() {
+    public List<StaticWallpaper> list() {
         return super.list();
     }
 
@@ -104,7 +104,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public int count(Wrapper<Wallpaper> queryWrapper) {
+    public int count(Wrapper<StaticWallpaper> queryWrapper) {
         return super.count(queryWrapper);
     }
 
@@ -116,7 +116,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public <E extends IPage<Wallpaper>> E page(E page, Wrapper<Wallpaper> queryWrapper) {
+    public <E extends IPage<StaticWallpaper>> E page(E page, Wrapper<StaticWallpaper> queryWrapper) {
         return super.page(page, queryWrapper);
     }
 
@@ -127,7 +127,7 @@ public class WallpaperServiceImpl extends ServiceImpl<WallpaperMapper, Wallpaper
      */
     @Override
     @DS("wallpaper")
-    public Wallpaper getById(Serializable id) {
+    public StaticWallpaper getById(Serializable id) {
         return super.getById(id);
     }
 }

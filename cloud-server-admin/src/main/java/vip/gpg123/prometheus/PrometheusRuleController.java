@@ -145,7 +145,7 @@ public class PrometheusRuleController extends BaseController {
     @GetMapping("/syncStatus")
     @ApiOperation(value = "syncStatus")
     public void syncStatus() {
-        List<PrometheusRule> prometheusRules = prometheusRuleService.list();
+        List<PrometheusRule> prometheusRules = prometheusRuleMapper.list(null);
         JSONObject jsonObject = prometheusApi.rules("alert");
         JSONObject data = jsonObject.getJSONObject("data");
         JSONArray groups = data.getJSONArray("groups");

@@ -34,10 +34,10 @@ import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.umami.domain.WebsiteEvent;
 import vip.gpg123.umami.service.WebsiteEventService;
-import vip.gpg123.wallpaper.domain.Wallpaper;
-import vip.gpg123.wallpaper.domain.WallpaperQuery;
-import vip.gpg123.wallpaper.mapper.WallpaperMapper;
-import vip.gpg123.wallpaper.service.WallpaperService;
+import vip.gpg123.wallpaper.domain.StaticWallpaper;
+import vip.gpg123.wallpaper.domain.StaticWallpaperQuery;
+import vip.gpg123.wallpaper.mapper.StaticWallpaperMapper;
+import vip.gpg123.wallpaper.service.StaticWallpaperService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
@@ -50,13 +50,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/wallpaper")
 @Slf4j
-public class WallpaperController extends BaseController {
+public class StaticWallpaperController extends BaseController {
 
     @Autowired
-    private WallpaperService wallpaperService;
+    private StaticWallpaperService staticWallpaperService;
 
     @Autowired
-    private WallpaperMapper wallpaperMapper;
+    private StaticWallpaperMapper staticWallpaperMapper;
 
     @Autowired
     private ISysNoticeService sysNoticeService;
@@ -85,12 +85,12 @@ public class WallpaperController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    public AjaxResult list(Wallpaper wallpaper) {
-        List<Wallpaper> list = wallpaperService.list(new LambdaQueryWrapper<Wallpaper>()
-                .eq(Wallpaper::getCreateBy, getUsername())
-                .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getType())
-                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(), defaultType))
-                .orderByDesc(Wallpaper::getCreateTime)
+    public AjaxResult list(StaticWallpaper staticWallpaper) {
+        List<StaticWallpaper> list = staticWallpaperService.list(new LambdaQueryWrapper<StaticWallpaper>()
+                .eq(StaticWallpaper::getCreateBy, getUsername())
+                .like(StrUtil.isNotBlank(staticWallpaper.getName()), StaticWallpaper::getName, staticWallpaper.getType())
+                .eq(StaticWallpaper::getDirName, ObjectUtil.defaultIfBlank(staticWallpaper.getType(), defaultType))
+                .orderByDesc(StaticWallpaper::getCreateTime)
         );
         return AjaxResult.success(list);
     }
@@ -102,18 +102,18 @@ public class WallpaperController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(Wallpaper wallpaper) {
+    public TableDataInfo page(StaticWallpaper staticWallpaper) {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<Wallpaper> page = wallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<Wallpaper>()
-                .like(StrUtil.isNotBlank(wallpaper.getName()), Wallpaper::getName, wallpaper.getName())
-                .eq(Wallpaper::getDirName, ObjectUtil.defaultIfBlank(wallpaper.getType(), defaultType))
+        IPage<StaticWallpaper> page = staticWallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<StaticWallpaper>()
+                .like(StrUtil.isNotBlank(staticWallpaper.getName()), StaticWallpaper::getName, staticWallpaper.getName())
+                .eq(StaticWallpaper::getDirName, ObjectUtil.defaultIfBlank(staticWallpaper.getType(), defaultType))
         );
-        IPage<WallpaperQuery> wallpaperQueryIPage = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
-        List<WallpaperQuery> list = new ArrayList<>();
+        IPage<StaticWallpaperQuery> wallpaperQueryIPage = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+        List<StaticWallpaperQuery> list = new ArrayList<>();
         page.getRecords().forEach(item -> {
-            WallpaperQuery wallpaperQuery = new WallpaperQuery();
+            StaticWallpaperQuery wallpaperQuery = new StaticWallpaperQuery();
             long visitCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
                     .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
                     .eq(WebsiteEvent::getUrlPath, "/info")
@@ -143,9 +143,9 @@ public class WallpaperController extends BaseController {
     @GetMapping("/info")
     @ApiOperation(value = "详情查询")
     public AjaxResult info(@RequestParam(value = "id", required = false) String id) {
-        Wallpaper wallpaper = wallpaperService.getById(id);
-        WallpaperQuery wallpaperQuery = new WallpaperQuery();
-        BeanUtils.copyProperties(wallpaper, wallpaperQuery);
+        StaticWallpaper staticWallpaper = staticWallpaperService.getById(id);
+        StaticWallpaperQuery wallpaperQuery = new StaticWallpaperQuery();
+        BeanUtils.copyProperties(staticWallpaper, wallpaperQuery);
         long visitCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
                 .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
                 .eq(WebsiteEvent::getUrlPath, "/info")
@@ -164,31 +164,31 @@ public class WallpaperController extends BaseController {
     /**
      * 新增
      *
-     * @param wallpaper w
+     * @param staticWallpaper w
      * @return r
      */
     @PostMapping("/add")
     @ApiOperation(value = "新增")
-    public AjaxResult add(@RequestBody Wallpaper wallpaper) {
-        wallpaper.setCreateBy(String.valueOf(getUserId()));
-        wallpaper.setCreateTime(DateUtil.date());
+    public AjaxResult add(@RequestBody StaticWallpaper staticWallpaper) {
+        staticWallpaper.setCreateBy(String.valueOf(getUserId()));
+        staticWallpaper.setCreateTime(DateUtil.date());
         // 对密码特殊处理
-        boolean save = wallpaperService.save(wallpaper);
+        boolean save = staticWallpaperService.save(staticWallpaper);
         return save ? AjaxResult.success() : AjaxResult.error();
     }
 
     /**
      * 修改
      *
-     * @param wallpaper w
+     * @param staticWallpaper w
      * @return r
      */
     @PutMapping("/edit")
     @ApiOperation(value = "修改")
-    public AjaxResult edit(@RequestBody Wallpaper wallpaper) {
-        wallpaper.setUpdateBy(String.valueOf(getUserId()));
-        wallpaper.setUpdateTime(DateUtil.date());
-        boolean update = wallpaperService.updateById(wallpaper);
+    public AjaxResult edit(@RequestBody StaticWallpaper staticWallpaper) {
+        staticWallpaper.setUpdateBy(String.valueOf(getUserId()));
+        staticWallpaper.setUpdateTime(DateUtil.date());
+        boolean update = staticWallpaperService.updateById(staticWallpaper);
         return update ? AjaxResult.success() : AjaxResult.error();
     }
 
@@ -201,7 +201,7 @@ public class WallpaperController extends BaseController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "删除")
     public AjaxResult delete(@RequestParam(value = "id", required = false) String id) {
-        boolean remove = wallpaperService.removeById(id);
+        boolean remove = staticWallpaperService.removeById(id);
         if (remove) {
             return AjaxResult.success();
         }
@@ -218,14 +218,14 @@ public class WallpaperController extends BaseController {
     @GetMapping("/download")
     @ApiOperation(value = "下载")
     public AjaxResult download(@RequestParam(value = "id") String id, HttpServletResponse response) throws Exception {
-        Wallpaper wallpaper = wallpaperService.getById(id);
+        StaticWallpaper staticWallpaper = staticWallpaperService.getById(id);
         //
         try {
             SysUser sysUser = SecurityUtils.getLoginUser().getUser();
             // 检查是否具有下载权限,生成签名地址
             // 设置预签名URL过期时间，单位为毫秒。本示例以设置过期时间为2分钟为例。
             Date expiration = new Date(new Date().getTime() + 120 * 1000L);
-            URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), "wallpaper/" + wallpaper.getDirPath(), expiration);
+            URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), "staticWallpaper/" + staticWallpaper.getDirPath(), expiration);
             return AjaxResult.success("", url.toString());
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage() + ",请先登录");
@@ -240,7 +240,7 @@ public class WallpaperController extends BaseController {
     @GetMapping("/overView")
     public AjaxResult overView() {
         Map<String,Object> map = new HashMap<>();
-        long total = wallpaperService.count();
+        long total = staticWallpaperService.count();
         map.put("total", total);
         return AjaxResult.success(map);
     }

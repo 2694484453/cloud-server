@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class WallpaperQuery extends Wallpaper implements Serializable {
+public class StaticWallpaperQuery extends StaticWallpaper implements Serializable {
 
     private Integer visitCount;
 
