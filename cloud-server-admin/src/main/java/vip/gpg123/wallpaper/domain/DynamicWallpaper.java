@@ -7,17 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import vip.gpg123.common.core.domain.BaseEntity;
 
 /**
  * 
- * @TableName cloud_wallpaper
+ * @TableName dynamic_wallpaper
  */
-@EqualsAndHashCode(callSuper = true)
-@TableName(value ="static_wallpaper")
+@TableName(value ="dynamic_wallpaper")
 @Data
-public class StaticWallpaper extends BaseEntity implements Serializable {
+public class DynamicWallpaper implements Serializable {
     /**
      * 
      */
@@ -31,22 +28,10 @@ public class StaticWallpaper extends BaseEntity implements Serializable {
     private String name;
 
     /**
-     *
+     * 
      */
-    @TableField(value = "resolution")
-    private String resolution;
-
-    /**
-     *
-     */
-    @TableField(value = "width")
-    private Integer width;
-
-    /**
-     *
-     */
-    @TableField(value = "height")
-    private Integer height;
+    @TableField(value = "dir_path")
+    private String dirPath;
 
     /**
      * 
@@ -55,25 +40,13 @@ public class StaticWallpaper extends BaseEntity implements Serializable {
     private String tags;
 
     /**
-     *
+     * 
      */
-    @TableField(value = "dir_name")
-    private String dirName;
+    @TableField(value = "size")
+    private String size;
 
     /**
-     *
-     */
-    @TableField(value = "dir_path")
-    private String dirPath;
-
-    /**
-     *
-     */
-    @TableField(value = "description")
-    private String description;
-
-    /**
-     *
+     * 
      */
     @TableField(value = "url")
     private String url;
@@ -81,8 +54,8 @@ public class StaticWallpaper extends BaseEntity implements Serializable {
     /**
      * 
      */
-    @TableField(value = "size")
-    private String size;
+    @TableField(value = "description")
+    private String description;
 
     /**
      * 
