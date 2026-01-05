@@ -88,8 +88,8 @@ public class StaticWallpaperController extends BaseController {
     public AjaxResult list(StaticWallpaper staticWallpaper) {
         List<StaticWallpaper> list = staticWallpaperService.list(new LambdaQueryWrapper<StaticWallpaper>()
                 .eq(StaticWallpaper::getCreateBy, getUsername())
-                .like(StrUtil.isNotBlank(staticWallpaper.getName()), StaticWallpaper::getName, staticWallpaper.getType())
-                .eq(StaticWallpaper::getDirName, ObjectUtil.defaultIfBlank(staticWallpaper.getType(), defaultType))
+                .like(StrUtil.isNotBlank(staticWallpaper.getName()), StaticWallpaper::getName, staticWallpaper.getName())
+                .eq(StaticWallpaper::getDirName, ObjectUtil.defaultIfBlank(staticWallpaper.getDirName(), defaultType))
                 .orderByDesc(StaticWallpaper::getCreateTime)
         );
         return AjaxResult.success(list);
@@ -108,7 +108,7 @@ public class StaticWallpaperController extends BaseController {
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
         IPage<StaticWallpaper> page = staticWallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<StaticWallpaper>()
                 .like(StrUtil.isNotBlank(staticWallpaper.getName()), StaticWallpaper::getName, staticWallpaper.getName())
-                .eq(StaticWallpaper::getDirName, ObjectUtil.defaultIfBlank(staticWallpaper.getType(), defaultType))
+                .eq(StaticWallpaper::getDirName, ObjectUtil.defaultIfBlank(staticWallpaper.getDirName(), defaultType))
         );
         IPage<StaticWallpaperQuery> wallpaperQueryIPage = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
         List<StaticWallpaperQuery> list = new ArrayList<>();

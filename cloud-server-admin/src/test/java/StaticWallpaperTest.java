@@ -59,7 +59,7 @@ public class StaticWallpaperTest {
         staticWallpapers.forEach(w -> {
             String filePath = sourcePath + "/" + w.getDirPath();
             boolean exists = FileUtil.exist(filePath);
-            if (exists && (ObjectUtil.isNull(w.getWidth()) || ObjectUtil.isNull(w.getHeight())) && "static".equals(w.getType())) {
+            if (exists && (ObjectUtil.isNull(w.getWidth()) || ObjectUtil.isNull(w.getHeight()))) {
                 // 获取尺寸
                 System.out.println("获取" + w.getName());
                 // 2. 将图片读取为 BufferedImage 对象
@@ -92,7 +92,6 @@ public class StaticWallpaperTest {
                 boolean flag = false;
                 switch (type) {
                     case "mp4":
-                        staticWallpaper.setType("dynamic");
                         String[] tags1 = new String[]{};
                         tags1 = ArrayUtil.append(tags1, "动态壁纸", "动态", "壁纸");
                         tags1 = ArrayUtil.append(tags1, file.getName().split(" "));
@@ -103,7 +102,6 @@ public class StaticWallpaperTest {
                         break;
                     case "png":
                     case "jpg":
-                        staticWallpaper.setType("static");
                         String[] tags2 = new String[]{};
                         tags2 = ArrayUtil.append(tags2, "静态壁纸", "静态", "壁纸");
                         tags2 = ArrayUtil.append(tags2, file.getName().split(" "));
