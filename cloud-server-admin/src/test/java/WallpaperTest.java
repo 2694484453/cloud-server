@@ -18,13 +18,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @SpringBootTest(classes = CloudServerApplication.class)
 @Slf4j
-public class StaticWallpaperTest {
+public class WallpaperTest {
 
     @Autowired
     private StaticWallpaperService staticWallpaperService;
@@ -48,6 +49,11 @@ public class StaticWallpaperTest {
         // 判断新增的
         files.forEach(f -> {
             if (!wallpaperMap.containsKey(f.getDirPath())) {
+                Map<String, Object> map = getPicResolution(sourcePath + "/" + f.getDirPath());
+                Integer width = ObjectUtil.isEmpty(map.get("width")) ? null : (Integer) map.get("width");
+                Integer height = ObjectUtil.isEmpty(map.get("height")) ? null : (Integer) map.get("height");
+                f.setWidth(width);
+                f.setHeight(height);
                 staticWallpaperService.save(f);
             }
         });
@@ -60,24 +66,41 @@ public class StaticWallpaperTest {
             String filePath = sourcePath + "/" + w.getDirPath();
             boolean exists = FileUtil.exist(filePath);
             if (exists && (ObjectUtil.isNull(w.getWidth()) || ObjectUtil.isNull(w.getHeight()))) {
-                // 获取尺寸
-                System.out.println("获取" + w.getName());
-                // 2. 将图片读取为 BufferedImage 对象
-                BufferedImage image = null;
-                try {
-                    image = ImageIO.read(new File(filePath));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                // 3. 获取宽度和高度
-                int width = image.getWidth();
-                int height = image.getHeight();
+                Map<String, Object> map = getPicResolution(filePath);
+                Integer width = ObjectUtil.isEmpty(map.get("width")) ? null : (Integer) map.get("width");
+                Integer height = ObjectUtil.isEmpty(map.get("height")) ? null : (Integer) map.get("height");
                 w.setWidth(width);
                 w.setHeight(height);
                 staticWallpaperService.updateById(w);
                 System.out.println("图片名称：" + w.getName() + ",图片尺寸: " + width + " x " + height + " 像素");
             }
+            if (exists) {
+                File file = new File(filePath);
+                String relativePath = file.getAbsolutePath().replace(sourcePath, "").replace("/" + file.getName(), "");
+                w.setDirName(relativePath);
+                staticWallpaperService.updateById(w);
+                System.out.println("更新" + w.getId());
+            }
         });
+    }
+
+    public Map<String, Object> getPicResolution(String filePath) {
+        Map<String, Object> map = new HashMap<>();
+        // 获取尺寸
+        System.out.println("获取" + FileUtil.getName(filePath));
+        // 2. 将图片读取为 BufferedImage 对象
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // 3. 获取宽度和高度
+        int width = image.getWidth();
+        int height = image.getHeight();
+        map.put("width", width);
+        map.put("height", height);
+        return map;
     }
 
     public List<StaticWallpaper> findWallpapers() {
@@ -91,15 +114,6 @@ public class StaticWallpaperTest {
                 StaticWallpaper staticWallpaper = new StaticWallpaper();
                 boolean flag = false;
                 switch (type) {
-                    case "mp4":
-                        String[] tags1 = new String[]{};
-                        tags1 = ArrayUtil.append(tags1, "动态壁纸", "动态", "壁纸");
-                        tags1 = ArrayUtil.append(tags1, file.getName().split(" "));
-                        tags1 = ArrayUtil.append(tags1, file.getName().split("_"));
-                        tags1 = ArrayUtil.append(tags1, file.getName().split("-"));
-                        staticWallpaper.setTags(StrUtil.join(",", (Object) tags1));
-                        flag = true;
-                        break;
                     case "png":
                     case "jpg":
                         String[] tags2 = new String[]{};
@@ -119,7 +133,7 @@ public class StaticWallpaperTest {
                     staticWallpaper.setCreateTime(DateUtil.date());
                     staticWallpaper.setName(file.getName());
                     staticWallpaper.setSize(DataSizeUtil.format(file.length()));
-                    staticWallpaper.setUrl(ossDomain + "/staticWallpaper/" + URLUtil.encode(relativePath));
+                    staticWallpaper.setUrl(ossDomain + "/wallpaper/" + URLUtil.encode(relativePath));
                     staticWallpapers.add(staticWallpaper);
                 }
             }

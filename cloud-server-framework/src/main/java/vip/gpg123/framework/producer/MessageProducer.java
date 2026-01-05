@@ -35,6 +35,17 @@ public class MessageProducer {
 
     /**
      * 发送邮件
+     *
+     * @param emailBody e
+     */
+    public void sendEmailCode(EmailBody emailBody) {
+        // 发送消息到交换机，并指定路由键
+        rabbitTemplate.convertAndSend(email, "emailCode", emailBody);
+        System.out.println("发送邮件: " + emailBody);
+    }
+
+    /**
+     * 发送邮件
      */
     public void sendEmail(EmailBody emailBody, Boolean sendNotice) {
         // 发送消息到交换机，并指定路由键

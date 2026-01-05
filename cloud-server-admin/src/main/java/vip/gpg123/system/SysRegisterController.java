@@ -87,7 +87,7 @@ public class SysRegisterController extends BaseController {
             content = content.replace("你的网站/APP名称", site);
             emailBody.setContent(content);
             // 发送验证码
-            messageProducer.sendEmail(emailBody);
+            messageProducer.sendEmailCode(emailBody);
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
         }

@@ -2,10 +2,8 @@ package vip.gpg123.prometheus.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import vip.gpg123.amqp.producer.PrometheusProducer;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.framework.config.MonitorConfig;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.service.PrometheusTargetService;

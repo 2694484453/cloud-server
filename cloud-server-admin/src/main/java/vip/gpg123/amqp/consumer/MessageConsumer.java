@@ -53,6 +53,25 @@ public class MessageConsumer {
     }
 
     /**
+     * 当消费者从队列取出消息时的回调方法
+     *
+     * @param emailBody 消息
+     */
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = email, durable = "true"), // 创建持久化队列
+            exchange = @Exchange(name = email), // 声明直接交换器
+            key = "emailCode" // 定义路由键
+    ))
+    public void emailCode(EmailBody emailBody) {
+        // 接收人
+        String[] tos = emailBody.getTos();
+        String to = ArrayUtil.join(tos, ",");
+        // 执行发送
+        emailService.sendSimpleMail(emailBody.getTitle(), emailBody.getContent(), to);
+        System.out.println("邮件发送完成");
+    }
+
+    /**
      * 处理
      *
      * @param emailBody e
