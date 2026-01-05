@@ -3,7 +3,6 @@ package vip.gpg123.wallpaper;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.aliyun.oss.OSS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.ai.domain.ExAcgRequest;
+import vip.gpg123.ai.service.ExAcgApi;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysDictData;
@@ -29,7 +29,6 @@ import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.DictUtils;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.framework.config.UmamiConfig;
-import vip.gpg123.framework.config.OssConfig;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.umami.domain.WebsiteEvent;
@@ -41,7 +40,6 @@ import vip.gpg123.wallpaper.service.StaticWallpaperService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -66,10 +64,14 @@ public class StaticWallpaperController extends BaseController {
     @Autowired
     private UmamiConfig.umamiWallpaperProperties umamiWallpaperProperties;
 
+    @Autowired
+    private ExAcgApi exAcgApi;
+
     private static final String defaultType = getDefaultType();
 
     /**
      * 分类
+     *
      * @return r
      */
     @GetMapping("/category")
@@ -191,6 +193,17 @@ public class StaticWallpaperController extends BaseController {
         staticWallpaper.setUpdateTime(DateUtil.date());
         boolean update = staticWallpaperService.updateById(staticWallpaper);
         return update ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    /**
+     * 生成
+     * @param request r
+     * @return r
+     */
+    @PostMapping("/generate_image")
+    @ApiOperation(value = "生成")
+    public Object generateImage(@RequestBody ExAcgRequest request) {
+        return exAcgApi.generateImage(request);
     }
 
     /**
