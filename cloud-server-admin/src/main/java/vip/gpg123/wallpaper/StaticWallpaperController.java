@@ -76,7 +76,7 @@ public class StaticWallpaperController extends BaseController {
     @Autowired
     private OSS oss;
 
-    private static final String defaultType = "dongman";
+    private static final String defaultType = "二次元";
 
     /**
      * 列表查询
