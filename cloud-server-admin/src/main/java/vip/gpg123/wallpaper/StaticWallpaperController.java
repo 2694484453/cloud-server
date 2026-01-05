@@ -211,25 +211,13 @@ public class StaticWallpaperController extends BaseController {
     /**
      * download
      *
-     * @param id       id
-     * @param response response
-     * @throws Exception e
+     * @param id id
      */
     @GetMapping("/download")
     @ApiOperation(value = "下载")
-    public AjaxResult download(@RequestParam(value = "id") String id, HttpServletResponse response) throws Exception {
-        StaticWallpaper staticWallpaper = staticWallpaperService.getById(id);
-        //
-        try {
-            SysUser sysUser = SecurityUtils.getLoginUser().getUser();
-            // 检查是否具有下载权限,生成签名地址
-            // 设置预签名URL过期时间，单位为毫秒。本示例以设置过期时间为2分钟为例。
-            Date expiration = new Date(new Date().getTime() + 120 * 1000L);
-            URL url = oss.generatePresignedUrl(ossProperties.getBucketName(), "staticWallpaper/" + staticWallpaper.getDirPath(), expiration);
-            return AjaxResult.success("", url.toString());
-        } catch (Exception e) {
-            return AjaxResult.error(e.getMessage() + ",请先登录");
-        }
+    public AjaxResult download(@RequestParam(value = "id") String id) {
+        System.out.println("下载" + id);
+        return AjaxResult.success("此操作仅仅作为记录");
     }
 
     /**
@@ -239,7 +227,7 @@ public class StaticWallpaperController extends BaseController {
      */
     @GetMapping("/overView")
     public AjaxResult overView() {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         long total = staticWallpaperService.count();
         map.put("total", total);
         return AjaxResult.success(map);

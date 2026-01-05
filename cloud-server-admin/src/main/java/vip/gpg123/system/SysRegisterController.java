@@ -9,6 +9,7 @@ import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.model.RegisterBody;
 import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.framework.producer.MessageProducer;
 import vip.gpg123.framework.web.service.SysRegisterService;
 import vip.gpg123.system.service.ISysConfigService;
 
@@ -26,6 +27,14 @@ public class SysRegisterController extends BaseController {
     @Autowired
     private ISysConfigService configService;
 
+    @Autowired
+    private MessageProducer messageProducer;
+
+    /**
+     * 注册
+     * @param user user
+     * @return r
+     */
     @PostMapping("/register")
     public AjaxResult register(@RequestBody RegisterBody user) {
         if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
@@ -33,5 +42,15 @@ public class SysRegisterController extends BaseController {
         }
         String msg = registerService.register(user);
         return StringUtils.contains(msg, "成功") ? AjaxResult.success(msg) : AjaxResult.error(msg, null);
+    }
+
+    /**
+     * 发送验证码
+     * @param user u
+     */
+    @PostMapping("/code")
+    public void code(@RequestBody RegisterBody user) {
+        // 发送验证码
+        messageProducer.sendEmail(null);
     }
 }
