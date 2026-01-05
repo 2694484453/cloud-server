@@ -108,13 +108,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 过滤请求
                 .authorizeRequests()
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                .antMatchers("/login", "/register", "/captchaImage","/dashboard/**","/wallpaper/**","/webhook/**","/app/market/sync","/nas/frpc/sync","/file/**","/devops/*","/app/market/sync").permitAll()
+                .antMatchers("/login", "/register", "/code", "/captchaImage", "/dashboard/**", "/wallpaper/**", "/webhook/**", "/app/market/sync", "/nas/frpc/sync", "/file/**", "/devops/*", "/app/market/sync").permitAll()
                 // 自定义
                 .antMatchers("/**/common/**").permitAll()
                 .antMatchers("/**/**/common/**").permitAll()
                 // 静态资源，可匿名访问
                 .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
-                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**", "/actuator/**", "/api/actuator/**","/ws/**", "/sse/**").permitAll()
+                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**", "/actuator/**", "/api/actuator/**", "/ws/**", "/sse/**").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 //.anyRequest().authenticated()
                 .and()
