@@ -1,17 +1,24 @@
 package vip.gpg123.system;
 
+import cn.hutool.core.util.RandomUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.core.domain.model.RegisterBody;
 import vip.gpg123.common.utils.StringUtils;
+import vip.gpg123.framework.config.EmailConfig;
 import vip.gpg123.framework.producer.MessageProducer;
 import vip.gpg123.framework.web.service.SysRegisterService;
 import vip.gpg123.system.service.ISysConfigService;
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 注册验证
@@ -21,6 +28,7 @@ import vip.gpg123.system.service.ISysConfigService;
 @RestController
 @Api(tags = "【用户注册】注册管理")
 public class SysRegisterController extends BaseController {
+
     @Autowired
     private SysRegisterService registerService;
 
@@ -30,8 +38,15 @@ public class SysRegisterController extends BaseController {
     @Autowired
     private MessageProducer messageProducer;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private EmailConfig.emailProperties emailProperties;
+
     /**
      * 注册
+     *
      * @param user user
      * @return r
      */
@@ -46,11 +61,25 @@ public class SysRegisterController extends BaseController {
 
     /**
      * 发送验证码
-     * @param user u
+     *
+     * @param map m
      */
     @PostMapping("/code")
-    public void code(@RequestBody RegisterBody user) {
+    public void code(@RequestBody Map<String, String> map) {
+        String email = map.get("email");
+        String site = map.getOrDefault("site", "云服务平台");
+        String code = RandomUtil.randomNumbers(6);
+        stringRedisTemplate.opsForValue().set(email, code, 10, TimeUnit.MINUTES);
+        String content = emailProperties.getCodeContent();
+        EmailBody emailBody = new EmailBody();
+        emailBody.setTos(new String[]{email});
+        emailBody.setHtml(true);
+        emailBody.setTitle(site);
+        // 使用字符串替换将占位符换成真实数据
+        content = content.replace("123456", code);
+        content = content.replace("你的网站/APP名称", site);
+        emailBody.setContent(content);
         // 发送验证码
-        messageProducer.sendEmail(null);
+        messageProducer.sendEmail(emailBody);
     }
 }

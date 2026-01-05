@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.common.core.domain.entity.SysUser;
+import vip.gpg123.common.core.domain.entity.SysDictData;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
+import vip.gpg123.common.utils.DictUtils;
 import vip.gpg123.common.utils.PageUtils;
-import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.config.UmamiConfig;
 import vip.gpg123.framework.config.OssConfig;
 import vip.gpg123.system.domain.SysNotice;
@@ -39,11 +39,9 @@ import vip.gpg123.wallpaper.domain.StaticWallpaperQuery;
 import vip.gpg123.wallpaper.mapper.StaticWallpaperMapper;
 import vip.gpg123.wallpaper.service.StaticWallpaperService;
 
-import javax.servlet.http.HttpServletResponse;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,21 +60,23 @@ public class StaticWallpaperController extends BaseController {
     private ISysNoticeService sysNoticeService;
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
-    @Autowired
-    private OssConfig.OssProperties ossProperties;
-
-    @Autowired
     private WebsiteEventService websiteEventService;
 
     @Autowired
     private UmamiConfig.umamiWallpaperProperties umamiWallpaperProperties;
 
-    @Autowired
-    private OSS oss;
-
     private static final String defaultType = "二次元";
+
+    /**
+     * 分类
+     * @return r
+     */
+    @GetMapping("/category")
+    @ApiOperation(value = "cate")
+    public AjaxResult cate() {
+        List<SysDictData> list = DictUtils.getDictCache("wallpaper_category");
+        return AjaxResult.success(list);
+    }
 
     /**
      * 列表查询

@@ -34,25 +34,25 @@
     <!--条件语句-->
     <sql id="queryWrapper">
         <where>1=1
-            <if test="qw.ruleId != null">
+            <if test="qw != null and qw.ruleId != null">
                 and rule_id = #{qw.ruleId}
             </if>
-            <if test="qw.ruleName != null and qw.ruleName !=''">
+            <if test="qw != null and qw.ruleName != null and qw.ruleName !=''">
                 and rule_name like concat('%',#{qw.ruleName},'%')
             </if>
-            <if test="qw.groupId != null and qw.groupId !=''">
+            <if test="qw != null and qw.groupId != null and qw.groupId !=''">
                 and group_id like concat('%',#{qw.groupId},'%')
             </if>
-            <if test="qw.groupName != null and qw.groupName !=''">
+            <if test="qw != null and qw.groupName != null and qw.groupName !=''">
                 and group_name like concat('%',#{qw.groupName},'%')
             </if>
-            <if test="qw.type != null and qw.type !=''">
+            <if test="qw != null and qw.type != null and qw.type !=''">
                 and type = #{qw.type}
             </if>
-            <if test="qw.createBy != null">
+            <if test="qw != null and qw.createBy != null">
                 and r.create_by = #{qw.createBy}
             </if>
-            <if test="qw.updateBy != null">
+            <if test="qw != null and qw.updateBy != null">
                 and r.update_by = #{qw.updateBy}
             </if>
         </where>

@@ -31,7 +31,7 @@ git:
     access_token: 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
 # 大模型
 ai:
-  open-webui: 
+  open-webui:
 
 # 链路追踪
 trace:
@@ -69,3 +69,101 @@ analytics:
       website-id: 56ec3622-80b9-4202-ad85-212fbc9c1235
     wallpaper:
       website-id: 379a0d2f-0272-42ce-8002-e4bb3bb31526
+email:
+   code-content: |
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>邮箱验证码</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                background-color: #f4f4f4;
+                font-size: 16px;
+                line-height: 1.6;
+                color: #333;
+            }
+            .email-container {
+                max-width: 600px;
+                margin: 40px auto;
+                background-color: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            .email-header {
+                background-color: #4a90e2; /* 主题色，可修改 */
+                padding: 30px 20px;
+                text-align: center;
+                color: #fff;
+            }
+            .email-header h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 600;
+            }
+            .email-body {
+                padding: 40px;
+            }
+            .verification-code {
+                display: inline-block;
+                padding: 15px 20px;
+                margin: 30px 0;
+                font-size: 24px;
+                font-weight: bold;
+                letter-spacing: 5px;
+                color: #333;
+                background-color: #f0f0f0;
+                border-radius: 6px;
+                font-family: monospace;
+            }
+            .footer {
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid #eee;
+                font-size: 14px;
+                color: #777;
+                text-align: center;
+            }
+            .note {
+                color: #888;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <!-- 邮箱头部 -->
+            <div class="email-header">
+                <h1>【你的网站/APP名称】</h1>
+            </div>
+  
+            <!-- 邮箱主体 -->
+            <div class="email-body">
+                <h2>您好！</h2>
+                <p>感谢您注册 <strong>你的网站/APP名称</strong>。您的验证码如下：</p>
+  
+                <!-- 验证码区域 -->
+                <div class="verification-code">
+                    <!-- 这里是插入验证码的地方 -->
+                    123456
+                </div>
+  
+                <p>该验证码用于您的邮箱验证，请在网页中输入以完成注册。</p>
+                <p class="note">* 验证码有效期为 5 分钟，请尽快使用。</p>
+  
+                <p>如果不是您本人操作，请忽略此邮件。</p>
+            </div>
+  
+            <!-- 邮箱尾部 -->
+            <div class="footer">
+                <p>© 2026 你的公司名称. 版权所有.</p>
+                <p>这是一封自动发送的邮件，请勿直接回复。</p>
+            </div>
+        </div>
+    </body>
+    </html>
