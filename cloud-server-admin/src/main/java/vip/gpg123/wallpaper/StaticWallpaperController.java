@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/wallpaper")
@@ -65,7 +66,7 @@ public class StaticWallpaperController extends BaseController {
     @Autowired
     private UmamiConfig.umamiWallpaperProperties umamiWallpaperProperties;
 
-    private static final String defaultType = "二次元";
+    private static final String defaultType = getDefaultType();
 
     /**
      * 分类
@@ -246,4 +247,7 @@ public class StaticWallpaperController extends BaseController {
         return AjaxResult.success(list);
     }
 
+    public static String getDefaultType() {
+        return Objects.requireNonNull(DictUtils.getDictCache("wallpaper_category")).get(0).getDictValue();
+    }
 }
