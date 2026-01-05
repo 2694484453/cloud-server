@@ -109,6 +109,17 @@ public class StaticWallpaperServiceImpl extends ServiceImpl<StaticWallpaperMappe
     }
 
     /**
+     * 查询总记录数
+     *
+     * @see Wrappers#emptyWrapper()
+     */
+    @Override
+    @DS("wallpaper")
+    public int count() {
+        return super.count();
+    }
+
+    /**
      * 翻页查询
      *
      * @param page         翻页对象
