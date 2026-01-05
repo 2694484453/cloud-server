@@ -55,6 +55,12 @@ public class SysRegisterController extends BaseController {
         if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
             return error("当前系统没有开启注册功能！");
         }
+        if (StringUtils.isEmpty(user.getCode())) {
+            return error("验证码不能为空");
+        }
+        if (!verifyCode(user.getEmail(), user.getCode())) {
+            return error("验证码错误");
+        }
         String msg = registerService.register(user);
         return StringUtils.contains(msg, "成功") ? AjaxResult.success(msg) : AjaxResult.error(msg, null);
     }
@@ -81,5 +87,15 @@ public class SysRegisterController extends BaseController {
         emailBody.setContent(content);
         // 发送验证码
         messageProducer.sendEmail(emailBody);
+    }
+
+    public boolean verifyCode(String email, String inputCode) {
+        String storedCode = stringRedisTemplate.opsForValue().get(email);
+        if (storedCode != null && storedCode.equals(inputCode)) {
+            // 验证成功，可以删除该键或保留至过期
+            stringRedisTemplate.delete(email);
+            return true;
+        }
+        return false;
     }
 }
