@@ -239,19 +239,10 @@ public class WallpaperController extends BaseController {
      */
     @GetMapping("/overView")
     public AjaxResult overView() {
-        List<Map<String, Object>> list = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        map.put("title", "壁纸总数");
-        map.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
-        ));
-        list.add(map);
-        Map<String, Object> map1 = new HashMap<>();
-        map1.put("title", "我的壁纸数");
-        map1.put("count", wallpaperMapper.selectCount(new LambdaQueryWrapper<Wallpaper>()
-                .eq(Wallpaper::getCreateBy, getUserId())
-        ));
-        list.add(map1);
-        return AjaxResult.success(list);
+        Map<String,Object> map = new HashMap<>();
+        long total = wallpaperService.count();
+        map.put("total", total);
+        return AjaxResult.success(map);
     }
 
     /**
