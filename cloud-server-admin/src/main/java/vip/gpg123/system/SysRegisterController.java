@@ -71,22 +71,27 @@ public class SysRegisterController extends BaseController {
      * @param map m
      */
     @PostMapping("/code")
-    public void code(@RequestBody Map<String, String> map) {
-        String email = map.get("email");
-        String site = map.getOrDefault("site", "云服务平台");
-        String code = RandomUtil.randomNumbers(6);
-        stringRedisTemplate.opsForValue().set(email, code, 10, TimeUnit.MINUTES);
-        String content = emailProperties.getCodeContent();
-        EmailBody emailBody = new EmailBody();
-        emailBody.setTos(new String[]{email});
-        emailBody.setHtml(true);
-        emailBody.setTitle(site);
-        // 使用字符串替换将占位符换成真实数据
-        content = content.replace("123456", code);
-        content = content.replace("你的网站/APP名称", site);
-        emailBody.setContent(content);
-        // 发送验证码
-        messageProducer.sendEmail(emailBody);
+    public AjaxResult code(@RequestBody Map<String, String> map) {
+        try {
+            String email = map.get("email");
+            String site = map.getOrDefault("site", "云服务平台");
+            String code = RandomUtil.randomNumbers(6);
+            stringRedisTemplate.opsForValue().set(email, code, 10, TimeUnit.MINUTES);
+            String content = emailProperties.getCodeContent();
+            EmailBody emailBody = new EmailBody();
+            emailBody.setTos(new String[]{email});
+            emailBody.setHtml(true);
+            emailBody.setTitle(site);
+            // 使用字符串替换将占位符换成真实数据
+            content = content.replace("123456", code);
+            content = content.replace("你的网站/APP名称", site);
+            emailBody.setContent(content);
+            // 发送验证码
+            messageProducer.sendEmail(emailBody);
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
+        }
+        return AjaxResult.success("发送成功");
     }
 
     public boolean verifyCode(String email, String inputCode) {
