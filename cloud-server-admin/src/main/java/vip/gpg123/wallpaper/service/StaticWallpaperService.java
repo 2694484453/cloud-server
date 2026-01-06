@@ -25,4 +25,9 @@ public interface StaticWallpaperService extends IService<StaticWallpaper> {
      */
     IPage<StaticWallpaperExtension> iPage(IPage<StaticWallpaper> page, @Param(Constants.WRAPPER) QueryWrapper wrapper);
 
+    /**
+     * tags
+     * @return r
+     */
+    List<Object> tags();
 }

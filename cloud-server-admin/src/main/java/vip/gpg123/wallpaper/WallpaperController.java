@@ -2,6 +2,7 @@ package vip.gpg123.wallpaper;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -58,7 +59,23 @@ public class WallpaperController {
     @GetMapping("/category")
     @ApiOperation(value = "cate")
     public AjaxResult cate() {
+        Map<String, List<SysDictData>> map = new HashMap<>();
         List<SysDictData> list = DictUtils.getDictCache("wallpaper_category");
+        map.put("cate", list);
+        List<SysDictData> tags = DictUtils.getDictCache("wallpaper_keywords");
+        map.put("tags", tags);
+        return AjaxResult.success(map);
+    }
+
+    /**
+     * 快速标签
+     *
+     * @return r
+     */
+    @GetMapping("/tags")
+    @ApiOperation(value = "tags")
+    public AjaxResult tags() {
+        List<Object> list = staticWallpaperService.tags();
         return AjaxResult.success(list);
     }
 

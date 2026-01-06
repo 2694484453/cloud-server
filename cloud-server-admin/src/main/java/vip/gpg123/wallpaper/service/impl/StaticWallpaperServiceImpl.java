@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author gaopuguang
@@ -155,8 +156,17 @@ public class StaticWallpaperServiceImpl extends ServiceImpl<StaticWallpaperMappe
      * @return r
      */
     @Override
+    @DS("wallpaper")
     public IPage<StaticWallpaperExtension> iPage(IPage<StaticWallpaper> page, QueryWrapper wrapper) {
         return staticWallpaperMapper.iPage(page, wrapper);
+    }
+
+    /**
+     * 查询全部记录
+     */
+    @DS("wallpaper")
+    public List<Object> tags() {
+        return staticWallpaperMapper.selectObjs(new QueryWrapper<StaticWallpaper>().select("distinct dir_name"));
     }
 }
 
