@@ -27,8 +27,14 @@ public class WallpaperUpload extends BaseEntity implements Serializable {
     /**
      * 
      */
-    @TableField(value = "name")
-    private Integer name;
+    @TableField(value = "image_name")
+    private String imageName;
+
+    /**
+     * 模型名称
+     */
+    @TableField(value = "model_name")
+    private String modelName;
 
     /**
      * 

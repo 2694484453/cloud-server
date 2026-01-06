@@ -14,7 +14,7 @@ public class ExAcgResponse implements Serializable {
     private Data data;
 
     @lombok.Data
-    static class Data {
+    public static class Data {
 
         private String image_url;
 

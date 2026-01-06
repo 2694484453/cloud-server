@@ -36,6 +36,17 @@ public class WallpaperUploadServiceImpl extends ServiceImpl<WallpaperUploadMappe
     public List<WallpaperUpload> page(PageDomain domain, WallpaperUpload wallpaperUpload) {
         return wallpaperUploadMapper.page(domain, wallpaperUpload);
     }
+
+    /**
+     * 插入一条记录（选择字段，策略插入）
+     *
+     * @param entity 实体对象
+     */
+    @Override
+    @DS("wallpaper")
+    public boolean save(WallpaperUpload entity) {
+        return super.save(entity);
+    }
 }
 
 

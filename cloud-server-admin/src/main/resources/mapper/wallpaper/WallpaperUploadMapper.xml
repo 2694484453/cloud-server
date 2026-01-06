@@ -5,7 +5,8 @@
 <mapper namespace="vip.gpg123.wallpaper.mapper.WallpaperUploadMapper">
     <resultMap id="BaseResultMap" type="vip.gpg123.wallpaper.domain.WallpaperUpload">
             <id property="id" column="id" />
-            <result property="name" column="name" />
+            <result property="imageName" column="image_name" />
+            <result property="modelName" column="model_name"/>
             <result property="size" column="size" />
             <result property="tags" column="tags" />
             <result property="url" column="url" />
@@ -27,8 +28,11 @@
             <if test="qw.id != null">
                 and id = #{qw.id}
             </if>
-            <if test="qw.name != null and qw.name !=''">
-                and name like concat('%',#{qw.name},'%')
+            <if test="qw.imageName != null and qw.imageName !=''">
+                and image_name like concat('%',#{qw.imageName},'%')
+            </if>
+            <if test="qw.modelName != null and qw.modelName !=''">
+                and model_name like concat('%',#{qw.modelName},'%')
             </if>
             <if test="qw.createBy != null">
                 and wu.create_by = #{qw.createBy}
