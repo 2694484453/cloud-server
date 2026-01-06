@@ -1,9 +1,6 @@
 package vip.gpg123.wallpaper;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.net.NetUtil;
-import cn.hutool.http.HttpUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +13,8 @@ import vip.gpg123.ai.domain.ZImageRequest;
 import vip.gpg123.ai.service.AliYunAiApi;
 import vip.gpg123.ai.service.ExAcgApi;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
-
-import java.util.TimerTask;
 
 @RestController
 @RequestMapping("/wallpaper/ai")
