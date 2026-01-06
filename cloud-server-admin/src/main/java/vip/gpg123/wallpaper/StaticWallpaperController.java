@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import vip.gpg123.ai.domain.ExAcgRequest;
-import vip.gpg123.ai.service.ExAcgApi;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysDictData;
@@ -63,9 +61,6 @@ public class StaticWallpaperController extends BaseController {
 
     @Autowired
     private UmamiConfig.umamiWallpaperProperties umamiWallpaperProperties;
-
-    @Autowired
-    private ExAcgApi exAcgApi;
 
     private static final String defaultType = getDefaultType();
 
@@ -193,17 +188,6 @@ public class StaticWallpaperController extends BaseController {
         staticWallpaper.setUpdateTime(DateUtil.date());
         boolean update = staticWallpaperService.updateById(staticWallpaper);
         return update ? AjaxResult.success() : AjaxResult.error();
-    }
-
-    /**
-     * 生成
-     * @param request r
-     * @return r
-     */
-    @PostMapping("/generate_image")
-    @ApiOperation(value = "生成")
-    public Object generateImage(@RequestBody ExAcgRequest request) {
-        return exAcgApi.generateImage(request);
     }
 
     /**

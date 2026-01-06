@@ -3,7 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vip.gpg123.wallpaper.mapper.WallpaperUploadMapper">
-
     <resultMap id="BaseResultMap" type="vip.gpg123.wallpaper.domain.WallpaperUpload">
             <id property="id" column="id" />
             <result property="name" column="name" />
@@ -32,19 +31,19 @@
                 and name like concat('%',#{qw.name},'%')
             </if>
             <if test="qw.createBy != null">
-                and a.create_by = #{qw.createBy}
+                and wu.create_by = #{qw.createBy}
             </if>
             <if test="qw.createBys != null and createBys.size() > 0">
-                and a.create_by in
+                and wu.create_by in
                 <foreach item="item" collection="createBys" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
             </if>
             <if test="qw.updateBy != null and updateBys.size() > 0">
-                and a.update_by = #{qw.updateBy}
+                and wu.update_by = #{qw.updateBy}
             </if>
             <if test="qw.updateBys != null and updateBys.size() > 0">
-                and a.update_by in
+                and wu.update_by in
                 <foreach item="item" collection="updateBys" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
@@ -67,11 +66,12 @@
 
     <!--基础查询-->
     <sql id="baseSelect">
-        select a.*, b.user_name as 'updateByUserName'
-        from (select s.*, u.user_name as 'createByUserName'
-              from wallpaper.wallpaper_upload s
-                       left join sys_user u on u.user_id = s.create_by) a
-                 left join sys_user b on a.update_by = b.user_id
+        SELECT wu.*,
+               uc.user_name AS createByUserName,
+               uu.user_name AS updateByUserName
+        FROM `wallpaper`.wallpaper_upload wu
+                 LEFT JOIN `cloud-server`.sys_user uc ON wu.create_by = uc.user_id
+                 LEFT JOIN `cloud-server`.sys_user uu ON wu.update_by = uu.user_id
     </sql>
 
     <select id="list" resultMap="BaseResultMap">

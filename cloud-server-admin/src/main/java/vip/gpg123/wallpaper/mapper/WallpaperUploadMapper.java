@@ -1,5 +1,6 @@
 package vip.gpg123.wallpaper.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
@@ -13,6 +14,7 @@ import java.util.List;
 * @createDate 2025-11-29 05:22:05
 * @Entity vip.gpg123.wallpaper.domain.WallpaperUpload
 */
+@Mapper
 public interface WallpaperUploadMapper extends BaseMapper<WallpaperUpload> {
 
     /**

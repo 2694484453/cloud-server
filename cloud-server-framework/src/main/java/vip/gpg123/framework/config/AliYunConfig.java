@@ -19,7 +19,9 @@ public class AliYunConfig {
     @Component
     @ConfigurationProperties(prefix = "ali.oss")
     public static class OssProperties {
+
         private String endpoint;
+
         private String bucketName;
     }
 
@@ -27,17 +29,34 @@ public class AliYunConfig {
     @Component
     @ConfigurationProperties(prefix = "ali.auth")
     public static class AliAuthProperties {
+
         private String accessKeyId;
+
         private String accessKeySecret;
+
+        private String aiApiKey;
     }
 
     @Data
     @Component
     @ConfigurationProperties(prefix = "ali.ai")
     public static class AiProperties {
+
         private String apiKey;
+
         private String url;
     }
+
+    @Data
+    @Component
+    @ConfigurationProperties(prefix = "ali.ai-hui-hua")
+    public static class AiHuiHuaProperties {
+
+        private String apiKey;
+
+        private String url;
+    }
+
 
     /**
      * 创建 OSS Client Bean

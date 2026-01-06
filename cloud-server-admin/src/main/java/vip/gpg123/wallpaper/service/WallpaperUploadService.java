@@ -1,7 +1,10 @@
 package vip.gpg123.wallpaper.service;
 
+import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author gaopuguang
@@ -10,4 +13,25 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface WallpaperUploadService extends IService<WallpaperUpload> {
 
+    /**
+     * one
+     * @param wallpaperUpload wu
+     * @return r
+     */
+    WallpaperUpload one(WallpaperUpload wallpaperUpload);
+
+    /**
+     * list
+     * @param wallpaperUpload wu
+     * @return r
+     */
+    List<WallpaperUpload> list(WallpaperUpload wallpaperUpload);
+
+    /**
+     * page
+     * @param domain d
+     * @param wallpaperUpload wu
+     * @return r
+     */
+    List<WallpaperUpload> page(PageDomain domain, WallpaperUpload wallpaperUpload);
 }

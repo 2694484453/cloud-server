@@ -180,4 +180,8 @@ feign:
     config:
       umami-api:
         logger-level: full
+      exacg-api:
+        logger-level: full
+      wx-api:
+        logger-level: full
 #
