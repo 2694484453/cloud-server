@@ -20,15 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.common.core.domain.entity.SysDictData;
 import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.DictUtils;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.framework.config.UmamiConfig;
-import vip.gpg123.system.domain.SysNotice;
-import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.umami.domain.WebsiteEvent;
 import vip.gpg123.umami.service.WebsiteEventService;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
@@ -37,9 +34,7 @@ import vip.gpg123.wallpaper.mapper.StaticWallpaperMapper;
 import vip.gpg123.wallpaper.service.StaticWallpaperService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -52,9 +47,6 @@ public class StaticWallpaperController extends BaseController {
 
     @Autowired
     private StaticWallpaperMapper staticWallpaperMapper;
-
-    @Autowired
-    private ISysNoticeService sysNoticeService;
 
     @Autowired
     private WebsiteEventService websiteEventService;
@@ -204,19 +196,6 @@ public class StaticWallpaperController extends BaseController {
     public AjaxResult download(@RequestParam(value = "id") String id) {
         System.out.println("下载" + id);
         return AjaxResult.success("此操作仅仅作为记录");
-    }
-
-    /**
-     * 公告
-     *
-     * @return r
-     */
-    @GetMapping("/notice")
-    public AjaxResult notice() {
-        List<SysNotice> list = sysNoticeService.list(new LambdaQueryWrapper<SysNotice>()
-                .eq(SysNotice::getNoticeType, "wallpaper")
-        );
-        return AjaxResult.success(list);
     }
 
     public static String getDefaultType() {

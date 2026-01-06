@@ -1,6 +1,7 @@
 package vip.gpg123.wallpaper;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -11,6 +12,8 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysDictData;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.DictUtils;
+import vip.gpg123.system.domain.SysNotice;
+import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
 import vip.gpg123.wallpaper.domain.WallpaperSearchParams;
@@ -43,6 +46,9 @@ public class WallpaperController {
 
     @Autowired
     private DynamicWallpaperController dynamicWallpaperController;
+
+    @Autowired
+    private ISysNoticeService sysNoticeService;
 
     /**
      * 分类
@@ -96,5 +102,18 @@ public class WallpaperController {
                 staticWallpaper.setDirName(cateName);
                 return staticWallpaperController.page(staticWallpaper);
         }
+    }
+
+    /**
+     * 公告
+     *
+     * @return r
+     */
+    @GetMapping("/notice")
+    public AjaxResult notice() {
+        List<SysNotice> list = sysNoticeService.list(new LambdaQueryWrapper<SysNotice>()
+                .eq(SysNotice::getNoticeType, "wallpaper")
+        );
+        return AjaxResult.success(list);
     }
 }
