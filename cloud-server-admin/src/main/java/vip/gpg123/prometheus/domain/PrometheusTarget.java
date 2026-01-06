@@ -24,7 +24,7 @@ public class PrometheusTarget extends BaseEntity implements Serializable {
     /**
      * 
      */
-    @TableId(value = "targetId", type = IdType.AUTO)
+    @TableId(value = "target_id", type = IdType.AUTO)
     private Integer targetId;
 
     /**
