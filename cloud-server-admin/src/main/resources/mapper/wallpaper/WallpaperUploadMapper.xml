@@ -55,7 +55,7 @@
         </where>
     </sql>
 
-    <!--分页-->
+    <!--排序-->
     <sql id="order">
         <!-- 排序放在where外面 -->
         <choose>

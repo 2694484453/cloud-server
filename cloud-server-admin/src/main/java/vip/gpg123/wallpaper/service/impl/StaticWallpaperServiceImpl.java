@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
+import vip.gpg123.wallpaper.domain.StaticWallpaperExtension;
 import vip.gpg123.wallpaper.service.StaticWallpaperService;
 import vip.gpg123.wallpaper.mapper.StaticWallpaperMapper;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,15 @@ import java.util.Collection;
 import java.util.List;
 
 /**
-* @author gaopuguang
-* @description 针对表【cloud_wallpaper】的数据库操作Service实现
-* @createDate 2025-11-24 20:12:31
-*/
+ * @author gaopuguang
+ * @description 针对表【cloud_wallpaper】的数据库操作Service实现
+ * @createDate 2025-11-24 20:12:31
+ */
 @Service
 public class StaticWallpaperServiceImpl extends ServiceImpl<StaticWallpaperMapper, StaticWallpaper> implements StaticWallpaperService {
+
+    @Autowired
+    private StaticWallpaperMapper staticWallpaperMapper;
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -140,6 +145,18 @@ public class StaticWallpaperServiceImpl extends ServiceImpl<StaticWallpaperMappe
     @DS("wallpaper")
     public StaticWallpaper getById(Serializable id) {
         return super.getById(id);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param page    page
+     * @param wrapper w
+     * @return r
+     */
+    @Override
+    public IPage<StaticWallpaperExtension> iPage(IPage<StaticWallpaper> page, QueryWrapper wrapper) {
+        return staticWallpaperMapper.iPage(page, wrapper);
     }
 }
 

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,7 @@ import vip.gpg123.framework.config.UmamiConfig;
 import vip.gpg123.umami.domain.WebsiteEvent;
 import vip.gpg123.umami.service.WebsiteEventService;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
+import vip.gpg123.wallpaper.domain.StaticWallpaperExtension;
 import vip.gpg123.wallpaper.domain.StaticWallpaperQuery;
 import vip.gpg123.wallpaper.mapper.StaticWallpaperMapper;
 import vip.gpg123.wallpaper.service.StaticWallpaperService;
@@ -84,32 +86,18 @@ public class StaticWallpaperController extends BaseController {
         // 转换参数
         PageDomain pageDomain = TableSupport.buildPageRequest();
         pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<StaticWallpaper> page = staticWallpaperService.page(new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize()), new LambdaQueryWrapper<StaticWallpaper>()
-                .like(StrUtil.isNotBlank(staticWallpaper.getName()), StaticWallpaper::getName, staticWallpaper.getName())
-                .eq(StaticWallpaper::getDirName, ObjectUtil.defaultIfBlank(staticWallpaper.getDirName(), defaultType))
-        );
-        IPage<StaticWallpaperQuery> wallpaperQueryIPage = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
-        List<StaticWallpaperQuery> list = new ArrayList<>();
-        page.getRecords().forEach(item -> {
-            StaticWallpaperQuery wallpaperQuery = new StaticWallpaperQuery();
-            long visitCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
-                    .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
-                    .eq(WebsiteEvent::getUrlPath, "/info")
-                    .eq(WebsiteEvent::getUrlQuery, "id=" + item.getId())
-            );
-            long downloadCount = websiteEventService.count(new LambdaQueryWrapper<WebsiteEvent>()
-                    .eq(WebsiteEvent::getWebsiteId, umamiWallpaperProperties.getWebsiteId())
-                    .eq(WebsiteEvent::getUrlPath, "/download")
-                    .eq(WebsiteEvent::getUrlQuery, "id=" + item.getId())
-            );
-            BeanUtils.copyProperties(item, wallpaperQuery);
-            wallpaperQuery.setVisitCount(Math.toIntExact(visitCount));
-            wallpaperQuery.setDownloadCount(Math.toIntExact(downloadCount));
-            list.add(wallpaperQuery);
-        });
-        wallpaperQueryIPage.setRecords(list);
-        wallpaperQueryIPage.setTotal(page.getTotal());
-        return PageUtils.toPageByIPage(wallpaperQueryIPage);
+        IPage<StaticWallpaper> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+        // 构建查询条件
+        QueryWrapper<StaticWallpaper> queryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(staticWallpaper.getName())) {
+            queryWrapper.like("sw.name", staticWallpaper.getName());
+        }
+        if (StrUtil.isNotBlank(staticWallpaper.getDirName())) {
+            queryWrapper.like("sw.dir_name", staticWallpaper.getDirName());
+        }
+        IPage<StaticWallpaperExtension> pageRes = staticWallpaperService.iPage(page, queryWrapper);
+        // 返回
+        return PageUtils.toPageByIPage(pageRes);
     }
 
     /**
