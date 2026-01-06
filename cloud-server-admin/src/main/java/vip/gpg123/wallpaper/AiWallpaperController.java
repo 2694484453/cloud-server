@@ -15,6 +15,7 @@ import vip.gpg123.ai.domain.ExAcgResponse;
 import vip.gpg123.ai.domain.ZImageRequest;
 import vip.gpg123.ai.service.AliYunAiApi;
 import vip.gpg123.ai.service.ExAcgApi;
+import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
@@ -42,26 +43,21 @@ public class AiWallpaperController {
      */
     @PostMapping("/generate_image")
     @ApiOperation(value = "生成")
-    public Object generateImage(@RequestBody ExAcgRequest request) {
+    public AjaxResult generateImage(@RequestBody ExAcgRequest request) {
         //
         ExAcgResponse response = exAcgApi.generateImage(request);
-        AsyncManager.me().execute(new TimerTask() {
-            @Override
-            public void run() {
-                if (response != null) {
-                    String url = response.getData().getImage_url();
-                    WallpaperUpload wallpaperUpload = new WallpaperUpload();
-                    wallpaperUpload.setUrl(url);
-                    wallpaperUpload.setCreateTime(DateUtil.date());
-                    wallpaperUpload.setCreateBy("-1");
-                    wallpaperUpload.setImageName(url.substring(url.lastIndexOf('/') + 1));
-                    wallpaperUpload.setModelName(response.getData().getModel_name());
-                    wallpaperUploadService.save(wallpaperUpload);
-                }
-            }
-        });
-
-        return response;
+        if (response != null) {
+            String url = response.getData().getImage_url();
+            WallpaperUpload wallpaperUpload = new WallpaperUpload();
+            wallpaperUpload.setUrl(url);
+            wallpaperUpload.setCreateTime(DateUtil.date());
+            wallpaperUpload.setCreateBy("-1");
+            wallpaperUpload.setImageName(url.substring(url.lastIndexOf('/') + 1));
+            wallpaperUpload.setModelName(response.getData().getModel_name());
+            wallpaperUploadService.save(wallpaperUpload);
+            return AjaxResult.success("生成成功", wallpaperUpload);
+        }
+        return AjaxResult.error("生成失败");
     }
 
     /**
