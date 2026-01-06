@@ -13,6 +13,7 @@ import vip.gpg123.framework.producer.MessageProducer;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.domain.RuleFileProps;
 import vip.gpg123.prometheus.domain.RuleGroup;
+import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,8 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
     @Autowired
     private MonitorConfig.PrometheusProperties prometheusProperties;
 
+    @Autowired
+    private PrometheusApi prometheusApi;
 
     private static final String modelName = "告警规则";
 
@@ -74,6 +77,8 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                 generateYaml(ruleGroups, filePath);
                 // 发送
                 messageProducer.sendEmail("新增", modelName, res, sysUser, true);
+                // 刷新
+                prometheusApi.reload();
             }
         });
         return res;
@@ -111,6 +116,8 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                 generateYaml(ruleGroups, filePath);
                 // 发送
                 messageProducer.sendEmail("删除", modelName, res, sysUser, true);
+                // 刷新
+                prometheusApi.reload();
             }
         });
         return res;
@@ -147,6 +154,8 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                 generateYaml(ruleGroups, filePath);
                 // 发送
                 messageProducer.sendEmail("修改", modelName, res, sysUser, true);
+                // 刷新
+                prometheusApi.reload();
             }
         });
         return res;
