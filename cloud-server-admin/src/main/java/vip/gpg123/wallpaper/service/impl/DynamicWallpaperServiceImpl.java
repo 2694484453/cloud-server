@@ -1,6 +1,9 @@
 package vip.gpg123.wallpaper.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
 import vip.gpg123.wallpaper.service.DynamicWallpaperService;
@@ -8,6 +11,7 @@ import vip.gpg123.wallpaper.mapper.DynamicWallpaperMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
 * @author gaopuguang
@@ -49,6 +53,40 @@ public class DynamicWallpaperServiceImpl extends ServiceImpl<DynamicWallpaperMap
     @DS("wallpaper")
     public boolean updateById(DynamicWallpaper entity) {
         return super.updateById(entity);
+    }
+
+    /**
+     * 查询所有
+     *
+     * @see Wrappers#emptyWrapper()
+     */
+    @Override
+    @DS("wallpaper")
+    public List<DynamicWallpaper> list() {
+        return super.list();
+    }
+
+    /**
+     * 查询列表
+     *
+     * @param queryWrapper 实体对象封装操作类 {@link QueryWrapper}
+     */
+    @Override
+    @DS("wallpaper")
+    public List<DynamicWallpaper> list(Wrapper<DynamicWallpaper> queryWrapper) {
+        return super.list(queryWrapper);
+    }
+
+    /**
+     * 翻页查询
+     *
+     * @param page         翻页对象
+     * @param queryWrapper 实体对象封装操作类 {@link QueryWrapper}
+     */
+    @Override
+    @DS("wallpaper")
+    public <E extends IPage<DynamicWallpaper>> E page(E page, Wrapper<DynamicWallpaper> queryWrapper) {
+        return super.page(page, queryWrapper);
     }
 }
 

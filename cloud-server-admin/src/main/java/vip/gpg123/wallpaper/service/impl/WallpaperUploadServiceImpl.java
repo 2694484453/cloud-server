@@ -1,6 +1,8 @@
 package vip.gpg123.wallpaper.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.common.core.page.PageDomain;
@@ -46,6 +48,39 @@ public class WallpaperUploadServiceImpl extends ServiceImpl<WallpaperUploadMappe
     @DS("wallpaper")
     public boolean save(WallpaperUpload entity) {
         return super.save(entity);
+    }
+
+    /**
+     * 查询总记录数
+     *
+     * @see Wrappers#emptyWrapper()
+     */
+    @Override
+    @DS("wallpaper")
+    public int count() {
+        return super.count();
+    }
+
+    /**
+     * 根据 Wrapper 条件，查询总记录数
+     *
+     * @param queryWrapper 实体对象封装操作类 {@link QueryWrapper}
+     */
+    @Override
+    @DS("wallpaper")
+    public int count(Wrapper<WallpaperUpload> queryWrapper) {
+        return super.count(queryWrapper);
+    }
+
+    /**
+     * 查询所有
+     *
+     * @see Wrappers#emptyWrapper()
+     */
+    @Override
+    @DS("wallpaper")
+    public List<WallpaperUpload> list() {
+        return super.list();
     }
 }
 

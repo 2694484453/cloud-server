@@ -26,7 +26,6 @@ public class WallPaperUploadController extends BaseController {
     @Autowired
     private WallpaperUploadService wallpaperUploadService;
 
-
     /**
      * 分页查询
      *

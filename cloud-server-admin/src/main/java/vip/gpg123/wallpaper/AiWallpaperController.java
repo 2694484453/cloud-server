@@ -3,6 +3,7 @@ package vip.gpg123.wallpaper;
 import cn.hutool.core.date.DateUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,9 @@ public class AiWallpaperController {
     @Autowired
     private WallpaperUploadService wallpaperUploadService;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     /**
      * 生成
      *
@@ -46,8 +50,9 @@ public class AiWallpaperController {
             wallpaperUpload.setUrl(url);
             wallpaperUpload.setCreateTime(DateUtil.date());
             wallpaperUpload.setCreateBy("-1");
-            wallpaperUpload.setImageName(url.substring(url.lastIndexOf('/') + 1));
+            wallpaperUpload.setName(url.substring(url.lastIndexOf('/') + 1));
             wallpaperUpload.setModelName(response.getData().getModel_name());
+            stringRedisTemplate.opsForValue().set("exacg.remain", String.valueOf(response.getData().getRemaining_points()));
             wallpaperUploadService.save(wallpaperUpload);
             return AjaxResult.success("生成成功", wallpaperUpload);
         }

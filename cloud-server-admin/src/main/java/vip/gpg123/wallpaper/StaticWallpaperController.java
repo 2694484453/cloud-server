@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/wallpaper")
+@RequestMapping("/wallpaper/static")
 @Slf4j
 public class StaticWallpaperController extends BaseController {
 
@@ -63,18 +63,6 @@ public class StaticWallpaperController extends BaseController {
     private UmamiConfig.umamiWallpaperProperties umamiWallpaperProperties;
 
     private static final String defaultType = getDefaultType();
-
-    /**
-     * 分类
-     *
-     * @return r
-     */
-    @GetMapping("/category")
-    @ApiOperation(value = "cate")
-    public AjaxResult cate() {
-        List<SysDictData> list = DictUtils.getDictCache("wallpaper_category");
-        return AjaxResult.success(list);
-    }
 
     /**
      * 列表查询
@@ -216,19 +204,6 @@ public class StaticWallpaperController extends BaseController {
     public AjaxResult download(@RequestParam(value = "id") String id) {
         System.out.println("下载" + id);
         return AjaxResult.success("此操作仅仅作为记录");
-    }
-
-    /**
-     * over
-     *
-     * @return r
-     */
-    @GetMapping("/overView")
-    public AjaxResult overView() {
-        Map<String, Object> map = new HashMap<>();
-        long total = staticWallpaperService.count();
-        map.put("total", total);
-        return AjaxResult.success(map);
     }
 
     /**
