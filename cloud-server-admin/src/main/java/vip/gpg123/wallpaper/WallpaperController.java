@@ -1,6 +1,7 @@
 package vip.gpg123.wallpaper;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.http.server.HttpServerRequest;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import vip.gpg123.common.core.domain.entity.SysDictData;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.redis.RedisCache;
 import vip.gpg123.common.utils.DictUtils;
+import vip.gpg123.common.utils.ip.IpUtils;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
@@ -27,6 +29,7 @@ import vip.gpg123.wallpaper.service.StaticWallpaperService;
 import vip.gpg123.wallpaper.service.WallpaperKeywordService;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,6 +141,19 @@ public class WallpaperController {
                 BeanUtils.copyProperties(page, staticWallpaperPage);
                 return staticWallpaperController.page(staticWallpaperPage, staticWallpaper);
         }
+    }
+
+    /**
+     * 剩余次数查询
+     *
+     * @param request r
+     * @return r
+     */
+    @GetMapping("/remain")
+    public AjaxResult timesRemain(HttpServletRequest request) {
+        String ip = IpUtils.getIpAddr(request);
+        Integer times = ObjectUtil.defaultIfNull(redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + ip), 20);
+        return AjaxResult.success(times);
     }
 
     /**

@@ -12,6 +12,7 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
+import vip.gpg123.wallpaper.domain.DynamicWallpaperExtension;
 import vip.gpg123.wallpaper.service.DynamicWallpaperService;
 
 import java.util.List;
@@ -46,9 +47,7 @@ public class DynamicWallpaperController {
     @GetMapping("/page")
     public TableDataInfo page(Page<DynamicWallpaper> page, DynamicWallpaper dynamicWallpaper) {
         // 查询
-        IPage<DynamicWallpaper> pageRes = dynamicWallpaperService.page(page, new LambdaQueryWrapper<DynamicWallpaper>()
-                .like(StrUtil.isNotBlank(dynamicWallpaper.getName()), DynamicWallpaper::getName, dynamicWallpaper.getName())
-        );
+        IPage<DynamicWallpaperExtension> pageRes = dynamicWallpaperService.page(page, dynamicWallpaper);
         // 返回
         return PageUtils.toPageByIPage(pageRes);
     }

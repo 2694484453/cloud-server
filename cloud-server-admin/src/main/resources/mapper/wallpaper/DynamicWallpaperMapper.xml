@@ -18,8 +18,53 @@
             <result property="updateBy" column="update_by" />
     </resultMap>
 
+    <!-- 新的ResultMap，继承原有ResultMap并添加新字段 -->
+    <resultMap id="dynamicWallpaperWithCountsResultMap"
+               type="vip.gpg123.wallpaper.domain.DynamicWallpaperExtension"
+               extends="BaseResultMap">
+        <!-- 继承原有映射 -->
+        <!-- 无需重复写原有字段 -->
+        <!-- 新增字段映射 -->
+        <result property="viewCount" column="view_count"/>
+        <result property="downloadCount" column="download_count"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,name,dir_path,tags,size,url,
         description,create_time,create_by,update_time,update_by
     </sql>
+    <!--基础查询-->
+    <sql id="baseSelect">
+        SELECT
+            dw.*,
+            (SELECT COUNT(*)
+             FROM umami.website_event we
+             WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
+               AND we.url_path = '/info'
+               AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=dynamic')) AS `view_count`,
+            (SELECT COUNT(*)
+             FROM umami.website_event we
+             WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
+               AND we.url_path = '/download'
+               AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=dynamic')) AS `download_count`
+        FROM wallpaper.dynamic_wallpaper dw
+    </sql>
+
+    <!--条件语句-->
+    <sql id="queryWrapper">
+        <where>1=1
+            <if test="qw.id != null">
+                and id = #{qw.id}
+            </if>
+            <if test="qw.name != null and qw.name !=''">
+                and name like concat('%',#{qw.name},'%')
+            </if>
+        </where>
+    </sql>
+
+    <!--分页查询-->
+    <select id="page" resultMap="dynamicWallpaperWithCountsResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
 </mapper>

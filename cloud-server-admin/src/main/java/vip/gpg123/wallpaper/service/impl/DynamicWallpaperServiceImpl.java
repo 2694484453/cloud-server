@@ -4,8 +4,11 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
+import vip.gpg123.wallpaper.domain.DynamicWallpaperExtension;
 import vip.gpg123.wallpaper.service.DynamicWallpaperService;
 import vip.gpg123.wallpaper.mapper.DynamicWallpaperMapper;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ import java.util.List;
 @Service
 public class DynamicWallpaperServiceImpl extends ServiceImpl<DynamicWallpaperMapper, DynamicWallpaper> implements DynamicWallpaperService{
 
+    @Autowired
+    private DynamicWallpaperMapper dynamicWallpaperMapper;
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -87,6 +92,19 @@ public class DynamicWallpaperServiceImpl extends ServiceImpl<DynamicWallpaperMap
     @DS("wallpaper")
     public <E extends IPage<DynamicWallpaper>> E page(E page, Wrapper<DynamicWallpaper> queryWrapper) {
         return super.page(page, queryWrapper);
+    }
+
+    /**
+     * page
+     *
+     * @param page             p
+     * @param dynamicWallpaper pw
+     * @return r
+     */
+    @Override
+    @DS("wallpaper")
+    public IPage<DynamicWallpaperExtension> page(Page<DynamicWallpaper> page, DynamicWallpaper dynamicWallpaper) {
+        return dynamicWallpaperMapper.page(page, dynamicWallpaper);
     }
 }
 
