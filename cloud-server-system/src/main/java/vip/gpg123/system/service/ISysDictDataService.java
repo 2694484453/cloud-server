@@ -19,6 +19,13 @@ public interface ISysDictDataService
     public List<SysDictData> selectDictDataList(SysDictData dictData);
 
     /**
+     * 根据dictType查询
+     * @param dictType dictType
+     * @return r
+     */
+    public List<SysDictData> selectDictDataByType(String dictType);
+
+    /**
      * 根据字典类型和字典键值查询字典数据信息
      *
      * @param dictType 字典类型
