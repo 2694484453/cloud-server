@@ -1,6 +1,7 @@
 package vip.gpg123.wallpaper;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class WallpaperAiController {
         if (!"localhost".equals(ip)) {
             // 查询系统额度
             Integer systemTimes = redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + "exacg.remain");
-            if (systemTimes <= 1) {
+            if (ObjectUtil.isNotNull(systemTimes) && systemTimes <= 1) {
                 return AjaxResult.error("系统资源已耗尽");
             }
             String key = CacheConstants.AI_CONFIG_KEY + ip;
