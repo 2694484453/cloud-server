@@ -109,7 +109,7 @@ public class WallpaperAiController {
                 redisCache.setCacheObject(CacheConstants.AI_CONFIG_KEY + ip, times);
             }
             wallpaperUploadService.save(wallpaperUpload);
-            return AjaxResult.success("生成成功，今天还剩余：" + times + "次", wallpaperUpload);
+            return AjaxResult.success("生成成功，今天还剩余：" + times + "次", response.getData().getImage_url());
         }
         return AjaxResult.error("生成失败，请联系管理员");
     }
