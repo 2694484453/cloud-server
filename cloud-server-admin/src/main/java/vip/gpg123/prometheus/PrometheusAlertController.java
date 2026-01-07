@@ -1,8 +1,5 @@
 package vip.gpg123.prometheus;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
 import vip.gpg123.prometheus.mapper.PrometheusAlertMapper;
@@ -41,13 +36,7 @@ public class PrometheusAlertController extends BaseController {
      */
     @GetMapping("/list")
     public AjaxResult list(PrometheusAlert prometheusAlert) {
-        List<PrometheusAlert> alerts = prometheusAlertService.list(new LambdaQueryWrapper<PrometheusAlert>()
-                .eq(StrUtil.isNotBlank(prometheusAlert.getGroupName()), PrometheusAlert::getGroupName, prometheusAlert.getGroupName())
-                .eq(StrUtil.isNotBlank(prometheusAlert.getAlertName()), PrometheusAlert::getAlertName, prometheusAlert.getAlertName())
-                .eq(StrUtil.isNotBlank(prometheusAlert.getAlertLevel()), PrometheusAlert::getAlertLevel, prometheusAlert.getAlertLevel())
-                .eq(StrUtil.isNotBlank(prometheusAlert.getType()), PrometheusAlert::getType, prometheusAlert.getType())
-                .eq(ObjectUtil.isNotNull(prometheusAlert.getId()), PrometheusAlert::getId, prometheusAlert.getId())
-        );
+        List<PrometheusAlert> alerts = prometheusAlertService.list(prometheusAlert);
         return AjaxResult.success(alerts);
     }
 
@@ -58,19 +47,14 @@ public class PrometheusAlertController extends BaseController {
      * @return r
      */
     @GetMapping("/page")
-    public TableDataInfo page(PrometheusAlert prometheusAlert) {
-        // 转换参数
-        PageDomain pageDomain = TableSupport.buildPageRequest();
-        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<PrometheusAlert> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
-        List<PrometheusAlert> list = prometheusAlertMapper.page(pageDomain, prometheusAlert);
-        page.setTotal(prometheusAlertMapper.list(prometheusAlert).size());
-        page.setRecords(list);
+    public TableDataInfo page(Page<PrometheusAlert> prometheusAlertPage, PrometheusAlert prometheusAlert) {
+        IPage<PrometheusAlert> page = prometheusAlertMapper.page(prometheusAlertPage, prometheusAlert);
         return PageUtils.toPageByIPage(page);
     }
 
     /**
      * 删除
+     *
      * @param id id
      * @return r
      */

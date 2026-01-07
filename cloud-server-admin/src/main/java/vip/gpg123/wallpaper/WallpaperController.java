@@ -121,11 +121,15 @@ public class WallpaperController {
             case "dynamic":
                 DynamicWallpaper dynamicWallpaper = new DynamicWallpaper();
                 dynamicWallpaper.setName(name);
-                return dynamicWallpaperController.page(dynamicWallpaper);
+                Page<DynamicWallpaper> dynamicWallpaperPage = new Page<>();
+                BeanUtils.copyProperties(page, dynamicWallpaperPage);
+                return dynamicWallpaperController.page(dynamicWallpaperPage, dynamicWallpaper);
             case "upload":
                 WallpaperUpload wallpaperUpload = new WallpaperUpload();
                 wallpaperUpload.setName(name);
-                return wallpaperUploadController.page(wallpaperUpload);
+                Page<WallpaperUpload> uploadWallpaperPage = new Page<>();
+                BeanUtils.copyProperties(page, uploadWallpaperPage);
+                return wallpaperUploadController.page(uploadWallpaperPage, wallpaperUpload);
             default:
                 StaticWallpaper staticWallpaper = new StaticWallpaper();
                 staticWallpaper.setName(name);

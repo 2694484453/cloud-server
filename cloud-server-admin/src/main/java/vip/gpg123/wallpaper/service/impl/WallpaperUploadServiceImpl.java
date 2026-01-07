@@ -3,6 +3,8 @@ package vip.gpg123.wallpaper.service.impl;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.common.core.page.PageDomain;
@@ -34,9 +36,15 @@ public class WallpaperUploadServiceImpl extends ServiceImpl<WallpaperUploadMappe
         return wallpaperUploadMapper.list(wallpaperUpload);
     }
 
+    /**
+     * 分页查询
+     * @param page p
+     * @param wallpaperUpload w
+     * @return r
+     */
     @DS("wallpaper")
-    public List<WallpaperUpload> page(PageDomain domain, WallpaperUpload wallpaperUpload) {
-        return wallpaperUploadMapper.page(domain, wallpaperUpload);
+    public IPage<WallpaperUpload> page(Page<WallpaperUpload> page, WallpaperUpload wallpaperUpload) {
+        return wallpaperUploadMapper.page(page, wallpaperUpload);
     }
 
     /**

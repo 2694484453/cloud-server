@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
 import vip.gpg123.wallpaper.service.DynamicWallpaperService;
@@ -40,15 +39,17 @@ public class DynamicWallpaperController {
 
     /**
      * page
+     *
      * @param dynamicWallpaper dw
      * @return r
      */
     @GetMapping("/page")
-    public TableDataInfo page(DynamicWallpaper dynamicWallpaper) {
-        IPage<DynamicWallpaper> page = new Page<>(TableSupport.getPageDomain().getPageNum(), TableSupport.getPageDomain().getPageSize());
-        page = dynamicWallpaperService.page(page, new LambdaQueryWrapper<DynamicWallpaper>()
+    public TableDataInfo page(Page<DynamicWallpaper> page, DynamicWallpaper dynamicWallpaper) {
+        // 查询
+        IPage<DynamicWallpaper> pageRes = dynamicWallpaperService.page(page, new LambdaQueryWrapper<DynamicWallpaper>()
                 .like(StrUtil.isNotBlank(dynamicWallpaper.getName()), DynamicWallpaper::getName, dynamicWallpaper.getName())
         );
-        return PageUtils.toPageByIPage(page);
+        // 返回
+        return PageUtils.toPageByIPage(pageRes);
     }
 }

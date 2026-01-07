@@ -24,15 +24,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.common.core.page.TableDataInfo;
-import vip.gpg123.common.core.page.TableSupport;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.prometheus.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusConfigs;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
-import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
+import vip.gpg123.prometheus.mapper.PrometheusTargetMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusTargetService;
 
@@ -57,7 +55,7 @@ public class PrometheusTargetController extends BaseController {
     private PrometheusTargetService prometheusTargetService;
 
     @Autowired
-    private PrometheusExporterMapper prometheusExporterMapper;
+    private PrometheusTargetMapper prometheusTargetMapper;
 
     @Autowired
     private PrometheusApi prometheusApi;
@@ -81,43 +79,27 @@ public class PrometheusTargetController extends BaseController {
     /**
      * list
      *
-     * @param jobName job
+     * @param prometheusTarget t
      * @return r
      */
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
-    public AjaxResult list(@RequestParam(name = "jobName", required = false) String jobName,
-                           @RequestParam(name = "exporterType", required = false) String exporterType) {
-        List<PrometheusTarget> list = prometheusTargetService.list(new LambdaQueryWrapper<PrometheusTarget>()
-                .like(StrUtil.isNotBlank(jobName), PrometheusTarget::getJobName, jobName)
-                .eq(StrUtil.isNotBlank(exporterType), PrometheusTarget::getExporterType, exporterType)
-                .orderByDesc(PrometheusTarget::getCreateTime)
-        );
+    public AjaxResult list(PrometheusTarget prometheusTarget) {
+        List<PrometheusTarget> list = prometheusTargetService.list(prometheusTarget);
         return AjaxResult.success(list);
     }
 
     /**
      * page
      *
-     * @param jobName j
+     * @param prometheusTarget t
      * @return r
      */
     @GetMapping("/page")
     @ApiOperation(value = "【分页查询】")
-    public TableDataInfo page(@RequestParam(name = "jobName", required = false) String jobName,
-                              @RequestParam(name = "exporterType", required = false) String exporterType) {
-        // 转换参数
-        PageDomain pageDomain = TableSupport.buildPageRequest();
-        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<PrometheusTarget> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
-
-        PrometheusTarget exporter = new PrometheusTarget();
-        exporter.setJobName(jobName);
-        exporter.setExporterType(exporterType);
-        exporter.setCreateBy(String.valueOf(getUserId()));
-        List<PrometheusTarget> list = prometheusExporterMapper.page(pageDomain, exporter);
-        page.setRecords(list);
-        page.setTotal(prometheusExporterMapper.list(exporter).size());
+    public TableDataInfo page(Page<PrometheusTarget> prometheusTargetPage, PrometheusTarget prometheusTarget) {
+        prometheusTarget.setCreateBy(String.valueOf(getUserId()));
+        IPage<PrometheusTarget> page = prometheusTargetMapper.page(prometheusTargetPage, prometheusTarget);
         return PageUtils.toPageByIPage(page);
     }
 

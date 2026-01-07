@@ -1,5 +1,7 @@
 package vip.gpg123.prometheus.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.common.core.domain.entity.SysUser;
@@ -7,11 +9,12 @@ import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.service.PrometheusTargetService;
-import vip.gpg123.prometheus.mapper.PrometheusExporterMapper;
+import vip.gpg123.prometheus.mapper.PrometheusTargetMapper;
 import org.springframework.stereotype.Service;
 import vip.gpg123.framework.producer.MessageProducer;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.TimerTask;
 
 /**
@@ -20,10 +23,13 @@ import java.util.TimerTask;
  * @createDate 2025-11-19 01:40:53
  */
 @Service
-public class PrometheusTargetServiceImpl extends ServiceImpl<PrometheusExporterMapper, PrometheusTarget> implements PrometheusTargetService {
+public class PrometheusTargetServiceImpl extends ServiceImpl<PrometheusTargetMapper, PrometheusTarget> implements PrometheusTargetService {
 
     @Autowired
     private MessageProducer messageProducer;
+
+    @Autowired
+    private PrometheusTargetMapper prometheusTargetMapper;
 
     private static final String modelName = "Prometheus端点";
 
@@ -72,6 +78,29 @@ public class PrometheusTargetServiceImpl extends ServiceImpl<PrometheusExporterM
             }
         });
         return flag;
+    }
+
+    /**
+     * page
+     *
+     * @param page             p
+     * @param prometheusTarget t
+     * @return r
+     */
+    @Override
+    public IPage<PrometheusTarget> page(Page<PrometheusTarget> page, PrometheusTarget prometheusTarget) {
+        return prometheusTargetMapper.page(page, prometheusTarget);
+    }
+
+    /**
+     * list
+     *
+     * @param prometheusTarget t
+     * @return r
+     */
+    @Override
+    public List<PrometheusTarget> list(PrometheusTarget prometheusTarget) {
+        return prometheusTargetMapper.list(prometheusTarget);
     }
 }
 

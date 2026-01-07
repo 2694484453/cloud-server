@@ -1,6 +1,8 @@
 package vip.gpg123.prometheus.service.impl;
 
 import cn.hutool.setting.yaml.YamlUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yaml.snakeyaml.DumperOptions;
@@ -38,6 +40,9 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
 
     @Autowired
     private MonitorConfig.PrometheusProperties prometheusProperties;
+
+    @Autowired
+    private PrometheusRuleMapper prometheusRuleMapper;
 
     @Autowired
     private PrometheusApi prometheusApi;
@@ -184,6 +189,29 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * page
+     *
+     * @param page           page
+     * @param prometheusRule r
+     * @return r
+     */
+    @Override
+    public IPage<PrometheusRule> page(Page<PrometheusRule> page, PrometheusRule prometheusRule) {
+        return prometheusRuleMapper.page(page, prometheusRule);
+    }
+
+    /**
+     * list
+     *
+     * @param prometheusRule r
+     * @return r
+     */
+    @Override
+    public List<PrometheusRule> list(PrometheusRule prometheusRule) {
+        return prometheusRuleMapper.list(prometheusRule);
     }
 }
 

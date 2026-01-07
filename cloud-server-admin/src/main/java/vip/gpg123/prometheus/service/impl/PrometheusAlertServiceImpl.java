@@ -1,10 +1,15 @@
 package vip.gpg123.prometheus.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
 import vip.gpg123.prometheus.service.PrometheusAlertService;
 import vip.gpg123.prometheus.mapper.PrometheusAlertMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author gaopuguang
@@ -14,6 +19,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class PrometheusAlertServiceImpl extends ServiceImpl<PrometheusAlertMapper, PrometheusAlert> implements PrometheusAlertService{
 
+    @Autowired
+    private PrometheusAlertMapper prometheusAlertMapper;
+
+    /**
+     * list
+     *
+     * @param alert a
+     * @return r
+     */
+    @Override
+    public List<PrometheusAlert> list(PrometheusAlert alert) {
+        return prometheusAlertMapper.list(alert);
+    }
+
+    /**
+     * page
+     *
+     * @param page  p
+     * @param alert a
+     * @return r
+     */
+    @Override
+    public IPage<PrometheusAlert> page(Page<PrometheusAlert> page, PrometheusAlert alert) {
+        return prometheusAlertMapper.page(page, alert);
+    }
 }
 
 

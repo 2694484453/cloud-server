@@ -1,8 +1,9 @@
 package vip.gpg123.wallpaper.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -32,7 +33,7 @@ public interface WallpaperUploadMapper extends BaseMapper<WallpaperUpload> {
     /**
      * 根据 entity 条件，查询全部记录（并翻页）
      */
-    List<WallpaperUpload> page(@Param("page") PageDomain page, @Param("qw") WallpaperUpload cloudWallpaper);
+    IPage<WallpaperUpload> page(Page<WallpaperUpload> page, @Param("qw") WallpaperUpload cloudWallpaper);
 
 }
 

@@ -1,8 +1,13 @@
 package vip.gpg123.prometheus.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import vip.gpg123.prometheus.domain.PrometheusGroup;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
 * @author gaopuguang
@@ -12,7 +17,22 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 @Mapper
 public interface PrometheusGroupMapper extends BaseMapper<PrometheusGroup> {
+    /**
+     * 根据 entity 条件，查询一条记录
+     *
+     */
+    PrometheusGroup one(@Param("qw") PrometheusGroup PrometheusGroup);
 
+    /**
+     * 根据 entity 条件，查询全部记录
+     *
+     */
+    List<PrometheusGroup> list(@Param("qw") PrometheusGroup PrometheusGroup);
+
+    /**
+     * 根据 entity 条件，查询全部记录（并翻页）
+     */
+    IPage<PrometheusGroup> page(Page<PrometheusGroup> page, @Param("qw") PrometheusGroup PrometheusGroup);
 }
 
 

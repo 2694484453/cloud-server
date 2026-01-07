@@ -33,15 +33,9 @@ public class WallPaperUploadController extends BaseController {
      * @return r
      */
     @GetMapping("/page")
-    public TableDataInfo page(WallpaperUpload wallpaperUpload) {
-        // 转换参数
-        PageDomain pageDomain = TableSupport.buildPageRequest();
-        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<WallpaperUpload> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
+    public TableDataInfo page(Page<WallpaperUpload> wallpaperUploadPage,WallpaperUpload wallpaperUpload) {
         // 查询
-        List<WallpaperUpload> wallpaperUploads = wallpaperUploadService.page(pageDomain, wallpaperUpload);
-        page.setTotal(wallpaperUploadService.list(wallpaperUpload).size());
-        page.setRecords(wallpaperUploads);
+        IPage<WallpaperUpload> page = wallpaperUploadService.page(wallpaperUploadPage, wallpaperUpload);
         return PageUtils.toPageByIPage(page);
     }
 

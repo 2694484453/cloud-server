@@ -1,7 +1,11 @@
 package vip.gpg123.prometheus.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author gaopuguang
@@ -10,4 +14,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface PrometheusAlertService extends IService<PrometheusAlert> {
 
+    /**
+     * list
+     * @param alert a
+     * @return r
+     */
+    List<PrometheusAlert> list(PrometheusAlert alert);
+
+    /**
+     * page
+     * @param page p
+     * @param alert a
+     * @return r
+     */
+    IPage<PrometheusAlert> page(Page<PrometheusAlert> page, PrometheusAlert alert);
 }

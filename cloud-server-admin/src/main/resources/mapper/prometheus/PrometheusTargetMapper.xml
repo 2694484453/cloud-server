@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vip.gpg123.prometheus.mapper.PrometheusExporterMapper">
+<mapper namespace="vip.gpg123.prometheus.mapper.PrometheusTargetMapper">
 
     <resultMap id="BaseResultMap" type="vip.gpg123.prometheus.domain.PrometheusTarget">
         <id property="targetId" column="target_id"/>
@@ -52,19 +52,6 @@
         </where>
     </sql>
 
-    <!--分页-->
-    <sql id="order">
-        <!-- 排序放在where外面 -->
-        <choose>
-            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
-                order by ${page.orderByColumn} ${page.isAsc}
-            </when>
-            <otherwise>
-                order by create_time desc
-            </otherwise>
-        </choose>
-    </sql>
-
     <!--基础查询-->
     <sql id="baseSelect">
         SELECT t.*,
@@ -90,7 +77,5 @@
     <select id="page" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
-        <include refid="order"/>
-        limit #{page.limit} offset #{page.offset}
     </select>
 </mapper>

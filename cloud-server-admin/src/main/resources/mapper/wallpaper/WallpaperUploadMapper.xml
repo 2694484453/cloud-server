@@ -55,19 +55,6 @@
         </where>
     </sql>
 
-    <!--排序-->
-    <sql id="order">
-        <!-- 排序放在where外面 -->
-        <choose>
-            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
-                order by ${page.orderByColumn} ${page.isAsc}
-            </when>
-            <otherwise>
-                order by create_time desc
-            </otherwise>
-        </choose>
-    </sql>
-
     <!--基础查询-->
     <sql id="baseSelect">
         SELECT wu.*,
@@ -93,7 +80,5 @@
     <select id="page" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
-        <include refid="order"/>
-        limit #{page.limit} offset #{page.offset}
     </select>
 </mapper>

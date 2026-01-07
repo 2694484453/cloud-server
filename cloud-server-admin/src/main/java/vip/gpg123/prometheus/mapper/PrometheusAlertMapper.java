@@ -1,8 +1,9 @@
 package vip.gpg123.prometheus.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import vip.gpg123.common.core.page.PageDomain;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -31,7 +32,7 @@ public interface PrometheusAlertMapper extends BaseMapper<PrometheusAlert> {
     /**
      * 根据 entity 条件，查询全部记录（并翻页）
      */
-    List<PrometheusAlert> page(@Param("page") PageDomain page, @Param("qw") PrometheusAlert prometheusAlert);
+    IPage<PrometheusAlert> page(Page<PrometheusAlert> page, @Param("qw") PrometheusAlert prometheusAlert);
 }
 
 

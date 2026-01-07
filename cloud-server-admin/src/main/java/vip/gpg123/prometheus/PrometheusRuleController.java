@@ -65,13 +65,7 @@ public class PrometheusRuleController extends BaseController {
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public AjaxResult list(PrometheusRule prometheusRule) {
-        List<PrometheusRule> list = prometheusRuleService.list(new LambdaQueryWrapper<PrometheusRule>()
-                .eq(StrUtil.isNotBlank(prometheusRule.getRuleName()), PrometheusRule::getRuleName, prometheusRule.getRuleName())
-                .eq(StrUtil.isNotBlank(prometheusRule.getGroupId()), PrometheusRule::getGroupId, prometheusRule.getGroupId())
-                .eq(StrUtil.isNotBlank(prometheusRule.getType()), PrometheusRule::getType, prometheusRule.getType())
-                .eq(PrometheusRule::getCreateBy, getUserId())
-                .orderByAsc(PrometheusRule::getCreateTime)
-        );
+        List<PrometheusRule> list = prometheusRuleService.list(prometheusRule);
         return AjaxResult.success(list);
     }
 
@@ -82,17 +76,9 @@ public class PrometheusRuleController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(PrometheusRule prometheusRule) {
-        // 转换参数
-        PageDomain pageDomain = TableSupport.buildPageRequest();
-        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<PrometheusRule> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
-
-        PrometheusRule search = new PrometheusRule();
-        search.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
-        List<PrometheusRule> list = prometheusRuleMapper.page(pageDomain, prometheusRule);
-        page.setRecords(list);
-        page.setTotal(prometheusRuleMapper.list(search).size());
+    public TableDataInfo page(Page<PrometheusRule> prometheusRulePage, PrometheusRule prometheusRule) {
+        prometheusRule.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
+        IPage<PrometheusRule> page = prometheusRuleService.page(prometheusRulePage, prometheusRule);
         return PageUtils.toPageByIPage(page);
     }
 
