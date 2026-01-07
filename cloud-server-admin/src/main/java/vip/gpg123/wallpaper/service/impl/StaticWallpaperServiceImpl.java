@@ -4,6 +4,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
@@ -152,13 +153,13 @@ public class StaticWallpaperServiceImpl extends ServiceImpl<StaticWallpaperMappe
      * 分页查询
      *
      * @param page    page
-     * @param wrapper w
+     * @param staticWallpaper s
      * @return r
      */
     @Override
     @DS("wallpaper")
-    public IPage<StaticWallpaperExtension> iPage(IPage<StaticWallpaper> page, QueryWrapper wrapper) {
-        return staticWallpaperMapper.iPage(page, wrapper);
+    public IPage<StaticWallpaperExtension> page(Page<StaticWallpaper> page, StaticWallpaper staticWallpaper) {
+        return staticWallpaperMapper.page(page, staticWallpaper);
     }
 
     /**

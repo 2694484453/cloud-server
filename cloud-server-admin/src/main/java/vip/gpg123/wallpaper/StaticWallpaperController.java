@@ -82,20 +82,9 @@ public class StaticWallpaperController extends BaseController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public TableDataInfo page(StaticWallpaper staticWallpaper) {
-        // 转换参数
-        PageDomain pageDomain = TableSupport.buildPageRequest();
-        pageDomain.setOrderByColumn(StrUtil.toUnderlineCase(pageDomain.getOrderByColumn()));
-        IPage<StaticWallpaper> page = new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
-        // 构建查询条件
-        QueryWrapper<StaticWallpaper> queryWrapper = new QueryWrapper<>();
-        if (StrUtil.isNotBlank(staticWallpaper.getName())) {
-            queryWrapper.like("sw.name", staticWallpaper.getName());
-        }
-        if (StrUtil.isNotBlank(staticWallpaper.getDirName())) {
-            queryWrapper.like("sw.dir_name", staticWallpaper.getDirName());
-        }
-        IPage<StaticWallpaperExtension> pageRes = staticWallpaperService.iPage(page, queryWrapper);
+    public TableDataInfo page(Page<StaticWallpaper> page, StaticWallpaper staticWallpaper) {
+        // 查询
+        IPage<StaticWallpaperExtension> pageRes = staticWallpaperService.page(page, staticWallpaper);
         // 返回
         return PageUtils.toPageByIPage(pageRes);
     }

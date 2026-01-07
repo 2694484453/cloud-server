@@ -64,20 +64,10 @@
             <if test="qw.name != null and qw.name !=''">
                 and name like concat('%',#{qw.name},'%')
             </if>
+            <if test="qw.dirName != null and qw.dirName !=''">
+                and dir_name = #{qw.dirName}
+            </if>
         </where>
-    </sql>
-
-    <!--排序-->
-    <sql id="order">
-        <!-- 排序放在where外面 -->
-        <choose>
-            <when test="page.orderByColumn != null and page.orderByColumn != '' and page.isAsc != null and page.isAsc != ''">
-                order by ${page.orderByColumn} ${page.isAsc}
-            </when>
-            <otherwise>
-                order by create_time desc
-            </otherwise>
-        </choose>
     </sql>
 
     <!--单个查询-->
@@ -90,12 +80,5 @@
     <select id="page" resultMap="StaticWallpaperWithCountsResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
-<!--        <include refid="order"/>-->
-    </select>
-
-    <!--mybatis-plus联查分页-->
-    <select id="iPage" resultMap="StaticWallpaperWithCountsResultMap">
-        <include refid="baseSelect"/>
-        ${ew.customSqlSegment}
     </select>
 </mapper>

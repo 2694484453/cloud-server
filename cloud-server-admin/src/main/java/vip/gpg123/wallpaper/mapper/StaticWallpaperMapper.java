@@ -1,8 +1,7 @@
 package vip.gpg123.wallpaper.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
@@ -19,22 +18,13 @@ import vip.gpg123.wallpaper.domain.StaticWallpaperExtension;
 public interface StaticWallpaperMapper extends BaseMapper<StaticWallpaper> {
 
     /**
-     * 分页查询
-     *
-     * @param page    page
-     * @param wrapper w
-     * @return r
-     */
-    IPage<StaticWallpaperExtension> iPage(IPage<StaticWallpaper> page, @Param(Constants.WRAPPER) QueryWrapper wrapper);
-
-    /**
      * 自定义查询
      *
      * @param page            page
      * @param staticWallpaper w
      * @return r
      */
-    IPage<StaticWallpaperExtension> page(@Param("page") IPage<StaticWallpaper> page, @Param("qw") StaticWallpaper staticWallpaper);
+    IPage<StaticWallpaperExtension> page(Page<StaticWallpaper> page, @Param("qw") StaticWallpaper staticWallpaper);
 
 }
 

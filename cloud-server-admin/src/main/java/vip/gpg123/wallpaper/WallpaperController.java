@@ -2,7 +2,9 @@ package vip.gpg123.wallpaper;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,15 +79,15 @@ public class WallpaperController {
      */
     @GetMapping("/tags")
     @ApiOperation(value = "tags")
-    public AjaxResult tags(@RequestParam("size")  int size) {
+    public AjaxResult tags(@RequestParam("size") int size) {
         List<WallpaperKeyword> list;
         long count = wallpaperKeywordService.count();
         if (count <= size) {
             list = wallpaperKeywordService.list();
             return AjaxResult.success(list);
-        }else {
+        } else {
             // 随机取
-           list = wallpaperKeywordService.randomList(size);
+            list = wallpaperKeywordService.randomList(size);
         }
         return AjaxResult.success(list);
     }
@@ -112,7 +114,7 @@ public class WallpaperController {
      * @return r
      */
     @GetMapping("/page")
-    public TableDataInfo page(WallpaperSearchParams params) {
+    public TableDataInfo page(Page<Object> page, WallpaperSearchParams params) {
         String cateName = ObjectUtil.defaultIfBlank(params.getCateName(), "");
         String name = ObjectUtil.defaultIfBlank(params.getName(), "");
         switch (cateName) {
@@ -128,7 +130,9 @@ public class WallpaperController {
                 StaticWallpaper staticWallpaper = new StaticWallpaper();
                 staticWallpaper.setName(name);
                 staticWallpaper.setDirName(cateName);
-                return staticWallpaperController.page(staticWallpaper);
+                Page<StaticWallpaper> staticWallpaperPage = new Page<>();
+                BeanUtils.copyProperties(page, staticWallpaperPage);
+                return staticWallpaperController.page(staticWallpaperPage, staticWallpaper);
         }
     }
 
