@@ -120,11 +120,11 @@ public class K8sTest {
 
     @Test
     public void t9() {
-        String file = "D:/log.txt";
+        String file = "log.txt";
         OutputStream outputStream = FileUtil.getOutputStream(file);
         InputStream inputStream = null;
         KubernetesClient client = K8sUtil.createDefaultKubernetesClient();
-        try (LogWatch watch = client.pods().inNamespace("demo").withName("spring-boot-demo-56f6dfdffd-s2d6f").watchLog(outputStream)) {
+        try (LogWatch watch = client.pods().inNamespace("kube-system").withName("metrics-server-7bfffcd44-8fgg4").watchLog(outputStream)) {
             inputStream = watch.getOutput();
             //watch.wait();
             TimeUnit.SECONDS.sleep(200L);

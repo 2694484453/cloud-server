@@ -66,12 +66,8 @@ public class WallpaperController {
     @GetMapping("/category")
     @ApiOperation(value = "cate")
     public AjaxResult cate() {
-        Map<String, List<SysDictData>> map = new HashMap<>();
         List<SysDictData> list = DictUtils.getDictCache("wallpaper_category");
-        map.put("cate", list);
-        List<SysDictData> tags = DictUtils.getDictCache("wallpaper_keywords");
-        map.put("tags", tags);
-        return AjaxResult.success(map);
+        return AjaxResult.success(list);
     }
 
     /**
