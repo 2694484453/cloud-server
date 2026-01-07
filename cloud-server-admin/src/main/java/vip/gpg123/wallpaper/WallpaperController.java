@@ -2,16 +2,16 @@ package vip.gpg123.wallpaper;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.constant.CacheConstants;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysDictData;
 import vip.gpg123.common.core.page.TableDataInfo;
+import vip.gpg123.common.core.redis.RedisCache;
 import vip.gpg123.common.utils.DictUtils;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
@@ -43,7 +43,7 @@ public class WallpaperController {
     private StaticWallpaperController staticWallpaperController;
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisCache redisCache;
 
     @Autowired
     private DynamicWallpaperController dynamicWallpaperController;
@@ -89,7 +89,7 @@ public class WallpaperController {
         Map<String, Object> map = new HashMap<>();
         long total = staticWallpaperService.count();
         map.put("total", total);
-        map.put("remain", stringRedisTemplate.opsForValue().get("exacg.remain"));
+        map.put("remain", redisCache.getCacheSet(CacheConstants.AI_CONFIG_KEY + "exacg.remain"));
         map.put("generateCount", wallpaperUploadService.count());
         return AjaxResult.success(map);
     }

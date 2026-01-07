@@ -3,14 +3,15 @@ package vip.gpg123.system;
 import cn.hutool.core.util.RandomUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import vip.gpg123.common.constant.CacheConstants;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.model.EmailBody;
 import vip.gpg123.common.core.domain.model.RegisterBody;
+import vip.gpg123.common.core.redis.RedisCache;
 import vip.gpg123.common.utils.StringUtils;
 import vip.gpg123.framework.config.EmailConfig;
 import vip.gpg123.framework.producer.MessageProducer;
@@ -39,7 +40,7 @@ public class SysRegisterController extends BaseController {
     private MessageProducer messageProducer;
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisCache redisCache;
 
     @Autowired
     private EmailConfig.emailProperties emailProperties;
@@ -76,7 +77,7 @@ public class SysRegisterController extends BaseController {
             String email = map.get("email");
             String site = map.getOrDefault("site", "云服务平台");
             String code = RandomUtil.randomNumbers(6);
-            stringRedisTemplate.opsForValue().set(email, code, 10, TimeUnit.MINUTES);
+            redisCache.setCacheObject(CacheConstants.REGISTER_USER_CODE_KEY + email, code, 10, TimeUnit.MINUTES);
             String content = emailProperties.getCodeContent();
             EmailBody emailBody = new EmailBody();
             emailBody.setTos(new String[]{email});
@@ -95,10 +96,10 @@ public class SysRegisterController extends BaseController {
     }
 
     public boolean verifyCode(String email, String inputCode) {
-        String storedCode = stringRedisTemplate.opsForValue().get(email);
+        String storedCode = redisCache.getCacheObject(CacheConstants.REGISTER_USER_CODE_KEY + email);
         if (storedCode != null && storedCode.equals(inputCode)) {
             // 验证成功，可以删除该键或保留至过期
-            stringRedisTemplate.delete(email);
+            redisCache.deleteObject(CacheConstants.REGISTER_USER_CODE_KEY + email);
             return true;
         }
         return false;

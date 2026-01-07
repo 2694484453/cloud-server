@@ -32,6 +32,19 @@ public class SysDictDataServiceImpl implements ISysDictDataService
     }
 
     /**
+     * 根据dictType查询
+     *
+     * @param dictType dictType
+     * @return r
+     */
+    @Override
+    public List<SysDictData> selectDictDataByType(String dictType) {
+        SysDictData dictData = new SysDictData();
+        dictData.setDictType(dictType);
+        return dictDataMapper.selectDictDataList(dictData);
+    }
+
+    /**
      * 根据字典类型和字典键值查询字典数据信息
      *
      * @param dictType 字典类型

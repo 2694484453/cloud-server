@@ -3,7 +3,6 @@ package vip.gpg123.wallpaper;
 import cn.hutool.core.date.DateUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +12,13 @@ import vip.gpg123.ai.domain.ExAcgResponse;
 import vip.gpg123.ai.domain.ZImageRequest;
 import vip.gpg123.ai.service.AliYunAiApi;
 import vip.gpg123.ai.service.ExAcgApi;
+import vip.gpg123.common.constant.CacheConstants;
 import vip.gpg123.common.core.domain.AjaxResult;
+import vip.gpg123.common.core.redis.RedisCache;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/wallpaper/ai")
@@ -31,7 +34,7 @@ public class AiWallpaperController {
     private WallpaperUploadService wallpaperUploadService;
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisCache redisCache;
 
     /**
      * 生成
@@ -41,8 +44,18 @@ public class AiWallpaperController {
      */
     @PostMapping("/generate_image")
     @ApiOperation(value = "生成")
-    public AjaxResult generateImage(@RequestBody ExAcgRequest request) {
-        //
+    public AjaxResult generateImage(@RequestBody ExAcgRequest request, HttpServletRequest httpServletRequest) {
+        // 获取ip
+//        String ip = IpUtils.getIpAddr(httpServletRequest);
+//        if (StringUtils.isEmpty(ip)) {
+//            return AjaxResult.error("无效ip");
+//        }
+//        // 查询每日限使用次数
+//        redisCache.getCacheObject("");
+//        // 忽略本地
+//        if (!"localhost".equals(ip) || !"127.0.0.1".equals(ip)) {
+//
+//        }
         ExAcgResponse response = exAcgApi.generateImage(request);
         if (response != null) {
             String url = response.getData().getImage_url();
@@ -52,7 +65,10 @@ public class AiWallpaperController {
             wallpaperUpload.setCreateBy("-1");
             wallpaperUpload.setName(url.substring(url.lastIndexOf('/') + 1));
             wallpaperUpload.setModelName(response.getData().getModel_name());
-            stringRedisTemplate.opsForValue().set("exacg.remain", String.valueOf(response.getData().getRemaining_points()));
+            // 设置次数
+
+            // 剩余额度
+            redisCache.setCacheObject(CacheConstants.AI_CONFIG_KEY + "exacg.remain", String.valueOf(response.getData().getRemaining_points()));
             wallpaperUploadService.save(wallpaperUpload);
             return AjaxResult.success("生成成功", wallpaperUpload);
         }
