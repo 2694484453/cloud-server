@@ -12,6 +12,7 @@
         <result property="height" column="height"/>
         <result property="tags" column="tags"/>
         <result property="dirName" column="dir_name"/>
+        <result property="parentName" column="parent_name"/>
         <result property="dirPath" column="dir_path"/>
         <result property="size" column="size"/>
         <result property="url" column="url"/>
@@ -79,7 +80,6 @@
         </choose>
     </sql>
 
-
     <!--单个查询-->
     <select id="one" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
@@ -90,8 +90,7 @@
     <select id="page" resultMap="StaticWallpaperWithCountsResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
-        <include refid="order"/>
-        limit #{page.limit} offset #{page.offset}
+<!--        <include refid="order"/>-->
     </select>
 
     <!--mybatis-plus联查分页-->

@@ -32,6 +32,7 @@ public class MybatisPlusConfig {
         // 溢出总页数后是否进行处理
         paginationInnerInterceptor.setOverflow(true);
         paginationInnerInterceptor.setDbType(DbType.MYSQL);
+        paginationInnerInterceptor.setOptimizeJoin(true);
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
         return interceptor;
     }

@@ -69,6 +69,12 @@ public class StaticWallpaper extends BaseEntity implements Serializable {
     /**
      *
      */
+    @TableField(value = "parent_name")
+    private String parentName;
+
+    /**
+     *
+     */
     @TableField(value = "description")
     private String description;
 

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.constant.CacheConstants;
 import vip.gpg123.common.core.domain.AjaxResult;
@@ -17,11 +18,14 @@ import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
+import vip.gpg123.wallpaper.domain.WallpaperKeyword;
 import vip.gpg123.wallpaper.domain.WallpaperSearchParams;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import vip.gpg123.wallpaper.service.StaticWallpaperService;
+import vip.gpg123.wallpaper.service.WallpaperKeywordService;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +55,9 @@ public class WallpaperController {
     @Autowired
     private ISysNoticeService sysNoticeService;
 
+    @Autowired
+    private WallpaperKeywordService wallpaperKeywordService;
+
     /**
      * 分类
      *
@@ -74,8 +81,16 @@ public class WallpaperController {
      */
     @GetMapping("/tags")
     @ApiOperation(value = "tags")
-    public AjaxResult tags() {
-        List<Object> list = staticWallpaperService.tags();
+    public AjaxResult tags(@RequestParam("size")  int size) {
+        List<WallpaperKeyword> list;
+        long count = wallpaperKeywordService.count();
+        if (count <= size) {
+            list = wallpaperKeywordService.list();
+            return AjaxResult.success(list);
+        }else {
+            // 随机取
+           list = wallpaperKeywordService.randomList(size);
+        }
         return AjaxResult.success(list);
     }
 

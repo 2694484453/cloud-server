@@ -9,8 +9,6 @@ import vip.gpg123.wallpaper.domain.StaticWallpaper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import vip.gpg123.wallpaper.domain.StaticWallpaperExtension;
 
-import java.util.List;
-
 /**
  * @author gaopuguang
  * @description 针对表【cloud_wallpaper】的数据库操作Mapper
@@ -28,6 +26,15 @@ public interface StaticWallpaperMapper extends BaseMapper<StaticWallpaper> {
      * @return r
      */
     IPage<StaticWallpaperExtension> iPage(IPage<StaticWallpaper> page, @Param(Constants.WRAPPER) QueryWrapper wrapper);
+
+    /**
+     * 自定义查询
+     *
+     * @param page            page
+     * @param staticWallpaper w
+     * @return r
+     */
+    IPage<StaticWallpaperExtension> page(@Param("page") IPage<StaticWallpaper> page, @Param("qw") StaticWallpaper staticWallpaper);
 
 }
 
