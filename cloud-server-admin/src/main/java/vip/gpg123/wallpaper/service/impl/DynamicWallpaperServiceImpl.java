@@ -106,6 +106,17 @@ public class DynamicWallpaperServiceImpl extends ServiceImpl<DynamicWallpaperMap
     public IPage<DynamicWallpaperExtension> page(Page<DynamicWallpaper> page, DynamicWallpaper dynamicWallpaper) {
         return dynamicWallpaperMapper.page(page, dynamicWallpaper);
     }
+
+    /**
+     * 查询总记录数
+     *
+     * @see Wrappers#emptyWrapper()
+     */
+    @Override
+    @DS("wallpaper")
+    public int count() {
+        return super.count();
+    }
 }
 
 
