@@ -79,6 +79,9 @@ public class WallpaperTest {
             String dirName = dirPath.replace("/" + f.getName(), "");
             String parentName = f.getParent().substring(f.getParent().lastIndexOf("/") + 1);
             String targetUrl = ossProperties.getEndpoint() + "/wallpaper/" + URLUtil.encode(dirPath);
+            //
+            StaticWallpaper staticWallpaper = new StaticWallpaper();
+
             // 如果不存在
             if (!wallpaperMap.containsKey(dirPath)) {
                 // 设置tags
@@ -88,7 +91,6 @@ public class WallpaperTest {
                 tags2 = ArrayUtil.append(tags2, f.getName().split("_"));
                 tags2 = ArrayUtil.append(tags2, f.getName().split("-"));
 
-                StaticWallpaper staticWallpaper = new StaticWallpaper();
                 Map<String, Object> map = getPicResolution(f.getAbsolutePath());
                 if (map != null) {
                     Integer width = ObjectUtil.isEmpty(map.get("width")) ? null : (Integer) map.get("width");
@@ -103,13 +105,18 @@ public class WallpaperTest {
                 staticWallpaper.setName(f.getName());
                 staticWallpaper.setUrl(targetUrl);
                 staticWallpaper.setTags(StrUtil.join(",", (Object) tags2));
+                staticWallpaper.setSize(DataSizeUtil.format(f.length()));
                 staticWallpaperService.save(staticWallpaper);
             } else {
                 //
-                StaticWallpaper staticWallpaper = wallpaperMap.get(dirPath);
+                staticWallpaper = wallpaperMap.get(dirPath);
                 // 比较其他信息是否正确
                 if (StrUtil.isNotBlank(staticWallpaper.getUrl()) && !staticWallpaper.getUrl().equals(targetUrl)) {
                     staticWallpaper.setUrl(targetUrl);
+                    staticWallpaperService.updateById(staticWallpaper);
+                }
+                if (StrUtil.isBlank(staticWallpaper.getSize()) || StrUtil.isBlank(staticWallpaper.getSize())) {
+                    staticWallpaper.setSize(DataSizeUtil.format(f.length()));
                     staticWallpaperService.updateById(staticWallpaper);
                 }
             }
@@ -168,7 +175,7 @@ public class WallpaperTest {
             } else {
                 // 包含，检查url是否正确
                 String targetUrl = ossProperties.getEndpoint() + "/wallpaper/" + dynamicWallpaper.getDirPath();
-                if (StrUtil.isNotBlank(dynamicWallpaper.getUrl()) && !dynamicWallpaper.getUrl().equals(targetUrl)){
+                if (StrUtil.isNotBlank(dynamicWallpaper.getUrl()) && !dynamicWallpaper.getUrl().equals(targetUrl)) {
                     dynamicWallpaper.setUrl(targetUrl);
                     dynamicWallpaperService.updateById(dynamicWallpaper);
                 }

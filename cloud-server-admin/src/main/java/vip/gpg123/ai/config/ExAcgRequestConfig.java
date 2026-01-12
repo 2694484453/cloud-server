@@ -6,7 +6,7 @@ import vip.gpg123.framework.config.AliYunConfig;
 
 public class ExAcgRequestConfig {
 
-    @Bean(name = "exacgRequestInterceptor")
+    @Bean
     public RequestInterceptor exacgRequestInterceptor(AliYunConfig.AiHuiHuaProperties aiHuiHuaProperties) {
         return requestTemplate -> {
             // 添加 Bearer Token（根据 Umami 要求）

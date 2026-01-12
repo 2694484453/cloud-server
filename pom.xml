@@ -429,6 +429,18 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-commons</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version> <!-- 必须是 4.5.13 或更高 -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.16</version> <!-- 与 httpclient 4.5.13 兼容 -->
+        </dependency>
     </dependencies>
     <modules>
         <module>cloud-server-admin</module>

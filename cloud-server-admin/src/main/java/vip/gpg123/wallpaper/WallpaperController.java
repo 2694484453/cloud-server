@@ -25,6 +25,7 @@ import vip.gpg123.wallpaper.domain.StaticWallpaper;
 import vip.gpg123.wallpaper.domain.WallpaperKeyword;
 import vip.gpg123.wallpaper.domain.WallpaperSearchParams;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
+import vip.gpg123.wallpaper.service.DynamicWallpaperService;
 import vip.gpg123.wallpaper.service.StaticWallpaperService;
 import vip.gpg123.wallpaper.service.WallpaperKeywordService;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
@@ -53,6 +54,9 @@ public class WallpaperController {
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private DynamicWallpaperService dynamicWallpaperService;
 
     @Autowired
     private DynamicWallpaperController dynamicWallpaperController;
@@ -103,8 +107,8 @@ public class WallpaperController {
     @GetMapping("/overView")
     public AjaxResult overView() {
         Map<String, Object> map = new HashMap<>();
-        long total = staticWallpaperService.count();
-        map.put("total", total);
+        map.put("total", staticWallpaperService.count());
+        map.put("dynamicTotal", dynamicWallpaperService.count());
         map.put("remain", redisCache.getCacheSet(CacheConstants.AI_CONFIG_KEY + "exacg.remain"));
         map.put("generateCount", wallpaperUploadService.count());
         return AjaxResult.success(map);
