@@ -70,7 +70,8 @@ public class WallpaperAiController {
         // 忽略本地
         if (!"localhost".equals(ip)) {
             // 查询系统额度
-            Integer systemTimes = redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + "exacg.remain");
+            Object remain = redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + "exacg.remain");
+            int systemTimes = ObjectUtil.isNull(remain) ? 0 : Integer.parseInt(remain.toString());
             if (ObjectUtil.isNotNull(systemTimes) && systemTimes <= 1) {
                 return AjaxResult.error("系统资源已耗尽");
             }
