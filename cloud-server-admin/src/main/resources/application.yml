@@ -182,6 +182,8 @@ feign:
         logger-level: full
       exacg-api:
         logger-level: full
+        connect-timeout: 5000
+        read-timeout: 40000
       wx-api:
         logger-level: full
 #
