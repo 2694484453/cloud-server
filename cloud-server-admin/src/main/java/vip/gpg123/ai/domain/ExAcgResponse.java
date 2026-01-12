@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Data
 public class ExAcgResponse implements Serializable {
 
-    private String success;
+    private Boolean success;
 
     private String message;
 

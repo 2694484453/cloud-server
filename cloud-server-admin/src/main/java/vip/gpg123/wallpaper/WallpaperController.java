@@ -148,19 +148,6 @@ public class WallpaperController {
     }
 
     /**
-     * 剩余次数查询
-     *
-     * @param request r
-     * @return r
-     */
-    @GetMapping("/remain")
-    public AjaxResult timesRemain(HttpServletRequest request) {
-        String ip = IpUtils.getIpAddr(request);
-        Integer times = ObjectUtil.defaultIfNull(redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + ip), 20);
-        return AjaxResult.success(times);
-    }
-
-    /**
      * 公告
      *
      * @return r

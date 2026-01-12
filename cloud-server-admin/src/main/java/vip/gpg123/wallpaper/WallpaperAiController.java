@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,7 +72,7 @@ public class WallpaperAiController {
         if (!"localhost".equals(ip)) {
             // 查询系统额度
             Object remain = redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + "exacg.remain");
-            int systemTimes = ObjectUtil.isNull(remain) ? 0 : Integer.parseInt(remain.toString());
+            Integer systemTimes = ObjectUtil.defaultIfNull((Integer) remain, initTimes);
             if (ObjectUtil.isNotNull(systemTimes) && systemTimes <= 1) {
                 return AjaxResult.error("系统资源已耗尽");
             }
@@ -103,7 +104,7 @@ public class WallpaperAiController {
             wallpaperUpload.setName(url.substring(url.lastIndexOf('/') + 1));
             wallpaperUpload.setModelName(response.getData().getModel_name());
             // 系统剩余额度
-            redisCache.setCacheObject(CacheConstants.AI_CONFIG_KEY + "exacg.remain", String.valueOf(response.getData().getRemaining_points()));
+            redisCache.setCacheObject(CacheConstants.AI_CONFIG_KEY + "exacg.remain", response.getData().getRemaining_points());
             // 用户剩余额度
             Integer times = redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + ip);
             if (times != null && times != 0) {
@@ -148,4 +149,18 @@ public class WallpaperAiController {
         }
         return false;
     }
+
+    /**
+     * 剩余次数查询
+     *
+     * @param request r
+     * @return r
+     */
+    @GetMapping("/remain")
+    public AjaxResult timesRemain(HttpServletRequest request) {
+        String ip = IpUtils.getIpAddr(request);
+        Integer times = ObjectUtil.defaultIfNull(redisCache.getCacheObject(CacheConstants.AI_CONFIG_KEY + ip), 20);
+        return AjaxResult.success(times);
+    }
+
 }
