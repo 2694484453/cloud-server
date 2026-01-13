@@ -7,7 +7,7 @@ import vip.gpg123.nas.config.FrpServerFeignConfig;
 import vip.gpg123.nas.domain.FrpServerHttpResponse;
 import vip.gpg123.nas.domain.FrpServerInfo;
 
-@FeignClient(name = "nas-frp-server", url = "${frp.server.url}", configuration = FrpServerFeignConfig.class)
+@FeignClient(name = "nas-frp-server", url = "https://frps.gpg123.vip", configuration = FrpServerFeignConfig.class)
 @Service
 public interface FrpServerApi {
 

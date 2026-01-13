@@ -1,15 +1,12 @@
 package vip.gpg123.tracing;
 
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.tracing.service.JaegerApi;
 
 import java.util.List;
 
@@ -29,8 +27,8 @@ import java.util.List;
 @Api(tags = "【tracing】链路追踪-调用链")
 public class TracingTracesController {
 
-    @Value("${trace.api}")
-    private String api;
+    @Autowired
+    private JaegerApi jaegerApi;
 
     /**
      * 分页
@@ -73,12 +71,7 @@ public class TracingTracesController {
      * @return r
      */
     private List<?> getServiceList(String service, String limit, String start, String end, String lookBack, String operation) {
-        String url = api + "/traces?end=" + StrUtil.blankToDefault(end, "") + "&limit=" + StrUtil.blankToDefault(limit, "") + "&lookback=" + StrUtil.blankToDefault(lookBack, "") + "&maxDuration=&minDuration=&service=" + StrUtil.blankToDefault(service, "") + "&start=" + StrUtil.blankToDefault(start, "") + "&operation=" + StrUtil.blankToDefault(operation, "");
-        HttpResponse httpResponse = HttpUtil.createGet(url)
-                .timeout(10000)
-                .setConnectionTimeout(10000)
-                .execute();
-        JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
+        JSONObject jsonObject = jaegerApi.getTraces(service,limit,start,end,lookBack,operation);
         JSONArray data = JSONUtil.parseArray(jsonObject.get("data"));
         return Convert.toList(data);
     }

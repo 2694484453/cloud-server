@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.framework.client.JaegerClient;
 import vip.gpg123.framework.config.MonitorConfig;
+import vip.gpg123.tracing.service.JaegerApi;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +37,8 @@ public class TracingOverViewController {
     @Autowired
     private MonitorConfig.PrometheusProperties prometheusProperties;
 
-    @Qualifier("JaegerClient")
     @Autowired
-    private JaegerClient jaegerClient;
+    private JaegerApi jaegerApi;
 
     /**
      * 概览
@@ -58,11 +57,7 @@ public class TracingOverViewController {
     }
 
     public String getAppTotal() {
-        HttpResponse httpResponse = HttpUtil.createGet(jaegerClient.getEndpoint() + "/services")
-                .timeout(10000)
-                .setConnectionTimeout(10000)
-                .execute();
-        JSONObject jsonObject = JSONUtil.parseObj(httpResponse.body());
+        JSONObject jsonObject = jaegerApi.getServices();
         return jsonObject.get("total").toString();
     }
 

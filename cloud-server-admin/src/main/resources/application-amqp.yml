@@ -1,9 +1,0 @@
-# 消息队列服务
-spring:
-  rabbitmq:
-    port: 5672
-    host: hcs.gpg123.vip
-    username: admin
-    password: admin
-    #虚拟主机
-    virtual-host: cloud-server

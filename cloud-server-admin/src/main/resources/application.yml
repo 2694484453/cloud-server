@@ -74,7 +74,7 @@ spring:
     # 国际化资源文件路径
     basename: i18n/messages
   profiles:
-    active: datasource,common,aliyun,tracing,amqp,es
+    active: datasource,common,aliyun,tracing,amqp
   # 文件上传
   servlet:
     multipart:
@@ -115,6 +115,15 @@ spring:
     properties:
       org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
       org.quartz.scheduler.makeSchedulerThreadDaemon: true
+  # mq
+  rabbitmq:
+    port: 5672
+    host: tcs.gpg123.vip
+    username: admin
+    password: admin
+    #虚拟主机
+    virtual-host: cloud-server
+  # 邮件
   mail:
     host: smtpdm.aliyun.com
     port: 465
@@ -129,6 +138,14 @@ spring:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
     default-encoding: utf-8
+  # es
+  elasticsearch:
+    rest:
+      uris: https://elasticsearch.gpg123.vip
+      connection-timeout: 10s
+      read-timeout: 30s
+      username: elastic
+      password: elastic
   cloud:
     consul:
       host: ecs.gpg123.vip

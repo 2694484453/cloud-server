@@ -48,9 +48,6 @@ import java.util.List;
 @Api(tags = "caddy管理")
 public class CaddyController extends BaseController {
 
-    @Value("${basePath}")
-    private String basePath;
-
     @Autowired
     private CaddyApi caddyApi;
 

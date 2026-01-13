@@ -3,39 +3,14 @@ traefik:
   api: https://traefik.ecs.gpg123.vip/api
 caddy:
   api: http://hongkong.gpg123.vip:2020
-build:
-  image: /home/devops/image
-  helm: /home/helm-repo
-etcd:
 
-repo:
-  helm:
-    name: default
-    url: https://helm-repo.gpg123.vip
-  docker:
-    - name: aliyun
-      url:
-basePath: /home
+
 docker:
   address: tcp://hongkong.gpg123.vip:2345
   tls:
     enabled: false
     certPath: ""
-#git应用
-git:
-  #gitee仓库
-  gitee:
-    api: https://gitee.com/oauth/token
-  github:
-    username: 2694484453
-    access_token: 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
-# 大模型
-ai:
-  open-webui:
 
-# 链路追踪
-trace:
-  api: http://ecs.gpg123.vip:16686/api
 #监控
 monitor:
   prometheus:
@@ -47,21 +22,16 @@ monitor:
 ide:
   path: /home/codespace
   url: https://code-server.gpg123.vip
-#远程主机
-remote:
-  host: tcs.gpg123.vip
-  port: 22
-  userName: root
-  passWord: 1999y4m30D%
+
 #frp
 frp:
   server:
-    url: http://hongkong.gpg123.vip:7500
     ip: hongkong.gpg123.vip
     port: 7000
     token: ADt8zh5VFdJKcccVWh2jkv1l6Z0IblSvm0H7M2yclJpYkWV0KPEadr9gZWdd77HM
     userName: gaopuguang
     passWord: 1999y4m30d
+
 #访问分析
 analytics:
   umami:
