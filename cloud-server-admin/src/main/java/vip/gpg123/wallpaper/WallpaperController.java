@@ -129,6 +129,7 @@ public class WallpaperController {
             case "dynamic_phone":
                 DynamicWallpaper dynamicWallpaper = new DynamicWallpaper();
                 dynamicWallpaper.setName(name);
+                dynamicWallpaper.setDirPath(cateName);
                 Page<DynamicWallpaper> dynamicWallpaperPage = new Page<>();
                 BeanUtils.copyProperties(page, dynamicWallpaperPage);
                 return dynamicWallpaperController.page(dynamicWallpaperPage, dynamicWallpaper);
