@@ -5,18 +5,18 @@
 <mapper namespace="vip.gpg123.wallpaper.mapper.DynamicWallpaperMapper">
 
     <resultMap id="BaseResultMap" type="vip.gpg123.wallpaper.domain.DynamicWallpaper">
-            <id property="id" column="id" />
-            <result property="name" column="name" />
-            <result property="dirName" column="dir_name"/>
-            <result property="dirPath" column="dir_path" />
-            <result property="tags" column="tags" />
-            <result property="size" column="size" />
-            <result property="url" column="url" />
-            <result property="description" column="description" />
-            <result property="createTime" column="create_time" />
-            <result property="createBy" column="create_by" />
-            <result property="updateTime" column="update_time" />
-            <result property="updateBy" column="update_by" />
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="dirName" column="dir_name"/>
+        <result property="dirPath" column="dir_path"/>
+        <result property="tags" column="tags"/>
+        <result property="size" column="size"/>
+        <result property="url" column="url"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
     </resultMap>
 
     <!-- 新的ResultMap，继承原有ResultMap并添加新字段 -->
@@ -36,18 +36,17 @@
     </sql>
     <!--基础查询-->
     <sql id="baseSelect">
-        SELECT
-            dw.*,
-            (SELECT COUNT(*)
-             FROM umami.website_event we
-             WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
-               AND we.url_path = '/info'
-               AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=dynamic')) AS `view_count`,
-            (SELECT COUNT(*)
-             FROM umami.website_event we
-             WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
-               AND we.url_path = '/download'
-               AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=dynamic')) AS `download_count`
+        SELECT dw.*,
+               (SELECT COUNT(*)
+                FROM umami.website_event we
+                WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
+                  AND we.url_path = '/info'
+                  AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=', dw.dir_name) COLLATE utf8mb4_unicode_ci)  AS `view_count`,
+               (SELECT COUNT(*)
+                FROM umami.website_event we
+                WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
+                  AND we.url_path = '/download'
+                  AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=', dw.dir_name) COLLATE utf8mb4_unicode_ci) AS `download_count`
         FROM wallpaper.dynamic_wallpaper dw
     </sql>
 

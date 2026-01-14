@@ -40,18 +40,17 @@
 
     <!--基础查询-->
     <sql id="baseSelect">
-        SELECT
-            sw.*,
-            (SELECT COUNT(*)
-             FROM umami.website_event we
-             WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
-               AND we.url_path = '/info'
-               AND we.url_query = CONCAT('id=', sw.id)) AS `view_count`,
-            (SELECT COUNT(*)
-             FROM umami.website_event we
-             WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
-               AND we.url_path = '/download'
-               AND we.url_query = CONCAT('id=', sw.id)) AS `download_count`
+        SELECT sw.*,
+               (SELECT COUNT(*)
+                FROM umami.website_event we
+                WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
+                  AND we.url_path = '/info'
+                  AND we.url_query = CONCAT('id=', sw.id, '&amp;cateName=', sw.dir_name) COLLATE utf8mb4_unicode_ci) AS `view_count`,
+               (SELECT COUNT(*)
+                FROM umami.website_event we
+                WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
+                  AND we.url_path = '/download'
+                  AND we.url_query = CONCAT('id=', sw.id, '&amp;cateName=', sw.dir_name) COLLATE utf8mb4_unicode_ci) AS `download_count`
         FROM wallpaper.static_wallpaper sw
     </sql>
 
