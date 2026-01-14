@@ -109,7 +109,6 @@ public class WallpaperController {
         Map<String, Object> map = new HashMap<>();
         map.put("total", staticWallpaperService.count());
         map.put("dynamicTotal", dynamicWallpaperService.count());
-        map.put("remain", redisCache.getCacheSet(CacheConstants.AI_CONFIG_KEY + "exacg.remain"));
         map.put("generateCount", wallpaperUploadService.count());
         return AjaxResult.success(map);
     }
