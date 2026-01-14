@@ -34,6 +34,8 @@
         id,name,dir_path,tags,size,url,
         description,create_time,create_by,update_time,update_by
     </sql>
+
+
     <!--基础查询-->
     <sql id="baseSelect">
         SELECT dw.*,
@@ -41,12 +43,12 @@
                 FROM umami.website_event we
                 WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
                   AND we.url_path = '/info'
-                  AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=', dw.dir_name) COLLATE utf8mb4_unicode_ci)  AS `view_count`,
+                  AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=', dw.dir_name) COLLATE utf8_unicode_ci)  AS `view_count`,
                (SELECT COUNT(*)
                 FROM umami.website_event we
                 WHERE we.website_id = '379a0d2f-0272-42ce-8002-e4bb3bb31526'
                   AND we.url_path = '/download'
-                  AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=', dw.dir_name) COLLATE utf8mb4_unicode_ci) AS `download_count`
+                  AND we.url_query = CONCAT('id=', dw.id, '&amp;cateName=', dw.dir_name) COLLATE utf8_unicode_ci) AS `download_count`
         FROM wallpaper.dynamic_wallpaper dw
     </sql>
 
