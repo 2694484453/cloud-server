@@ -60,6 +60,9 @@
             <if test="qw.name != null and qw.name !=''">
                 and name like concat('%',#{qw.name},'%')
             </if>
+            <if test="qw.dirName != null and qw.dirName != ''">
+                and dir_name = #{qw.dirName}
+            </if>
         </where>
     </sql>
 
