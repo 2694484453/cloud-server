@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import vip.gpg123.CloudServerApplication;
@@ -76,7 +77,7 @@ public class WallpaperTest {
         // 判断新增的
         files.forEach(f -> {
             String dirPath = f.getAbsolutePath().replace(sourcePath, "");
-            String dirName = dirPath.replace("/" + f.getName(), "");
+            String dirName = dirPath.substring(0, dirPath.indexOf("/"));
             String parentName = f.getParent().substring(f.getParent().lastIndexOf("/") + 1);
             String targetUrl = ossProperties.getEndpoint() + "/wallpaper/" + URLUtil.encode(dirPath);
             //
@@ -110,53 +111,40 @@ public class WallpaperTest {
             } else {
                 //
                 staticWallpaper = wallpaperMap.get(dirPath);
-                // 比较其他信息是否正确
+                // url信息
                 if (StrUtil.isNotBlank(staticWallpaper.getUrl()) && !staticWallpaper.getUrl().equals(targetUrl)) {
                     staticWallpaper.setUrl(targetUrl);
                     staticWallpaperService.updateById(staticWallpaper);
                 }
+                // 文件大小信息
                 if (StrUtil.isBlank(staticWallpaper.getSize()) || StrUtil.isBlank(staticWallpaper.getSize())) {
                     staticWallpaper.setSize(DataSizeUtil.format(f.length()));
                     staticWallpaperService.updateById(staticWallpaper);
                 }
-            }
-        });
-    }
-
-    @Test
-    public void update() {
-        List<StaticWallpaper> staticWallpapers = staticWallpaperService.list();
-        staticWallpapers.forEach(w -> {
-            String filePath = sourcePath + "/" + w.getDirPath();
-            boolean exists = FileUtil.exist(filePath);
-            if (exists && (ObjectUtil.isNull(w.getWidth()) || ObjectUtil.isNull(w.getHeight()))) {
-                Map<String, Object> map = getPicResolution(filePath);
-                Integer width = ObjectUtil.isEmpty(map.get("width")) ? null : (Integer) map.get("width");
-                Integer height = ObjectUtil.isEmpty(map.get("height")) ? null : (Integer) map.get("height");
-                w.setWidth(width);
-                w.setHeight(height);
-                staticWallpaperService.updateById(w);
-                System.out.println("图片名称：" + w.getName() + ",图片尺寸: " + width + " x " + height + " 像素");
-            }
-            if (exists) {
-                File file = new File(filePath);
-                String relativePath = file.getAbsolutePath().replace(sourcePath, "").replace("/" + file.getName(), "");
-                w.setDirName(relativePath);
-                staticWallpaperService.updateById(w);
-                System.out.println("更新" + w.getId());
+                // dirName
+                if (StrUtil.isBlank(staticWallpaper.getDirName()) || !dirName.equals(staticWallpaper.getDirName())) {
+                    staticWallpaper.setDirName(dirName);
+                    staticWallpaperService.updateById(staticWallpaper);
+                }
             }
         });
     }
 
     @Test
     public void saveOrUpdateDynamicWallpaper() {
-        List<File> files = FileUtil.loopFiles(sourcePath + "dynamic").stream().filter(file -> file.getName().endsWith(".mp4") && !file.getName().startsWith(".")).collect(Collectors.toList());
+        List<File> files = new ArrayList<>();
+        List<File> dynamics = FileUtil.loopFiles(sourcePath + "dynamic").stream().filter(file -> file.getName().endsWith(".mp4") && !file.getName().startsWith(".")).collect(Collectors.toList());
+        List<File> dynamicPhones = FileUtil.loopFiles(sourcePath + "dynamic_phone").stream().filter(file -> file.getName().endsWith(".mp4") && !file.getName().startsWith(".")).collect(Collectors.toList());
+        files.addAll(dynamics);
+        files.addAll(dynamicPhones);
         //
         List<DynamicWallpaper> dynamicWallpapers = dynamicWallpaperService.list();
-        Map<String, DynamicWallpaper> dynamicWallpaperMap = dynamicWallpapers.stream().collect(Collectors.toMap(DynamicWallpaper::getName, w -> w));
+        Map<String, DynamicWallpaper> dynamicWallpaperMap = dynamicWallpapers.stream().collect(Collectors.toMap(DynamicWallpaper::getDirPath, w -> w));
         files.forEach(f -> {
+            String dirPath = f.getAbsolutePath().replace(sourcePath, "");
+            String dirName = dirPath.substring(0, dirPath.indexOf("/"));
             // 不包含
-            if (!dynamicWallpaperMap.containsKey(f.getName())) {
+            if (!dynamicWallpaperMap.containsKey(dirPath)) {
                 // 新增
                 DynamicWallpaper dynamicWallpaper = new DynamicWallpaper();
                 dynamicWallpaper.setName(f.getName());
@@ -165,6 +153,19 @@ public class WallpaperTest {
                 dynamicWallpaper.setDirPath(f.getAbsolutePath().replace(sourcePath, ""));
                 dynamicWallpaper.setUrl(ossProperties.getEndpoint() + "/wallpaper/" + dynamicWallpaper.getDirPath());
                 dynamicWallpaperService.save(dynamicWallpaper);
+            } else {
+                DynamicWallpaper dynamicWallpaper = dynamicWallpaperMap.get(dirPath);
+                // 包含，检查url是否正确
+                String targetUrl = ossProperties.getEndpoint() + "/wallpaper/" + dynamicWallpaper.getDirPath();
+                if (StrUtil.isNotBlank(dynamicWallpaper.getUrl()) && !dynamicWallpaper.getUrl().equals(targetUrl)) {
+                    dynamicWallpaper.setUrl(targetUrl);
+                    dynamicWallpaperService.updateById(dynamicWallpaper);
+                }
+                // 检查文件夹名
+                if (StrUtil.isBlank(dynamicWallpaper.getDirName()) || !dirName.equals(dynamicWallpaper.getDirName())) {
+                    dynamicWallpaper.setDirName(dirName);
+                    dynamicWallpaperService.updateById(dynamicWallpaper);
+                }
             }
         });
         dynamicWallpapers.forEach(dynamicWallpaper -> {
@@ -172,13 +173,6 @@ public class WallpaperTest {
             if (!FileUtil.exist(filePath)) {
                 // 不存在就删除
                 dynamicWallpaperService.removeById(dynamicWallpaper.getId());
-            } else {
-                // 包含，检查url是否正确
-                String targetUrl = ossProperties.getEndpoint() + "/wallpaper/" + dynamicWallpaper.getDirPath();
-                if (StrUtil.isNotBlank(dynamicWallpaper.getUrl()) && !dynamicWallpaper.getUrl().equals(targetUrl)) {
-                    dynamicWallpaper.setUrl(targetUrl);
-                    dynamicWallpaperService.updateById(dynamicWallpaper);
-                }
             }
         });
     }
@@ -210,8 +204,11 @@ public class WallpaperTest {
 
     @Test
     public void test() {
-        File file = new File(keywordFilePath);
-        System.out.println(file.getParent().substring(file.getParent().lastIndexOf("/") + 1));
+        //File file = new File(keywordFilePath);
+        //System.out.println(file.getParent().substring(file.getParent().lastIndexOf("/") + 1));
+        File file = new File(sourcePath + "dynamic/芙宁娜/芙宁娜001 湖中婷影 吸血姬の日常.mp4");
+        String str = file.getAbsolutePath().replace(sourcePath, "");
+        System.out.println(str.substring(0, str.indexOf("/")));
     }
 
     @Test

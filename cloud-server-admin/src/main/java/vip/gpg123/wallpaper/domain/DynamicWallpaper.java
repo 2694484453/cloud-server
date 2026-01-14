@@ -28,6 +28,12 @@ public class DynamicWallpaper implements Serializable {
     private String name;
 
     /**
+     *
+     */
+    @TableField(value = "dir_name")
+    private String dirName;
+
+    /**
      * 
      */
     @TableField(value = "dir_path")

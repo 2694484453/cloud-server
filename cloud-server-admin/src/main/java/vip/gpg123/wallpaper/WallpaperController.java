@@ -126,6 +126,7 @@ public class WallpaperController {
         String name = ObjectUtil.defaultIfBlank(params.getName(), "");
         switch (cateName) {
             case "dynamic":
+            case "dynamic_phone":
                 DynamicWallpaper dynamicWallpaper = new DynamicWallpaper();
                 dynamicWallpaper.setName(name);
                 Page<DynamicWallpaper> dynamicWallpaperPage = new Page<>();
