@@ -1,7 +1,6 @@
 package vip.gpg123.wallpaper;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.http.server.HttpServerRequest;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
@@ -11,13 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import vip.gpg123.common.constant.CacheConstants;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.domain.entity.SysDictData;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.core.redis.RedisCache;
 import vip.gpg123.common.utils.DictUtils;
-import vip.gpg123.common.utils.ip.IpUtils;
 import vip.gpg123.system.domain.SysNotice;
 import vip.gpg123.system.service.ISysNoticeService;
 import vip.gpg123.wallpaper.domain.DynamicWallpaper;
@@ -30,8 +27,6 @@ import vip.gpg123.wallpaper.service.StaticWallpaperService;
 import vip.gpg123.wallpaper.service.WallpaperKeywordService;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +46,6 @@ public class WallpaperController {
 
     @Autowired
     private StaticWallpaperController staticWallpaperController;
-
-    @Autowired
-    private RedisCache redisCache;
 
     @Autowired
     private DynamicWallpaperService dynamicWallpaperService;
