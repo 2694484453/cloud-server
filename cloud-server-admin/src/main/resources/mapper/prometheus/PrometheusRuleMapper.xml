@@ -7,7 +7,6 @@
     <resultMap id="BaseResultMap" type="vip.gpg123.prometheus.domain.PrometheusRule">
         <id property="ruleId" column="rule_id"/>
         <result property="groupId" column="group_id"/>
-        <result property="groupName" column="group_name"/>
         <result property="ruleName" column="rule_name"/>
         <result property="status" column="status"/>
         <result property="severityLevel" column="severity_level"/>
@@ -59,11 +58,11 @@
     <!--基础查询-->
     <sql id="baseSelect">
         SELECT r.*,
-               g.group_name,
+               g.job_name AS groupName,
                uu.user_name AS createByUserName,
                uc.user_name AS updateByUserName
         FROM prometheus_rule r
-                 LEFT JOIN prometheus_group g ON r.group_id = g.group_id
+                 LEFT JOIN prometheus_target g ON r.group_id = g.target_id
                  LEFT JOIN sys_user uu ON r.create_by = uu.user_id
                  LEFT JOIN sys_user uc ON r.update_by = uc.user_id
     </sql>
