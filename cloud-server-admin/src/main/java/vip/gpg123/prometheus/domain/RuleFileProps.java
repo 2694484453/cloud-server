@@ -1,11 +1,16 @@
 package vip.gpg123.prometheus.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RuleFileProps implements Serializable {
 
     // 通用字段
@@ -13,6 +18,7 @@ public class RuleFileProps implements Serializable {
 
     private String expr; // PromQL 表达式
 
+    @JsonProperty(value = "for")
     private String forProperty; // 等待时间，如 "5m" (Java关键字for不能作为字段名，故加Property)
 
     // 标签 (会发送给 Alertmanager)
