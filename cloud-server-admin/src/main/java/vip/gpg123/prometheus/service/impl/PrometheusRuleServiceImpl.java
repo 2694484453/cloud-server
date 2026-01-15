@@ -1,5 +1,6 @@
 package vip.gpg123.prometheus.service.impl;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,15 +14,18 @@ import vip.gpg123.framework.config.MonitorConfig;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.framework.producer.MessageProducer;
 import vip.gpg123.prometheus.domain.PrometheusRule;
+import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.domain.RuleFileProps;
 import vip.gpg123.prometheus.domain.RuleGroup;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
 import org.springframework.stereotype.Service;
+import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import java.io.FileWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +49,9 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
     private PrometheusRuleMapper prometheusRuleMapper;
 
     @Autowired
+    private PrometheusTargetService prometheusTargetService;
+
+    @Autowired
     private PrometheusApi prometheusApi;
 
     private static final String modelName = "告警规则";
@@ -61,31 +68,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                // 文件位置
-                String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
-                // 读取
-                List<RuleGroup> ruleGroups = YamlUtil.loadByPath(filePath, List.class);
-                RuleGroup ruleGroup = ruleGroups.get(0);
-                List<RuleFileProps> rules = ruleGroup.getRules();
-                // 添加
-                RuleFileProps ruleFileProps = new RuleFileProps();
-                ruleFileProps.setAlert(entity.getRuleName());
-                ruleFileProps.setExpr(entity.getExpr());
-                //
-                Map<String, Object> annotations = new HashMap<>();
-                annotations.put("summary", entity.getSummary());
-                annotations.put("description", entity.getDescription());
-                ruleFileProps.setAnnotations(annotations);
-                //
-                Map<String, Object> labels = new HashMap<>();
-                labels.put("createBy", String.valueOf(sysUser.getUserId()));
-                labels.put("severity", entity.getSeverityLevel());
-                labels.put("id", String.valueOf(entity.getRuleId()));
-                ruleFileProps.setLabels(labels);
-                rules.add(ruleFileProps);
-                ruleGroup.setRules(rules);
-                ruleGroups.set(0, ruleGroup);
-                generateYaml(ruleGroups, filePath);
+                createOrUpdateFile(sysUser, entity);
                 // 发送
                 messageProducer.sendEmail("新增", modelName, res, sysUser, true);
                 // 刷新
@@ -108,23 +91,27 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
+                PrometheusTarget prometheusTarget = prometheusTargetService.getById(prometheusRule.getGroupId());
+                prometheusRule.setGroupName(prometheusTarget.getJobName());
                 // 文件位置
                 String filePath = prometheusProperties.getPath() + "/" + prometheusRule.getGroupName() + ".yml";
-                // 读取
-                List<RuleGroup> ruleGroups = YamlUtil.loadByPath(filePath, List.class);
-                RuleGroup ruleGroup = ruleGroups.get(0);
-                List<RuleFileProps> rules = ruleGroup.getRules();
-                // 删除规则
-                rules.removeIf(item -> {
-                    Map<String, Object> labels = item.getLabels();
-                    if (labels != null && labels.containsKey("id")) {
-                        labels.get("id");
-                    }
-                    return false;
-                });
-                ruleGroup.setRules(rules);
-                ruleGroups.set(0, ruleGroup);
-                generateYaml(ruleGroups, filePath);
+                if (FileUtil.exist(filePath)) {
+                    // 读取
+                    List<RuleGroup> ruleGroups = YamlUtil.loadByPath(filePath, List.class);
+                    RuleGroup ruleGroup = ruleGroups.get(0);
+                    List<RuleFileProps> rules = ruleGroup.getRules();
+                    // 删除规则
+                    rules.removeIf(item -> {
+                        Map<String, Object> labels = item.getLabels();
+                        if (labels != null && labels.containsKey("id")) {
+                            labels.get("id");
+                        }
+                        return false;
+                    });
+                    ruleGroup.setRules(rules);
+                    ruleGroups.set(0, ruleGroup);
+                    generateYaml(ruleGroups, filePath);
+                }
                 // 发送
                 messageProducer.sendEmail("删除", modelName, res, sysUser, true);
                 // 刷新
@@ -146,31 +133,38 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
+                PrometheusTarget prometheusTarget = prometheusTargetService.getById(entity.getGroupId());
+                entity.setGroupName(prometheusTarget.getJobName());
                 String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
-                List<RuleGroup> ruleGroups = YamlUtil.loadByPath(filePath, List.class);
-                RuleGroup ruleGroup = ruleGroups.get(0);
-                List<RuleFileProps> rules = ruleGroup.getRules();
-                rules.forEach(item -> {
-                    Map<String, Object> labels = item.getLabels();
-                    if (labels != null && labels.containsKey("id") && labels.get("id").equals(String.valueOf(entity.getRuleId()))) {
-                        item.setExpr(entity.getExpr());
-                        //
-                        labels.put("id", String.valueOf(entity.getRuleId()));
-                        labels.put("createBy", sysUser.getUserId());
-                        labels.put("severity", entity.getSeverityLevel());
-                        item.setLabels(labels);
-                        //
-                        Map<String, Object> annotations = new HashMap<>();
-                        annotations.put("summary", entity.getSummary());
-                        annotations.put("description", entity.getDescription());
-                        item.setAnnotations(annotations);
-                        item.setExpr(entity.getExpr());
-                        item.setAlert(entity.getRuleName());
-                    }
-                });
-                ruleGroup.setRules(rules);
-                ruleGroups.set(0, ruleGroup);
-                generateYaml(ruleGroups, filePath);
+                // 如果文件存在
+                if (FileUtil.exist(filePath)) {
+                    List<RuleGroup> ruleGroups = YamlUtil.loadByPath(filePath, List.class);
+                    RuleGroup ruleGroup = ruleGroups.get(0);
+                    List<RuleFileProps> rules = ruleGroup.getRules();
+                    rules.forEach(item -> {
+                        Map<String, Object> labels = item.getLabels();
+                        if (labels != null && labels.containsKey("id") && labels.get("id").equals(String.valueOf(entity.getRuleId()))) {
+                            item.setExpr(entity.getExpr());
+                            //
+                            labels.put("id", String.valueOf(entity.getRuleId()));
+                            labels.put("createBy", sysUser.getUserId());
+                            labels.put("severity", entity.getSeverityLevel());
+                            item.setLabels(labels);
+                            //
+                            Map<String, Object> annotations = new HashMap<>();
+                            annotations.put("summary", entity.getSummary());
+                            annotations.put("description", entity.getDescription());
+                            item.setAnnotations(annotations);
+                            item.setExpr(entity.getExpr());
+                            item.setAlert(entity.getRuleName());
+                        }
+                    });
+                    ruleGroup.setRules(rules);
+                    ruleGroups.set(0, ruleGroup);
+                    generateYaml(ruleGroups, filePath);
+                } else {
+                    createOrUpdateFile(sysUser, entity);
+                }
                 // 发送
                 messageProducer.sendEmail("修改", modelName, res, sysUser, true);
                 // 刷新
@@ -226,6 +220,46 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
     @Override
     public List<PrometheusRule> list(PrometheusRule prometheusRule) {
         return prometheusRuleMapper.list(prometheusRule);
+    }
+
+    public void createOrUpdateFile(SysUser sysUser, PrometheusRule entity) {
+        PrometheusTarget prometheusTarget = prometheusTargetService.getById(entity.getGroupId());
+        entity.setGroupName(prometheusTarget.getJobName());
+        // 文件位置
+        String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
+        List<RuleGroup> ruleGroups;
+        List<RuleFileProps> rules;
+        RuleGroup ruleGroup;
+        if (FileUtil.exist(filePath)) {
+            // 读取
+            ruleGroups = YamlUtil.loadByPath(filePath, List.class);
+            ruleGroup = ruleGroups.get(0);
+            rules = ruleGroup.getRules();
+        } else {
+            ruleGroups = new ArrayList<>();
+            ruleGroup = new RuleGroup();
+            ruleGroup.setName(entity.getRuleName());
+            rules = new ArrayList<>();
+        }
+        // 添加
+        RuleFileProps ruleFileProps = new RuleFileProps();
+        ruleFileProps.setAlert(entity.getRuleName());
+        ruleFileProps.setExpr(entity.getExpr());
+        //
+        Map<String, Object> annotations = new HashMap<>();
+        annotations.put("summary", entity.getSummary());
+        annotations.put("description", entity.getDescription());
+        ruleFileProps.setAnnotations(annotations);
+        //
+        Map<String, Object> labels = new HashMap<>();
+        labels.put("createBy", String.valueOf(sysUser.getUserId()));
+        labels.put("severity", entity.getSeverityLevel());
+        labels.put("id", String.valueOf(entity.getRuleId()));
+        ruleFileProps.setLabels(labels);
+        rules.add(ruleFileProps);
+        ruleGroup.setRules(rules);
+        ruleGroups.set(0, ruleGroup);
+        generateYaml(ruleGroups, filePath);
     }
 }
 

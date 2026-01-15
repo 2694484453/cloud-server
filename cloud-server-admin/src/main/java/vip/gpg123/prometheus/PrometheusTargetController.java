@@ -26,6 +26,7 @@ import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.prometheus.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusConfigs;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
@@ -85,6 +86,7 @@ public class PrometheusTargetController extends BaseController {
     @GetMapping("/list")
     @ApiOperation(value = "【列表查询】")
     public AjaxResult list(PrometheusTarget prometheusTarget) {
+        prometheusTarget.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
         List<PrometheusTarget> list = prometheusTargetService.list(prometheusTarget);
         return AjaxResult.success(list);
     }
