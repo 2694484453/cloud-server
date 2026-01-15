@@ -68,7 +68,11 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         AsyncManager.me().execute(new TimerTask() {
             @Override
             public void run() {
-                createOrUpdateFile(sysUser, entity);
+                PrometheusTarget prometheusTarget = prometheusTargetService.getById(entity.getGroupId());
+                entity.setGroupName(prometheusTarget.getJobName());
+                // 文件位置
+                String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
+                createFile(filePath, sysUser, entity);
                 // 发送
                 messageProducer.sendEmail("新增", modelName, res, sysUser, true);
                 // 刷新
@@ -152,7 +156,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                             item.setLabels(labels);
                             //
                             Map<String, Object> annotations = new HashMap<>();
-                            annotations.put("summary", entity.getSummary());
+                            annotations.put("summary", String.format("\"%s\"", entity.getSummary()));
                             annotations.put("description", entity.getDescription());
                             item.setAnnotations(annotations);
                             item.setExpr(entity.getExpr());
@@ -163,7 +167,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                     ruleGroups.set(0, ruleGroup);
                     generateYaml(ruleGroups, filePath);
                 } else {
-                    createOrUpdateFile(sysUser, entity);
+                    createFile(filePath, sysUser, entity);
                 }
                 // 发送
                 messageProducer.sendEmail("修改", modelName, res, sysUser, true);
@@ -222,32 +226,19 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         return prometheusRuleMapper.list(prometheusRule);
     }
 
-    public void createOrUpdateFile(SysUser sysUser, PrometheusRule entity) {
+    public void createFile(String filePath, SysUser sysUser, PrometheusRule entity) {
         PrometheusTarget prometheusTarget = prometheusTargetService.getById(entity.getGroupId());
         entity.setGroupName(prometheusTarget.getJobName());
-        // 文件位置
-        String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
-        List<RuleGroup> ruleGroups;
-        List<RuleFileProps> rules;
-        RuleGroup ruleGroup;
-        if (FileUtil.exist(filePath)) {
-            // 读取
-            ruleGroups = YamlUtil.loadByPath(filePath, List.class);
-            ruleGroup = ruleGroups.get(0);
-            rules = ruleGroup.getRules();
-        } else {
-            ruleGroups = new ArrayList<>();
-            ruleGroup = new RuleGroup();
-            ruleGroup.setName(entity.getRuleName());
-            rules = new ArrayList<>();
-        }
+        List<RuleGroup> ruleGroups = new ArrayList<>();
+        List<RuleFileProps> rules = new ArrayList<>();
+        RuleGroup ruleGroup = new RuleGroup();
         // 添加
         RuleFileProps ruleFileProps = new RuleFileProps();
         ruleFileProps.setAlert(entity.getRuleName());
         ruleFileProps.setExpr(entity.getExpr());
         //
         Map<String, Object> annotations = new HashMap<>();
-        annotations.put("summary", entity.getSummary());
+        annotations.put("summary", String.format("\"%s\"", entity.getSummary()));
         annotations.put("description", entity.getDescription());
         ruleFileProps.setAnnotations(annotations);
         //
