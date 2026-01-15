@@ -1,13 +1,14 @@
 package vip.gpg123.prometheus.service.impl;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 import vip.gpg123.common.core.domain.entity.SysUser;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.framework.config.MonitorConfig;
@@ -23,7 +24,9 @@ import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
 import org.springframework.stereotype.Service;
 import vip.gpg123.prometheus.service.PrometheusTargetService;
 
+import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +104,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                 String filePath = prometheusProperties.getPath() + "/" + prometheusRule.getGroupName() + ".yml";
                 if (FileUtil.exist(filePath)) {
                     // 读取
-                    List<RuleGroup> ruleGroups = YamlUtil.loadByPath(filePath, List.class);
+                    List<RuleGroup> ruleGroups = readYaml(filePath);
                     RuleGroup ruleGroup = ruleGroups.get(0);
                     List<RuleFileProps> rules = ruleGroup.getRules();
                     // 删除规则
@@ -142,7 +145,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                 String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
                 // 如果文件存在
                 if (FileUtil.exist(filePath)) {
-                    List<RuleGroup> ruleGroups = YamlUtil.loadByPath(filePath, List.class);
+                    List<RuleGroup> ruleGroups = readYaml(filePath);
                     RuleGroup ruleGroup = ruleGroups.get(0);
                     List<RuleFileProps> rules = ruleGroup.getRules();
                     rules.forEach(item -> {
@@ -178,6 +181,19 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         return res;
     }
 
+    public static List<RuleGroup> readYaml(String filePath) {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        //
+        try {
+            Map data = mapper.readValue(new File(filePath), Map.class);
+            Object groups = data.get("groups");
+            return (List<RuleGroup>) groups;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 将 RuleGroup 列表生成 YAML 字符串
      *
@@ -185,19 +201,13 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
      * @return 格式化后的 YAML 字符串
      */
     public static void generateYaml(List<RuleGroup> groups, String filePath) {
-        // 设置 YAML 输出格式
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        options.setPrettyFlow(true);
-        options.setIndent(2);
-
-        Yaml yaml = new Yaml(options);
-
-        // Prometheus 规则文件的根结构是 { groups: [...] }
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        //
         Map<String, Object> root = new HashMap<>();
         root.put("groups", groups);
         try (FileWriter fw = new FileWriter(filePath)) {
-            yaml.dump(root, fw);
+            // 写入
+            mapper.writeValue(fw, root);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
