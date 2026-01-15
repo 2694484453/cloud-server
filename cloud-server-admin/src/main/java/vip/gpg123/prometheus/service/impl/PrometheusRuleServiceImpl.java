@@ -198,7 +198,6 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
      * 将 RuleGroup 列表生成 YAML 字符串
      *
      * @param groups 规则组列表
-     * @return 格式化后的 YAML 字符串
      */
     public static void generateYaml(List<RuleGroup> groups, String filePath) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -237,8 +236,6 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
     }
 
     public void createFile(String filePath, SysUser sysUser, PrometheusRule entity) {
-        PrometheusTarget prometheusTarget = prometheusTargetService.getById(entity.getGroupId());
-        entity.setGroupName(prometheusTarget.getJobName());
         List<RuleGroup> ruleGroups = new ArrayList<>();
         List<RuleFileProps> rules = new ArrayList<>();
         RuleGroup ruleGroup = new RuleGroup();
@@ -259,6 +256,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         ruleFileProps.setLabels(labels);
         rules.add(ruleFileProps);
         ruleGroup.setRules(rules);
+        ruleGroup.setName(entity.getGroupName());
         ruleGroups.add(ruleGroup);
         generateYaml(ruleGroups, filePath);
     }

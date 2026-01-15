@@ -140,7 +140,7 @@ public class PrometheusRuleController extends BaseController {
     @GetMapping("/syncStatus")
     @ApiOperation(value = "syncStatus")
     public void syncStatus() {
-        List<PrometheusRule> prometheusRules = prometheusRuleMapper.list(null);
+        List<PrometheusRule> prometheusRules = prometheusRuleService.list();
         JSONObject jsonObject = prometheusApi.rules("alert");
         JSONObject data = jsonObject.getJSONObject("data");
         JSONArray groups = data.getJSONArray("groups");
@@ -149,7 +149,6 @@ public class PrometheusRuleController extends BaseController {
             PrometheusGroup prometheusGroup = prometheusGroupService.getById(prometheusRule.getGroupId());
             String alertName = prometheusRule.getRuleName();
             String groupName = prometheusGroup.getGroupName();
-            String type = prometheusRule.getType();
             String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
             String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
             groups.forEach(group -> {
