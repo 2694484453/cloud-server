@@ -249,7 +249,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         ruleFileProps.setLabels(labels);
         rules.add(ruleFileProps);
         ruleGroup.setRules(rules);
-        ruleGroups.set(0, ruleGroup);
+        ruleGroups.add(ruleGroup);
         generateYaml(ruleGroups, filePath);
     }
 }
