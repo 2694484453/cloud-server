@@ -34,6 +34,7 @@ import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusGroupService;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +57,18 @@ public class PrometheusRuleController extends BaseController {
 
     @Autowired
     private PrometheusApi prometheusApi;
+
+    /**
+     * levels
+     */
+    @GetMapping("/levels")
+    public AjaxResult levels() {
+        List<String> list = new ArrayList<>();
+        list.add("critical");
+        list.add("warning");
+        list.add("info");
+        return AjaxResult.success(list);
+    }
 
     /**
      * 列表查询
