@@ -51,7 +51,7 @@ public class PrometheusGroupServiceImpl extends ServiceImpl<PrometheusGroupMappe
                 // 文件位置
                 String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
                 List<RuleGroup> ruleGroups = new ArrayList<>();
-                ruleGroups.set(0, new RuleGroup(entity.getGroupName(), entity.getInterval(), null));
+                ruleGroups.set(0, new RuleGroup(entity.getGroupName(), null));
                 // 创建文件
                 generateYaml(ruleGroups, filePath);
             }
