@@ -20,4 +20,32 @@
         id,name,banner,type,description,
         is_setup,create_time,update_time
     </sql>
+
+    <!--条件语句-->
+    <sql id="queryWrapper">
+        <where>1=1
+            <if test="qw.id != null">
+                and id = #{qw.id}
+            </if>
+            <if test="qw.name != null and qw.name !=''">
+                and name like concat('%',#{qw.name},'%')
+            </if>
+        </where>
+    </sql>
+
+    <sql id="baseSelect">
+        SELECT wt.* from web_tools wt
+    </sql>
+
+    <!--list-->
+    <select id="list" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <!--分页查询-->
+    <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
 </mapper>

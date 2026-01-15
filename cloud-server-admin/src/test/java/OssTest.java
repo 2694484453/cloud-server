@@ -8,9 +8,9 @@ import com.aliyun.oss.model.PutObjectResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import vip.gpg123.CloudServerApplication;
+import vip.gpg123.framework.config.AliYunConfig;
 import vip.gpg123.wallpaper.domain.StaticWallpaper;
 import vip.gpg123.wallpaper.service.StaticWallpaperService;
 
@@ -25,17 +25,17 @@ public class OssTest {
     private OSS ossClient;
 
     @Autowired
-    private StaticWallpaperService staticWallpaperService;
+    private AliYunConfig.OssProperties ossProperties;
 
-    @Value("${cloud.aliyun.bucketName}")
-    private String bucketName;
+    @Autowired
+    private StaticWallpaperService staticWallpaperService;
 
     @Test
     public void update() {
         List<StaticWallpaper> list = staticWallpaperService.list();
         list.forEach(cloudWallpaper -> {
             String dirPath = cloudWallpaper.getDirPath();
-            cloudWallpaper.setDirName(dirPath.replaceAll("/"+cloudWallpaper.getName(),""));
+            cloudWallpaper.setDirName(dirPath.replaceAll("/" + cloudWallpaper.getName(), ""));
             staticWallpaperService.updateById(cloudWallpaper);
         });
     }
@@ -45,7 +45,7 @@ public class OssTest {
         String filePath = "/Volumes/gaopuguang/project/cloud-server/Dockerfile";
         File file = new File(filePath);
         try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, "wallpaper/" + file.getName(), file);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(ossProperties.getBucketName(), "wallpaper/" + file.getName(), file);
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             System.out.println(putObjectResult.toString());
         } catch (Throwable e) {
@@ -55,7 +55,7 @@ public class OssTest {
 
     @Test
     public void listObjects() throws OSSException {
-        ListObjectsV2Result result = ossClient.listObjectsV2(new ListObjectsV2Request(bucketName));
+        ListObjectsV2Result result = ossClient.listObjectsV2(new ListObjectsV2Request(ossProperties.getBucketName()));
         List<OSSObjectSummary> ossObjectSummaries = result.getObjectSummaries();
 
         for (OSSObjectSummary s : ossObjectSummaries) {
@@ -65,10 +65,7 @@ public class OssTest {
 
     @Test
     public void ossTest() {
-
         try {
-            final String keyPrefix = "wallpaper/";
-
 //            if (!client.doesBucketExist(bucketName)) {
 //                client.createBucket(bucketName);
 //            }
@@ -84,15 +81,17 @@ public class OssTest {
 //            System.out.println("Put " + keys.size() + " objects completed.");
             // 列举文件。如果不设置keyPrefix，则列举存储空间下的所有文件。如果设置keyPrefix，则列举包含指定前缀的文件。
             // 设定从start-after之后按字母排序开始返回Object。
-            ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName);
-            listObjectsV2Request.setStartAfter("wallpaper/");
+            ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(ossProperties.getBucketName());
             listObjectsV2Request.setPrefix("wallpaper/");
+            listObjectsV2Request.setMaxKeys(1000);
             ListObjectsV2Result result = ossClient.listObjectsV2(listObjectsV2Request);
             //client.listObjectsV2(bucketName, keyPrefix);
             List<OSSObjectSummary> ossObjectSummaries = result.getObjectSummaries();
 
             for (OSSObjectSummary s : ossObjectSummaries) {
-                System.out.println("\t" + s.getKey());
+                if (s.getKey().substring(s.getKey().lastIndexOf("/") + 1).startsWith(".")) {
+                    System.out.println("\t" + s.getKey());
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
