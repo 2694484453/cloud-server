@@ -2,6 +2,7 @@
 package vip.gpg123.wallpaper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.wallpaper.domain.WallpaperUpload;
 import vip.gpg123.wallpaper.service.WallpaperUploadService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,6 +33,9 @@ public class WallPaperUploadController extends BaseController {
      */
     @GetMapping("/page")
     public TableDataInfo page(Page<WallpaperUpload> wallpaperUploadPage,WallpaperUpload wallpaperUpload) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        orderItems.set(0,OrderItem.desc("create_time"));
+        wallpaperUploadPage.setOrders(orderItems);
         // 查询
         IPage<WallpaperUpload> page = wallpaperUploadService.page(wallpaperUploadPage, wallpaperUpload);
         return PageUtils.toPageByIPage(page);

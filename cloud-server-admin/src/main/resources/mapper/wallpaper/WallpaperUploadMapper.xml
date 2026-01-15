@@ -10,6 +10,7 @@
             <result property="size" column="size" />
             <result property="tags" column="tags" />
             <result property="url" column="url" />
+            <result property="requestIp" column="request_ip"/>
             <result property="description" column="description" />
             <result property="createBy" column="create_by" />
             <result property="createTime" column="create_time" />
@@ -33,6 +34,9 @@
             </if>
             <if test="qw.modelName != null and qw.modelName !=''">
                 and model_name like concat('%',#{qw.modelName},'%')
+            </if>
+            <if test="qw.requestIp != null and qw.requestIp != ''">
+                and request_ip = #{qw.requestIp}
             </if>
             <if test="qw.createBy != null">
                 and wu.create_by = #{qw.createBy}
@@ -68,6 +72,7 @@
     <select id="list" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
+        order by wu.create_time desc
     </select>
 
     <!--单个查询-->

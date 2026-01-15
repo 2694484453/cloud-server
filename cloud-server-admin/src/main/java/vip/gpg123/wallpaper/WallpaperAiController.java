@@ -3,6 +3,7 @@ package vip.gpg123.wallpaper;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,8 @@ import vip.gpg123.wallpaper.service.WallpaperUploadService;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/wallpaper/ai")
@@ -93,7 +96,7 @@ public class WallpaperAiController {
                 redisCache.expire(key, TODAY_END_TIMESTAMP);
             }
         }
-
+        // 调用api
         ExAcgResponse response = exAcgApi.generateImage(request);
         if (response != null) {
             String url = response.getData().getImage_url();
@@ -112,7 +115,12 @@ public class WallpaperAiController {
                 redisCache.setCacheObject(CacheConstants.AI_CONFIG_KEY + ip, times);
             }
             wallpaperUploadService.save(wallpaperUpload);
-            return AjaxResult.success("生成成功，今天还剩余：" + times + "次", response.getData().getImage_url());
+            // 返回数据
+            Map<String, Object> map = new HashMap<>();
+            map.put("remain", times);
+            map.put("url", url);
+            map.put("logs","传入参数-->"+ JSONUtil.formatJsonStr(JSONUtil.toJsonStr(request))+",输出参数<---"+JSONUtil.formatJsonStr(JSONUtil.toJsonStr(response)));
+            return AjaxResult.success("生成成功，今天还剩余：" + times + "次", map);
         }
         return AjaxResult.error("生成失败，请联系管理员");
     }

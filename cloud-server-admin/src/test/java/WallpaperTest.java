@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import vip.gpg123.CloudServerApplication;
@@ -59,11 +58,15 @@ public class WallpaperTest {
 
     private static final String keywordFilePath = "/Volumes/gaopuguang/project/cloud-server/cloud-server-admin/src/test/java/keyword.txt";
 
-    private static final String[] dirs = new String[]{};
+    private static final String[] dirs = new String[]{"2d", "3d", "ai", "widescreen", "phone", "other"};
 
     @Test
     public void saveOrUpdateStaticWallpaper() {
-        List<File> files = FileUtil.loopFiles(sourcePath).stream().filter(file -> (file.getName().endsWith(".png") || file.getName().endsWith(".jpg")) && !file.getName().startsWith(".")).collect(Collectors.toList());
+        List<File> files = new ArrayList<>();
+        for (String dir : dirs) {
+            List<File> list = FileUtil.loopFiles(sourcePath + dir).stream().filter(file -> (file.getName().endsWith(".png") || file.getName().endsWith(".jpg")) && !file.getName().startsWith(".")).collect(Collectors.toList());
+            files.addAll(list);
+        }
         List<StaticWallpaper> staticWallpapers = staticWallpaperService.list();
         Map<String, StaticWallpaper> wallpaperMap = staticWallpapers.stream().collect(Collectors.toMap(StaticWallpaper::getDirPath, wallpaper -> wallpaper));
         // 判断删除的
@@ -173,6 +176,25 @@ public class WallpaperTest {
             if (!FileUtil.exist(filePath)) {
                 // 不存在就删除
                 dynamicWallpaperService.removeById(dynamicWallpaper.getId());
+            }
+        });
+    }
+
+    @Test
+    public void update() {
+        List<StaticWallpaper> list = staticWallpaperService.list();
+        list.forEach(staticWallpaper -> {
+            if ("二次元".equals(staticWallpaper.getDirName())) {
+                staticWallpaper.setDirName("2d");
+                staticWallpaper.setDirPath(staticWallpaper.getDirPath().replace("二次元", "2d"));
+                staticWallpaper.setUrl(staticWallpaper.getUrl().replace("%E4%BA%8C%E6%AC%A1%E5%85%83", "2d"));
+                staticWallpaperService.updateById(staticWallpaper);
+            }
+            if ("三次元".equals(staticWallpaper.getDirName())) {
+                staticWallpaper.setDirName("3d");
+                staticWallpaper.setDirPath(staticWallpaper.getDirPath().replace("三次元", "3d"));
+                staticWallpaper.setUrl(staticWallpaper.getUrl().replace("%E4%B8%89%E6%AC%A1%E5%85%83", "3d"));
+                staticWallpaperService.updateById(staticWallpaper);
             }
         });
     }

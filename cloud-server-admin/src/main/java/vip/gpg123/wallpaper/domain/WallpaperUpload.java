@@ -55,6 +55,12 @@ public class WallpaperUpload extends BaseEntity implements Serializable {
     private String url;
 
     /**
+     *
+     */
+    @TableField(value = "request_ip")
+    private String requestIp;
+
+    /**
      * 
      */
     @TableField(value = "description")

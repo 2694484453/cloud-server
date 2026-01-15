@@ -1,5 +1,6 @@
 package vip.gpg123.ai.config;
 
+import feign.Request;
 import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import vip.gpg123.framework.config.AliYunConfig;
@@ -19,5 +20,11 @@ public class ExAcgRequestConfig {
             requestTemplate.header("Host", "sd.exacg.cc");
             requestTemplate.header("Connection", "Keep-Alive");
         };
+    }
+
+    @Bean
+    public Request.Options options() {
+        // connectTimeout, readTimeout (单位：毫秒)
+        return new Request.Options(5000, 40000);
     }
 }

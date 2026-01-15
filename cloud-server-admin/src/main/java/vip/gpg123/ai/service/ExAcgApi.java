@@ -10,6 +10,11 @@ import vip.gpg123.ai.domain.ExAcgResponse;
 @FeignClient(name = "exacg-api", url = "https://sd.exacg.cc/api/v1", configuration = ExAcgRequestConfig.class)
 public interface ExAcgApi {
 
+    /**
+     * 生成图片
+     * @param request r
+     * @return r
+     */
     @PostMapping("/generate_image")
     ExAcgResponse generateImage(@RequestBody ExAcgRequest request);
 
