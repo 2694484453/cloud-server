@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vip.gpg123.common.core.domain.BaseEntity;
@@ -33,6 +31,9 @@ public class PrometheusRule extends BaseEntity implements Serializable {
     @TableField(value = "group_id")
     private String groupId;
 
+    /**
+     *
+     */
     private String groupName;
 
     /**
@@ -40,12 +41,6 @@ public class PrometheusRule extends BaseEntity implements Serializable {
      */
     @TableField(value = "rule_name")
     private String ruleName;
-
-    /**
-     * 
-     */
-    @TableField(value = "labels", typeHandler = JacksonTypeHandler.class)
-    private Map<String,Object>  labels;
 
     /**
      * 
@@ -62,8 +57,14 @@ public class PrometheusRule extends BaseEntity implements Serializable {
     /**
      * 
      */
-    @TableField(value = "annotations", typeHandler = JacksonTypeHandler.class)
-    private Map<String,Object> annotations;
+    @TableField(value = "summary")
+    private String summary;
+
+    /**
+     *
+     */
+    @TableField(value = "severity_level")
+    private String severityLevel;
 
     /**
      * 

@@ -71,9 +71,15 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                 RuleFileProps ruleFileProps = new RuleFileProps();
                 ruleFileProps.setAlert(entity.getRuleName());
                 ruleFileProps.setExpr(entity.getExpr());
-                ruleFileProps.setAnnotations(entity.getAnnotations());
-                Map<String, Object> labels = entity.getLabels();
+                //
+                Map<String, Object> annotations = new HashMap<>();
+                annotations.put("summary", entity.getSummary());
+                annotations.put("description", entity.getDescription());
+                ruleFileProps.setAnnotations(annotations);
+                //
+                Map<String, Object> labels = new HashMap<>();
                 labels.put("createBy", String.valueOf(sysUser.getUserId()));
+                labels.put("severity", entity.getSeverityLevel());
                 labels.put("id", String.valueOf(entity.getRuleId()));
                 ruleFileProps.setLabels(labels);
                 rules.add(ruleFileProps);
@@ -148,8 +154,16 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                     Map<String, Object> labels = item.getLabels();
                     if (labels != null && labels.containsKey("id") && labels.get("id").equals(String.valueOf(entity.getRuleId()))) {
                         item.setExpr(entity.getExpr());
-                        item.setLabels(entity.getLabels());
-                        item.setAnnotations(entity.getAnnotations());
+                        //
+                        labels.put("id", String.valueOf(entity.getRuleId()));
+                        labels.put("createBy", sysUser.getUserId());
+                        labels.put("severity", entity.getSeverityLevel());
+                        item.setLabels(labels);
+                        //
+                        Map<String, Object> annotations = new HashMap<>();
+                        annotations.put("summary", entity.getSummary());
+                        annotations.put("description", entity.getDescription());
+                        item.setAnnotations(annotations);
                         item.setExpr(entity.getExpr());
                         item.setAlert(entity.getRuleName());
                     }
