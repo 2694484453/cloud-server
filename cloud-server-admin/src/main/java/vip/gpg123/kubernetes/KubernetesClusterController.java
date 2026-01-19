@@ -168,11 +168,6 @@ public class KubernetesClusterController extends BaseController {
             addConfig.setUsers(new ArrayList<NamedAuthInfo>() {{
                 add(addUser);
             }});
-            // 读取默认配置
-            io.fabric8.kubernetes.api.model.Config kubeConfig = K8sUtil.getDefaultConfig();
-            kubeConfig.getClusters().add(addCluster);
-            kubeConfig.getUsers().add(addUser);
-            kubeConfig.getContexts().add(addName);
             //
             kubernetesCluster.setConfig(Serialization.yamlMapper().writeValueAsString(addConfig));
             kubernetesCluster.setCreateBy(String.valueOf(getUserId()));
@@ -180,8 +175,6 @@ public class KubernetesClusterController extends BaseController {
             kubernetesCluster.setContextName(kubernetesCluster.getClusterName());
             kubernetesCluster.setMasterUrl(addCluster.getCluster().getProxyUrl());
             kubernetesClusterService.save(kubernetesCluster);
-            // 重写默认文件
-            K8sUtil.exportToFile(kubeConfig, K8sUtil.defaultConfigFilePath());
         } catch (Exception e) {
             return AjaxResult.error("验证失败：" + e.getMessage());
         }
@@ -229,6 +222,18 @@ public class KubernetesClusterController extends BaseController {
         } finally {
             FileUtil.del(file);
         }
+    }
+
+    /**
+     * delete
+     * @param id id
+     * @return r
+     */
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "delete")
+    public AjaxResult delete(@RequestParam("id") String id) {
+        boolean res = kubernetesClusterService.removeById(id);
+        return res ? AjaxResult.success("移除成功") : AjaxResult.error("移除失败");
     }
 
     /**

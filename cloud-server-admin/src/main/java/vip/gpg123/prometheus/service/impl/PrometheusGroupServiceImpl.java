@@ -9,7 +9,7 @@ import org.yaml.snakeyaml.Yaml;
 import vip.gpg123.framework.config.MonitorConfig;
 import vip.gpg123.framework.manager.AsyncManager;
 import vip.gpg123.prometheus.domain.PrometheusGroup;
-import vip.gpg123.prometheus.domain.RuleGroup;
+import vip.gpg123.prometheus.dto.RuleGroup;
 import vip.gpg123.prometheus.service.PrometheusGroupService;
 import vip.gpg123.prometheus.mapper.PrometheusGroupMapper;
 import org.springframework.stereotype.Service;

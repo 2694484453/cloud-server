@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +15,7 @@ import vip.gpg123.app.HelmAppMarketController;
 import vip.gpg123.common.utils.spring.SpringUtils;
 import vip.gpg123.prometheus.PrometheusTargetController;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
-import vip.gpg123.prometheus.domain.PrometheusRule;
-import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
+import vip.gpg123.prometheus.dto.PrometheusTargetResponse;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusTargetService;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
@@ -25,7 +23,6 @@ import vip.gpg123.prometheus.service.PrometheusRuleService;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 @SpringBootTest(classes = CloudServerApplication.class)
 @RunWith(SpringRunner.class)

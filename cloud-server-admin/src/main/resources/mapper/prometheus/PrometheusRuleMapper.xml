@@ -24,6 +24,7 @@
 
     <resultMap id="BaseResultMapExtension" extends="BaseResultMap" type="vip.gpg123.prometheus.dto.PrometheusRuleVO">
         <result property="groupName" column="group_name"/>
+        <result property="exporterType" column="exporter_type"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -60,6 +61,7 @@
     <sql id="baseSelect">
         SELECT r.*,
                t.job_name AS group_name,
+               t.exporter_type AS exporter_type,
                uu.user_name AS createByUserName,
                uc.user_name AS updateByUserName
         FROM prometheus_rule r
@@ -85,7 +87,7 @@
         <include refid="queryWrapper"/>
     </select>
 
-    <select id="pageExtension" resultMap="BaseResultMap">
+    <select id="pageExtension" resultMap="BaseResultMapExtension">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
     </select>

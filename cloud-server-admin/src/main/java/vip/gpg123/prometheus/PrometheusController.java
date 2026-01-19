@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
+import vip.gpg123.prometheus.dto.PrometheusQueryResponse;
+import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import java.util.ArrayList;
@@ -21,6 +24,9 @@ public class PrometheusController extends BaseController {
 
     @Autowired
     private PrometheusTargetService prometheusTargetService;
+
+    @Autowired
+    private PrometheusApi prometheusApi;
 
     /**
      * 概览
@@ -58,5 +64,16 @@ public class PrometheusController extends BaseController {
         ));
         list.add(down);
         return AjaxResult.success(list);
+    }
+
+    /**
+     * 查询
+     * @param query q
+     * @return r
+     */
+    @GetMapping("/query")
+    public AjaxResult query(@RequestParam("query") String query) {
+        PrometheusQueryResponse response = prometheusApi.query(query,true);
+        return "success".equals(response.getStatus()) ? AjaxResult.success(response.getStatus()) : AjaxResult.error(response.getError());
     }
 }

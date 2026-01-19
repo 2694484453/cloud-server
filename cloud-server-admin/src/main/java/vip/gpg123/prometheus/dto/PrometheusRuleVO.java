@@ -9,4 +9,6 @@ import vip.gpg123.prometheus.domain.PrometheusRule;
 public class PrometheusRuleVO extends PrometheusRule {
 
     private String groupName;
+
+    private String exporterType;
 }

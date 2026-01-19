@@ -1,4 +1,4 @@
-package vip.gpg123.prometheus.domain;
+package vip.gpg123.prometheus.dto;
 
 import cn.hutool.json.JSONObject;
 import lombok.Data;

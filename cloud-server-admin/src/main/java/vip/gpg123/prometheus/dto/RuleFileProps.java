@@ -1,4 +1,4 @@
-package vip.gpg123.prometheus.domain;
+package vip.gpg123.prometheus.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
