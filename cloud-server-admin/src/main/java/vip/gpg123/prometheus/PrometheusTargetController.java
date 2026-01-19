@@ -273,7 +273,7 @@ public class PrometheusTargetController extends BaseController {
             labels.set("__scheme__", ObjectUtil.defaultIfBlank(item.getSchemeType(), "http"));
             labels.set("__metrics_path__", ObjectUtil.defaultIfBlank(item.getMetricsPath(), "/metrics"));
             labels.set("job", item.getJobName());
-            labels.set("id", item.getTargetId());
+            labels.set("id", item.getTargetId().toString());
             labels.set("instance", item.getJobName());
             labels.set("type", ObjectUtil.defaultIfBlank(item.getExporterType(), "unknow"));
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
