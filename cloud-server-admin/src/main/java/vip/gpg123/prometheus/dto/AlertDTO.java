@@ -1,4 +1,4 @@
-package vip.gpg123.prometheus.domain;
+package vip.gpg123.prometheus.dto;
 
 import lombok.Data;
 
@@ -19,5 +19,7 @@ public class AlertDTO implements Serializable {
     private String endsAt;
 
     private String generatorURL;
+
+    private String fingerprint;
 
 }

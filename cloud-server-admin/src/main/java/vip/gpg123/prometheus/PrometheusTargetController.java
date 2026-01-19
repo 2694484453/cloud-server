@@ -276,6 +276,7 @@ public class PrometheusTargetController extends BaseController {
             labels.set("id", item.getTargetId().toString());
             labels.set("instance", item.getJobName());
             labels.set("type", ObjectUtil.defaultIfBlank(item.getExporterType(), "unknow"));
+            labels.set("description", item.getDescription());
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));
             configs.setLabels(labels);
             jsonArray.add(configs);

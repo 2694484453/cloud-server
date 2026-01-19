@@ -8,6 +8,7 @@
         <id property="id" column="id"/>
         <result property="alertName" column="alert_name"/>
         <result property="alertLevel" column="alert_level"/>
+        <result property="groupId" column="group_id"/>
         <result property="groupName" column="group_name"/>
         <result property="type" column="type"/>
         <result property="description" column="description"/>
@@ -33,6 +34,9 @@
             </if>
             <if test="qw.groupName != null and qw.groupName !=''">
                 and group_name like concat('%',#{qw.groupName},'%')
+            </if>
+            <if test="qw.groupId != null and qw.groupId !=''">
+                and group_id = #{qw.groupId}
             </if>
             <if test="qw.alertLevel != null and qw.alertLevel !=''">
                 and alert_level like concat('%',#{qw.alertLevel},'%')

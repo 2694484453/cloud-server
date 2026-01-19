@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vip.gpg123.common.core.domain.AjaxResult;
-import vip.gpg123.prometheus.domain.AlertDTO;
-import vip.gpg123.prometheus.domain.AlertManagerDTO;
+import vip.gpg123.prometheus.dto.AlertDTO;
+import vip.gpg123.prometheus.dto.AlertManagerDTO;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
 import vip.gpg123.prometheus.service.PrometheusAlertService;
 
@@ -38,19 +38,24 @@ public class WebhookController {
         // 2. 遍历告警列表
         List<AlertDTO> alerts = alertDTO.getAlerts();
         for (AlertDTO alert : alerts) {
-            // 获取标签 (Labels)
-            String alertName = alert.getLabels().get("alertname");
-            String instance = alert.getLabels().get("instance"); // 出问题的实例
-            String severity = alert.getLabels().get("severity"); // 级别: warning/critical
-            String createBy = alert.getLabels().get("createBy");
+            // 判断是否系统产生
+            if (alert.getLabels().containsKey("createBy") && alert.getLabels().containsKey("id")) {
+                // 获取标签 (Labels)
+                String id = alert.getLabels().get("id");
+                String alertName = alert.getLabels().get("alertname");
+                String instance = alert.getLabels().get("instance"); // 出问题的实例
+                String severity = alert.getLabels().get("severity"); // 级别: warning/critical
+                String createBy = alert.getLabels().get("createBy");
 
-            // 获取注解 (Annotations)
-            String summary = alert.getAnnotations().get("summary");
-            String description = alert.getAnnotations().get("description");
+                // 获取注解 (Annotations)
+                String summary = alert.getAnnotations().get("summary");
+                String description = alert.getAnnotations().get("description");
 
-            // 3. 在这里编写你的处理逻辑
-            // 例如：发送钉钉、记录日志、存入数据库、调用运维脚本等
-            handleAlert(alertName, createBy, instance, severity, summary, description, status);
+                // 3. 在这里编写你的处理逻辑
+                // 例如：发送钉钉、记录日志、存入数据库、调用运维脚本等
+                handleAlert(id, alertName, createBy, instance, severity, summary, description, status);
+            }
+            // 否则舍弃
         }
 
         // 4. 必须返回 200 OK
@@ -62,7 +67,7 @@ public class WebhookController {
     /**
      * 处理告警的业务逻辑
      */
-    private void handleAlert(String alertName, String createBy, String instance, String severity,
+    private void handleAlert(String groupId, String alertName, String createBy, String instance, String severity,
                              String summary, String description, String status) {
 
         // TODO: 在这里集成你的业务逻辑
@@ -81,11 +86,13 @@ public class WebhookController {
         System.out.println("===================================");
         // 保存数据库
         PrometheusAlert alert = new PrometheusAlert();
+        alert.setGroupId(groupId);
         alert.setAlertName(alertName);
         alert.setCreateBy(createBy);
         alert.setCreateTime(new Date());
         alert.setAlertLevel(severity);
         alert.setDescription(description);
+        alert.setStatus(status);
         prometheusAlertService.save(alert);
     }
 }

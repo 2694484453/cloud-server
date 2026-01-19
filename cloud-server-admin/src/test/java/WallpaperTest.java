@@ -82,7 +82,7 @@ public class WallpaperTest {
             String dirPath = f.getAbsolutePath().replace(sourcePath, "");
             String dirName = dirPath.substring(0, dirPath.indexOf("/"));
             String parentName = f.getParent().substring(f.getParent().lastIndexOf("/") + 1);
-            String targetUrl = ossProperties.getEndpoint() + "/wallpaper/" + URLUtil.encode(dirPath);
+            String targetUrl = ossProperties.getDomain() + "/wallpaper/" + URLUtil.encode(dirPath);
             //
             StaticWallpaper staticWallpaper = new StaticWallpaper();
 
