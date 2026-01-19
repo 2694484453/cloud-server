@@ -34,6 +34,9 @@ import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author gaopuguang
@@ -152,49 +155,44 @@ public class PrometheusRuleController extends BaseController {
     @ApiOperation(value = "syncStatus")
     public void syncStatus() {
         List<PrometheusRule> prometheusRules = prometheusRuleService.list(new PrometheusRule());
+        Map<String,PrometheusRule> map = prometheusRules.stream().collect(Collectors.toMap(prometheusRule -> prometheusRule.getRuleId().toString(), Function.identity()));
         JSONObject jsonObject = prometheusApi.rules("alert");
         JSONObject data = jsonObject.getJSONObject("data");
         JSONArray groups = data.getJSONArray("groups");
-        prometheusRules.forEach(prometheusRule -> {
-            // 查询targets
-            PrometheusTarget prometheusTarget = prometheusTargetService.getById(prometheusRule.getGroupId());
-            // 如果不为空
-            if (prometheusTarget != null) {
-                // ruleId
-                String ruleId = prometheusRule.getRuleId().toString();
-                String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
-                String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
-                groups.forEach(group -> {
-                    JSONObject groupJsonObject = JSONUtil.parseObj(group);
-                    JSONArray rules = groupJsonObject.getJSONArray("rules");
-                    rules.forEach(rule -> {
-                        boolean isUpdate = false;
-                        JSONObject ruleJsonObject = JSONUtil.parseObj(rule);
-                        // 规则健康
-                        String prometheusRuleStatus = ruleJsonObject.getStr("health");
-                        // 规则状态
-                        String prometheusRuleState = ruleJsonObject.getStr("state");
-                        // labels
-                        JSONObject labels = ruleJsonObject.getJSONObject("labels");
-                        if (labels.containsKey("id") && labels.get("id").equals(ruleId)) {
-                            // 是否更新状态
-                            if (!status.equals(prometheusRuleStatus)) {
-                                prometheusRule.setStatus(prometheusRuleStatus);
-                                isUpdate = true;
-                            }
-                            if (!alertStatus.equals(prometheusRuleState)) {
-                                prometheusRule.setStatus(prometheusRuleState);
-                                isUpdate = true;
-                            }
-                            if (isUpdate) {
-                                System.out.println("更新：" + prometheusRule.getRuleName());
-                                prometheusRuleService.updateById(prometheusRule);
-                            }
-                        }
-                    });
-                });
-            }
-
+        // 遍历
+        groups.forEach(group -> {
+            JSONObject groupJsonObject = JSONUtil.parseObj(group);
+            JSONArray rules = groupJsonObject.getJSONArray("rules");
+            rules.forEach(rule -> {
+                boolean isUpdate = false;
+                JSONObject ruleJsonObject = JSONUtil.parseObj(rule);
+                // 规则健康
+                String prometheusRuleStatus = ruleJsonObject.getStr("health");
+                // 规则状态
+                String prometheusRuleState = ruleJsonObject.getStr("state");
+                // labels
+                JSONObject labels = ruleJsonObject.getJSONObject("labels");
+                // 是否存在
+                if (labels.containsKey("id") && map.containsKey(labels.getStr("id"))) {
+                    PrometheusRule prometheusRule = map.get(labels.getStr("id"));
+                    // 状态
+                    String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
+                    String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
+                    // 是否更新状态
+                    if (!status.equals(prometheusRuleStatus)) {
+                        prometheusRule.setStatus(prometheusRuleStatus);
+                        isUpdate = true;
+                    }
+                    if (!alertStatus.equals(prometheusRuleState)) {
+                        prometheusRule.setStatus(prometheusRuleState);
+                        isUpdate = true;
+                    }
+                    if (isUpdate) {
+                        System.out.println("更新：" + prometheusRule.getRuleName());
+                        prometheusRuleService.updateById(prometheusRule);
+                    }
+                }
+            });
         });
     }
 }
