@@ -1,8 +1,6 @@
 package vip.gpg123.prometheus.service.impl;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,6 +16,7 @@ import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.domain.RuleFileProps;
 import vip.gpg123.prometheus.domain.RuleGroup;
+import vip.gpg123.prometheus.dto.PrometheusRuleVO;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
@@ -72,10 +71,9 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
             @Override
             public void run() {
                 PrometheusTarget prometheusTarget = prometheusTargetService.getById(entity.getGroupId());
-                entity.setGroupName(prometheusTarget.getJobName());
                 // 文件位置
-                String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
-                createFile(filePath, sysUser, entity);
+                String filePath = prometheusProperties.getPath() + "/" + prometheusTarget.getJobName() + ".yml";
+                createFile(filePath, prometheusTarget.getJobName(), sysUser, entity);
                 // 发送
                 messageProducer.sendEmail("新增", modelName, res, sysUser, true);
                 // 刷新
@@ -99,9 +97,8 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
             @Override
             public void run() {
                 PrometheusTarget prometheusTarget = prometheusTargetService.getById(prometheusRule.getGroupId());
-                prometheusRule.setGroupName(prometheusTarget.getJobName());
                 // 文件位置
-                String filePath = prometheusProperties.getPath() + "/" + prometheusRule.getGroupName() + ".yml";
+                String filePath = prometheusProperties.getPath() + "/" + prometheusTarget.getJobName() + ".yml";
                 if (FileUtil.exist(filePath)) {
                     // 读取
                     List<RuleGroup> ruleGroups = readYaml(filePath);
@@ -141,8 +138,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
             @Override
             public void run() {
                 PrometheusTarget prometheusTarget = prometheusTargetService.getById(entity.getGroupId());
-                entity.setGroupName(prometheusTarget.getJobName());
-                String filePath = prometheusProperties.getPath() + "/" + entity.getGroupName() + ".yml";
+                String filePath = prometheusProperties.getPath() + "/" + prometheusTarget.getJobName() + ".yml";
                 // 如果文件存在
                 if (FileUtil.exist(filePath)) {
                     List<RuleGroup> ruleGroups = readYaml(filePath);
@@ -170,7 +166,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                     ruleGroups.set(0, ruleGroup);
                     generateYaml(ruleGroups, filePath);
                 } else {
-                    createFile(filePath, sysUser, entity);
+                    createFile(filePath, prometheusTarget.getJobName(), sysUser, entity);
                 }
                 // 发送
                 messageProducer.sendEmail("修改", modelName, res, sysUser, true);
@@ -225,6 +221,18 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
     }
 
     /**
+     * page
+     *
+     * @param page           page
+     * @param prometheusRule r
+     * @return r
+     */
+    @Override
+    public IPage<PrometheusRuleVO> pageExtension(Page<PrometheusRule> page, PrometheusRule prometheusRule) {
+        return prometheusRuleMapper.pageExtension(page, prometheusRule);
+    }
+
+    /**
      * list
      *
      * @param prometheusRule r
@@ -235,7 +243,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         return prometheusRuleMapper.list(prometheusRule);
     }
 
-    public void createFile(String filePath, SysUser sysUser, PrometheusRule entity) {
+    public void createFile(String filePath, String groupName, SysUser sysUser, PrometheusRule entity) {
         List<RuleGroup> ruleGroups = new ArrayList<>();
         List<RuleFileProps> rules = new ArrayList<>();
         RuleGroup ruleGroup = new RuleGroup();
@@ -256,7 +264,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         ruleFileProps.setLabels(labels);
         rules.add(ruleFileProps);
         ruleGroup.setRules(rules);
-        ruleGroup.setName(entity.getGroupName());
+        ruleGroup.setName(groupName);
         ruleGroups.add(ruleGroup);
         generateYaml(ruleGroups, filePath);
     }

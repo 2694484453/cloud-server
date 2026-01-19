@@ -33,9 +33,6 @@ public class BaseEntity implements Serializable
     @TableField(exist = false)
     private List<String> createBys;
 
-    @TableField(exist = false)
-    private String createByUserName;
-
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
@@ -45,6 +42,9 @@ public class BaseEntity implements Serializable
 
     @TableField(exist = false)
     private List<String> updateBys;
+
+    @TableField(exist = false)
+    private String createByUserName;
 
     @TableField(exist = false)
     private String updateByUserName;

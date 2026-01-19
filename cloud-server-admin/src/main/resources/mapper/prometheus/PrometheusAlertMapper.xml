@@ -9,7 +9,6 @@
         <result property="alertName" column="alert_name"/>
         <result property="alertLevel" column="alert_level"/>
         <result property="groupId" column="group_id"/>
-        <result property="groupName" column="group_name"/>
         <result property="type" column="type"/>
         <result property="description" column="description"/>
         <result property="createTime" column="create_time"/>
@@ -18,8 +17,13 @@
         <result property="updateBy" column="update_by"/>
     </resultMap>
 
+    <resultMap id="BaseResultMapExtension" type="vip.gpg123.prometheus.dto.PrometheusAlertVO" extends="BaseResultMap">
+        <result property="groupName" column="group_name"/>
+        <result property="exporterType" column="exporter_type"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
-        id,alert_name,alert_level,group_name,description,create_time,
+        id,alert_name,alert_level,description,create_time,
         create_by,update_time,update_by
     </sql>
 
@@ -31,9 +35,6 @@
             </if>
             <if test="qw.alertName != null and qw.alertName !=''">
                 and alter_name like concat('%',#{qw.alertName},'%')
-            </if>
-            <if test="qw.groupName != null and qw.groupName !=''">
-                and group_name like concat('%',#{qw.groupName},'%')
             </if>
             <if test="qw.groupId != null and qw.groupId !=''">
                 and group_id = #{qw.groupId}
@@ -56,9 +57,12 @@
     <!--基础查询-->
     <sql id="baseSelect">
         SELECT a.*,
+               t.job_name AS group_name,
+               t.exporter_type AS exporter_type,
                uc.user_name AS createByUserName,
                uu.user_name AS updateByUserName
         FROM prometheus_alert a
+                 LEFT JOIN prometheus_target t ON t.target_id = a.group_id
                  LEFT JOIN sys_user uc ON a.create_by = uc.user_id
                  LEFT JOIN sys_user uu ON a.update_by = uu.user_id
     </sql>
@@ -76,6 +80,11 @@
 
     <!--分页查询-->
     <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <select id="pageExtension" resultMap="BaseResultMapExtension">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
     </select>

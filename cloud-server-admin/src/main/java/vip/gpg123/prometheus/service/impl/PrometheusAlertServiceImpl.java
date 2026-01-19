@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
+import vip.gpg123.prometheus.dto.PrometheusAlertVO;
 import vip.gpg123.prometheus.service.PrometheusAlertService;
 import vip.gpg123.prometheus.mapper.PrometheusAlertMapper;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,18 @@ public class PrometheusAlertServiceImpl extends ServiceImpl<PrometheusAlertMappe
     @Override
     public IPage<PrometheusAlert> page(Page<PrometheusAlert> page, PrometheusAlert alert) {
         return prometheusAlertMapper.page(page, alert);
+    }
+
+    /**
+     * page
+     *
+     * @param page  p
+     * @param alert a
+     * @return r
+     */
+    @Override
+    public IPage<PrometheusAlertVO> pageExtension(Page<PrometheusAlert> page, PrometheusAlert alert) {
+        return prometheusAlertMapper.pageExtension(page, alert);
     }
 }
 

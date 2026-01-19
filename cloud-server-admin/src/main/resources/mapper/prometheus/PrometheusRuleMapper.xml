@@ -22,6 +22,10 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <resultMap id="BaseResultMapExtension" extends="BaseResultMap" type="vip.gpg123.prometheus.dto.PrometheusRuleVO">
+        <result property="groupName" column="group_name"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         rule_id,group_id,rule_name,status,for_time,expr,
         annotations,type,status,description,create_by,
@@ -40,9 +44,6 @@
             <if test="qw != null and qw.groupId != null and qw.groupId !=''">
                 and group_id like concat('%',#{qw.groupId},'%')
             </if>
-            <if test="qw != null and qw.groupName != null and qw.groupName !=''">
-                and group_name like concat('%',#{qw.groupName},'%')
-            </if>
             <if test="qw != null and qw.type != null and qw.type !=''">
                 and type = #{qw.type}
             </if>
@@ -58,11 +59,11 @@
     <!--基础查询-->
     <sql id="baseSelect">
         SELECT r.*,
-               g.job_name AS groupName,
+               t.job_name AS group_name,
                uu.user_name AS createByUserName,
                uc.user_name AS updateByUserName
         FROM prometheus_rule r
-                 LEFT JOIN prometheus_target g ON r.group_id = g.target_id
+                 LEFT JOIN prometheus_target t ON r.group_id = t.target_id
                  LEFT JOIN sys_user uu ON r.create_by = uu.user_id
                  LEFT JOIN sys_user uc ON r.update_by = uc.user_id
     </sql>
@@ -80,6 +81,11 @@
 
     <!--分页查询-->
     <select id="page" resultMap="BaseResultMap">
+        <include refid="baseSelect"/>
+        <include refid="queryWrapper"/>
+    </select>
+
+    <select id="pageExtension" resultMap="BaseResultMap">
         <include refid="baseSelect"/>
         <include refid="queryWrapper"/>
     </select>

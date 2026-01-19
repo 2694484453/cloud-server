@@ -32,11 +32,6 @@ public class PrometheusRule extends BaseEntity implements Serializable {
     private String groupId;
 
     /**
-     *
-     */
-    private String groupName;
-
-    /**
      * 
      */
     @TableField(value = "rule_name")

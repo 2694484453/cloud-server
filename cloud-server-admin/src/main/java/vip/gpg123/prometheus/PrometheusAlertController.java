@@ -1,6 +1,7 @@
 package vip.gpg123.prometheus;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +14,10 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
-import vip.gpg123.prometheus.mapper.PrometheusAlertMapper;
+import vip.gpg123.prometheus.dto.PrometheusAlertVO;
 import vip.gpg123.prometheus.service.PrometheusAlertService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,8 +27,6 @@ public class PrometheusAlertController extends BaseController {
     @Autowired
     private PrometheusAlertService prometheusAlertService;
 
-    @Autowired
-    private PrometheusAlertMapper prometheusAlertMapper;
 
     /**
      * list
@@ -48,7 +48,10 @@ public class PrometheusAlertController extends BaseController {
      */
     @GetMapping("/page")
     public TableDataInfo page(Page<PrometheusAlert> prometheusAlertPage, PrometheusAlert prometheusAlert) {
-        IPage<PrometheusAlert> page = prometheusAlertMapper.page(prometheusAlertPage, prometheusAlert);
+        List<OrderItem>  orderItems = new ArrayList<>();
+        orderItems.add(new OrderItem("create_time",false));
+        prometheusAlertPage.setOrders(orderItems);
+        IPage<PrometheusAlertVO> page = prometheusAlertService.pageExtension(prometheusAlertPage, prometheusAlert);
         return PageUtils.toPageByIPage(page);
     }
 

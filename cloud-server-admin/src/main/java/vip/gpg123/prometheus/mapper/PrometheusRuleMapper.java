@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import vip.gpg123.prometheus.dto.PrometheusRuleVO;
 
 import java.util.List;
 
@@ -32,6 +33,11 @@ public interface PrometheusRuleMapper extends BaseMapper<PrometheusRule> {
      * 根据 entity 条件，查询全部记录（并翻页）
      */
     IPage<PrometheusRule> page(Page<PrometheusRule> page, @Param("qw") PrometheusRule prometheusRule);
+
+    /**
+     * 根据 entity 条件，查询全部记录（并翻页）
+     */
+    IPage<PrometheusRuleVO> pageExtension(Page<PrometheusRule> page, @Param("qw") PrometheusRule prometheusRule);
 }
 
 

@@ -2,10 +2,9 @@ package vip.gpg123.prometheus.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Param;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import com.baomidou.mybatisplus.extension.service.IService;
-import vip.gpg123.wallpaper.domain.DynamicWallpaper;
+import vip.gpg123.prometheus.dto.PrometheusRuleVO;
 
 import java.util.List;
 
@@ -24,7 +23,13 @@ public interface PrometheusRuleService extends IService<PrometheusRule> {
      */
     IPage<PrometheusRule> page(Page<PrometheusRule> page, PrometheusRule prometheusRule);
 
-
+    /**
+     * page
+     * @param page page
+     * @param prometheusRule r
+     * @return r
+     */
+    IPage<PrometheusRuleVO> pageExtension(Page<PrometheusRule> page, PrometheusRule prometheusRule);
 
     /**
      * list

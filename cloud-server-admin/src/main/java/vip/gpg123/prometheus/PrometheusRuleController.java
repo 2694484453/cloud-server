@@ -26,6 +26,7 @@ import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.prometheus.domain.PrometheusGroup;
 import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
+import vip.gpg123.prometheus.dto.PrometheusRuleVO;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusGroupService;
@@ -51,13 +52,9 @@ public class PrometheusRuleController extends BaseController {
     private PrometheusRuleService prometheusRuleService;
 
     @Autowired
-    private PrometheusRuleMapper prometheusRuleMapper;
-
-    @Autowired
-    private PrometheusGroupService prometheusGroupService;
-
-    @Autowired
     private PrometheusApi prometheusApi;
+
+    @Autowired
     private PrometheusTargetService prometheusTargetService;
 
     /**
@@ -93,7 +90,7 @@ public class PrometheusRuleController extends BaseController {
     @ApiOperation(value = "分页查询")
     public TableDataInfo page(Page<PrometheusRule> prometheusRulePage, PrometheusRule prometheusRule) {
         prometheusRule.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
-        IPage<PrometheusRule> page = prometheusRuleService.page(prometheusRulePage, prometheusRule);
+        IPage<PrometheusRuleVO> page = prometheusRuleService.pageExtension(prometheusRulePage, prometheusRule);
         return PageUtils.toPageByIPage(page);
     }
 
@@ -136,14 +133,6 @@ public class PrometheusRuleController extends BaseController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "delete")
     public AjaxResult delete(@RequestParam(value = "id") String id) {
-        // 查询
-        PrometheusRule rule = prometheusRuleService.getById(id);
-        if (rule != null) {
-            PrometheusTarget target = prometheusTargetService.getById(rule.getGroupId());
-            if (target != null) {
-                return AjaxResult.error("请先移除端点：" + target.getJobName());
-            }
-        }
         boolean result = prometheusRuleService.removeById(id);
         return result ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }

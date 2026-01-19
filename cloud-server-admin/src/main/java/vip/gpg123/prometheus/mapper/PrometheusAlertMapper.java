@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import vip.gpg123.prometheus.dto.PrometheusAlertVO;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 */
 @Mapper
 public interface PrometheusAlertMapper extends BaseMapper<PrometheusAlert> {
+
     /**
      * 根据 entity 条件，查询一条记录
      *
@@ -33,6 +35,11 @@ public interface PrometheusAlertMapper extends BaseMapper<PrometheusAlert> {
      * 根据 entity 条件，查询全部记录（并翻页）
      */
     IPage<PrometheusAlert> page(Page<PrometheusAlert> page, @Param("qw") PrometheusAlert prometheusAlert);
+
+    /**
+     * 根据 entity 条件，查询全部记录（并翻页）
+     */
+    IPage<PrometheusAlertVO> pageExtension(Page<PrometheusAlert> page, @Param("qw") PrometheusAlert prometheusAlert);
 }
 
 

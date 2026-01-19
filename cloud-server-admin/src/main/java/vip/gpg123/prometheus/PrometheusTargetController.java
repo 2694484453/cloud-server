@@ -29,10 +29,12 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.prometheus.domain.ActiveTarget;
 import vip.gpg123.prometheus.domain.PrometheusConfigs;
+import vip.gpg123.prometheus.domain.PrometheusRule;
 import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.domain.PrometheusTargetResponse;
 import vip.gpg123.prometheus.mapper.PrometheusTargetMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
+import vip.gpg123.prometheus.service.PrometheusRuleService;
 import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +61,9 @@ public class PrometheusTargetController extends BaseController {
 
     @Autowired
     private PrometheusTargetMapper prometheusTargetMapper;
+
+    @Autowired
+    private PrometheusRuleService prometheusRuleService;
 
     @Autowired
     private PrometheusApi prometheusApi;
@@ -168,6 +173,13 @@ public class PrometheusTargetController extends BaseController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "【删除】")
     public AjaxResult delete(@RequestParam(value = "id") String id) {
+        // 查询是否被使用
+        long count = prometheusRuleService.count(new LambdaQueryWrapper<PrometheusRule>()
+                .eq(PrometheusRule::getGroupId,id)
+        );
+        if (count > 0) {
+            return AjaxResult.error("请先删除该端点下的告警规则");
+        }
         boolean isSuccess = prometheusTargetService.removeById(id);
         return isSuccess ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }
