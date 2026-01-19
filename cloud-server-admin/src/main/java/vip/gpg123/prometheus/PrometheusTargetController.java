@@ -40,11 +40,13 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -192,7 +194,7 @@ public class PrometheusTargetController extends BaseController {
         try (OutputStream out = new BufferedOutputStream(response.getOutputStream())) {
             // 1. 设置响应头
             response.setContentType("application/json;charset=UTF-8");
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("prometheus-exporter.json", "UTF-8"));
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("prometheus-exporter.json", StandardCharsets.UTF_8));
             // 2. 带缓冲的流复制
             IoUtil.copy(IoUtil.toUtf8Stream(jsonStr), out);
         } catch (Exception e) {
@@ -209,7 +211,7 @@ public class PrometheusTargetController extends BaseController {
     public AjaxResult syncStatus() {
         // 查询数据库中
         List<PrometheusTarget> prometheusTargetList = prometheusTargetService.list();
-        Map<String, PrometheusTarget> map = prometheusTargetList.stream().collect(Collectors.toMap(PrometheusTarget::getJobName, item -> item));
+        Map<String, PrometheusTarget> map = prometheusTargetList.stream().collect(Collectors.toMap(target -> String.valueOf(target.getTargetId()), Function.identity()));
         // 查询状态prometheus
         PrometheusTargetResponse response = prometheusApi.targets("");
         List<ActiveTarget> list = Convert.toList(ActiveTarget.class, JSONUtil.parseArray(response.getData().getActiveTargets()));
@@ -217,11 +219,14 @@ public class PrometheusTargetController extends BaseController {
         if (ObjectUtil.isNotEmpty(prometheusTargetList) && ObjectUtil.isNotEmpty(list)) {
             list.forEach(target -> {
                 AtomicBoolean isUpdate = new AtomicBoolean(false);
-                String targetName = target.getLabels().getStr("job");
-                // 找到了
-                if (map.containsKey(targetName)) {
+                // labels
+                JSONObject labels = target.getLabels();
+                // 判断是否包含id且相等
+                if (labels.containsKey("id") && map.containsKey(labels.getStr("id"))) {
+                    // id
+                    String targetId = labels.getStr("id");
                     String targetStatus = target.getHealth();
-                    PrometheusTarget exporter = map.get(targetName);
+                    PrometheusTarget exporter = map.get(targetId);
                     String exportStatus = exporter.getStatus();
                     // 状态发生变化或者是错误原因为空白
                     if (!exportStatus.equals(targetStatus) || (StrUtil.isBlank(exporter.getErrorReason()) && "down".equals(exporter.getStatus()))) {
@@ -268,6 +273,7 @@ public class PrometheusTargetController extends BaseController {
             labels.set("__scheme__", ObjectUtil.defaultIfBlank(item.getSchemeType(), "http"));
             labels.set("__metrics_path__", ObjectUtil.defaultIfBlank(item.getMetricsPath(), "/metrics"));
             labels.set("job", item.getJobName());
+            labels.set("id", item.getTargetId());
             labels.set("instance", item.getJobName());
             labels.set("type", ObjectUtil.defaultIfBlank(item.getExporterType(), "unknow"));
             configs.setTargets(Arrays.asList(item.getTargets().split(",")));

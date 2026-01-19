@@ -23,7 +23,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        rule_id,group_name,alert_name,labels,for_time,expr,
+        rule_id,group_id,rule_name,status,for_time,expr,
         annotations,type,status,description,create_by,
         create_time,update_by,update_time
     </sql>

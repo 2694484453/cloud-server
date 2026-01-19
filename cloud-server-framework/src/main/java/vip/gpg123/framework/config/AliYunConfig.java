@@ -23,6 +23,9 @@ public class AliYunConfig {
         private String endpoint;
 
         private String bucketName;
+
+        private String domain;
+
     }
 
     @Data
@@ -35,6 +38,7 @@ public class AliYunConfig {
         private String accessKeySecret;
 
         private String aiApiKey;
+
     }
 
     @Data
@@ -45,6 +49,7 @@ public class AliYunConfig {
         private String apiKey;
 
         private String url;
+
     }
 
     @Data
@@ -55,6 +60,7 @@ public class AliYunConfig {
         private String apiKey;
 
         private String url;
+
     }
 
 

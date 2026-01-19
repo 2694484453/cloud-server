@@ -25,10 +25,12 @@ import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.prometheus.domain.PrometheusGroup;
 import vip.gpg123.prometheus.domain.PrometheusRule;
+import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
 import vip.gpg123.prometheus.service.PrometheusGroupService;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
+import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,7 @@ public class PrometheusRuleController extends BaseController {
 
     @Autowired
     private PrometheusApi prometheusApi;
+    private PrometheusTargetService prometheusTargetService;
 
     /**
      * levels
@@ -130,6 +133,14 @@ public class PrometheusRuleController extends BaseController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "delete")
     public AjaxResult delete(@RequestParam(value = "id") String id) {
+        // 查询
+        PrometheusRule rule = prometheusRuleService.getById(id);
+        if (rule != null) {
+            PrometheusTarget target = prometheusTargetService.getById(rule.getGroupId());
+            if (target != null) {
+                return AjaxResult.error("请先移除端点：" + target.getJobName());
+            }
+        }
         boolean result = prometheusRuleService.removeById(id);
         return result ? AjaxResult.success("删除成功") : AjaxResult.error("删除失败");
     }
@@ -140,42 +151,50 @@ public class PrometheusRuleController extends BaseController {
     @GetMapping("/syncStatus")
     @ApiOperation(value = "syncStatus")
     public void syncStatus() {
-        List<PrometheusRule> prometheusRules = prometheusRuleService.list();
+        List<PrometheusRule> prometheusRules = prometheusRuleService.list(new PrometheusRule());
         JSONObject jsonObject = prometheusApi.rules("alert");
         JSONObject data = jsonObject.getJSONObject("data");
         JSONArray groups = data.getJSONArray("groups");
         prometheusRules.forEach(prometheusRule -> {
-            // 查询group
-            PrometheusGroup prometheusGroup = prometheusGroupService.getById(prometheusRule.getGroupId());
-            String alertName = prometheusRule.getRuleName();
-            String groupName = prometheusGroup.getGroupName();
-            String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
-            String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
-            groups.forEach(group -> {
-                JSONObject groupJsonObject = JSONUtil.parseObj(group);
-                String prometheusGroupName = groupJsonObject.getStr("name");
-                JSONArray rules = groupJsonObject.getJSONArray("rules");
-                rules.forEach(rule -> {
-                    boolean isUpdate = false;
-                    JSONObject ruleJsonObject = JSONUtil.parseObj(rule);
-                    String prometheusRuleName = ruleJsonObject.getStr("name");
-                    String prometheusRuleStatus = ruleJsonObject.getStr("health");
-                    String prometheusRuleState = ruleJsonObject.getStr("state");
-                    if (groupName.equals(prometheusGroupName) && alertName.equals(prometheusRuleName)) {
-                        if (!status.equals(prometheusRuleStatus)) {
-                            prometheusRule.setStatus(prometheusRuleStatus);
-                            isUpdate = true;
+            // 查询targets
+            PrometheusTarget prometheusTarget = prometheusTargetService.getById(prometheusRule.getGroupId());
+            // 如果不为空
+            if (prometheusTarget != null) {
+                // ruleId
+                String ruleId = prometheusRule.getRuleId().toString();
+                String status = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
+                String alertStatus = ObjectUtil.defaultIfBlank(prometheusRule.getStatus(), "");
+                groups.forEach(group -> {
+                    JSONObject groupJsonObject = JSONUtil.parseObj(group);
+                    JSONArray rules = groupJsonObject.getJSONArray("rules");
+                    rules.forEach(rule -> {
+                        boolean isUpdate = false;
+                        JSONObject ruleJsonObject = JSONUtil.parseObj(rule);
+                        // 规则健康
+                        String prometheusRuleStatus = ruleJsonObject.getStr("health");
+                        // 规则状态
+                        String prometheusRuleState = ruleJsonObject.getStr("state");
+                        // labels
+                        JSONObject labels = ruleJsonObject.getJSONObject("labels");
+                        if (labels.containsKey("id") && labels.get("id").equals(ruleId)) {
+                            // 是否更新状态
+                            if (!status.equals(prometheusRuleStatus)) {
+                                prometheusRule.setStatus(prometheusRuleStatus);
+                                isUpdate = true;
+                            }
+                            if (!alertStatus.equals(prometheusRuleState)) {
+                                prometheusRule.setStatus(prometheusRuleState);
+                                isUpdate = true;
+                            }
+                            if (isUpdate) {
+                                System.out.println("更新：" + prometheusRule.getRuleName());
+                                prometheusRuleService.updateById(prometheusRule);
+                            }
                         }
-                        if (!alertStatus.equals(prometheusRuleState)) {
-                            prometheusRule.setStatus(prometheusRuleState);
-                            isUpdate = true;
-                        }
-                    }
-                    if (isUpdate) {
-                        prometheusRuleService.updateById(prometheusRule);
-                    }
+                    });
                 });
-            });
+            }
+
         });
     }
 }

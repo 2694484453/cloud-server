@@ -24,6 +24,8 @@ public interface PrometheusRuleService extends IService<PrometheusRule> {
      */
     IPage<PrometheusRule> page(Page<PrometheusRule> page, PrometheusRule prometheusRule);
 
+
+
     /**
      * list
      * @param prometheusRule r
