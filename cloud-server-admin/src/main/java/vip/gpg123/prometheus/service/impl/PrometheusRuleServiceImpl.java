@@ -147,7 +147,6 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                     rules.forEach(item -> {
                         Map<String, Object> labels = item.getLabels();
                         if (labels != null && labels.containsKey("id") && labels.get("id").equals(String.valueOf(entity.getRuleId()))) {
-                            item.setExpr(entity.getExpr());
                             //
                             labels.put("id", String.valueOf(entity.getRuleId()));
                             labels.put("createBy", sysUser.getUserId());
@@ -158,7 +157,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
                             annotations.put("summary", String.format("\"%s\"", entity.getSummary()));
                             annotations.put("description", entity.getDescription());
                             item.setAnnotations(annotations);
-                            item.setExpr(entity.getExpr());
+                            item.setExpr(entity.getExpr() + "m");
                             item.setAlert(entity.getRuleName());
                         }
                     });
@@ -250,7 +249,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         // 添加
         RuleFileProps ruleFileProps = new RuleFileProps();
         ruleFileProps.setAlert(entity.getRuleName());
-        ruleFileProps.setExpr(entity.getExpr());
+        ruleFileProps.setExpr(entity.getExpr() + "m");
         //
         Map<String, Object> annotations = new HashMap<>();
         annotations.put("summary", String.format("\"%s\"", entity.getSummary()));
