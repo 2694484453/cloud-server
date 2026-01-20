@@ -23,15 +23,11 @@ import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
 import vip.gpg123.common.utils.SecurityUtils;
-import vip.gpg123.prometheus.domain.PrometheusGroup;
 import vip.gpg123.prometheus.domain.PrometheusRule;
-import vip.gpg123.prometheus.domain.PrometheusTarget;
 import vip.gpg123.prometheus.dto.PrometheusRuleVO;
 import vip.gpg123.prometheus.mapper.PrometheusRuleMapper;
 import vip.gpg123.prometheus.service.PrometheusApi;
-import vip.gpg123.prometheus.service.PrometheusGroupService;
 import vip.gpg123.prometheus.service.PrometheusRuleService;
-import vip.gpg123.prometheus.service.PrometheusTargetService;
 
 import java.util.ArrayList;
 import java.util.List;
