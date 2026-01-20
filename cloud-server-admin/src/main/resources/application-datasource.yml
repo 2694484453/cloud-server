@@ -36,6 +36,12 @@ spring:
           username: root
           password: Gaopuguang@2023%
           driver-class-name: com.mysql.cj.jdbc.Driver
+        # tools
+        tools:
+          url: jdbc:mysql://mysql.gpg123.vip:3306/tools?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&connectTimeout=5000&socketTimeout=30000
+          username: root
+          password: Gaopuguang@2023%
+          driver-class-name: com.mysql.cj.jdbc.Driver
       # Druid 全局参数（可选，会被每个数据源继承）
       druid:
         # 连接池基础参数

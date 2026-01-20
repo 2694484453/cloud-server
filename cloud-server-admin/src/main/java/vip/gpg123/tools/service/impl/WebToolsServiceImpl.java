@@ -1,5 +1,6 @@
 package vip.gpg123.tools.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +30,7 @@ public class WebToolsServiceImpl extends ServiceImpl<WebToolsMapper, WebTools> i
      * @return r
      */
     @Override
+    @DS("tools")
     public List<WebTools> list(WebTools webTools) {
         return webToolsMapper.list(webTools);
     }
@@ -41,6 +43,7 @@ public class WebToolsServiceImpl extends ServiceImpl<WebToolsMapper, WebTools> i
      * @return r
      */
     @Override
+    @DS("tools")
     public IPage<WebTools> page(Page<WebTools> page, WebTools webTools) {
         return webToolsMapper.page(page, webTools);
     }
