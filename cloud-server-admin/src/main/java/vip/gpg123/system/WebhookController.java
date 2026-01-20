@@ -39,9 +39,10 @@ public class WebhookController {
         List<AlertDTO> alerts = alertDTO.getAlerts();
         for (AlertDTO alert : alerts) {
             // 判断是否系统产生
-            if (alert.getLabels().containsKey("createBy") && alert.getLabels().containsKey("id")) {
+            if (alert.getLabels().containsKey("createBy") && alert.getLabels().containsKey("groupId") && alert.getLabels().containsKey("id")) {
                 // 获取标签 (Labels)
                 String id = alert.getLabels().get("id");
+                String groupId = alert.getLabels().get("groupId");
                 String alertName = alert.getLabels().get("alertname");
                 String instance = alert.getLabels().get("instance"); // 出问题的实例
                 String severity = alert.getLabels().get("severity"); // 级别: warning/critical
@@ -53,7 +54,7 @@ public class WebhookController {
 
                 // 3. 在这里编写你的处理逻辑
                 // 例如：发送钉钉、记录日志、存入数据库、调用运维脚本等
-                handleAlert(id, alertName, createBy, instance, severity, summary, description, status);
+                handleAlert(groupId, alertName, createBy, instance, severity, summary, description, status);
             }
             // 否则舍弃
         }
@@ -86,7 +87,7 @@ public class WebhookController {
         System.out.println("===================================");
         // 保存数据库
         PrometheusAlert alert = new PrometheusAlert();
-        alert.setGroupId(groupId);
+        alert.setGroupId(Integer.valueOf(groupId));
         alert.setAlertName(alertName);
         alert.setCreateBy(createBy);
         alert.setCreateTime(new Date());

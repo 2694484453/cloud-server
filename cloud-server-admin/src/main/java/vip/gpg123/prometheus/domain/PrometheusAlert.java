@@ -40,7 +40,7 @@ public class PrometheusAlert extends BaseEntity implements Serializable {
      * 产生于
      */
     @TableField(value = "group_id")
-    private String groupId;
+    private Integer groupId;
 
     /**
      *

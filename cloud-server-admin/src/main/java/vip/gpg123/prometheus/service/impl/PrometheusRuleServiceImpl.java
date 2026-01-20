@@ -260,6 +260,7 @@ public class PrometheusRuleServiceImpl extends ServiceImpl<PrometheusRuleMapper,
         labels.put("createBy", String.valueOf(sysUser.getUserId()));
         labels.put("severity", entity.getSeverityLevel());
         labels.put("id", String.valueOf(entity.getRuleId()));
+        labels.put("groupId", String.valueOf(entity.getGroupId()));
         ruleFileProps.setLabels(labels);
         rules.add(ruleFileProps);
         ruleGroup.setRules(rules);
