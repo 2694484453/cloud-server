@@ -42,6 +42,8 @@ server:
       max: 800
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
+    relaxed-path-chars: "[,]"
+    relaxed-query-chars: "[,]"
 
 # 日志配置
 logging:
@@ -100,7 +102,7 @@ spring:
     # 密码
     password: Gaopuguang@2024%
     # 连接超时时间
-    timeout: 5000ms
+    timeout: 12000ms
     lettuce:
       pool:
         # 连接池中的最小空闲连接
@@ -108,7 +110,7 @@ spring:
         # 连接池中的最大空闲连接
         max-idle: 8
         # 连接池的最大数据库连接数
-        max-active: 8
+        max-active: 50
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
   quartz:
