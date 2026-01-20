@@ -13,6 +13,7 @@ import vip.gpg123.common.core.controller.BaseController;
 import vip.gpg123.common.core.domain.AjaxResult;
 import vip.gpg123.common.core.page.TableDataInfo;
 import vip.gpg123.common.utils.PageUtils;
+import vip.gpg123.common.utils.SecurityUtils;
 import vip.gpg123.prometheus.domain.PrometheusAlert;
 import vip.gpg123.prometheus.dto.PrometheusAlertVO;
 import vip.gpg123.prometheus.service.PrometheusAlertService;
@@ -48,9 +49,7 @@ public class PrometheusAlertController extends BaseController {
      */
     @GetMapping("/page")
     public TableDataInfo page(Page<PrometheusAlert> prometheusAlertPage, PrometheusAlert prometheusAlert) {
-        List<OrderItem>  orderItems = new ArrayList<>();
-        orderItems.add(new OrderItem("create_time",false));
-        prometheusAlertPage.setOrders(orderItems);
+        prometheusAlert.setCreateBy(SecurityUtils.getUserId().toString());
         IPage<PrometheusAlertVO> page = prometheusAlertService.pageExtension(prometheusAlertPage, prometheusAlert);
         return PageUtils.toPageByIPage(page);
     }
