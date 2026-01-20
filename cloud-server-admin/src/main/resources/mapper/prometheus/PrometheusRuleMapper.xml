@@ -9,6 +9,7 @@
         <result property="groupId" column="group_id"/>
         <result property="ruleName" column="rule_name"/>
         <result property="status" column="status"/>
+        <result property="ruleState" column="rule_state"/>
         <result property="severityLevel" column="severity_level"/>
         <result property="forTime" column="for_time"/>
         <result property="expr" column="expr"/>

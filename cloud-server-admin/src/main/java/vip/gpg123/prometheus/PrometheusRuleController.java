@@ -55,7 +55,7 @@ public class PrometheusRuleController extends BaseController {
     private PrometheusApi prometheusApi;
 
     @Autowired
-    private PrometheusTargetService prometheusTargetService;
+    private PrometheusRuleMapper prometheusRuleMapper;
 
     /**
      * levels
@@ -143,7 +143,7 @@ public class PrometheusRuleController extends BaseController {
     @GetMapping("/syncStatus")
     @ApiOperation(value = "syncStatus")
     public void syncStatus() {
-        List<PrometheusRule> prometheusRules = prometheusRuleService.list(new PrometheusRule());
+        List<PrometheusRule> prometheusRules = prometheusRuleMapper.list(new PrometheusRule());
         Map<String,PrometheusRule> map = prometheusRules.stream().collect(Collectors.toMap(prometheusRule -> prometheusRule.getRuleId().toString(), Function.identity()));
         JSONObject jsonObject = prometheusApi.rules("alert");
         JSONObject data = jsonObject.getJSONObject("data");
@@ -173,12 +173,12 @@ public class PrometheusRuleController extends BaseController {
                         isUpdate = true;
                     }
                     if (!alertStatus.equals(prometheusRuleState)) {
-                        prometheusRule.setStatus(prometheusRuleState);
+                        prometheusRule.setRuleState(prometheusRuleState);
                         isUpdate = true;
                     }
                     if (isUpdate) {
                         System.out.println("更新：" + prometheusRule.getRuleName());
-                        prometheusRuleService.updateById(prometheusRule);
+                        prometheusRuleMapper.updateById(prometheusRule);
                     }
                 }
             });

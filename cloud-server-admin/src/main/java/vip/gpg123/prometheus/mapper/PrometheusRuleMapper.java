@@ -38,6 +38,8 @@ public interface PrometheusRuleMapper extends BaseMapper<PrometheusRule> {
      * 根据 entity 条件，查询全部记录（并翻页）
      */
     IPage<PrometheusRuleVO> pageExtension(Page<PrometheusRule> page, @Param("qw") PrometheusRule prometheusRule);
+
+
 }
 
 

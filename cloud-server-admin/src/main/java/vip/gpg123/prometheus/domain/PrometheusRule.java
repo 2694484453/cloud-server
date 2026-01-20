@@ -74,6 +74,12 @@ public class PrometheusRule extends BaseEntity implements Serializable {
     private String status;
 
     /**
+     *
+     */
+    @TableField(value = "rule_state")
+    private String ruleState;
+
+    /**
      * 
      */
     @TableField(value = "description")
